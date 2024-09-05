@@ -1,0 +1,162 @@
+﻿@model Shareholder_Management_System.Models.ShareTransfer
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ShareTransfer</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TransferType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransferType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumSharesTransferred)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumSharesTransferred)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AmountPerShare)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AmountPerShare)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaidAmountForTransfer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaidAmountForTransfer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TransferReason)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransferReason)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DividenedFor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DividenedFor)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TransferDoc)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransferDoc)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TransferDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransferDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TransferAuthorizationStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransferAuthorizationStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TransferAuthorizationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TransferAuthorizationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Remark)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Remark)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Payment.PaymentMode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Payment.PaymentMode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder.ShareID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder1.ShareID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Subscribtion.SubStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User1.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User1.FullName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.TransferID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
