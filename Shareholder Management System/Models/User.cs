@@ -45,6 +45,9 @@ namespace Shareholder_Management_System.Models
         public bool Status { get; set; }
         public string Role { get; set; }
         public int Branch { get; set; }
+        public Nullable<bool> IsFirstLogin { get; set; }
+        public Nullable<int> Locked { get; set; }
+        public Nullable<bool> activeStatus { get; set; }
         public System.DateTime CreatedDate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

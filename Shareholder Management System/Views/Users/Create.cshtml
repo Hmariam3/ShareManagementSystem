@@ -1,90 +1,85 @@
 ﻿@model Shareholder_Management_System.Models.User
 
 @{
-    ViewBag.Title = "Create User";
+    ViewBag.Title = "Create";
 }
 
-<h2 class="text-center">Create User</h2>
+<!-- Modal Structure -->
+@if (TempData["Message"] != null)
+{
+    @TempData["Message"];
+}
 
-<div class="d-flex justify-content-center">
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
-        <div class="form-horizontal" style="width: 500px;">
-            <h4>User Details</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-2xl text-white font-bold text-gray-800 mb-6" style="background-color: cyan;">Create User Account</h2>
+        @Html.ValidationSummary(true, "", new { @class = "text-red-500 mb-4" })
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Full Name" } })
-                    @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+        <div class="space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FullName, new { @class = "block text-gray-700 text-sm font-bold mb-2" })
+                    @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" } })
+                    @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-red-500 text-sm" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.UserName, new { @class = "block text-gray-700 text-sm font-bold mb-2" })
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" } })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-red-500 text-sm" })
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, new { @class = "block text-gray-700 text-sm font-bold mb-2" })
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-red-500 text-sm" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Role, new { @class = "block text-gray-700 text-sm font-bold mb-2" })
+                    @Html.DropDownListFor(model => model.Role,
+                        new SelectList(new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "Administrator", Value = "Administrator" },
+                            new SelectListItem { Text = "Initiator", Value = "Initiator" },
+                            new SelectListItem { Text = "Authorizer", Value = "Authorizer" }
+                        }, "Value", "Text"),
+                        "Select Role",
+                        new { @class = "form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" })
+                    @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-red-500 text-sm" })
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Username" } })
-                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
-                </div>
+                @Html.LabelFor(model => model.Branch, "Branch", new { @class = "block text-gray-700 text-sm font-bold mb-2" })
+
+                <input type="text" id="branch-search" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Search for a branch..." />
+
+                <div id="branch-results" class="mt-2"></div>
+                @Html.HiddenFor(model => model.Branch, new { @id = "Branch" }) <!-- Hidden input for storing selected branch ID -->
+
+                @Html.ValidationMessageFor(model => model.Branch, "", new { @class = "text-red-500 text-sm" })
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Password", type = "password" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.CheckBoxFor(model => model.Status, new { @class = "form-check-input" })
-                    @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
-                    <label class="form-check-label">Active</label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Role, new { htmlAttributes = new { @class = "form-control", placeholder = "Enter Role" } })
-                    @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Branch, "Branch", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("Branch", null, "Select Branch", htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Branch, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-                    @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create User" class="btn btn-primary" />
-                </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-cyan hover:bg-blue-800 text-black font-bold py-2 px-4 rounded-full border border-blue-700" style="background-color: cyan;" type="submit">
+                    Create
+                </button>
+                <a href="@Url.Action("Index")" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                    Back to List
+                </a>
             </div>
         </div>
-    }
-</div>
+    </div>
+}
 
-<div class="text-center">
-    @Html.ActionLink("Back to User List", "Index", null, new { @class = "btn btn-secondary" })
-</div>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

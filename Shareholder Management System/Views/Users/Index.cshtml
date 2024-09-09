@@ -4,7 +4,11 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+@{
+    string errorMessage = TempData["ErrorMessage"] as string;
+    string successMessage = TempData["SuccessMessage"] as string;
+    string Message = TempData["Message"] as string;
+}
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -35,35 +39,36 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.FullName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Password)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Status)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Role)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Branch1.BranchCode)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.UID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.UID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.UID })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Password)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Branch1.BranchCode)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.UID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.UID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.UID })
+            </td>
+        </tr>
+    }
 
 </table>

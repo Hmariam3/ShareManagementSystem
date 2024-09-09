@@ -56,9 +56,9 @@ namespace Shareholder_Management_System.Models
         public string TINNum { get; set; }
         public string AccountNumber { get; set; }
         public Nullable<int> Branch { get; set; }
-        public bool Status { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public Nullable<bool> Status { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
         public string AuthorizationStatus { get; set; }
         public Nullable<int> Authorizer { get; set; }
         public Nullable<System.DateTime> AuthorizedDate { get; set; }

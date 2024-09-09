@@ -70,7 +70,7 @@
           media="screen"
           href="~/Content/CSS/animate.css" />
     @*@Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")*@
+        @Scripts.Render("~/bundles/modernizr")*@
     <script src="~/Script/JS/perfect-scrollbar.min.js"></script>
     <script defer="" src="~/Script/JS/popper.min.js"></script>
     <script defer="" src="~/Script/JS/tippy-bundle.umd.min.js"></script>
@@ -81,6 +81,7 @@
     <script defer="" src="~/Scripts/JS/alpine-focus.min.js"></script>
     <script defer="" src="~/Scripts/JS/alpine.min.js"></script>
     <script src="~/Scripts/JS/custom.js"></script>
+    <script src="~/Scripts/jquery.min.js"></script>
 
 
 </head>
@@ -253,11 +254,11 @@
                                         <a href="~/Users/Create">Register User</a>
                                     </li>
                                     <li>
-                                        <a href="apps-User-preview.html">View Users</a>
+                                        <a href="~/Users/Index">View Users</a>
                                     </li>
                                     <!-- <li>
-                                      <a href="apps-User-preview.html">View Proxy Table</a>
-                                    </li> -->
+      <a href="apps-User-preview.html">View Proxy Table</a>
+    </li> -->
                                 </ul>
                             </li>
                         </h2>
@@ -494,12 +495,6 @@
                                         </li>
                                         <li>
                                             @Html.ActionLink("View Transfer", "Index", "ShareTransfers")
-                                        </li>
-                                        <li>
-                                            @Html.ActionLink("1", "Edit", "ShareTransfers")
-                                        </li>
-                                        <li>
-                                            @Html.ActionLink("2", "Delete", "ShareTransfers")
                                         </li>
                                     </ul>
                                 </li>
@@ -1921,22 +1916,22 @@
                 <!-- start main content section -->
                 <div>
                     <!--
-            *
-            *
-            *
-            *
-            *
-            *
-              Main Contents
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                      Main Contents
 
 
-            *
-            *
-            *
-            *
-            *
-            *
-            -->
+                    *
+                    *
+                    *
+                    *
+                    *
+                    *
+                    -->
                 </div>
                 <!-- end main content section -->
             </div>
@@ -1949,7 +1944,7 @@
 
                 <strong style="color: rgb(99, 97, 97);">
                     Copyright &copy; <span id="currentYear"></span>
-                    <a href="https://https://coopbankoromia.com.et/" target="_blank">Coopbank</a>.
+                    <a href="https://coopbankoromia.com.et/" target="_blank">Coopbank</a>.
                 </strong>
                 All rights reserved.
             </div>
@@ -2190,9 +2185,45 @@
                 },
             }));
         });
-        
-   
+       $(document).ready(function() {
+        $('#branch-search').on('keyup', function() {
+            var query = $(this).val();
+
+            if (query.length > 2) { // Start searching after 3 characters
+                $.ajax({
+                    url: '@Url.Action("SearchBranches", "Users")',
+                    type: 'GET',
+                    data: { searchTerm: query },
+                    success: function(data) {
+                        $('#branch-results').empty();
+                        if (data.length > 0) {
+                            $.each(data, function(index, branch) {
+                                $('#branch-results').append('<div class="branch-item" data-id="' + branch.Value + '">' + branch.Text + '</div>');
+                            });
+                        } else {
+                            $('#branch-results').append('<div>No branches found</div>');
+                        }
+                    },
+                    error: function() {
+                        $('#branch-results').empty().append('<div>Error retrieving branches</div>');
+                    }
+                });
+            } else {
+                $('#branch-results').empty();
+            }
+        });
+
+    // Handle branch selection
+    $(document).on('click', '.branch-item', function() {
+        var branchId = $(this).data('id');
+        var branchName = $(this).text();
+        $('#branch-search').val(branchName); // Set the input value
+        $('#branch-results').empty(); // Clear results
+        $('#Branch').val(branchId); // Set the hidden input value for submission
+    });
+});
+
     </script>
-     @RenderSection("scripts", required: false)
+    @RenderSection("scripts", required: false)
 </body>
 </html>

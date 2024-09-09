@@ -12,7 +12,7 @@ namespace Shareholder_Management_System.Controllers
 {
     public class ShareTransfersController : Controller
     {
-        private Shareholder_Management_SystemEntities db = new Shareholder_Management_SystemEntities();
+        private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
         // GET: ShareTransfers
         public ActionResult Index()

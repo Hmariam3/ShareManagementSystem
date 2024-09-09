@@ -23,8 +23,8 @@ namespace Shareholder_Management_System.Models
         }
     
         public int SubID { get; set; }
-        public int ShID { get; set; }
-        public int SubNumShares { get; set; }
+        public Nullable<int> ShID { get; set; }
+        public Nullable<int> SubNumShares { get; set; }
         public Nullable<decimal> Premium { get; set; }
         public Nullable<decimal> SubAmount { get; set; }
         public Nullable<int> PaidSubscription { get; set; }
@@ -32,8 +32,8 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> SubTransferFrom { get; set; }
         public Nullable<System.DateTime> PaymentDueDate { get; set; }
         public string SubStatus { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime SubDate { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<System.DateTime> SubDate { get; set; }
         public string SubAuthorizationStatus { get; set; }
         public Nullable<int> SubAuthorizer { get; set; }
         public Nullable<System.DateTime> AuthorizedDate { get; set; }
