@@ -1,0 +1,239 @@
+﻿@model Shareholder_Management_System.Models.User
+
+@{
+    ViewBag.Title = "Login";
+}
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Share Management System - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link href="css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="~/assets/css/style.css">
+    <link href="css2?family=Nunito:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="~/Content/CSS/perfect-scrollbar.min.css" />
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="~/Content/CSS/style.css" />
+    <link defer=""
+          rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="~/Content/CSS/animate.css" />
+    @*@Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")*@
+    <script src="~/Script/JS/perfect-scrollbar.min.js"></script>
+    <script defer="" src="~/Script/JS/popper.min.js"></script>
+    <script defer="" src="~/Script/JS/tippy-bundle.umd.min.js"></script>
+    <script defer="" src="~/Script/JS/sweetalert.min.js"></script>
+    <script src="~/Scripts/JS/alpine-collaspe.min.js"></script>
+    <script src="~/Scripts/JS/alpine-persist.min.js"></script>
+    <script defer="" src="~/Scripts/JS/alpine-ui.min.js"></script>
+    <script defer="" src="~/Scripts/JS/alpine-focus.min.js"></script>
+    <script defer="" src="~/Scripts/JS/alpine.min.js"></script>
+    <script src="~/Scripts/JS/custom.js"></script>
+    <script src="~/Scripts/jquery.min.js"></script>
+</head>
+
+<body x-data="main" class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased" :class="[ $store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ?  'dark' : '', $store.app.menu, $store.app.layout,$store.app.rtlClass]">
+    <div class="main-container min-h-screen flex items-center justify-center text-black dark:text-white-dark" style="background-color: #00ADEF;">
+        <div x-data="auth" class="relative w-full h-full flex items-center justify-center">
+            <!-- Two columns wrapper -->
+            <div class="flex flex-col md:flex-row w-full max-w-[1200px] h-full px-4 py-10 sm:px-16 gap-8">
+
+                <!-- First Column (Image) - Hidden on small screens -->
+                <div class="hidden md:flex items-center justify-center w-full md:w-1/2">
+                    <img src="~/assets/images/coop.jpeg" alt="Coop Image" class="h-auto max-h-full rounded-md shadow-lg">
+                </div>
+
+                <!-- Second Column (Form) -->
+                <div class="flex items-center justify-center w-full md:w-1/2">
+                    <div class="relative w-full rounded-md bg-[linear-gradient(45deg,#fff9f9_0%,rgba(255,255,255,0)_25%,rgba(255,255,255,0)_75%,_#fff9f9_100%)] p-4 dark:bg-[linear-gradient(52.22deg,#0E1726_0%,rgba(14,23,38,0)_18.66%,rgba(14,23,38,0)_51.04%,rgba(14,23,38,0)_80.07%,#0E1726_100%)]">
+                        <div class="relative flex flex-col justify-center rounded-md bg-white/60 backdrop-blur-lg dark:bg-black/50 px-6 py-16 lg:py-20">
+                            <div class="mx-auto w-full max-w-[440px]">
+                                <div class="mb-10">
+                                    <h1 class="text-3xl font-extrabold uppercase !leading-snug md:text-4xl" style="color: #06aeef;">Log in</h1>
+                                    <p class="text-base font-bold leading-normal text-white-dark">Enter your username and password to login</p>
+                                </div>
+
+                                <!-- Login Form -->
+                                @using (Html.BeginForm("Login", "UsersAuthorization", FormMethod.Post, new { @class = "space-y-5 dark:text-white" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <div>
+                                        <label for="Email">Username</label>
+                                        <div class="relative text-white-dark">
+                                            @Html.TextBoxFor(model => model.UserName, new { @class = "form-input ps-10 placeholder:text-white-dark w-full", placeholder = "Username" })
+                                            <span class="absolute start-4 top-1/2 -translate-y-1/2">
+                                                <!-- SVG icon -->
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                    <div>
+                                        <label for="Password">Password</label>
+                                        <div class="relative text-white-dark">
+                                            @Html.PasswordFor(model => model.Password, new { @class = "form-input ps-10 placeholder:text-white-dark w-full", placeholder = "Password" })
+                                            <span class="absolute start-4 top-1/2 -translate-y-1/2">
+                                                <!-- SVG icon -->
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+
+                                    <button id="gradientButton" type="submit" class="btn mt-6 w-full border-0 uppercase" style="background-image: linear-gradient(to right, #00ADEF, black); color: rgba(255, 255, 255, 1);">
+                                        Log in
+                                    </button>
+                                    <label class="text-danger"> @TempData["errormessage"]</label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="~/assets/js/alpine-collaspe.min.js"></script>
+    <script src="~/assets/js/alpine-persist.min.js"></script>
+    <script defer="" src="~/assets/js/alpine-ui.min.js"></script>
+    <script defer="" src="~/assets/js/alpine-focus.min.js"></script>
+    <script defer="" src="~/assets/js/alpine.min.js"></script>
+
+    <script src="~/assets/js/custom.js"></script>
+
+    <script>
+        // main section
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('scrollToTop', () => ({
+                showTopButton: false,
+                init() {
+                    window.onscroll = () => {
+                        this.scrollFunction();
+                    };
+                },
+
+                scrollFunction() {
+                    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                        this.showTopButton = true;
+                    } else {
+                        this.showTopButton = false;
+                    }
+                },
+
+                goToTop() {
+                    document.body.scrollTop = 0;
+                    document.documentElement.scrollTop = 0;
+                },
+            }));
+
+            Alpine.data('auth', () => ({
+                languages: [
+                    {
+                        id: 1,
+                        key: 'Khmer',
+                        value: 'kh',
+                    },
+                    {
+                        id: 2,
+                        key: 'Danish',
+                        value: 'da',
+                    },
+                    {
+                        id: 3,
+                        key: 'English',
+                        value: 'en',
+                    },
+                    {
+                        id: 4,
+                        key: 'French',
+                        value: 'fr',
+                    },
+                    {
+                        id: 5,
+                        key: 'German',
+                        value: 'de',
+                    },
+                    {
+                        id: 6,
+                        key: 'Greek',
+                        value: 'el',
+                    },
+                    {
+                        id: 7,
+                        key: 'Hungarian',
+                        value: 'hu',
+                    },
+                    {
+                        id: 8,
+                        key: 'Italian',
+                        value: 'it',
+                    },
+                    {
+                        id: 9,
+                        key: 'Japanese',
+                        value: 'ja',
+                    },
+                    {
+                        id: 10,
+                        key: 'Polish',
+                        value: 'pl',
+                    },
+                    {
+                        id: 11,
+                        key: 'Portuguese',
+                        value: 'pt',
+                    },
+                    {
+                        id: 12,
+                        key: 'Russian',
+                        value: 'ru',
+                    },
+                    {
+                        id: 13,
+                        key: 'Spanish',
+                        value: 'es',
+                    },
+                    {
+                        id: 14,
+                        key: 'Swedish',
+                        value: 'sv',
+                    },
+                    {
+                        id: 15,
+                        key: 'Turkish',
+                        value: 'tr',
+                    },
+                    {
+                        id: 16,
+                        key: 'Arabic',
+                        value: 'ae',
+                    },
+                ],
+            }));
+        });
+        const button = document.getElementById('gradientButton');
+        button.onmouseover = function () {
+            button.style.backgroundImage = 'linear-gradient(to right, black, #00ADEF)';
+        };
+        button.onmouseout = function () {
+            button.style.backgroundImage = 'linear-gradient(to right, #00ADEF, black)';
+        };
+    </script>
+</body>
+</html>

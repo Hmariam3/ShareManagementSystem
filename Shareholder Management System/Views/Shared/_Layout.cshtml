@@ -41,7 +41,11 @@
     </body>
     </html>*@
 
-
+@if (Session["ID"] == null)
+{
+    Session.Abandon();
+    Response.Redirect("~/UsersAuthorization/Login");
+}
 
 
 <!DOCTYPE html>
@@ -89,6 +93,7 @@
 <body x-data="main"
       class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased"
       :class="[ $store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ?  'dark' : '', $store.app.menu, $store.app.layout, $store.app.rtlClass]">
+
     <!-- sidebar menu overlay -->
     <div x-cloak=""
          class="fixed inset-0 z-50 bg-[black]/60 lg:hidden"
@@ -257,8 +262,8 @@
                                         <a href="~/Users/Index">View Users</a>
                                     </li>
                                     <!-- <li>
-      <a href="apps-User-preview.html">View Proxy Table</a>
-    </li> -->
+                                      <a href="apps-User-preview.html">View Proxy Table</a>
+                                    </li> -->
                                 </ul>
                             </li>
                         </h2>
@@ -872,7 +877,7 @@
                             <div class="dropdown"
                                  x-data="dropdown"
                                  @@click.outside="open = false">
-                                <a href="javascript:;"
+                                @*<a href="javascript:;"
                                    class="relative block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
                                    @@click="toggle">
                                     <svg width="20"
@@ -897,8 +902,8 @@
                                         <span class="absolute -top-[3px] inline-flex h-full w-full animate-ping rounded-full bg-success/50 opacity-55 ltr:-left-[3px] rtl:-right-[3px]"></span>
                                         <span class="relative inline-flex h-[6px] w-[6px] rounded-full bg-danger"></span>
                                     </span>
-                                </a>
-                                <ul x-cloak=""
+                                </a>*@
+                                @*<ul x-cloak=""
                                     x-show="open"
                                     x-transition=""
                                     x-transition.duration.300ms=""
@@ -986,7 +991,7 @@
                                             </div>
                                         </li>
                                     </template>
-                                </ul>
+                                </ul>*@
                             </div>
                             <div class="dropdown flex-shrink-0"
                                  x-data="dropdown"
@@ -1007,17 +1012,11 @@
                                     class="top-11 w-[230px] !py-0 font-semibold text-dark ltr:right-0 rtl:left-0 dark:text-white-dark dark:text-white-light/90">
                                     <li>
                                         <div class="flex items-center px-4 py-4">
-                                            <div class="flex-none">
-                                                <img class="h-10 w-10 rounded-md object-cover"
-                                                     src="~/assets/images/user-profile.jpeg"
-                                                     alt="image" />
-                                            </div>
                                             <div class="truncate ltr:pl-4 rtl:pr-4">
                                                 <h4 class="text-base">
-                                                    StarCode Kh<span class="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">Pro</span>
+                                                    @Session["FullName"]
                                                 </h4>
-                                                <a class="text-black/60 hover:text-primary dark:text-dark-light/60 dark:hover:text-white"
-                                                   href="javascript:;">starcodekh@gmail.com</a>
+                                                @Session["Roles"]
                                             </div>
                                         </div>
                                     </li>
@@ -1097,29 +1096,15 @@
                                         </a>
                                     </li>
                                     <li class="border-t border-white-light dark:border-white-light/10">
-                                        <a href="auth-boxed-signin.html"
-                                           class="!py-3 text-danger"
-                                           @@click="toggle">
-                                            <svg class="h-4.5 w-4.5 rotate-90 ltr:mr-2 rtl:ml-2"
-                                                 width="18"
-                                                 height="18"
-                                                 viewbox="0 0 24 24"
-                                                 fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path opacity="0.5"
-                                                      d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 7 9.00195"
-                                                      stroke="currentColor"
-                                                      stroke-width="1.5"
-                                                      stroke-linecap="round"></path>
-                                                <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5"
-                                                      stroke="currentColor"
-                                                      stroke-width="1.5"
-                                                      stroke-linecap="round"
-                                                      stroke-linejoin="round"></path>
+                                        <a href="@Url.Action("SignOut", "UsersAuthorization")" class="!py-3 text-danger">
+                                            <svg class="h-4.5 w-4.5 rotate-90 ltr:mr-2 rtl:ml-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path opacity="0.5" d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 7 9.00195" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                             </svg>
                                             Sign Out
                                         </a>
                                     </li>
+
                                 </ul>
                             </div>
                         </div>

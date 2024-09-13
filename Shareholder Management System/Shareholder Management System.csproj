@@ -130,7 +130,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Commons\PasswordHash.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PasswordHasher.cs" />
     <Compile Include="Controllers\ShareTransfersController.cs" />
+    <Compile Include="Controllers\UsersAuthorizationController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -255,6 +257,12 @@
     <Content Include="Views\Users\Details.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\UsersAuthorization\Create.cshtml" />
+    <Content Include="Views\UsersAuthorization\Delete.cshtml" />
+    <Content Include="Views\UsersAuthorization\Details.cshtml" />
+    <Content Include="Views\UsersAuthorization\Edit.cshtml" />
+    <Content Include="Views\UsersAuthorization\Index.cshtml" />
+    <Content Include="Views\UsersAuthorization\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
