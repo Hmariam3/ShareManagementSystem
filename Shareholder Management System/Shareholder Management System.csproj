@@ -405,11 +405,6 @@
     <Content Include="Views\Users\Details.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
-    <Content Include="Views\UsersAuthorization\Create.cshtml" />
-    <Content Include="Views\UsersAuthorization\Delete.cshtml" />
-    <Content Include="Views\UsersAuthorization\Details.cshtml" />
-    <Content Include="Views\UsersAuthorization\Edit.cshtml" />
-    <Content Include="Views\UsersAuthorization\Index.cshtml" />
     <Content Include="Views\UsersAuthorization\Login.cshtml" />
     <Content Include="Views\Shared\_EditPartial.cshtml" />
     <Content Include="Views\Users\Profile.cshtml" />
