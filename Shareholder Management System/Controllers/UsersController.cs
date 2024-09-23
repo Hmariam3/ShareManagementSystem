@@ -5,12 +5,15 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web;
+using Microsoft.AspNetCore.Identity;
 using System.Web.Mvc;
 using Shareholder_Management_System.commons;
 using Shareholder_Management_System.Models;
+using System.Net.Mail;
 
 namespace Shareholder_Management_System.Controllers
 {
+    [AdminRoleFilter]
     public class UsersController : Controller
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
@@ -102,9 +105,21 @@ namespace Shareholder_Management_System.Controllers
                 user.CreatedDate = DateTime.UtcNow;
                 user.Status = true;
 
+                int id = Convert.ToInt32(Session["ID"]);
+               
                 // Add the new user to the database
                 db.Users.Add(user);
                 db.SaveChanges();
+
+                // Call RecordLog method
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("register", user.UID, "User", id, Session["Branch"].ToString());
+
+
+                //var emailAddress1 = "hailemariam.kebede@coopbankoromiasc.com";
+
+                //// Send a confirmation email
+                //SendConfirmationEmail(user.UserName, emailAddress1);  // Add a method to send the email
 
                 // Success message
                 TempData["Message"] = "User is registered successfully.";
@@ -114,6 +129,46 @@ namespace Shareholder_Management_System.Controllers
             // If model is not valid, return the form with validation errors
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", user.Branch);
             return View(user);
+        }
+
+        // Method to send email
+        private void SendConfirmationEmail(string userName, string emailAddress)
+        {
+            try
+            {
+                // Set up the email
+                var fromAddress = new MailAddress("Daniel.Gelan@coopbankoromiasc.com", "Cooperative Bank of Oromia");
+                var toAddress = new MailAddress(emailAddress);
+                const string subject = "User Registration Successful";
+                string body = $"Dear {userName},\n\nYour account has been successfully created.\n\nRegards,\nCooperative Bank of Oromia";
+
+                // Create SMTP client
+                var smtpClient = new SmtpClient
+                {
+                    Host = "mail.coopbankoromiasc.com",  // SMTP host
+                    Port = 587,                          // SMTP port
+                    EnableSsl = true,                  // Disable SSL (port 25 usually doesn't use SSL)
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    Credentials = new NetworkCredential("danielgd", "Dan@59112116#Ge") // SMTP credentials
+                };
+
+                // Prepare the mail message
+                using (var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body
+                })
+                {
+                    // Send the email
+                    smtpClient.Send(message);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle exceptions here
+                TempData["Message"] = "Registration succeeded, but there was an error sending the confirmation email.";
+            }
         }
 
 
@@ -129,7 +184,7 @@ namespace Shareholder_Management_System.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", user.Branch);
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", user.Branch);
             return View(user);
         }
 
@@ -142,11 +197,17 @@ namespace Shareholder_Management_System.Controllers
         {
             if (ModelState.IsValid)
             {
+                int id = Convert.ToInt32(Session["ID"]);
+
+                // Call RecordLog method
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("edit", user.UID, "User", id, Session["Branch"].ToString());
+
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", user.Branch);
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", user.Branch);
             return View(user);
         }
 
@@ -174,6 +235,88 @@ namespace Shareholder_Management_System.Controllers
             db.Users.Remove(user);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [AllowAnonymous]
+        // GET: Users/Profile/5
+        public ActionResult Profile(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            // User information
+            User user = db.Users.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+
+            // User Activity: Retrieve a list of audit logs for the user
+            List<AuditLog> auditLogs = db.AuditLogs
+                                        .Where(a => a.PerformedBy == id)
+                                        .ToList();
+
+            // Pass both user and audit logs to the view model
+            var viewModel = new ViewModel.UserProfileViewModel
+            {
+                User = user,
+                AuditLogs = auditLogs // Use 'auditLogs', not 'auditlogs'
+            };
+
+            return View(viewModel);
+        }
+
+        // Unauthorized action
+        public ActionResult Unauthorized()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPasswordOwn(ResetPasswordViewModel resetPasswordModel)
+        {
+            // Check if the model state is valid
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Invalid data.";
+                return RedirectToAction("Profile", "Users", new { id = Session["ID"] });
+            }
+
+            int userId = Convert.ToInt32(Session["ID"]);
+
+            var user = db.Users.SingleOrDefault(u => u.UID == userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Profile", "Users", new { id = Session["ID"] }); // Redirect to Profile page with error message
+            }
+
+            // Hash the current password to compare with stored hash
+            var hashedCurrentPassword = _passwordHasher.HashPassword(resetPasswordModel.CurrentPassword);
+            if (user.Password != hashedCurrentPassword)
+            {
+                TempData["ErrorMessage"] = "Current password is incorrect.";
+                return RedirectToAction("Profile", "Users", new { id = Session["ID"] }); // Redirect to Profile page with error message
+            }
+
+            // Check if new password and confirm password match
+            if (resetPasswordModel.NewPassword != resetPasswordModel.ConfirmPassword)
+            {
+                TempData["ErrorMessage"] = "New password and confirm password do not match.";
+                return RedirectToAction("Profile", "Users", new { id = Session["ID"] }); // Redirect to Profile page with error message
+            }
+
+            // Update the user's password (hash the new password)
+            user.Password = _passwordHasher.HashPassword(resetPasswordModel.NewPassword);
+            db.SaveChanges();
+
+            TempData["SuccessMessage"] = "Password reset successfully.";
+
+            return RedirectToAction("Profile", "Users", new { id = Session["ID"] }); // Redirect to Profile page after successful reset
         }
 
         protected override void Dispose(bool disposing)

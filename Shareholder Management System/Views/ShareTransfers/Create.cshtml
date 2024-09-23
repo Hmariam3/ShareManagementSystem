@@ -1,178 +1,199 @@
 ﻿@model Shareholder_Management_System.Models.ShareTransfer
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Share Transfer";
 }
 
-<h2>Create</h2>
+<div class="w-full max-w-6xl mx-auto p-6 bg-white shadow-md rounded-md">
+    <h2 class="text-2xl font-semibold mb-6">Create Share Transfer</h2>
 
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <h4>ShareTransfer</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Transferor (Shareholder) ID -->
         <div class="form-group">
-            @Html.LabelFor(model => model.TransferrorShID, "TransferrorShID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TransferrorShID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TransferrorShID, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.TransferrorShID, "Transferor Shareholder ID", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.DropDownList("TransferrorShID", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "TransferrorShID" })
+            @Html.ValidationMessageFor(model => model.TransferrorShID, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
+        <!-- Transferee (Shareholder) ID -->
         <div class="form-group">
-            @Html.LabelFor(model => model.TransfareeShID, "TransfareeShID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TransfareeShID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TransfareeShID, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.TransfareeShID, "Transferee Shareholder ID", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.DropDownList("TransfareeShID", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "TransfareeShID" })
+            @Html.ValidationMessageFor(model => model.TransfareeShID, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
+        <!-- Transfer Type -->
         <div class="form-group">
-            @Html.LabelFor(model => model.TransferType, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TransferType, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TransferType, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.TransferType, "Transfer Type", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.DropDownListFor(model => model.TransferType, new SelectList(new List<string> { "Subscription", "Payment", "Share" }),
+                              "-- Select Transfer Type --",
+                              new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "transferType" })
+            @Html.ValidationMessageFor(model => model.TransferType, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.SubID, "SubID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SubID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-danger" })
-            </div>
+        <!-- Subscription ID -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.SubID, "Subscription ID", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.DropDownList("SubID", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md" })
+            @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PayID, "PayID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("PayID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PayID, "", new { @class = "text-danger" })
-            </div>
+        <!-- Payment ID -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.PayID, "Payment ID", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.DropDownList("PayID", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md" })
+            @Html.ValidationMessageFor(model => model.PayID, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
+        <!-- Number of Shares Transferred -->
         <div class="form-group">
-            @Html.LabelFor(model => model.NumSharesTransferred, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.NumSharesTransferred, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.NumSharesTransferred, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.NumSharesTransferred, "Number of Shares Transferred", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.TextBoxFor(model => model.NumSharesTransferred, new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "numShares" })
+            @Html.ValidationMessageFor(model => model.NumSharesTransferred, "", new { @class = "text-red-500 text-sm mt-1" })
+        </div>
+        <!-- Result of Shares Transferred -->
+        <div class="form-group">
+            @Html.Label("Calculated Shares", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            <input type="text" id="calculatedShares" class="form-control w-full mt-1 p-2 border rounded-md" readonly />
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.AmountPerShare, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.AmountPerShare, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-danger" })
-            </div>
+        <!-- Amount per Share -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.AmountPerShare, "Amount per Share", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.EditorFor(model => model.AmountPerShare, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
+            @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
+        <!-- Paid Amount for Transfer -->
         <div class="form-group">
-            @Html.LabelFor(model => model.PaidAmountForTransfer, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PaidAmountForTransfer, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PaidAmountForTransfer, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.PaidAmountForTransfer, "Total Amount Paid", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.EditorFor(model => model.PaidAmountForTransfer, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
+            @Html.ValidationMessageFor(model => model.PaidAmountForTransfer, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
+        <!-- Transfer Reason -->
         <div class="form-group">
-            @Html.LabelFor(model => model.TransferReason, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TransferReason, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.TransferReason, "Reason for Transfer", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.EditorFor(model => model.TransferReason, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
+            @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
+        <!-- Dividend for Transfer -->
         <div class="form-group">
-            @Html.LabelFor(model => model.DividenedFor, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DividenedFor, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.DividenedFor, "Dividend for Transfer", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.DropDownListFor(
+                model => model.DividenedFor,
+                new SelectList(new List<string> { "To Transferor", "To Transferee", "Share Equally" }),
+                "-- Select Dividend Option --",
+                new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "dividenedFor" }
+            )
+            @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
+
+        <!-- Transfer Document -->
         <div class="form-group">
-            @Html.LabelFor(model => model.TransferDoc, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TransferDoc, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TransferDoc, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.TransferDoc, "Transfer Document", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.EditorFor(model => model.TransferDoc, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
+            @Html.ValidationMessageFor(model => model.TransferDoc, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
+        <!-- Transfer Date -->
         <div class="form-group">
-            @Html.LabelFor(model => model.TransferDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TransferDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
-            </div>
+            @Html.LabelFor(model => model.TransferDate, "Transfer Date", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.EditorFor(model => model.TransferDate, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md", type = "date" } })
+            @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedBy, "CreatedBy", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-            </div>
+        <!-- Created By -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.CreatedBy, "Created By", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md" })
+            @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreationDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreationDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreationDate, "", new { @class = "text-danger" })
-            </div>
+        <!-- Creation Date -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.CreationDate, "Creation Date", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.EditorFor(model => model.CreationDate, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
+            @Html.ValidationMessageFor(model => model.CreationDate, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransferAuthorizationStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TransferAuthorizationStatus, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TransferAuthorizationStatus, "", new { @class = "text-danger" })
-            </div>
+        <!-- Authorization Status -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.TransferAuthorizationStatus, "Authorization Status", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.EditorFor(model => model.TransferAuthorizationStatus, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
+            @Html.ValidationMessageFor(model => model.TransferAuthorizationStatus, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransferAuthorizer, "TransferAuthorizer", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TransferAuthorizer", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TransferAuthorizer, "", new { @class = "text-danger" })
-            </div>
+        <!-- Authorizer -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.TransferAuthorizer, "Authorizer", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.DropDownList("TransferAuthorizer", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md" })
+            @Html.ValidationMessageFor(model => model.TransferAuthorizer, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransferAuthorizationDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.TransferAuthorizationDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.TransferAuthorizationDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+        <!-- Authorization Date -->
+        <div class="form-group hidden">
+            @Html.LabelFor(model => model.TransferAuthorizationDate, "Authorization Date", htmlAttributes: new { @class = "block font-medium text-gray-700" })
+            @Html.EditorFor(model => model.TransferAuthorizationDate, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
+            @Html.ValidationMessageFor(model => model.TransferAuthorizationDate, "", new { @class = "text-red-500 text-sm mt-1" })
         </div>
     </div>
-}
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
+        <div class="form-group mt-6">
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md" style="color: white; background-color: aqua;">
+                Submit
+            </button>
+        </div>
+    }
+
+    <!-- Container for both tables -->
+    <div class="tables-container grid grid-cols-2 gap-4">
+        <!-- Subscription Table -->
+        <div id="subscriptionTable" class="hidden">
+            <h3 class="text-xl font-semibold mb-4">Subscription Data</h3>
+            <table class="w-full border-collapse border border-gray-200">
+                <thead>
+                    <tr>
+                        <!-- Define table headers -->
+                        <th class="border border-gray-300 p-2">Shareholder ID</th>
+                        <th class="border border-gray-300 p-2">Subscription ID</th>
+                        <th class="border border-gray-300 p-2">Subsctiption Number of Shares</th>
+                        <th class="border border-gray-300 p-2">Paid Subscription in Amount</th>
+                        <th class="border border-gray-300 p-2">Unpaid Subscription in Amount</th>
+                        <!-- Add more headers as needed -->
+                    </tr>
+                </thead>
+                <tbody id="subscriptionTableBody">
+                    <!-- Data will be dynamically populated here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Payment Table -->
+        <div id="paymentTable" class="hidden">
+            <h3 class="text-xl font-semibold mb-4">Payment Data</h3>
+            <table class="w-full border-collapse border border-gray-200">
+                <thead>
+                    <tr>
+                        <!-- Define table headers -->
+                        <th class="border border-gray-300 p-2">Payment ID</th>
+                        <th class="border border-gray-300 p-2">Shareholder ID</th>
+                        <th class="border border-gray-300 p-2">Subscribtion ID</th>
+                        <th class="border border-gray-300 p-2">Paid Amount</th>
+                        <th class="border border-gray-300 p-2">Payment Mode</th>
+                        <!-- Add more headers as needed -->
+                    </tr>
+                </thead>
+                <tbody id="paymentTableBody">
+                    <!-- Data will be dynamically populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
-@*@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-
-}*@
-

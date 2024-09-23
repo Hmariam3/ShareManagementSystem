@@ -63,6 +63,7 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> Authorizer { get; set; }
         public Nullable<System.DateTime> AuthorizedDate { get; set; }
         public string Remark { get; set; }
+        public Nullable<int> ShDocument { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Blocked> Blockeds { get; set; }
@@ -89,5 +90,6 @@ namespace Shareholder_Management_System.Models
         public virtual ICollection<Subscribtion> Subscribtions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Subscribtion> Subscribtions1 { get; set; }
+        public virtual Document Document { get; set; }
     }
 }

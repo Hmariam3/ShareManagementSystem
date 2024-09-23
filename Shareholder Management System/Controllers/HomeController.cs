@@ -26,5 +26,10 @@ namespace Shareholder_Management_System.Controllers
 
             return View();
         }
+
+        public ActionResult Unauthorized()
+        {
+            return View();
+        }
     }
 }

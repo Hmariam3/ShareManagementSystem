@@ -20,15 +20,15 @@ namespace Shareholder_Management_System.Models
         public string TransferType { get; set; }
         public Nullable<int> SubID { get; set; }
         public Nullable<int> PayID { get; set; }
-        public int NumSharesTransferred { get; set; }
-        public decimal AmountPerShare { get; set; }
-        public decimal PaidAmountForTransfer { get; set; }
+        public Nullable<int> NumSharesTransferred { get; set; }
+        public Nullable<decimal> AmountPerShare { get; set; }
+        public Nullable<decimal> PaidAmountForTransfer { get; set; }
         public string TransferReason { get; set; }
         public string DividenedFor { get; set; }
-        public int TransferDoc { get; set; }
+        public Nullable<int> TransferDoc { get; set; }
         public Nullable<System.DateTime> TransferDate { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime CreationDate { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
         public string TransferAuthorizationStatus { get; set; }
         public Nullable<int> TransferAuthorizer { get; set; }
         public Nullable<System.DateTime> TransferAuthorizationDate { get; set; }

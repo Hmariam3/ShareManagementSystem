@@ -47,6 +47,10 @@
     Response.Redirect("~/UsersAuthorization/Login");
 }
 
+@{
+    var userRole = Session["Roles"]?.ToString();
+}
+
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -75,6 +79,9 @@
           href="~/Content/CSS/animate.css" />
     @*@Styles.Render("~/Content/css")
         @Scripts.Render("~/bundles/modernizr")*@
+
+
+
     <script src="~/Script/JS/perfect-scrollbar.min.js"></script>
     <script defer="" src="~/Script/JS/popper.min.js"></script>
     <script defer="" src="~/Script/JS/tippy-bundle.umd.min.js"></script>
@@ -86,7 +93,7 @@
     <script defer="" src="~/Scripts/JS/alpine.min.js"></script>
     <script src="~/Scripts/JS/custom.js"></script>
     <script src="~/Scripts/jquery.min.js"></script>
-
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
 
 </head>
 
@@ -218,55 +225,37 @@
                             </button>
                         </li>
 
-
-
-                        <h2>
-                            <li class="menu nav-item">
-                                <button type="button"
-                                        class="nav-link group"
-                                        :class="{'active' : activeDropdown === 'User'}"
-                                        @@click="activeDropdown === 'User' ? activeDropdown = null : activeDropdown = 'User'">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-
-                                            <path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z"
-                                                  fill="white" />
-                                        </svg>
-
-                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">User Management</span>
-
-                                    </div>
-                                    <div class="rtl:rotate-180"
-                                         :class="{'!rotate-90' : activeDropdown === 'User'}">
-                                        <svg width="16"
-                                             height="16"
-                                             viewbox="0 0 24 24"
-                                             fill="none"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 5L15 12L9 19"
-                                                  stroke="currentColor"
-                                                  stroke-width="1.5"
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"></path>
-                                        </svg>
-                                    </div>
-                                </button>
-                                <ul x-cloak=""
-                                    x-show="activeDropdown === 'User'"
-                                    x-collapse=""
-                                    class="sub-menu text-white">
-                                    <li>
-                                        <a href="~/Users/Create">Register User</a>
-                                    </li>
-                                    <li>
-                                        <a href="~/Users/Index">View Users</a>
-                                    </li>
-                                    <!-- <li>
-                                      <a href="apps-User-preview.html">View Proxy Table</a>
-                                    </li> -->
-                                </ul>
-                            </li>
-                        </h2>
+                        @if (userRole == "Administrator")
+                        {
+                            <h2>
+                                <li class="menu nav-item">
+                                    <button type="button"
+                                            class="nav-link group"
+                                            :class="{'active' : activeDropdown === 'User'}"
+                                            @@click="activeDropdown === 'User' ? activeDropdown = null : activeDropdown = 'User'">
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                <path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" fill="white" />
+                                            </svg>
+                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">User Management</span>
+                                        </div>
+                                        <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'User'}">
+                                            <svg width="16" height="16" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                    <ul x-cloak="" x-show="activeDropdown === 'User'" x-collapse="" class="sub-menu text-white">
+                                        <li>
+                                            <a href="~/Users/Create">Register User</a>
+                                        </li>
+                                        <li>
+                                            <a href="~/Users/Index">View Users</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </h2>
+                        }
 
                         <h2>
                             <li class="menu nav-item">
@@ -360,8 +349,8 @@
                                         <a href="apps-Document-preview.html">View Document</a>
                                     </li>
                                     <!-- <li>
-                                      <a href="apps-Document-preview.html">View Proxy Table</a>
-                                    </li> -->
+                  <a href="apps-Document-preview.html">View Proxy Table</a>
+                </li> -->
                                 </ul>
                             </li>
                         </h2>
@@ -548,17 +537,17 @@
 
                                 <h2>
                                     <!-- <svg
-                                      class="hidden h-5 w-4 flex-none"
-                                      viewbox="0 0 24 24"
-                                      stroke="currentColor"
-                                      stroke-width="1.5"
-                                      fill="none"
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                    >
-                                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                     -->
+                  class="hidden h-5 w-4 flex-none"
+                  viewbox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                 -->
 
                                     <li class="menu nav-item">
                                         <button type="button"
@@ -601,8 +590,8 @@
                                                 <a href="apps-Certficate-preview.html">Certficate Report</a>
                                             </li>
                                             <!-- <li>
-                                              <a href="apps-Certficate-preview.html">View Proxy Table</a>
-                                            </li> -->
+                          <a href="apps-Certficate-preview.html">View Proxy Table</a>
+                        </li> -->
                                         </ul>
                                     </li>
                                 </h2>
@@ -878,120 +867,120 @@
                                  x-data="dropdown"
                                  @@click.outside="open = false">
                                 @*<a href="javascript:;"
-                                   class="relative block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
-                                   @@click="toggle">
-                                    <svg width="20"
-                                         height="20"
-                                         viewbox="0 0 24 24"
-                                         fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M19.0001 9.7041V9C19.0001 5.13401 15.8661 2 12.0001 2C8.13407 2 5.00006 5.13401 5.00006 9V9.7041C5.00006 10.5491 4.74995 11.3752 4.28123 12.0783L3.13263 13.8012C2.08349 15.3749 2.88442 17.5139 4.70913 18.0116C9.48258 19.3134 14.5175 19.3134 19.291 18.0116C21.1157 17.5139 21.9166 15.3749 20.8675 13.8012L19.7189 12.0783C19.2502 11.3752 19.0001 10.5491 19.0001 9.7041Z"
-                                              stroke="currentColor"
-                                              stroke-width="1.5"></path>
-                                        <path d="M7.5 19C8.15503 20.7478 9.92246 22 12 22C14.0775 22 15.845 20.7478 16.5 19"
-                                              stroke="currentColor"
-                                              stroke-width="1.5"
-                                              stroke-linecap="round"></path>
-                                        <path d="M12 6V10"
-                                              stroke="currentColor"
-                                              stroke-width="1.5"
-                                              stroke-linecap="round"></path>
-                                    </svg>
+                                       class="relative block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
+                                       @@click="toggle">
+                                        <svg width="20"
+                                             height="20"
+                                             viewbox="0 0 24 24"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M19.0001 9.7041V9C19.0001 5.13401 15.8661 2 12.0001 2C8.13407 2 5.00006 5.13401 5.00006 9V9.7041C5.00006 10.5491 4.74995 11.3752 4.28123 12.0783L3.13263 13.8012C2.08349 15.3749 2.88442 17.5139 4.70913 18.0116C9.48258 19.3134 14.5175 19.3134 19.291 18.0116C21.1157 17.5139 21.9166 15.3749 20.8675 13.8012L19.7189 12.0783C19.2502 11.3752 19.0001 10.5491 19.0001 9.7041Z"
+                                                  stroke="currentColor"
+                                                  stroke-width="1.5"></path>
+                                            <path d="M7.5 19C8.15503 20.7478 9.92246 22 12 22C14.0775 22 15.845 20.7478 16.5 19"
+                                                  stroke="currentColor"
+                                                  stroke-width="1.5"
+                                                  stroke-linecap="round"></path>
+                                            <path d="M12 6V10"
+                                                  stroke="currentColor"
+                                                  stroke-width="1.5"
+                                                  stroke-linecap="round"></path>
+                                        </svg>
 
-                                    <span class="absolute top-0 flex h-3 w-3 ltr:right-0 rtl:left-0">
-                                        <span class="absolute -top-[3px] inline-flex h-full w-full animate-ping rounded-full bg-success/50 opacity-55 ltr:-left-[3px] rtl:-right-[3px]"></span>
-                                        <span class="relative inline-flex h-[6px] w-[6px] rounded-full bg-danger"></span>
-                                    </span>
-                                </a>*@
+                                        <span class="absolute top-0 flex h-3 w-3 ltr:right-0 rtl:left-0">
+                                            <span class="absolute -top-[3px] inline-flex h-full w-full animate-ping rounded-full bg-success/50 opacity-55 ltr:-left-[3px] rtl:-right-[3px]"></span>
+                                            <span class="relative inline-flex h-[6px] w-[6px] rounded-full bg-danger"></span>
+                                        </span>
+                                    </a>*@
                                 @*<ul x-cloak=""
-                                    x-show="open"
-                                    x-transition=""
-                                    x-transition.duration.300ms=""
-                                    class="top-11 w-[300px] divide-y !py-0 text-dark ltr:-right-2 rtl:-left-2 dark:divide-white/10 dark:text-white-dark sm:w-[350px]">
-                                    <li>
-                                        <div class="flex items-center justify-between px-4 py-2 font-semibold hover:!bg-transparent">
-                                            <h4 class="text-lg">Notification</h4>
-                                            <template x-if="notifications.length">
-                                                <span class="badge bg-primary/80"
-                                                      x-text="notifications.length + 'New'"></span>
-                                            </template>
-                                        </div>
-                                    </li>
-                                    <template x-for="notification in notifications">
-                                        <li class="dark:text-white-light/90">
-                                            <div class="group flex items-center px-4 py-2"
-                                                 @@click.self="toggle">
-                                                <div class="grid place-content-center rounded">
-                                                    <div class="relative h-12 w-12">
-                                                        <img class="h-12 w-12 rounded-full object-cover"
-                                                             :src="~/assets/images/${notification.profile}`"
-                                                             alt="image" />
-                                                        <span class="absolute bottom-0 right-[6px] block h-2 w-2 rounded-full bg-success"></span>
+                                        x-show="open"
+                                        x-transition=""
+                                        x-transition.duration.300ms=""
+                                        class="top-11 w-[300px] divide-y !py-0 text-dark ltr:-right-2 rtl:-left-2 dark:divide-white/10 dark:text-white-dark sm:w-[350px]">
+                                        <li>
+                                            <div class="flex items-center justify-between px-4 py-2 font-semibold hover:!bg-transparent">
+                                                <h4 class="text-lg">Notification</h4>
+                                                <template x-if="notifications.length">
+                                                    <span class="badge bg-primary/80"
+                                                          x-text="notifications.length + 'New'"></span>
+                                                </template>
+                                            </div>
+                                        </li>
+                                        <template x-for="notification in notifications">
+                                            <li class="dark:text-white-light/90">
+                                                <div class="group flex items-center px-4 py-2"
+                                                     @@click.self="toggle">
+                                                    <div class="grid place-content-center rounded">
+                                                        <div class="relative h-12 w-12">
+                                                            <img class="h-12 w-12 rounded-full object-cover"
+                                                                 :src="~/assets/images/${notification.profile}`"
+                                                                 alt="image" />
+                                                            <span class="absolute bottom-0 right-[6px] block h-2 w-2 rounded-full bg-success"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex flex-auto ltr:pl-3 rtl:pr-3">
+                                                        <div class="ltr:pr-3 rtl:pl-3">
+                                                            <h6 x-html="notification.message"></h6>
+                                                            <span class="block text-xs font-normal dark:text-gray-500"
+                                                                  x-text="notification.time"></span>
+                                                        </div>
+                                                        <button type="button"
+                                                                class="text-neutral-300 opacity-0 hover:text-danger group-hover:opacity-100 ltr:ml-auto rtl:mr-auto"
+                                                                @@click="removeNotification(notification.id)">
+                                                            <svg width="20"
+                                                                 height="20"
+                                                                 viewbox="0 0 24 24"
+                                                                 fill="none"
+                                                                 xmlns="http://www.w3.org/2000/svg">
+                                                                <circle opacity="0.5"
+                                                                        cx="12"
+                                                                        cy="12"
+                                                                        r="10"
+                                                                        stroke="currentColor"
+                                                                        stroke-width="1.5"></circle>
+                                                                <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5"
+                                                                      stroke="currentColor"
+                                                                      stroke-width="1.5"
+                                                                      stroke-linecap="round"></path>
+                                                            </svg>
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <div class="flex flex-auto ltr:pl-3 rtl:pr-3">
-                                                    <div class="ltr:pr-3 rtl:pl-3">
-                                                        <h6 x-html="notification.message"></h6>
-                                                        <span class="block text-xs font-normal dark:text-gray-500"
-                                                              x-text="notification.time"></span>
-                                                    </div>
-                                                    <button type="button"
-                                                            class="text-neutral-300 opacity-0 hover:text-danger group-hover:opacity-100 ltr:ml-auto rtl:mr-auto"
-                                                            @@click="removeNotification(notification.id)">
-                                                        <svg width="20"
-                                                             height="20"
-                                                             viewbox="0 0 24 24"
-                                                             fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <circle opacity="0.5"
-                                                                    cx="12"
-                                                                    cy="12"
-                                                                    r="10"
-                                                                    stroke="currentColor"
-                                                                    stroke-width="1.5"></circle>
-                                                            <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5"
-                                                                  stroke="currentColor"
-                                                                  stroke-width="1.5"
-                                                                  stroke-linecap="round"></path>
-                                                        </svg>
+                                            </li>
+                                        </template>
+                                        <template x-if="notifications.length">
+                                            <li>
+                                                <div class="p-4">
+                                                    <button class="btn btn-primary btn-small block w-full"
+                                                            @@click="toggle">
+                                                        Read All Notifications
                                                     </button>
                                                 </div>
-                                            </div>
-                                        </li>
-                                    </template>
-                                    <template x-if="notifications.length">
-                                        <li>
-                                            <div class="p-4">
-                                                <button class="btn btn-primary btn-small block w-full"
-                                                        @@click="toggle">
-                                                    Read All Notifications
-                                                </button>
-                                            </div>
-                                        </li>
-                                    </template>
-                                    <template x-if="!notifications.length">
-                                        <li>
-                                            <div class="!grid min-h-[200px] place-content-center text-lg hover:!bg-transparent">
-                                                <div class="mx-auto mb-4 rounded-full text-primary ring-4 ring-primary/30">
-                                                    <svg width="40"
-                                                         height="40"
-                                                         viewbox="0 0 20 20"
-                                                         fill="none"
-                                                         xmlns="http://www.w3.org/2000/svg">
-                                                        <path opacity="0.5"
-                                                              d="M20 10C20 4.47715 15.5228 0 10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20C15.5228 20 20 15.5228 20 10Z"
-                                                              fill="currentColor"></path>
-                                                        <path d="M10 4.25C10.4142 4.25 10.75 4.58579 10.75 5V11C10.75 11.4142 10.4142 11.75 10 11.75C9.58579 11.75 9.25 11.4142 9.25 11V5C9.25 4.58579 9.58579 4.25 10 4.25Z"
-                                                              fill="currentColor"></path>
-                                                        <path d="M10 15C10.5523 15 11 14.5523 11 14C11 13.4477 10.5523 13 10 13C9.44772 13 9 13.4477 9 14C9 14.5523 9.44772 15 10 15Z"
-                                                              fill="currentColor"></path>
-                                                    </svg>
+                                            </li>
+                                        </template>
+                                        <template x-if="!notifications.length">
+                                            <li>
+                                                <div class="!grid min-h-[200px] place-content-center text-lg hover:!bg-transparent">
+                                                    <div class="mx-auto mb-4 rounded-full text-primary ring-4 ring-primary/30">
+                                                        <svg width="40"
+                                                             height="40"
+                                                             viewbox="0 0 20 20"
+                                                             fill="none"
+                                                             xmlns="http://www.w3.org/2000/svg">
+                                                            <path opacity="0.5"
+                                                                  d="M20 10C20 4.47715 15.5228 0 10 0C4.47715 0 0 4.47715 0 10C0 15.5228 4.47715 20 10 20C15.5228 20 20 15.5228 20 10Z"
+                                                                  fill="currentColor"></path>
+                                                            <path d="M10 4.25C10.4142 4.25 10.75 4.58579 10.75 5V11C10.75 11.4142 10.4142 11.75 10 11.75C9.58579 11.75 9.25 11.4142 9.25 11V5C9.25 4.58579 9.58579 4.25 10 4.25Z"
+                                                                  fill="currentColor"></path>
+                                                            <path d="M10 15C10.5523 15 11 14.5523 11 14C11 13.4477 10.5523 13 10 13C9.44772 13 9 13.4477 9 14C9 14.5523 9.44772 15 10 15Z"
+                                                                  fill="currentColor"></path>
+                                                        </svg>
+                                                    </div>
+                                                    No data available.
                                                 </div>
-                                                No data available.
-                                            </div>
-                                        </li>
-                                    </template>
-                                </ul>*@
+                                            </li>
+                                        </template>
+                                    </ul>*@
                             </div>
                             <div class="dropdown flex-shrink-0"
                                  x-data="dropdown"
@@ -1013,21 +1002,43 @@
                                     <li>
                                         <div class="flex items-center px-4 py-4">
                                             <div class="truncate ltr:pl-4 rtl:pr-4">
-                                                <h4 class="text-base">
-                                                    @Session["FullName"]
-                                                </h4>
-                                                @Session["Roles"]
+                                                <div class="user-info">
+                                                    <h4 class="text-base font-semibold text-gray-200 font-extrabold">
+                                                        Welcome, @Session["FullName"]
+                                                    </h4>
+                                                </div>
+                                                @Session["Roles"],
+                                                @Session["BranchName"] Branch
                                             </div>
                                         </div>
                                     </li>
+                                    @{
+                                        int sessionId = 0;
+                                        if (Session["ID"] != null)
+                                        {
+                                            // Check if the session value is already an integer
+                                            if (Session["ID"] is int id)
+                                            {
+                                                sessionId = id;
+                                            }
+                                            else
+                                            {
+                                                // If the session value is not an integer, try to convert it
+                                                if (int.TryParse(Session["ID"].ToString(), out int result))
+                                                {
+                                                    sessionId = result;
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     <li>
-                                        <a href="users-profile.html"
-                                           class="dark:hover:text-white"
-                                           @@click="toggle">
+                                        <a href="@Url.Action("Profile", "Users", new { id = sessionId })"
+                                           class="dark:hover:text-white">
                                             <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
                                                  width="18"
                                                  height="18"
-                                                 viewbox="0 0 24 24"
+                                                 viewBox="0 0 24 24"
                                                  fill="none"
                                                  xmlns="http://www.w3.org/2000/svg">
                                                 <circle cx="12"
@@ -1042,6 +1053,8 @@
                                             </svg>
                                             Profile
                                         </a>
+                                    </li>
+
                                     </li>
                                     <li>
                                         <a href="apps-mailbox.html"
@@ -1939,6 +1952,23 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Content will be loaded here via Ajax -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <script>
@@ -2207,7 +2237,79 @@
         $('#Branch').val(branchId); // Set the hidden input value for submission
     });
 });
+$(document).ready(function () {
+    $('#transferType').change(function () {
+        var transferType = $(this).val();
+        var transferrorShID = $('#TransferrorShID').val();
 
+        if (transferrorShID) {
+            $.ajax({
+                url: '@Url.Action("GetTableData", "ShareTransfers")',
+                type: 'GET',
+                data: {
+                    transferType: transferType,
+                    transferrorShID: transferrorShID
+                },
+                success: function (data) {
+                    console.log('AJAX Success:', data); // Debugging line
+
+                    if (transferType === 'Subscription' || transferType === 'Share') {
+                        $('#subscriptionTable').show();
+                        $('#subscriptionTableBody').html(data.subscriptionData);
+                    } else {
+                        $('#subscriptionTable').hide();
+                    }
+
+                    if (transferType === 'Payment' || transferType === 'Share') {
+                        $('#paymentTable').show();
+                        $('#paymentTableBody').html(data.paymentData);
+                    } else {
+                        $('#paymentTable').hide();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', status, error); // Error handling
+                }
+            });
+        } else {
+            $('#subscriptionTable').hide();
+            $('#paymentTable').hide();
+        }
+    });
+});
+        $(document).ready(function () {
+            $('#TransferrorShID').select2({
+                placeholder: 'Select a Shareholder',
+                allowClear: true
+            });
+        });
+        $(document).ready(function () {
+            $('#TransfareeShID').select2({
+                placeholder: 'Select a Shareholder',
+                allowClear: true
+            });
+        });
+        $(document).ready(function () {
+            $('#BranchID').select2({
+                placeholder: 'Select a Branch',
+                allowClear: true
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const numSharesInput = document.getElementById('numShares');
+            const calculatedSharesInput = document.getElementById('calculatedShares');
+
+            function updateCalculatedShares() {
+                const numShares = parseFloat(numSharesInput.value) || 0;
+                calculatedSharesInput.value = (numShares * 1000).toLocaleString();
+            }
+
+            // Update the calculated shares when the input value changes
+            numSharesInput.addEventListener('input', updateCalculatedShares);
+
+            // Initialize the calculated shares value on page load
+            updateCalculatedShares();
+        });
     </script>
     @RenderSection("scripts", required: false)
 </body>

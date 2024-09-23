@@ -6,6 +6,19 @@
 
 <h2>Index</h2>
 
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+
+
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -44,44 +57,45 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.FullName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Password)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Status)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Role)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsFirstLogin)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Locked)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.activeStatus)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreatedDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Branch1.BranchCode)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.UID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.UID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.UID })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Password)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsFirstLogin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Locked)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.activeStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Branch1.BranchCode)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.UID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.UID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.UID })
+            </td>
+        </tr>
+    }
 
 </table>

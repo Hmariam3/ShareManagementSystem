@@ -21,6 +21,14 @@ namespace Shareholder_Management_System.commons
                 return stringBuilder.ToString();
             }
         }
+        // Method to verify if the provided password matches the stored hash
+        public bool VerifyHashedPassword(string hashedPassword, string providedPassword)
+        {
+            // Hash the provided password
+            string hashedProvidedPassword = HashPassword(providedPassword);
 
+            // Compare the stored hashed password with the provided hashed password
+            return hashedPassword == hashedProvidedPassword;
+        }
     }
 }

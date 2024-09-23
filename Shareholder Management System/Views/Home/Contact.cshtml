@@ -1,17 +1,9 @@
 ﻿@{
-    ViewBag.Title = "Contact";
+    ViewBag.Title = "Unauthorized Access";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
-
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+<div class="text-center mt-10">
+    <h1 class="text-3xl font-bold text-red-600">Unauthorized Access</h1>
+    <p class="mt-5 text-lg">You do not have permission to view this page.</p>
+    <a href="~/Home/Index" class="mt-5 inline-block text-blue-500 hover:text-blue-700">Return to Home</a>
+</div>

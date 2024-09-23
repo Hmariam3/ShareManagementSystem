@@ -23,17 +23,17 @@ namespace Shareholder_Management_System.Models
         }
     
         public int PayID { get; set; }
-        public int ShID { get; set; }
-        public int SubID { get; set; }
+        public Nullable<int> ShID { get; set; }
+        public Nullable<int> SubID { get; set; }
         public string PaymentMode { get; set; }
         public Nullable<int> Branch { get; set; }
-        public decimal PaidAmount { get; set; }
+        public Nullable<decimal> PaidAmount { get; set; }
         public string ReferenceNum { get; set; }
-        public int PaymentSlip { get; set; }
-        public System.DateTime PaymentDate { get; set; }
+        public Nullable<int> PaymentSlip { get; set; }
+        public Nullable<System.DateTime> PaymentDate { get; set; }
         public Nullable<int> PaymentTransferFrom { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime CreationDate { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
         public string PaymentAuthorizationStatus { get; set; }
         public Nullable<int> PaymentAuthorizer { get; set; }
         public Nullable<System.DateTime> AuthorizationDate { get; set; }

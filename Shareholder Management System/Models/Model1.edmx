@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -124,18 +124,18 @@
             <PropertyRef Name="PayID" />
           </Key>
           <Property Name="PayID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ShID" Type="int" Nullable="false" />
-          <Property Name="SubID" Type="int" Nullable="false" />
-          <Property Name="PaymentMode" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ShID" Type="int" />
+          <Property Name="SubID" Type="int" />
+          <Property Name="PaymentMode" Type="nvarchar(max)" />
           <Property Name="Branch" Type="int" />
-          <Property Name="PaidAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PaidAmount" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ReferenceNum" Type="nvarchar(max)" />
-          <Property Name="PaymentSlip" Type="int" Nullable="false" />
-          <Property Name="PaymentDate" Type="date" Nullable="false" />
+          <Property Name="PaymentSlip" Type="int" />
+          <Property Name="PaymentDate" Type="date" />
           <Property Name="PaymentTransferFrom" Type="int" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreationDate" Type="date" Nullable="false" />
-          <Property Name="PaymentAuthorizationStatus" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreationDate" Type="date" />
+          <Property Name="PaymentAuthorizationStatus" Type="nvarchar(max)" />
           <Property Name="PaymentAuthorizer" Type="int" />
           <Property Name="AuthorizationDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
@@ -165,6 +165,7 @@
           <Property Name="ProxyAuthorizer" Type="int" />
           <Property Name="AuthorizedDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
+          <Property Name="ProxyDocument" Type="int" />
         </EntityType>
         <EntityType Name="Shareholder">
           <Key>
@@ -203,6 +204,7 @@
           <Property Name="Authorizer" Type="int" />
           <Property Name="AuthorizedDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
+          <Property Name="ShDocument" Type="int" />
         </EntityType>
         <EntityType Name="ShareTransfer">
           <Key>
@@ -214,19 +216,28 @@
           <Property Name="TransferType" Type="nvarchar(max)" />
           <Property Name="SubID" Type="int" />
           <Property Name="PayID" Type="int" />
-          <Property Name="NumSharesTransferred" Type="int" Nullable="false" />
-          <Property Name="AmountPerShare" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="PaidAmountForTransfer" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="NumSharesTransferred" Type="int" />
+          <Property Name="AmountPerShare" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PaidAmountForTransfer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="TransferReason" Type="nvarchar(max)" />
-          <Property Name="DividenedFor" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="TransferDoc" Type="int" Nullable="false" />
+          <Property Name="DividenedFor" Type="nvarchar" MaxLength="50" />
+          <Property Name="TransferDoc" Type="int" />
           <Property Name="TransferDate" Type="date" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreationDate" Type="date" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreationDate" Type="date" />
           <Property Name="TransferAuthorizationStatus" Type="nvarchar(max)" />
           <Property Name="TransferAuthorizer" Type="int" />
           <Property Name="TransferAuthorizationDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Shareholder Management System.dbo.ShCategories' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShCategories">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShCategories" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Subscribtion">
           <Key>
@@ -530,7 +541,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Document">
-          <End Role="Document" Type="Self.Document" Multiplicity="1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Document">
@@ -542,7 +553,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Shareholder">
-          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="1" />
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shareholder">
@@ -566,7 +577,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Subscribtion">
-          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="1" />
+          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Subscribtion">
@@ -578,7 +589,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -598,6 +609,18 @@
             </Principal>
             <Dependent Role="Payment">
               <PropertyRef Name="PaymentAuthorizer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Proxy_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
+          <End Role="Proxy" Type="Self.Proxy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="DocID" />
+            </Principal>
+            <Dependent Role="Proxy">
+              <PropertyRef Name="ProxyDocument" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -646,6 +669,18 @@
             </Principal>
             <Dependent Role="Shareholder">
               <PropertyRef Name="Branch" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Shareholder_Document">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="DocID" />
+            </Principal>
+            <Dependent Role="Shareholder">
+              <PropertyRef Name="ShDocument" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -722,7 +757,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShareTransfer_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="ShareTransfer" Type="Self.ShareTransfer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -819,6 +854,12 @@
           <EntitySet Name="ShareTransfer" EntityType="Self.ShareTransfer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Subscribtion" EntityType="Self.Subscribtion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShCategories" EntityType="Self.ShCategories" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ShCategories].[ID] AS [ID], 
+    [ShCategories].[ShCategories] AS [ShCategories]
+    FROM [dbo].[ShCategories] AS [ShCategories]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_AuditLog_User" Association="Self.FK_AuditLog_User">
             <End Role="User" EntitySet="User" />
             <End Role="AuditLog" EntitySet="AuditLog" />
@@ -931,6 +972,10 @@
             <End Role="User" EntitySet="User" />
             <End Role="Payment" EntitySet="Payment" />
           </AssociationSet>
+          <AssociationSet Name="FK_Proxy_Document" Association="Self.FK_Proxy_Document">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="Proxy" EntitySet="Proxy" />
+          </AssociationSet>
           <AssociationSet Name="FK_Proxy_Shareholder" Association="Self.FK_Proxy_Shareholder">
             <End Role="Shareholder" EntitySet="Shareholder" />
             <End Role="Proxy" EntitySet="Proxy" />
@@ -945,6 +990,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Shareholder_Branch" Association="Self.FK_Shareholder_Branch">
             <End Role="Branch" EntitySet="Branch" />
+            <End Role="Shareholder" EntitySet="Shareholder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shareholder_Document" Association="Self.FK_Shareholder_Document">
+            <End Role="Document" EntitySet="Document" />
             <End Role="Shareholder" EntitySet="Shareholder" />
           </AssociationSet>
           <AssociationSet Name="FK_Shareholder_User" Association="Self.FK_Shareholder_User">
@@ -1000,8 +1049,7 @@
             <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1147,24 +1195,26 @@
           <NavigationProperty Name="User" Relationship="Self.FK_Document_User" FromRole="Document" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="Self.FK_Document_User1" FromRole="Document" ToRole="User" />
           <NavigationProperty Name="Payments" Relationship="Self.FK_Payment_Document" FromRole="Document" ToRole="Payment" />
+          <NavigationProperty Name="Proxies" Relationship="Model.FK_Proxy_Document" FromRole="Document" ToRole="Proxy" />
+          <NavigationProperty Name="Shareholders" Relationship="Model.FK_Shareholder_Document" FromRole="Document" ToRole="Shareholder" />
         </EntityType>
         <EntityType Name="Payment">
           <Key>
             <PropertyRef Name="PayID" />
           </Key>
           <Property Name="PayID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ShID" Type="Int32" Nullable="false" />
-          <Property Name="SubID" Type="Int32" Nullable="false" />
-          <Property Name="PaymentMode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShID" Type="Int32" />
+          <Property Name="SubID" Type="Int32" />
+          <Property Name="PaymentMode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Branch" Type="Int32" />
-          <Property Name="PaidAmount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PaidAmount" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ReferenceNum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PaymentSlip" Type="Int32" Nullable="false" />
-          <Property Name="PaymentDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PaymentSlip" Type="Int32" />
+          <Property Name="PaymentDate" Type="DateTime" Precision="0" />
           <Property Name="PaymentTransferFrom" Type="Int32" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="PaymentAuthorizationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreationDate" Type="DateTime" Precision="0" />
+          <Property Name="PaymentAuthorizationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PaymentAuthorizer" Type="Int32" />
           <Property Name="AuthorizationDate" Type="DateTime" Precision="0" />
           <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1208,6 +1258,8 @@
           <NavigationProperty Name="Shareholder" Relationship="Self.FK_Proxy_Shareholder" FromRole="Proxy" ToRole="Shareholder" />
           <NavigationProperty Name="User" Relationship="Self.FK_Proxy_User" FromRole="Proxy" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="Self.FK_Proxy_User1" FromRole="Proxy" ToRole="User" />
+          <Property Name="ProxyDocument" Type="Int32" />
+          <NavigationProperty Name="Document" Relationship="Model.FK_Proxy_Document" FromRole="Proxy" ToRole="Document" />
         </EntityType>
         <EntityType Name="Shareholder">
           <Key>
@@ -1260,6 +1312,8 @@
           <NavigationProperty Name="ShareTransfers1" Relationship="Self.FK_ShareTransfer_Shareholder1" FromRole="Shareholder" ToRole="ShareTransfer" />
           <NavigationProperty Name="Subscribtions" Relationship="Self.FK_Subscribtion_Shareholder" FromRole="Shareholder" ToRole="Subscribtion" />
           <NavigationProperty Name="Subscribtions1" Relationship="Self.FK_Subscribtion_Shareholder1" FromRole="Shareholder" ToRole="Subscribtion" />
+          <Property Name="ShDocument" Type="Int32" />
+          <NavigationProperty Name="Document" Relationship="Model.FK_Shareholder_Document" FromRole="Shareholder" ToRole="Document" />
         </EntityType>
         <EntityType Name="ShareTransfer">
           <Key>
@@ -1271,15 +1325,15 @@
           <Property Name="TransferType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SubID" Type="Int32" />
           <Property Name="PayID" Type="Int32" />
-          <Property Name="NumSharesTransferred" Type="Int32" Nullable="false" />
-          <Property Name="AmountPerShare" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="PaidAmountForTransfer" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="NumSharesTransferred" Type="Int32" />
+          <Property Name="AmountPerShare" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PaidAmountForTransfer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="TransferReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DividenedFor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="TransferDoc" Type="Int32" Nullable="false" />
+          <Property Name="DividenedFor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TransferDoc" Type="Int32" />
           <Property Name="TransferDate" Type="DateTime" Precision="0" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreationDate" Type="DateTime" Precision="0" />
           <Property Name="TransferAuthorizationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TransferAuthorizer" Type="Int32" />
           <Property Name="TransferAuthorizationDate" Type="DateTime" Precision="0" />
@@ -1644,7 +1698,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Document">
-          <End Role="Document" Type="Self.Document" Multiplicity="1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Document">
@@ -1656,7 +1710,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Shareholder">
-          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="1" />
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shareholder">
@@ -1680,7 +1734,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Subscribtion">
-          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="1" />
+          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Subscribtion">
@@ -1692,7 +1746,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -1848,7 +1902,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShareTransfer_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="ShareTransfer" Type="Self.ShareTransfer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -2089,7 +2143,47 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Subscribtion" EntitySet="Subscribtions" />
           </AssociationSet>
+          <EntitySet Name="ShCategories" EntityType="Model.ShCategory" />
+          <AssociationSet Name="FK_Proxy_Document" Association="Model.FK_Proxy_Document">
+            <End Role="Document" EntitySet="Documents" />
+            <End Role="Proxy" EntitySet="Proxies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Shareholder_Document" Association="Model.FK_Shareholder_Document">
+            <End Role="Document" EntitySet="Documents" />
+            <End Role="Shareholder" EntitySet="Shareholders" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="ShCategory">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ShCategories" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_Proxy_Document">
+          <End Type="Model.Document" Role="Document" Multiplicity="0..1" />
+          <End Type="Model.Proxy" Role="Proxy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="DocID" />
+            </Principal>
+            <Dependent Role="Proxy">
+              <PropertyRef Name="ProxyDocument" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Shareholder_Document">
+          <End Type="Model.Document" Role="Document" Multiplicity="0..1" />
+          <End Type="Model.Shareholder" Role="Shareholder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="DocID" />
+            </Principal>
+            <Dependent Role="Shareholder">
+              <PropertyRef Name="ShDocument" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2242,6 +2336,7 @@
           <EntitySetMapping Name="Proxies">
             <EntityTypeMapping TypeName="Model.Proxy">
               <MappingFragment StoreEntitySet="Proxy">
+                <ScalarProperty Name="ProxyDocument" ColumnName="ProxyDocument" />
                 <ScalarProperty Name="ProxyID" ColumnName="ProxyID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
                 <ScalarProperty Name="FullName" ColumnName="FullName" />
@@ -2269,6 +2364,7 @@
           <EntitySetMapping Name="Shareholders">
             <EntityTypeMapping TypeName="Model.Shareholder">
               <MappingFragment StoreEntitySet="Shareholder">
+                <ScalarProperty Name="ShDocument" ColumnName="ShDocument" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
                 <ScalarProperty Name="ShareID" ColumnName="ShareID" />
                 <ScalarProperty Name="FullNameEng" ColumnName="FullNameEng" />
@@ -2366,6 +2462,14 @@
                 <ScalarProperty Name="Locked" ColumnName="Locked" />
                 <ScalarProperty Name="activeStatus" ColumnName="activeStatus" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShCategories">
+            <EntityTypeMapping TypeName="Model.ShCategory">
+              <MappingFragment StoreEntitySet="ShCategories">
+                <ScalarProperty Name="ShCategories" ColumnName="ShCategories" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

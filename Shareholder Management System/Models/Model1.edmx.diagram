@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="1aa8ee981cc3455fa93a4171beb0f028" Name="Diagram1">
+      <Diagram DiagramId="73b9a750955b4bdd9da663e12f5b4fc6" Name="Diagram1">
         <EntityTypeShape EntityType="Model.AuditLog" Width="1.5" PointX="5.25" PointY="47.875" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Blocked" Width="1.5" PointX="12.5" PointY="42.625" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Branch" Width="1.5" PointX="0.75" PointY="26" IsExpanded="true" />
@@ -63,6 +63,9 @@
         <AssociationConnector Association="Model.FK_ShareTransfer_User1" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Subscribtion_User" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Subscribtion_User1" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Model.ShCategory" Width="1.5" PointX="0.75" PointY="0.75" />
+        <AssociationConnector Association="Model.FK_Proxy_Document" />
+        <AssociationConnector Association="Model.FK_Shareholder_Document" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

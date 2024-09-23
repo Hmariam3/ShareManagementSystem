@@ -4,71 +4,72 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
 
-<div>
-    <h4>User</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
 
-        <dd>
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
+<div class="bg-white shadow-md rounded-lg overflow-hidden panel">
+    <div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md panel">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">User Details</h2>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <div class="font-semibold text-gray-600">@Html.DisplayNameFor(model => model.FullName)</div>
+                <div class="text-gray-400 font-extrabold">@Html.DisplayFor(model => model.FullName)</div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.UserName)
-        </dd>
+            <div>
+                <div class="font-semibold text-gray-600">@Html.DisplayNameFor(model => model.UserName)</div>
+                <div class="text-gray-400 font-extrabold">@Html.DisplayFor(model => model.UserName)</div>
+            </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
+            <div>
+                <div class="font-semibold text-gray-600">@Html.DisplayNameFor(model => model.Status)</div>
+                <div class="text-gray-400 font-extrabold">
+                    @if (Model.Status)
+                    {
+                        <span class="text-green-500">Active</span>
+                    }
+                    else
+                    {
+                        <span class="text-red-500">Inactive</span>
+                    }
+                </div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Password)
-        </dd>
+            <div>
+                <div class="font-semibold text-gray-600">@Html.DisplayNameFor(model => model.Role)</div>
+                <div class="text-gray-400 font-extrabold">@Html.DisplayFor(model => model.Role)</div>
+            </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
+            <div>
+                <div class="font-semibold text-gray-600">@Html.DisplayNameFor(model => model.CreatedDate)</div>
+                <div class="text-gray-400 font-extrabold">@Html.DisplayFor(model => model.CreatedDate)</div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
+            <div>
+                <div class="font-semibold text-gray-600">@Html.DisplayNameFor(model => model.Branch1.BranchName)</div>
+                <div class="text-gray-400 font-extrabold">@Html.DisplayFor(model => model.Branch1.BranchName)</div>
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Role)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Role)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Branch1.BranchCode)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Branch1.BranchCode)
-        </dd>
-
-    </dl>
+        <div class="mt-8 flex justify-end space-x-4">
+            <a href="@Url.Action("Edit", new { id = Model.UID })" class="flex items-center text-teal-500 hover:text-teal-700 font-semibold">
+                <i class="fas fa-edit mr-2"></i> Edit
+            </a>
+            <a href="@Url.Action("Index")" class="flex items-center text-gray-600 hover:text-gray-800 font-semibold">
+                <i class="fas fa-arrow-left mr-2"></i> Back to List
+            </a>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.UID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

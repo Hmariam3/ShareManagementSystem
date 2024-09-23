@@ -1,0 +1,44 @@
+﻿/* Style for the branch search results container */
+#branch-results {
+    position: absolute;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure the dropdown appears above other elements */
+}
+
+/* Style for each branch item */
+.branch-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+    /* Hover effect for branch items */
+    .branch-item:hover {
+        background-color: #f0f0f0;
+        border-left: 4px solid #007bff; /* Optional: highlight the selection with a left border */
+    }
+
+/* Style for the search input to make it look more professional */
+#branch-search {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    width: calc(100% - 24px); /* Adjust width considering padding */
+    box-sizing: border-box; /* Ensure padding is included in the total width */
+}
+
+/* Ensures the results container is properly aligned with the input */
+.form-group {
+    position: relative; /* Allows the #branch-results to be positioned absolutely */
+}
+
+/* Styling for the "No branches found" message */
+#branch-results div {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #666;
+}

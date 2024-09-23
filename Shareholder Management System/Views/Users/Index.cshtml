@@ -10,65 +10,93 @@
     string Message = TempData["Message"] as string;
 }
 
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+
 <p>
-    @Html.ActionLink("Create New", "Create")
+    <a href="@Url.Action("Create")" class="inline-block px-6 py-3 bg-orange-500 text-white font-semibold text-sm uppercase rounded-md shadow-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition duration-150 ease-in-out" style="color: orangered;">
+        Create New
+    </a>
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.FullName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UserName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Password)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Status)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Role)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Branch1.BranchCode)
-        </th>
-        <th></th>
-    </tr>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Branch1.BranchCode)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.UID }) |
-                @Html.ActionLink("Details", "Details", new { id = item.UID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.UID })
-            </td>
-        </tr>
-    }
 
-</table>
+<div class="bg-white shadow-md rounded-lg overflow-hidden panel">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-700">User Information</h2>
+    </div>
+    <div class="p-6 overflow-x-auto">
+        <table id="userTable" class="min-w-full leading-normal">
+            <thead>
+                <tr class="bg-gray-100 text-gray-600 text-left text-sm uppercase font-semibold tracking-wider">
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.FullName) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.UserName) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.Role) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.CreatedDate) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.Branch1.BranchCode) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.Status) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> Edit </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> Details </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> Reset </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.FullName) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.UserName) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.Role) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.CreatedDate) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.Branch1.BranchName) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm">
+                            @if (item.Status)
+                            {
+                                <span class="text-green-500" style="color: green;">Active</span>
+                            }
+                            else
+                            {
+                                <span class="text-red-500" style="color: red;">Inactive</span>
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = item.UID })" class="text-blue-500 hover:text-blue-700" style="color: blue;">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Details", new { id = item.UID })" class="text-cyan-500 hover:text-cyan-700" style="color: red;">
+                                <i class="fas fa-info-circle"></i> Details
+                            </a>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Reset", new { id = item.UID })" class="text-red-500 hover:text-red-700" style="color: orangered;">
+                                <i class="fas fa-redo"></i> Reset
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Initialize DataTable -->
+<script>
+    $(document).ready(function () {
+        $('#userTable').DataTable({
+            pageLength: 5, // Number of rows to show per page
+            lengthMenu: [5, 10, 15, 25] // Options for the number of rows per page
+        });
+    });
+</script>

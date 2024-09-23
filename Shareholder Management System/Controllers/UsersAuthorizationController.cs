@@ -62,6 +62,7 @@ namespace Shareholder_Management_System.Controllers
                     Session["Username"] = checkUser.UserName;
                     Session["Branch"] = checkUser.Branch;
                     Session["Roles"] = checkUser.Role;
+                    Session["BranchName"] = checkUser.Branch1.BranchName;
         
                     return RedirectToAction("Index", "Home");
                 }
