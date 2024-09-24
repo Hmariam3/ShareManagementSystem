@@ -147,7 +147,7 @@
                                 <div class="mb-5 overflow-hidden">
                                     <div x-ref="bitcoin"></div>
                                 </div>
-                                <div class="flex items-center justify-between text-base font-bold">
+                                <div class="flex items-center justify-between text-base font-bold" style="color: #00ADEF">
                                     @ViewBag.countAdmin<span class="text-sm font-normal text-success"></span>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
                                 <div class="mb-5 overflow-hidden">
                                     <div x-ref="ethereum"></div>
                                 </div>
-                                <div class="flex items-center justify-between text-base font-bold">
+                                <div class="flex items-center justify-between text-base font-bold" style="color: #EE7B28">
                                     @ViewBag.countIntiator<span class="text-sm font-normal text-danger"></span>
                                 </div>
                             </div>
@@ -196,90 +196,114 @@
                         </div>
                     </div>
 
-                    <!-- Live Prices -->
+                    <!-- Live Transaction -->
                     <div>
                         <div class="mb-5 flex items-center font-bold">
                             <span class="text-lg">Live Transactions</span>
                         </div>
-                        <div class="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-3">
-                            <!-- Binance -->
+                        <div class="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-4">
+                            <!-- Share Holder -->
                             <div class="panel">
                                 <div class="mb-5 flex items-center font-semibold">
                                     <div class="grid h-10 w-10 shrink-0 place-content-center rounded-full">
-                                        <svg width="100%" height="100%" viewbox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                                            <g id="Icon">
-                                                <circle cx="512" cy="512" r="512" style="fill: #f3ba2f"></circle>
-                                                <path class="st1 fill-white" d="M404.9 468 512 360.9l107.1 107.2 62.3-62.3L512 236.3 342.6 405.7z"></path>
-                                                <path transform="rotate(-45.001 298.629 511.998)" class="st1 fill-white" d="M254.6 467.9h88.1V556h-88.1z"></path>
-                                                <path class="st1 fill-white" d="M404.9 556 512 663.1l107.1-107.2 62.4 62.3h-.1L512 787.7 342.6 618.3l-.1-.1z"></path>
-                                                <path transform="rotate(-45.001 725.364 512.032)" class="st1 fill-white" d="M681.3 468h88.1v88.1h-88.1z"></path>
-                                                <path class="st1 fill-white" d="M575.2 512 512 448.7l-46.7 46.8-5.4 5.3-11.1 11.1-.1.1.1.1 63.2 63.2 63.2-63.3z"></path>
-                                            </g>
+                                        <svg class="h-8 w-8 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                            <polyline points="16 6 12 2 8 6" />
+                                            <line x1="12" y1="2" x2="12" y2="15" />
                                         </svg>
                                     </div>
                                     <div class="ltr:ml-2 rtl:mr-2">
-                                        <h6 class="text-dark dark:text-white-light">BNB</h6>
-                                        <p class="text-xs text-white-dark">Binance</p>
-                                    </div>
-                                </div>
-                                <div class="mb-5 overflow-hidden5">
-                                    <div x-ref="binance"></div>
-                                </div>
-                                <div class="flex items-center justify-between text-base font-bold">
-                                    $21,000 <span class="text-sm font-normal text-danger">-1.25%</span>
-                                </div>
-                            </div>
-
-                            <!-- Tether -->
-                            <div class="panel">
-                                <div class="mb-5 flex items-center font-semibold">
-                                    <div class="grid h-10 w-10 shrink-0 place-content-center rounded-full">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewbox="0 0 2000 2000">
-                                            <path d="M1000,0c552.26,0,1000,447.74,1000,1000S1552.24,2000,1000,2000,0,1552.38,0,1000,447.68,0,1000,0" fill="#53ae94"></path>
-                                            <path d="M1123.42,866.76V718H1463.6V491.34H537.28V718H877.5V866.64C601,879.34,393.1,934.1,393.1,999.7s208,120.36,484.4,133.14v476.5h246V1132.8c276-12.74,483.48-67.46,483.48-133s-207.48-120.26-483.48-133m0,225.64v-0.12c-6.94.44-42.6,2.58-122,2.58-63.48,0-108.14-1.8-123.88-2.62v0.2C633.34,1081.66,451,1039.12,451,988.22S633.36,894.84,877.62,884V1050.1c16,1.1,61.76,3.8,124.92,3.8,75.86,0,114-3.16,121-3.8V884c243.8,10.86,425.72,53.44,425.72,104.16s-182,93.32-425.72,104.18" fill="#fff"></path>
-                                        </svg>
-                                    </div>
-                                    <div class="ltr:ml-2 rtl:mr-2">
-                                        <h6 class="text-dark dark:text-white-light">USDT</h6>
-                                        <p class="text-xs text-white-dark">Tether</p>
+                                        <h6 class="text-dark dark:text-white-light">ShH</h6>
+                                        <p class="text-xs text-white-dark">Share Holders</p>
                                     </div>
                                 </div>
                                 <div class="mb-5 overflow-hidden">
                                     <div x-ref="tether"></div>
                                 </div>
                                 <div class="flex items-center justify-between text-base font-bold">
-                                    $20,000 <span class="text-sm font-normal text-success">+0.25%</span>
+                                    @ViewBag.countShare
+                                    <span class="text-sm font-normal text-success" title="@ViewBag.PercentageCurrentYearShareholders Percentage of Shareholders Registered This Year">
+                                        @ViewBag.PercentageCurrentYearShareholders %
+                                    </span>
                                 </div>
                             </div>
 
-                            <!-- Solana -->
+                            <!-- Subsctiobtion -->
                             <div class="panel">
                                 <div class="mb-5 flex items-center font-semibold">
-                                    <div class="grid h-10 w-10 shrink-0 place-content-center rounded-full bg-warning p-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewbox="0 0 508.07 398.17">
-                                            <defs>
-                                                <lineargradient id="linear-gradient" x1="463" y1="205.16" x2="182.39" y2="742.62" gradienttransform="translate(0 -198)" gradientunits="userSpaceOnUse">
-                                                    <stop offset="0" stop-color="#00ffa3"></stop>
-                                                    <stop offset="1" stop-color="#dc1fff"></stop>
-                                                </lineargradient>
-                                                <lineargradient id="linear-gradient-2" x1="340.31" y1="141.1" x2="59.71" y2="678.57" xlink:href="#linear-gradient"></lineargradient>
-                                                <lineargradient id="linear-gradient-3" x1="401.26" y1="172.92" x2="120.66" y2="710.39" xlink:href="#linear-gradient"></lineargradient>
-                                            </defs>
-                                            <path class="cls-1 fill-[url(#linear-gradient)]" d="M84.53,358.89A16.63,16.63,0,0,1,96.28,354H501.73a8.3,8.3,0,0,1,5.87,14.18l-80.09,80.09a16.61,16.61,0,0,1-11.75,4.86H10.31A8.31,8.31,0,0,1,4.43,439Z" transform="translate(-1.98 -55)"></path>
-                                            <path class="cls-2 fill-[url(#linear-gradient)]" d="M84.53,59.85A17.08,17.08,0,0,1,96.28,55H501.73a8.3,8.3,0,0,1,5.87,14.18l-80.09,80.09a16.61,16.61,0,0,1-11.75,4.86H10.31A8.31,8.31,0,0,1,4.43,140Z" transform="translate(-1.98 -55)"></path>
-                                            <path class="cls-3 fill-[url(#linear-gradient)]" d="M427.51,208.42a16.61,16.61,0,0,0-11.75-4.86H10.31a8.31,8.31,0,0,0-5.88,14.18l80.1,80.09a16.6,16.6,0,0,0,11.75,4.86H501.73a8.3,8.3,0,0,0,5.87-14.18Z" transform="translate(-1.98 -55)"></path>
+                                    <div class="grid h-10 w-10 shrink-0 place-content-center rounded-full">
+                                        <svg class="h-8 w-8 text-red-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  
+                                            <path stroke="none" d="M0 0h24v24H0z" />  <circle cx="6" cy="12" r="3" />  
+                                            <circle cx="18" cy="6" r="3" />  <circle cx="18" cy="18" r="3" />  
+                                            <line x1="8.7" y1="10.7" x2="15.3" y2="7.3" />  
+                                            <line x1="8.7" y1="13.3" x2="15.3" y2="16.7" />
                                         </svg>
                                     </div>
                                     <div class="ltr:ml-2 rtl:mr-2">
-                                        <h6 class="text-dark dark:text-white-light">SOL</h6>
-                                        <p class="text-xs text-white-dark">Solana</p>
+                                        <h6 class="text-dark dark:text-white-light">SUB</h6>
+                                        <p class="text-xs text-white-dark">Subscription</p>
+                                    </div>
+                                </div>
+                                <div class="mb-5 overflow-hidden">
+                                    <div x-ref="tether"></div>
+                                </div>
+                                <div class="flex items-center justify-between text-base font-bold">
+                                    @ViewBag.countSub 
+                                    <span class="text-sm font-normal text-success" title="@ViewBag.PercentageSubs Percentage of Subscribtions Given This Year">
+                                        @ViewBag.PercentageSubs %
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Payment -->
+                            <div class="panel">
+                                <div class="mb-5 flex items-center font-semibold">
+                                    <div class="grid h-10 w-10 shrink-0 place-content-center rounded-full bg-warning p-2">
+                                        <svg class="h-8 w-8 text-red-500" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  
+                                            <path stroke="none" d="M0 0h24v24H0z" />  <circle cx="6" cy="12" r="3" />  
+                                            <circle cx="18" cy="6" r="3" />  
+                                            <circle cx="18" cy="18" r="3" />  
+                                            <line x1="8.7" y1="10.7" x2="15.3" y2="7.3" />  
+                                            <line x1="8.7" y1="13.3" x2="15.3" y2="16.7" />
+                                        </svg>
+                                    </div>
+                                    <div class="ltr:ml-2 rtl:mr-2">
+                                        <h6 class="text-dark dark:text-white-light">PAY</h6>
+                                        <p class="text-xs text-white-dark">Payment</p>
                                     </div>
                                 </div>
                                 <div class="mb-5 overflow-hidden">
                                     <div x-ref="solana"></div>
                                 </div>
                                 <div class="flex items-center justify-between text-base font-bold">
-                                    $21,000 <span class="text-sm font-normal text-danger">-1.25%</span>
+                                    @ViewBag.countPay 
+                                    <span class="text-sm font-normal text-danger" title="@ViewBag.PercentagePay Percentage of Paments made This Year">
+                                        @ViewBag.PercentagePay %
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Transfer -->
+                            <div class="panel">
+                                <div class="mb-5 flex items-center font-semibold">
+                                    <div class="grid h-10 w-10 shrink-0 place-content-center rounded-full bg-warning p-2">
+                                        <svg class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                                        </svg>
+                                    </div>
+                                    <div class="ltr:ml-2 rtl:mr-2">
+                                        <h6 class="text-dark dark:text-white-light">TRA</h6>
+                                        <p class="text-xs text-white-dark">Transfer</p>
+                                    </div>
+                                </div>
+                                <div class="mb-5 overflow-hidden">
+                                    <div x-ref="solana"></div>
+                                </div>
+                                <div class="flex items-center justify-between text-base font-bold">
+                                    @ViewBag.countTran 
+                                    <span class="text-sm font-normal text-danger" title="@ViewBag.percentageTrans Percentage of Tranfers made This Year">
+                                        @ViewBag.percentageTrans %
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -288,11 +312,11 @@
 
                 <div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
                     <div class="grid gap-6 xl:grid-flow-row">
-                        <!-- Previous Statement -->
+                        <!-- Current Year Statement -->
                         <div class="panel overflow-hidden">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <div class="text-lg font-bold">Previous Statement</div>
+                                    <div class="text-lg font-bold">Current Year Statement</div>
                                     <div class="text-success">Paid on June 27, 2022</div>
                                 </div>
                                 <div x-data="dropdown" x-on:click.outside="open = false" class="dropdown">
