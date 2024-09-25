@@ -82,7 +82,7 @@
                         </div>
                         <div class="mt-5 flex items-center">
                             <div class="text-3xl font-bold ltr:mr-3 rtl:ml-3">@ViewBag.countInactive</div>
-                            <div class="badge bg-white/30">Management Decision</div>
+                            <div class="badge bg-white/30">By Management Decision</div>
                         </div>
                         <div class="mt-5 flex items-center font-semibold">
                             <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-2 rtl:ml-2">
@@ -316,8 +316,8 @@
                         <div class="panel overflow-hidden">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <div class="text-lg font-bold">Current Year Statement</div>
-                                    <div class="text-success">Paid on June 27, 2022</div>
+                                    <div class="text-lg font-bold">Paid Up Capital Statement</div>
+                                    <div class="text-success">Paid Up To @DateTime.Now.ToString("MMMM dd, yyyy")</div>
                                 </div>
                                 <div x-data="dropdown" x-on:click.outside="open = false" class="dropdown">
                                     <a href="javascript:;" x-on:click="toggle">
@@ -327,10 +327,6 @@
                                             <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
                                         </svg>
                                     </a>
-                                    <ul x-cloak="" x-show="open" x-transition="" x-transition.duration.300ms="" class="ltr:right-0 rtl:left-0">
-                                        <li><a href="javascript:;" x-on:click="toggle">View Report</a></li>
-                                        <li><a href="javascript:;" x-on:click="toggle">Edit Report</a></li>
-                                    </ul>
                                 </div>
                             </div>
                             <div class="relative mt-10">
@@ -342,16 +338,16 @@
                                 </div>
                                 <div class="grid grid-cols-2 gap-6 md:grid-cols-3">
                                     <div>
-                                        <div class="text-primary">Card Limit</div>
-                                        <div class="mt-2 text-2xl font-semibold">$50,000.00</div>
+                                        <div class="text-primary">Paid Up Capital</div>
+                                        <div class="mt-2 text-2xl font-semibold">Birr 50,000.00</div>
                                     </div>
                                     <div>
-                                        <div class="text-primary">Spent</div>
-                                        <div class="mt-2 text-2xl font-semibold">$15,000.00</div>
+                                        <div class="text-primary">Unpaid Capital</div>
+                                        <div class="mt-2 text-2xl font-semibold">Birr 15,000.00</div>
                                     </div>
                                     <div>
-                                        <div class="text-primary">Minimum</div>
-                                        <div class="mt-2 text-2xl font-semibold">$2,500.00</div>
+                                        <div class="text-primary">Total Capital</div>
+                                        <div class="mt-2 text-2xl font-semibold">Birr 2,500.00</div>
                                     </div>
                                 </div>
                             </div>
@@ -362,7 +358,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <div class="text-lg font-bold">Current Statement</div>
-                                    <div class="text-danger">Must be paid before July 27, 2022</div>
+                                    <div class="text-danger">Paid on: @DateTime.Now</div>
                                 </div>
                                 <div x-data="dropdown" x-on:click.outside="open = false" class="dropdown">
                                     <a href="javascript:;" x-on:click="toggle">
@@ -372,10 +368,6 @@
                                             <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
                                         </svg>
                                     </a>
-                                    <ul x-cloak="" x-show="open" x-transition="" x-transition.duration.300ms="" class="ltr:right-0 rtl:left-0">
-                                        <li><a href="javascript:;" x-on:click="toggle">View Report</a></li>
-                                        <li><a href="javascript:;" x-on:click="toggle">Edit Report</a></li>
-                                    </ul>
                                 </div>
                             </div>
                             <div class="relative mt-10">
