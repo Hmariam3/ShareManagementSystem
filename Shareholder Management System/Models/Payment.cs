@@ -38,6 +38,7 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> PaymentAuthorizer { get; set; }
         public Nullable<System.DateTime> AuthorizationDate { get; set; }
         public string Remark { get; set; }
+        public Nullable<decimal> BlockedAmount { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Blocked> Blockeds { get; set; }

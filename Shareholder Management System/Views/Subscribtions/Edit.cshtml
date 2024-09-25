@@ -1,0 +1,125 @@
+﻿@model Shareholder_Management_System.Models.Subscribtion
+
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .panel {
+        width: 600px;
+        max-width: 600px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+</style>
+
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-1 mt-20">
+            <div class="panel">
+                <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+                    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Create Subscription</h5>
+                </div>
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.SubID)
+
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Left Column -->
+                    <div>
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-input" })
+                            @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.SubNumShares, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.SubNumShares, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.ValidationMessageFor(model => model.SubNumShares, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.Premium, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.Premium, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.ValidationMessageFor(model => model.Premium, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.PaidSubscription, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.PaidSubscription, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.ValidationMessageFor(model => model.PaidSubscription, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.SubTransferFrom, "SubTransferFrom", htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownList("SubTransferFrom", null, htmlAttributes: new { @class = "form-input", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.SubTransferFrom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
+
+
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.PaymentDueDate, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.SubStatus, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.SubStatus, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.ValidationMessageFor(model => model.SubStatus, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.SubDate, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.SubDate, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.ValidationMessageFor(model => model.SubDate, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="mb-5">
+                            @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="mb-5">
+                            <label>----------------------------------------------------------</label>
+                            <input type="submit" value="Update" class="btn btn-primary" />
+
+                        </div>
+                    </div>
+                </div>
+                <a href="@Url.Action("Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
+                    Back To List
+                </a>
+
+
+
+            </div>
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

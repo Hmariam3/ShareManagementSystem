@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
+@{
+    ViewBag.Title = "Filter";
+}
+
+<!-- Include Select2 CSS and JS -->
+<link href="~/Scripts/select2/css/select2.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
+
+
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        #results {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 1280px;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #333;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: box-shadow 0.3s;
+        }
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        .card-title {
+            font-size: 1.2em;
+            margin: 0 0 10px 0;
+        }
+        .card-content {
+            color: #808080;
+        }
+    .centered-container {
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        max-width: 800px; /* Set maximum width */
+        margin: 0 auto; /* Center the container itself */
+        margin-top: 50px;
+    }
+
+        .fixed-width {
+            width: 100%; /* Make it responsive */
+        }
+       
+</style>
+
+
+
+@*<div class="col-md-10">
+    @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "shareiddCopy" })
+</div>*@
+
+<div class="centered-container">
+    <div class="col-md-10" style="max-width: 800px; width: 100%;">
+        @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block fixed-width border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "shareiddCopy" })
+    </div>
+</div>
+
+
+@using (Html.BeginForm("FiltereData", "Subscribtions", FormMethod.Post, new { id = "filterForm" }))
+{
+
+
+    <div class="mb-5">
+        @*@Html.Label("ShareId", "Select Share ID", new { @class = "control-label" })*@
+        <div class="flex justify-center">
+            <div class="w-full max-w-md">
+                @Html.TextBox("ShareId", null, new { @class = "hidden", @placeholder = "Enter Share ID", id = "shareidd", @required = "required" })
+
+            </div>
+        </div>
+        <div class="flex justify-center mt-2">
+            <input type="submit" value="Filter" class="btn btn-primary w-full max-w-md" />
+        </div>
+    </div>
+}
+
+    <body>
+
+        <div id="results">
+            <div class="header">
+                <h1>SUBSCRIPTIONS </h1>
+            </div>
+            <div class="card">
+                <h2 class="card-title">DATA OF EACH SUBSCRIPTIONS </h2>
+                <p class="card-content">There is no Filtered Data </p>
+            </div>
+
+        </div>
+
+    </body>
+
+
+<script>
+    $(document).ready(function () {
+        $('#shareiddCopy').select2({
+            placeholder: 'Select Shareholder',
+            allowClear: true
+        });
+
+        $('#shareiddCopy').on('input', function () {
+            $('#shareidd').val($(this).val());
+        });
+
+        $('#filterForm').submit(function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            $.post($(this).attr('action'), $(this).serialize(), function (data) {
+                $('#results').html(data); // Load the partial view into the results div
+            }).fail(function () {
+                $('#results').html('<p>An error occurred while fetching data.</p>');
+            });
+        });
+    });
+</script>
+
+<!-- Optional: Add some custom CSS for better appearance -->
+<style>
+    .select2-container .select2-selection--single {
+        height: 38px; /* Adjust height as needed */
+    }
+
+    .select2-selection__rendered {
+        line-height: 36px; /* Align text vertically */
+    }
+</style>

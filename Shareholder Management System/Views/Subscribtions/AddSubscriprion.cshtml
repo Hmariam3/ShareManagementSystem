@@ -1,0 +1,199 @@
+﻿@model Shareholder_Management_System.Models.Subscribtion
+
+@{
+    ViewBag.Title = "AddSubscriprion";
+}
+
+<link href="~/Scripts/select2/css/select2.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .panel {
+        width: 100%;
+        max-width: 800px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+    .resultsub {
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        margin-top: 20px; /* Adds space between the panel and resultsub */
+        max-height: 400px; /* Set a max height */
+        overflow: auto; /* Enable scrolling */
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+</style>
+
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="panel">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="success-message font-semibold w-full">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+            <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Addon Subscription</h5>
+        </div>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger w-full" })
+
+        <div class="grid">
+            <div class="mb-5">
+                @Html.LabelFor(model => model.ShID, "ShID", new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                <div class="relative">
+                    @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm select2", @required = "required", @id = "shareholderDropdown" })
+                    @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-xs mt-1" })
+                </div>
+            </div>
+
+            <div class="mb-5">
+                @Html.LabelFor(model => model.SubID, htmlAttributes: new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                <div>
+                    @Html.DropDownList("SubID", (SelectList)ViewBag.SubID, "Select SubID", new { @class = "form-input w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "subIDDropdown" })
+                    @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="mb-5">
+                @Html.LabelFor(model => model.SubNumShares, htmlAttributes: new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                <div>
+                    @Html.EditorFor(model => model.SubNumShares, new { htmlAttributes = new { @class = "form-input w-full border-gray-300 rounded-md shadow-sm", @placeholder = "Enter Number of Shares", min = "1" } })
+                    @Html.ValidationMessageFor(model => model.SubNumShares, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="mb-5">
+                @Html.LabelFor(model => model.Premium, htmlAttributes: new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                <div>
+                    @Html.EditorFor(model => model.Premium, new { htmlAttributes = new { @class = "form-input w-full border-gray-300 rounded-md shadow-sm", @placeholder = "Enter Premium Amount" } })
+                    @Html.ValidationMessageFor(model => model.Premium, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="mb-5">
+                @Html.LabelFor(model => model.PaymentDueDate, htmlAttributes: new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                <div>
+                    @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { type = "date", @class = "form-input w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @required = "required" } })
+                    @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="mb-5">
+                @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                <div>
+                    @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input w-full border-gray-300 rounded-md shadow-sm", @placeholder = "Enter Remark" } })
+                    @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full flex justify-between mt-6">
+            <button type="submit" class="btn btn-primary">Add On</button>
+            <a href="@Url.Action("Index")" class="btn btn-success px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white">Back To List</a>
+        </div>
+    </div>
+    }
+    <div id="resultsub" class="resultsub">
+
+        <!-- Results will be loaded here -->
+    </div>
+</div>
+
+@using (Html.BeginForm("Addonsubscriptions", "Subscribtions", FormMethod.Post, new { id = "filterForm" }))
+{
+    <div class="mb-5">
+        <div class="flex justify-center">
+            <div class="w-full max-w-md">
+                @Html.TextBox("ShareId", null, new { @class = "hidden", @placeholder = "Enter Share ID", id = "shareidd" , @required = "required"})
+            </div>
+        </div>
+        <div class="flex justify-center mt-2">
+            <input type="submit" value="Filter" class="btn btn-primary w-full max-w-md" />
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        // Initialize Select2 for the dropdown
+        $('#shareholderDropdown').select2({
+            placeholder: "Select Shareholder",
+            allowClear: true,
+            width: '100%' // Ensures the dropdown is responsive
+        });
+
+        // Sync Shareholder Dropdown with another field
+        $('#shareholderDropdown').on('input', function () {
+            $('#shareidd').val($(this).val());
+        });
+
+        // Filter form submission
+        $('#filterForm').submit(function (event) {
+            event.preventDefault(); // Prevent default form submission
+            $.post($(this).attr('action'), $(this).serialize(), function (data) {
+                $('#resultsub').html(data); // Load partial view into results div
+            }).fail(function () {
+                $('#resultsub').html('<p>An error occurred while fetching data.</p>');
+            });
+        });
+    });
+</script>
+
+<style>
+    /* Ensure the Select2 dropdown uses the full width */
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#shareholderDropdown').change(function () {
+            var shareholderId = $(this).val();
+            $('#subIDDropdown').empty(); // Clear existing options
+
+            if (shareholderId) {
+                $.ajax({
+                    url: '@Url.Action("GetSubIDs", "Subscribtions")', // Replace YourControllerName with the actual name
+                    data: { shareholderId: shareholderId },
+                    success: function(data) {
+                        $('#subIDDropdown').append($('<option>').text('Select SubID').attr('SubID', ''));
+                        $.each(data, function(i, item) {
+                            $('#subIDDropdown').append($('<option>').text(item.SubID).attr('SubID', item.SubID));
+                        });
+                    }
+                });
+            } else {
+                $('#subIDDropdown').append($('<option>').text('Select SubID').attr('SubID', ''));
+            }
+        });
+    });
+</script>

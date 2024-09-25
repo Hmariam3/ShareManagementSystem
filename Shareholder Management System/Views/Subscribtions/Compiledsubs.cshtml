@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.ShareholderSummaryViewModel>
+
+<link href="~/Scripts/Datatables/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/Datatables/datatables.min.js"></script>
+<link href="~/Scripts/Datatables/datatables.css" rel="stylesheet" />
+<script src="~/Scripts/Datatables/datatables.js"></script>
+
+<div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Compiled Shareholder Data</h5>
+</div>
+<div style="overflow-x: auto;">
+    
+        <table id="compiled" class="display" style="width:100%">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border border-gray-300 px-4 py-2">Shareholder</th>
+                    <th class="border border-gray-300 px-4 py-2">Shareholder ID</th>
+                    <th class="border border-gray-300 px-4 py-2">Total Shares</th>
+                    <th class="border border-gray-300 px-4 py-2">Total Paid Amount</th>
+                    <th class="border border-gray-300 px-4 py-2">Total Unpaid Subscription</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var shareholder in Model)
+                {
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">@shareholder.ShareholderName</td>
+                        <td class="border border-gray-300 px-4 py-2">@shareholder.ShareholderIdd</td>
+                        <td class="border border-gray-300 px-4 py-2">@shareholder.TotalNumberOfShares</td>
+                        <td class="border border-gray-300 px-4 py-2">@string.Format("{0:C}", shareholder.TotalPaidAmount)</td>
+                        <td class="border border-gray-300 px-4 py-2">@string.Format("{0:C}", shareholder.TotalUnpaidSubscription)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#compiled').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'csvHtml5', 'excelHtml5', 'pdfHtml5', 'print'
+            ]
+        });
+    });
+</script>

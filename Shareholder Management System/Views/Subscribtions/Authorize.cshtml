@@ -1,0 +1,118 @@
+﻿@model Shareholder_Management_System.Models.Subscribtion
+
+@{
+    ViewBag.Title = "AUTHORIZE SUBSCRIPTION";
+}
+
+<div class="flex items-center justify-center mt-20">
+    <div class="panel bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
+        <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+            <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Authorize Subscription</h5>
+        </div>
+
+        <div class="mb-5">
+            <form class="grid grid-cols-2 gap-5">
+                <!-- Two-column layout with gap -->
+                <!-- First column -->
+                <div class="grid grid-cols-2 gap-2 items-center">
+                    <label class="font-semibold">Fullname</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder.FullNameEng)</p>
+
+                    <label class="font-semibold">Number of Shares</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubNumShares)</p>
+
+                    <label class="font-semibold">Shareholder ID</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder.ShareID)</p>
+
+
+
+                    <label class="font-semibold">Subscription Amount</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubAmount)</p>
+
+                    <label class="font-semibold">Paid Subscription</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.PaidSubscription)</p>
+
+                    <label class="font-semibold">Unpaid Subscription</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.UnpaidSubscription)</p>
+
+                </div>
+
+                <!-- Second column -->
+                <div class="grid grid-cols-2 gap-2 items-center">
+                    <label class="font-semibold">Premium</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Premium)</p>
+
+                    <label class="font-semibold">Payment Due Date</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.PaymentDueDate)</p>
+
+                    <label class="font-semibold">Subscription Status</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubStatus)</p>
+
+                    <label class="font-semibold">Subscription Date</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubDate)</p>
+
+                    <label class="font-semibold">Authorization Status</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubAuthorizationStatus)</p>
+
+                    <label class="font-semibold">Authorized Date</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.AuthorizedDate)</p>
+
+                    <label class="font-semibold">Remark</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Remark)</p>
+
+                    <label class="font-semibold"> Share Transfered from</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder1.ShareID)</p>
+
+                    <label class="font-semibold">Authorized By</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.User.FullName)</p>
+
+                    <label class="font-semibold">Approved By</label>
+                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.User1.FullName)</p>
+                </div>
+            </form>
+
+            @using (Html.BeginForm("Authorize", "Subscribtions", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="flex justify-center mt-5">
+                    <div>
+                        <div class="flex justify-between">
+                            @if (Model.SubAuthorizationStatus == "Approved")
+                            {
+                                <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
+                            }
+                            else
+                            {
+                                <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
+                            }
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between" style="margin-left:5px">
+                            @if (Model.SubAuthorizationStatus == "Rejected")
+                            {
+                                <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
+                            }
+                            else
+                            {
+                                <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <a href="@Url.Action("Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
+                    Back To List
+                </a>
+            }
+
+        </div>
+ </div>
+</div>
+
+
+
+
+
+

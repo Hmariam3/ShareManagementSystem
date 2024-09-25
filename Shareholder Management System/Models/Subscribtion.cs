@@ -27,7 +27,7 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> SubNumShares { get; set; }
         public Nullable<decimal> Premium { get; set; }
         public Nullable<decimal> SubAmount { get; set; }
-        public Nullable<int> PaidSubscription { get; set; }
+        public Nullable<decimal> PaidSubscription { get; set; }
         public Nullable<decimal> UnpaidSubscription { get; set; }
         public Nullable<int> SubTransferFrom { get; set; }
         public Nullable<System.DateTime> PaymentDueDate { get; set; }

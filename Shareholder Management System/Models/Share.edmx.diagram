@@ -4,20 +4,21 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="73b9a750955b4bdd9da663e12f5b4fc6" Name="Diagram1">
-        <EntityTypeShape EntityType="Model.AuditLog" Width="1.5" PointX="5.25" PointY="47.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Blocked" Width="1.5" PointX="12.5" PointY="42.625" IsExpanded="true" />
+      <Diagram DiagramId="e0f4882dd6a94057b45d7aabdd22db26" Name="Diagram1">
+        <EntityTypeShape EntityType="Model.AuditLog" Width="1.5" PointX="5.25" PointY="48.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Blocked" Width="1.5" PointX="12.5" PointY="42.875" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Branch" Width="1.5" PointX="0.75" PointY="26" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Certificate" Width="1.5" PointX="12.5" PointY="48.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Dividend" Width="1.5" PointX="5.25" PointY="51.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.DividenedDetail" Width="1.5" PointX="7.5" PointY="37.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Document" Width="1.5" PointX="12.5" PointY="36.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Certificate" Width="1.5" PointX="12.5" PointY="48.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Dividend" Width="1.5" PointX="5.25" PointY="51.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.DividenedDetail" Width="1.5" PointX="7.5" PointY="37.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Document" Width="1.5" PointX="12.5" PointY="36.875" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Payment" Width="1.5" PointX="5.25" PointY="37.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Proxy" Width="1.5" PointX="18.5" PointY="42.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Shareholder" Width="1.5" PointX="10.25" PointY="35.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.ShareTransfer" Width="1.5" PointX="15.5" PointY="42.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Subscribtion" Width="1.5" PointX="15.5" PointY="49.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.User" Width="1.5" PointX="3" PointY="47.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Proxy" Width="1.5" PointX="18.5" PointY="42.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Shareholder" Width="1.5" PointX="10.25" PointY="35.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.ShareTransfer" Width="1.5" PointX="15.5" PointY="42.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Subscribtion" Width="1.5" PointX="15.5" PointY="49.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.User" Width="1.5" PointX="3" PointY="47.875" IsExpanded="true" />
         <AssociationConnector Association="Model.FK_AuditLog_User" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Blocked_Document" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Blocked_Payment" ManuallyRouted="false" />
@@ -63,9 +64,6 @@
         <AssociationConnector Association="Model.FK_ShareTransfer_User1" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Subscribtion_User" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Subscribtion_User1" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="Model.ShCategory" Width="1.5" PointX="0.75" PointY="0.75" />
-        <AssociationConnector Association="Model.FK_Proxy_Document" />
-        <AssociationConnector Association="Model.FK_Shareholder_Document" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
