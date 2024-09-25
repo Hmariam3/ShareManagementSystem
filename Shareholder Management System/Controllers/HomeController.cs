@@ -84,6 +84,19 @@ namespace Shareholder_Management_System.Controllers
 
             ViewBag.percentageTrans = percentageCurrentYearTran;
 
+            //Total PaidUp capital
+            var PaidUpCapital = db.Subscribtions.Sum(s => s.PaidSubscription);
+
+            ViewBag.PaidUpCapital = PaidUpCapital;
+
+            //Total Unpaid caputal
+            var UnpaidCapital = db.Subscribtions.Sum(s => s.UnpaidSubscription);
+
+            ViewBag.UnpaidCapital = UnpaidCapital;
+
+            //Total of Paid and Unpaid Capital
+            ViewBag.TotalCapital = ViewBag.PaidUpCapital + ViewBag.UnpaidCapital;
+
             return View();
         }
 
