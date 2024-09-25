@@ -1,0 +1,152 @@
+﻿@model Shareholder_Management_System.Models.Payment
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Payment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentMode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentMode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaidAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaidAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BlockedAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BlockedAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReferenceNum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReferenceNum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentAuthorizationStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AuthorizationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AuthorizationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Remark)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Remark)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Branch1.BranchCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Branch1.BranchCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Document.DocName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Document.DocName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder.ShareID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder1.ShareID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Subscribtion.SubStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User1.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User1.FullName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

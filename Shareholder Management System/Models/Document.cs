@@ -30,8 +30,8 @@ namespace Shareholder_Management_System.Models
         public string DocOwner { get; set; }
         public Nullable<int> ShID { get; set; }
         public Nullable<int> ProxyID { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
         public string DocAuthorizationStatus { get; set; }
         public Nullable<int> DocAuthorizer { get; set; }
         public Nullable<System.DateTime> DocAuthorizationDate { get; set; }

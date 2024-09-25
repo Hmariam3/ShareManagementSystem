@@ -1,0 +1,190 @@
+﻿@*@model IEnumerable<Shareholder_Management_System.Models.Payment>
+
+    @{
+        ViewBag.Title = "Index";
+    }
+
+    <h2>Index</h2>
+
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentMode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaidAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BlockedAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReferenceNum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentAuthorizationStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AuthorizationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Remark)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Branch1.BranchCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Document.DocName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User1.FullName)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentMode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaidAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BlockedAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReferenceNum)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentAuthorizationStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AuthorizationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Remark)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Branch1.BranchCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Document.DocName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Shareholder1.ShareID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subscribtion.SubStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User1.FullName)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.PayID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.PayID }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.PayID })
+            </td>
+        </tr>
+    }
+
+    </table>*@
+
+
+
+@model IEnumerable<Shareholder_Management_System.Models.Payment>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="panel">
+    <div class="mb-5 flex items-center justify-between">
+        <h5 class="text-lg font-semibold dark:text-white-light">Payment Table</h5>
+    </div>
+
+    <div class="mb-5">
+        <div class="table-responsive">
+            <table class="table-striped">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.First().PaymentMode)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().PaidAmount)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().ReferenceNum)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().PaymentDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().CreationDate)</th>
+
+
+                        <th>@Html.DisplayNameFor(model => model.First().Remark)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Branch1.BranchCode)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Document.DocName)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Shareholder.ShareID)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Subscribtion.SubStatus)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().User.FullName)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().User1.FullName)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+
+
+                            <td>@Html.DisplayFor(modelItem => item.Remark)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Branch1.BranchCode)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Document.DocName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Subscribtion.SubStatus)</td>
+                            <td>@Html.DisplayFor(modelItem => item.User.FullName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.User1.FullName)</td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.PayID }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.PayID }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.PayID })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

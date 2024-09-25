@@ -30,14 +30,14 @@ namespace Shareholder_Management_System.Controllers
             // Get the current year
             var currentYear = DateTime.Now.Year;
 
-            // Get the count of shareholders registered in the current year
-            var currentYearShareholders = db.Shareholders
-                .Where(st => st.CreatedDate.Year == currentYear)
-                .Count();
+            //// Get the count of shareholders registered in the current year
+            //var currentYearShareholders = db.Shareholders
+            //    .Where(st => st.CreatedDate.Year == currentYear)
+            //    .Count();
 
-            double percentageCurrentYearShareholders = (double)currentYearShareholders / totalShareholder * 100;
+            //double percentageCurrentYearShareholders = (double)currentYearShareholders / totalShareholder * 100;
 
-            ViewBag.PercentageCurrentYearShareholders = percentageCurrentYearShareholders;
+            //ViewBag.PercentageCurrentYearShareholders = percentageCurrentYearShareholders;
 
             //Subscribtions Table
             ViewBag.countSub = db.Subscribtions.Count();
@@ -61,13 +61,13 @@ namespace Shareholder_Management_System.Controllers
 
             var currentYearPay = DateTime.Now.Year;
 
-            var currentYearPays = db.Payments
-                .Where(pa => pa.PaymentDate.Year == currentYearPay)
-                .Count();
+            //var currentYearPays = db.Payments
+            //    .Where(pa => pa.PaymentDate.Year == currentYearPay)
+            //    .Count();
 
-            double percentageCurrentYearPay = (double)currentYearPays / totalPay * 100;
+            //double percentageCurrentYearPay = (double)currentYearPays / totalPay * 100;
 
-            ViewBag.PercentagePay = percentageCurrentYearPay;
+            //ViewBag.PercentagePay = percentageCurrentYearPay;
 
             //Transfer Table
             ViewBag.countTran = db.ShareTransfers.Count();
@@ -76,13 +76,13 @@ namespace Shareholder_Management_System.Controllers
 
             var currentYearTran = DateTime.Now.Year;
 
-            var currentYearTrans = db.ShareTransfers
-                .Where(tr => tr.CreationDate.Year == currentYearTran)
-                .Count();
+            //var currentYearTrans = db.ShareTransfers
+            //    .Where(tr => tr.CreationDate.Year == currentYearTran)
+            //    .Count();
 
-            double percentageCurrentYearTran = (double)currentYearTrans / totalTranfer * 100;
+            //double percentageCurrentYearTran = (double)currentYearTrans / totalTranfer * 100;
 
-            ViewBag.percentageTrans = percentageCurrentYearTran;
+            //ViewBag.percentageTrans = percentageCurrentYearTran;
 
             //Total PaidUp capital
             var PaidUpCapital = db.Subscribtions.Sum(s => s.PaidSubscription);

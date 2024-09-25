@@ -34,9 +34,9 @@ namespace Shareholder_Management_System.Models
         public virtual Branch Branch1 { get; set; }
         public virtual Branch Branch2 { get; set; }
         public virtual Dividend Dividend { get; set; }
+        public virtual Shareholder Shareholder { get; set; }
         public virtual Payment Payment1 { get; set; }
         public virtual Subscribtion Subscribtion { get; set; }
-        public virtual Shareholder Shareholder { get; set; }
         public virtual User User { get; set; }
     }
 }

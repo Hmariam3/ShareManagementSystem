@@ -107,15 +107,15 @@
             <PropertyRef Name="DocID" />
           </Key>
           <Property Name="DocID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="DocName" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="DocType" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="DocPath" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="DocOwner" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DocName" Type="nvarchar(max)" />
+          <Property Name="DocType" Type="nvarchar(max)" />
+          <Property Name="DocPath" Type="nvarchar(max)" />
+          <Property Name="DocOwner" Type="nvarchar(max)" />
           <Property Name="ShID" Type="int" />
           <Property Name="ProxyID" Type="int" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreatedDate" Type="date" Nullable="false" />
-          <Property Name="DocAuthorizationStatus" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="date" />
+          <Property Name="DocAuthorizationStatus" Type="nvarchar" MaxLength="50" />
           <Property Name="DocAuthorizer" Type="int" />
           <Property Name="DocAuthorizationDate" Type="date" />
         </EntityType>
@@ -124,21 +124,22 @@
             <PropertyRef Name="PayID" />
           </Key>
           <Property Name="PayID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ShID" Type="int" Nullable="false" />
-          <Property Name="SubID" Type="int" Nullable="false" />
-          <Property Name="PaymentMode" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ShID" Type="int" />
+          <Property Name="SubID" Type="int" />
+          <Property Name="PaymentMode" Type="nvarchar(max)" />
           <Property Name="Branch" Type="int" />
-          <Property Name="PaidAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PaidAmount" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ReferenceNum" Type="nvarchar(max)" />
-          <Property Name="PaymentSlip" Type="int" Nullable="false" />
-          <Property Name="PaymentDate" Type="date" Nullable="false" />
+          <Property Name="PaymentSlip" Type="int" />
+          <Property Name="PaymentDate" Type="date" />
           <Property Name="PaymentTransferFrom" Type="int" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreationDate" Type="date" Nullable="false" />
-          <Property Name="PaymentAuthorizationStatus" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreationDate" Type="date" />
+          <Property Name="PaymentAuthorizationStatus" Type="nvarchar(max)" />
           <Property Name="PaymentAuthorizer" Type="int" />
           <Property Name="AuthorizationDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
+          <Property Name="BlockedAmount" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="Proxy">
           <Key>
@@ -146,7 +147,7 @@
           </Key>
           <Property Name="ProxyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ShID" Type="int" />
-          <Property Name="FullName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar(max)" />
           <Property Name="Nationality" Type="nvarchar(max)" />
           <Property Name="Region" Type="nvarchar(max)" />
           <Property Name="Zone" Type="nvarchar(max)" />
@@ -154,14 +155,14 @@
           <Property Name="Subcity" Type="nvarchar(max)" />
           <Property Name="Woreda" Type="nvarchar(max)" />
           <Property Name="Kebele" Type="nvarchar(max)" />
-          <Property Name="PhoneNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PhoneNo" Type="nvarchar" MaxLength="50" />
           <Property Name="PhoneNo2" Type="nvarchar" MaxLength="50" />
-          <Property Name="StartDate" Type="date" Nullable="false" />
-          <Property Name="EndDate" Type="date" Nullable="false" />
-          <Property Name="ProxyStatus" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreatedDate" Type="date" Nullable="false" />
-          <Property Name="ProxyAuthorizationStatus" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="StartDate" Type="date" />
+          <Property Name="EndDate" Type="date" />
+          <Property Name="ProxyStatus" Type="nvarchar(max)" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="date" />
+          <Property Name="ProxyAuthorizationStatus" Type="nvarchar(max)" />
           <Property Name="ProxyAuthorizer" Type="int" />
           <Property Name="AuthorizedDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
@@ -172,9 +173,9 @@
             <PropertyRef Name="ShID" />
           </Key>
           <Property Name="ShID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ShareID" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="FullNameEng" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="FullNameAfanOromo" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ShareID" Type="nvarchar" MaxLength="100" />
+          <Property Name="FullNameEng" Type="nvarchar(max)" />
+          <Property Name="FullNameAfanOromo" Type="nvarchar(max)" />
           <Property Name="FullNameAmharic" Type="nvarchar(max)" />
           <Property Name="Nationality" Type="nvarchar(max)" />
           <Property Name="Region" Type="nvarchar(max)" />
@@ -185,7 +186,7 @@
           <Property Name="Kebele" Type="nvarchar(max)" />
           <Property Name="HouseNo" Type="nvarchar(max)" />
           <Property Name="PoBox" Type="nvarchar(max)" />
-          <Property Name="PhoneNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PhoneNo" Type="nvarchar" MaxLength="50" />
           <Property Name="PhoneNo2" Type="nvarchar" MaxLength="50" />
           <Property Name="PhoneNo3" Type="nvarchar" MaxLength="50" />
           <Property Name="TeleHome" Type="nvarchar" MaxLength="50" />
@@ -194,13 +195,13 @@
           <Property Name="Email2" Type="nvarchar(max)" />
           <Property Name="Email3" Type="nvarchar(max)" />
           <Property Name="SHCategory" Type="nvarchar(max)" />
-          <Property Name="TINNum" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="AccountNumber" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TINNum" Type="nvarchar(max)" />
+          <Property Name="AccountNumber" Type="nvarchar(max)" />
           <Property Name="Branch" Type="int" />
           <Property Name="Status" Type="nvarchar" MaxLength="255" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreatedDate" Type="date" Nullable="false" />
-          <Property Name="AuthorizationStatus" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreatedDate" Type="date" />
+          <Property Name="AuthorizationStatus" Type="nvarchar" MaxLength="50" />
           <Property Name="Authorizer" Type="int" />
           <Property Name="AuthorizedDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
@@ -216,15 +217,15 @@
           <Property Name="TransferType" Type="nvarchar(max)" />
           <Property Name="SubID" Type="int" />
           <Property Name="PayID" Type="int" />
-          <Property Name="NumSharesTransferred" Type="int" Nullable="false" />
-          <Property Name="AmountPerShare" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="PaidAmountForTransfer" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="NumSharesTransferred" Type="int" />
+          <Property Name="AmountPerShare" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PaidAmountForTransfer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="TransferReason" Type="nvarchar(max)" />
-          <Property Name="DividenedFor" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="TransferDoc" Type="int" Nullable="false" />
+          <Property Name="DividenedFor" Type="nvarchar" MaxLength="50" />
+          <Property Name="TransferDoc" Type="int" />
           <Property Name="TransferDate" Type="date" />
-          <Property Name="CreatedBy" Type="int" Nullable="false" />
-          <Property Name="CreationDate" Type="date" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" />
+          <Property Name="CreationDate" Type="date" />
           <Property Name="TransferAuthorizationStatus" Type="nvarchar(max)" />
           <Property Name="TransferAuthorizer" Type="int" />
           <Property Name="TransferAuthorizationDate" Type="date" />
@@ -235,7 +236,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ShCategories" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ShCategories" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Subscribtion">
           <Key>
@@ -258,16 +259,6 @@
           <Property Name="AuthorizedDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UID" />
@@ -279,10 +270,10 @@
           <Property Name="Status" Type="bit" Nullable="false" />
           <Property Name="Role" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Branch" Type="int" Nullable="false" />
-          <Property Name="IsFristLogin" Type="bit" />
-          <Property Name="Locked" Type="int" />
-          <Property Name="activeStatus" Type="bit" />
           <Property Name="CreatedDate" Type="date" Nullable="false" />
+          <Property Name="Locked" Type="int" />
+          <Property Name="IsFirstLogin" Type="bit" />
+          <Property Name="activeStatus" Type="bit" />
         </EntityType>
         <Association Name="FK_AuditLog_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
@@ -416,6 +407,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Dividened_Detail_Dividened_Detail">
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="1" />
+          <End Role="DividenedDetail" Type="Self.DividenedDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shareholder">
+              <PropertyRef Name="ShID" />
+            </Principal>
+            <Dependent Role="DividenedDetail">
+              <PropertyRef Name="ShID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Dividened_Detail_Dividened_Detail1">
           <End Role="Payment" Type="Self.Payment" Multiplicity="1" />
           <End Role="DividenedDetail" Type="Self.DividenedDetail" Multiplicity="*" />
@@ -464,18 +467,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_DividenedDetail_Shareholder">
-          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="1" />
-          <End Role="DividenedDetail" Type="Self.DividenedDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shareholder">
-              <PropertyRef Name="ShID" />
-            </Principal>
-            <Dependent Role="DividenedDetail">
-              <PropertyRef Name="ShID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DividenedDetail_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="DividenedDetail" Type="Self.DividenedDetail" Multiplicity="*" />
@@ -513,7 +504,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Document_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Document" Type="Self.Document" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -549,7 +540,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Document">
-          <End Role="Document" Type="Self.Document" Multiplicity="1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Document">
@@ -561,7 +552,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Shareholder">
-          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="1" />
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shareholder">
@@ -585,7 +576,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Subscribtion">
-          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="1" />
+          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Subscribtion">
@@ -597,7 +588,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -645,7 +636,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Proxy_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Proxy" Type="Self.Proxy" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -693,7 +684,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Shareholder_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -765,7 +756,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShareTransfer_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="ShareTransfer" Type="Self.ShareTransfer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -862,7 +853,6 @@
           <EntitySet Name="ShareTransfer" EntityType="Self.ShareTransfer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShCategories" EntityType="Self.ShCategories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Subscribtion" EntityType="Self.Subscribtion" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_AuditLog_User" Association="Self.FK_AuditLog_User">
             <End Role="User" EntitySet="User" />
@@ -908,6 +898,10 @@
             <End Role="Dividend" EntitySet="Dividend" />
             <End Role="DividenedDetail" EntitySet="DividenedDetail" />
           </AssociationSet>
+          <AssociationSet Name="FK_Dividened_Detail_Dividened_Detail" Association="Self.FK_Dividened_Detail_Dividened_Detail">
+            <End Role="Shareholder" EntitySet="Shareholder" />
+            <End Role="DividenedDetail" EntitySet="DividenedDetail" />
+          </AssociationSet>
           <AssociationSet Name="FK_Dividened_Detail_Dividened_Detail1" Association="Self.FK_Dividened_Detail_Dividened_Detail1">
             <End Role="Payment" EntitySet="Payment" />
             <End Role="DividenedDetail" EntitySet="DividenedDetail" />
@@ -922,10 +916,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_DividenedDetail_Branch1" Association="Self.FK_DividenedDetail_Branch1">
             <End Role="Branch" EntitySet="Branch" />
-            <End Role="DividenedDetail" EntitySet="DividenedDetail" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DividenedDetail_Shareholder" Association="Self.FK_DividenedDetail_Shareholder">
-            <End Role="Shareholder" EntitySet="Shareholder" />
             <End Role="DividenedDetail" EntitySet="DividenedDetail" />
           </AssociationSet>
           <AssociationSet Name="FK_DividenedDetail_User" Association="Self.FK_DividenedDetail_User">
@@ -1173,9 +1163,9 @@
           <NavigationProperty Name="Branch1" Relationship="Self.FK_DividenedDetail_Branch" FromRole="DividenedDetail" ToRole="Branch" />
           <NavigationProperty Name="Branch2" Relationship="Self.FK_DividenedDetail_Branch1" FromRole="DividenedDetail" ToRole="Branch" />
           <NavigationProperty Name="Dividend" Relationship="Self.FK_Dividened_Detail_Dividend" FromRole="DividenedDetail" ToRole="Dividend" />
+          <NavigationProperty Name="Shareholder" Relationship="Self.FK_Dividened_Detail_Dividened_Detail" FromRole="DividenedDetail" ToRole="Shareholder" />
           <NavigationProperty Name="Payment1" Relationship="Self.FK_Dividened_Detail_Dividened_Detail1" FromRole="DividenedDetail" ToRole="Payment" />
           <NavigationProperty Name="Subscribtion" Relationship="Self.FK_Dividened_Detail_Payment" FromRole="DividenedDetail" ToRole="Subscribtion" />
-          <NavigationProperty Name="Shareholder" Relationship="Self.FK_DividenedDetail_Shareholder" FromRole="DividenedDetail" ToRole="Shareholder" />
           <NavigationProperty Name="User" Relationship="Self.FK_DividenedDetail_User" FromRole="DividenedDetail" ToRole="User" />
         </EntityType>
         <EntityType Name="Document">
@@ -1183,15 +1173,15 @@
             <PropertyRef Name="DocID" />
           </Key>
           <Property Name="DocID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DocName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DocType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DocPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DocOwner" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DocName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DocType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DocPath" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DocOwner" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ShID" Type="Int32" />
           <Property Name="ProxyID" Type="Int32" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="DocAuthorizationStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="0" />
+          <Property Name="DocAuthorizationStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DocAuthorizer" Type="Int32" />
           <Property Name="DocAuthorizationDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Blockeds" Relationship="Self.FK_Blocked_Document" FromRole="Document" ToRole="Blocked" />
@@ -1208,21 +1198,22 @@
             <PropertyRef Name="PayID" />
           </Key>
           <Property Name="PayID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ShID" Type="Int32" Nullable="false" />
-          <Property Name="SubID" Type="Int32" Nullable="false" />
-          <Property Name="PaymentMode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShID" Type="Int32" />
+          <Property Name="SubID" Type="Int32" />
+          <Property Name="PaymentMode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Branch" Type="Int32" />
-          <Property Name="PaidAmount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PaidAmount" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ReferenceNum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PaymentSlip" Type="Int32" Nullable="false" />
-          <Property Name="PaymentDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PaymentSlip" Type="Int32" />
+          <Property Name="PaymentDate" Type="DateTime" Precision="0" />
           <Property Name="PaymentTransferFrom" Type="Int32" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="PaymentAuthorizationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreationDate" Type="DateTime" Precision="0" />
+          <Property Name="PaymentAuthorizationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PaymentAuthorizer" Type="Int32" />
           <Property Name="AuthorizationDate" Type="DateTime" Precision="0" />
           <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BlockedAmount" Type="Decimal" Precision="18" Scale="2" />
           <NavigationProperty Name="Blockeds" Relationship="Self.FK_Blocked_Payment" FromRole="Payment" ToRole="Blocked" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_Payment_Branch" FromRole="Payment" ToRole="Branch" />
           <NavigationProperty Name="DividenedDetails" Relationship="Self.FK_Dividened_Detail_Dividened_Detail1" FromRole="Payment" ToRole="DividenedDetail" />
@@ -1240,7 +1231,7 @@
           </Key>
           <Property Name="ProxyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ShID" Type="Int32" />
-          <Property Name="FullName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Nationality" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Region" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Zone" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1248,14 +1239,14 @@
           <Property Name="Subcity" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Woreda" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Kebele" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PhoneNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PhoneNo2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="ProxyStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="ProxyAuthorizationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="ProxyStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="0" />
+          <Property Name="ProxyAuthorizationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ProxyAuthorizer" Type="Int32" />
           <Property Name="AuthorizedDate" Type="DateTime" Precision="0" />
           <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1271,9 +1262,9 @@
             <PropertyRef Name="ShID" />
           </Key>
           <Property Name="ShID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ShareID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FullNameEng" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FullNameAfanOromo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShareID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FullNameEng" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FullNameAfanOromo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FullNameAmharic" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Nationality" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Region" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1284,7 +1275,7 @@
           <Property Name="Kebele" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="HouseNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PoBox" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="PhoneNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PhoneNo2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PhoneNo3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TeleHome" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -1293,13 +1284,13 @@
           <Property Name="Email2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Email3" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SHCategory" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="TINNum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="AccountNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TINNum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Branch" Type="Int32" />
           <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="AuthorizationStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="0" />
+          <Property Name="AuthorizationStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Authorizer" Type="Int32" />
           <Property Name="AuthorizedDate" Type="DateTime" Precision="0" />
           <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -1307,7 +1298,7 @@
           <NavigationProperty Name="Blockeds" Relationship="Self.FK_Blocked_Shareholder" FromRole="Shareholder" ToRole="Blocked" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_Shareholder_Branch" FromRole="Shareholder" ToRole="Branch" />
           <NavigationProperty Name="Certificates" Relationship="Self.FK_Certificate_Shareholder" FromRole="Shareholder" ToRole="Certificate" />
-          <NavigationProperty Name="DividenedDetails" Relationship="Self.FK_DividenedDetail_Shareholder" FromRole="Shareholder" ToRole="DividenedDetail" />
+          <NavigationProperty Name="DividenedDetails" Relationship="Self.FK_Dividened_Detail_Dividened_Detail" FromRole="Shareholder" ToRole="DividenedDetail" />
           <NavigationProperty Name="Documents" Relationship="Self.FK_Document_Shareholder" FromRole="Shareholder" ToRole="Document" />
           <NavigationProperty Name="Document" Relationship="Self.FK_Shareholder_Document" FromRole="Shareholder" ToRole="Document" />
           <NavigationProperty Name="Payments" Relationship="Self.FK_Payment_Shareholder" FromRole="Shareholder" ToRole="Payment" />
@@ -1330,15 +1321,15 @@
           <Property Name="TransferType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SubID" Type="Int32" />
           <Property Name="PayID" Type="Int32" />
-          <Property Name="NumSharesTransferred" Type="Int32" Nullable="false" />
-          <Property Name="AmountPerShare" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="PaidAmountForTransfer" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="NumSharesTransferred" Type="Int32" />
+          <Property Name="AmountPerShare" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PaidAmountForTransfer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="TransferReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="DividenedFor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="TransferDoc" Type="Int32" Nullable="false" />
+          <Property Name="DividenedFor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TransferDoc" Type="Int32" />
           <Property Name="TransferDate" Type="DateTime" Precision="0" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CreatedBy" Type="Int32" />
+          <Property Name="CreationDate" Type="DateTime" Precision="0" />
           <Property Name="TransferAuthorizationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TransferAuthorizer" Type="Int32" />
           <Property Name="TransferAuthorizationDate" Type="DateTime" Precision="0" />
@@ -1355,7 +1346,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ShCategories" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ShCategories" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Subscribtion">
           <Key>
@@ -1385,16 +1376,6 @@
           <NavigationProperty Name="User" Relationship="Self.FK_Subscribtion_User" FromRole="Subscribtion" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="Self.FK_Subscribtion_User1" FromRole="Subscribtion" ToRole="User" />
         </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UID" />
@@ -1406,10 +1387,10 @@
           <Property Name="Status" Type="Boolean" Nullable="false" />
           <Property Name="Role" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Branch" Type="Int32" Nullable="false" />
-          <Property Name="IsFristLogin" Type="Boolean" />
-          <Property Name="Locked" Type="Int32" />
-          <Property Name="activeStatus" Type="Boolean" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Locked" Type="Int32" />
+          <Property Name="IsFirstLogin" Type="Boolean" />
+          <Property Name="activeStatus" Type="Boolean" />
           <NavigationProperty Name="AuditLogs" Relationship="Self.FK_AuditLog_User" FromRole="User" ToRole="AuditLog" />
           <NavigationProperty Name="Blockeds" Relationship="Self.FK_Blocked_User" FromRole="User" ToRole="Blocked" />
           <NavigationProperty Name="Blockeds1" Relationship="Self.FK_Blocked_User1" FromRole="User" ToRole="Blocked" />
@@ -1623,6 +1604,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Dividened_Detail_Dividened_Detail">
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="1" />
+          <End Role="DividenedDetail" Type="Self.DividenedDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shareholder">
+              <PropertyRef Name="ShID" />
+            </Principal>
+            <Dependent Role="DividenedDetail">
+              <PropertyRef Name="ShID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Dividened_Detail_Dividened_Detail1">
           <End Role="Payment" Type="Self.Payment" Multiplicity="1" />
           <End Role="DividenedDetail" Type="Self.DividenedDetail" Multiplicity="*" />
@@ -1644,18 +1637,6 @@
             </Principal>
             <Dependent Role="DividenedDetail">
               <PropertyRef Name="SubID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DividenedDetail_Shareholder">
-          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="1" />
-          <End Role="DividenedDetail" Type="Self.DividenedDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shareholder">
-              <PropertyRef Name="ShID" />
-            </Principal>
-            <Dependent Role="DividenedDetail">
-              <PropertyRef Name="ShID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1696,7 +1677,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Document_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Document" Type="Self.Document" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -1720,7 +1701,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Document">
-          <End Role="Document" Type="Self.Document" Multiplicity="1" />
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Document">
@@ -1756,7 +1737,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Shareholder">
-          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="1" />
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Shareholder">
@@ -1780,7 +1761,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_Subscribtion">
-          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="1" />
+          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Subscribtion">
@@ -1792,7 +1773,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Payment_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -1840,7 +1821,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Proxy_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Proxy" Type="Self.Proxy" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -1864,7 +1845,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Shareholder_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -1948,7 +1929,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ShareTransfer_User">
-          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="ShareTransfer" Type="Self.ShareTransfer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -2009,7 +1990,6 @@
           <EntitySet Name="ShareTransfers" EntityType="Self.ShareTransfer" />
           <EntitySet Name="ShCategories" EntityType="Self.ShCategory" />
           <EntitySet Name="Subscribtions" EntityType="Self.Subscribtion" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <AssociationSet Name="FK_AuditLog_User" Association="Self.FK_AuditLog_User">
             <End Role="User" EntitySet="Users" />
@@ -2075,16 +2055,16 @@
             <End Role="Dividend" EntitySet="Dividends" />
             <End Role="DividenedDetail" EntitySet="DividenedDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK_Dividened_Detail_Dividened_Detail" Association="Self.FK_Dividened_Detail_Dividened_Detail">
+            <End Role="Shareholder" EntitySet="Shareholders" />
+            <End Role="DividenedDetail" EntitySet="DividenedDetails" />
+          </AssociationSet>
           <AssociationSet Name="FK_Dividened_Detail_Dividened_Detail1" Association="Self.FK_Dividened_Detail_Dividened_Detail1">
             <End Role="Payment" EntitySet="Payments" />
             <End Role="DividenedDetail" EntitySet="DividenedDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_Dividened_Detail_Payment" Association="Self.FK_Dividened_Detail_Payment">
             <End Role="Subscribtion" EntitySet="Subscribtions" />
-            <End Role="DividenedDetail" EntitySet="DividenedDetails" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DividenedDetail_Shareholder" Association="Self.FK_DividenedDetail_Shareholder">
-            <End Role="Shareholder" EntitySet="Shareholders" />
             <End Role="DividenedDetail" EntitySet="DividenedDetails" />
           </AssociationSet>
           <AssociationSet Name="FK_DividenedDetail_User" Association="Self.FK_DividenedDetail_User">
@@ -2346,6 +2326,7 @@
                 <ScalarProperty Name="PaymentAuthorizer" ColumnName="PaymentAuthorizer" />
                 <ScalarProperty Name="AuthorizationDate" ColumnName="AuthorizationDate" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="BlockedAmount" ColumnName="BlockedAmount" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2472,17 +2453,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="Model.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="Model.User">
               <MappingFragment StoreEntitySet="User">
@@ -2493,10 +2463,10 @@
                 <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="Branch" ColumnName="Branch" />
-                <ScalarProperty Name="IsFristLogin" ColumnName="IsFristLogin" />
-                <ScalarProperty Name="Locked" ColumnName="Locked" />
-                <ScalarProperty Name="activeStatus" ColumnName="activeStatus" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Locked" ColumnName="Locked" />
+                <ScalarProperty Name="IsFirstLogin" ColumnName="IsFirstLogin" />
+                <ScalarProperty Name="activeStatus" ColumnName="activeStatus" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
