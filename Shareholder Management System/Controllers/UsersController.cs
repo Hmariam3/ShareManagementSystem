@@ -100,7 +100,7 @@ namespace Shareholder_Management_System.Controllers
             {
                 // Hash the password and set initial user values
                 user.Password = _passwordHasher.HashPassword(user.Password);
-                user.IsFirstLogin = true;
+                user.IsFristLogin = true;
                 user.Locked = 0;
                 user.CreatedDate = DateTime.UtcNow;
                 user.Status = true;

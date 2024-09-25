@@ -4,22 +4,22 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="aa2000f39bbc41ebae95eb5a44dc16c4" Name="Diagram1">
-        <EntityTypeShape EntityType="Model.AuditLog" Width="1.5" PointX="5.25" PointY="45.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Blocked" Width="1.5" PointX="12.5" PointY="40.375" IsExpanded="true" />
+      <Diagram DiagramId="d5ae96424fe24e4c8b6fe6cc9eb7a0f0" Name="Diagram1">
+        <EntityTypeShape EntityType="Model.AuditLog" Width="1.5" PointX="5.25" PointY="45.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Blocked" Width="1.5" PointX="12.5" PointY="40.25" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Branch" Width="1.5" PointX="0.75" PointY="23.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Certificate" Width="1.5" PointX="12.5" PointY="46.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Dividend" Width="1.5" PointX="5.25" PointY="49.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.DividenedDetail" Width="1.5" PointX="7.5" PointY="35.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Document" Width="1.5" PointX="12.5" PointY="34.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Certificate" Width="1.5" PointX="12.5" PointY="46.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Dividend" Width="1.5" PointX="5.25" PointY="49.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.DividenedDetail" Width="1.5" PointX="7.5" PointY="35.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Document" Width="1.5" PointX="12.5" PointY="34.125" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.Payment" Width="1.5" PointX="5.25" PointY="34.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Proxy" Width="1.5" PointX="20.75" PointY="39.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Shareholder" Width="1.5" PointX="10.25" PointY="32.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.ShareTransfer" Width="1.5" PointX="15.5" PointY="39.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Proxy" Width="1.5" PointX="20.75" PointY="39.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Shareholder" Width="1.5" PointX="10.25" PointY="32.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.ShareTransfer" Width="1.5" PointX="15.5" PointY="39.625" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.ShCategory" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.Subscribtion" Width="1.5" PointX="18.5" PointY="40" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.Subscribtion" Width="1.5" PointX="18.5" PointY="39.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.sysdiagram" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="Model.User" Width="1.5" PointX="3" PointY="45.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.User" Width="1.5" PointX="3" PointY="45.5" IsExpanded="true" />
         <AssociationConnector Association="Model.FK_AuditLog_User" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Blocked_Document" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Blocked_Payment" ManuallyRouted="false" />
@@ -36,9 +36,9 @@
         <AssociationConnector Association="Model.FK_Certificate_User1" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Dividend_User" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Dividened_Detail_Dividend" ManuallyRouted="false" />
-        <AssociationConnector Association="Model.FK_Dividened_Detail_Dividened_Detail" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Dividened_Detail_Dividened_Detail1" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Dividened_Detail_Payment" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_DividenedDetail_Shareholder" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_DividenedDetail_User" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Document_Proxy" ManuallyRouted="false" />
         <AssociationConnector Association="Model.FK_Document_Shareholder" ManuallyRouted="false" />

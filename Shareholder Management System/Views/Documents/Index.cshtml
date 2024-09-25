@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Document>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.DocName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DocType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DocPath)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DocOwner)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DocAuthorizationStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DocAuthorizationDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Document1.DocName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Document2.DocName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Proxy.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User1.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocPath)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocOwner)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocAuthorizationStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocAuthorizationDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Document1.DocName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Document2.DocName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Proxy.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.User.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.User1.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.DocID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.DocID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.DocID })
+        </td>
+    </tr>
+}
+
+</table>

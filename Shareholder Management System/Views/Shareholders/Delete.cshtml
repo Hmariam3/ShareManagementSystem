@@ -1,0 +1,280 @@
+﻿@model Shareholder_Management_System.Models.Shareholder
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Shareholder</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ShareID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FullNameEng)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullNameEng)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FullNameAfanOromo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullNameAfanOromo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FullNameAmharic)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FullNameAmharic)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nationality)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nationality)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Region)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Region)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Zone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Zone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.City)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Subcity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Subcity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Woreda)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Woreda)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Kebele)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Kebele)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HouseNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HouseNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PoBox)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PoBox)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNo2)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNo2)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNo3)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNo3)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeleHome)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeleHome)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeleWork)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeleWork)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email2)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email2)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email3)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email3)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SHCategory)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SHCategory)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TINNum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TINNum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AccountNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AccountNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AuthorizationStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AuthorizationStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AuthorizedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AuthorizedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Remark)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Remark)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Branch1.BranchCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Branch1.BranchCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User1.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User1.FullName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

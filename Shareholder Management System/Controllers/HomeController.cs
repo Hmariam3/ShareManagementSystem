@@ -32,7 +32,7 @@ namespace Shareholder_Management_System.Controllers
 
             // Get the count of shareholders registered in the current year
             var currentYearShareholders = db.Shareholders
-                .Where(st => st.CreatedDate.Value.Year == currentYear)
+                .Where(st => st.CreatedDate.Year == currentYear)
                 .Count();
 
             double percentageCurrentYearShareholders = (double)currentYearShareholders / totalShareholder * 100;
@@ -62,7 +62,7 @@ namespace Shareholder_Management_System.Controllers
             var currentYearPay = DateTime.Now.Year;
 
             var currentYearPays = db.Payments
-                .Where(pa => pa.PaymentDate.Value.Year == currentYearPay)
+                .Where(pa => pa.PaymentDate.Year == currentYearPay)
                 .Count();
 
             double percentageCurrentYearPay = (double)currentYearPays / totalPay * 100;
@@ -77,7 +77,7 @@ namespace Shareholder_Management_System.Controllers
             var currentYearTran = DateTime.Now.Year;
 
             var currentYearTrans = db.ShareTransfers
-                .Where(tr => tr.CreationDate.Value.Year == currentYearTran)
+                .Where(tr => tr.CreationDate.Year == currentYearTran)
                 .Count();
 
             double percentageCurrentYearTran = (double)currentYearTrans / totalTranfer * 100;
@@ -95,7 +95,7 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.UnpaidCapital = UnpaidCapital;
 
             //Total of Paid and Unpaid Capital
-            ViewBag.TotalCapital = ViewBag.PaidUpCapital + ViewBag.UnpaidCapital;
+            // ViewBag.TotalCapital = ViewBag.PaidUpCapital + ViewBag.UnpaidCapital;
 
             return View();
         }

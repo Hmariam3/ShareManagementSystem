@@ -32,11 +32,11 @@ namespace Shareholder_Management_System.Models
         public string Kebele { get; set; }
         public string PhoneNo { get; set; }
         public string PhoneNo2 { get; set; }
-        public Nullable<System.DateTime> StartDate { get; set; }
-        public Nullable<System.DateTime> EndDate { get; set; }
+        public System.DateTime StartDate { get; set; }
+        public System.DateTime EndDate { get; set; }
         public string ProxyStatus { get; set; }
-        public Nullable<int> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public int CreatedBy { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public string ProxyAuthorizationStatus { get; set; }
         public Nullable<int> ProxyAuthorizer { get; set; }
         public Nullable<System.DateTime> AuthorizedDate { get; set; }

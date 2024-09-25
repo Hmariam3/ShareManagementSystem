@@ -1,0 +1,122 @@
+﻿@model Shareholder_Management_System.Models.Document
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Document</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DocName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DocName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DocType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DocType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DocPath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DocPath)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DocOwner)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DocOwner)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DocAuthorizationStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DocAuthorizationStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DocAuthorizationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DocAuthorizationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Document1.DocName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Document1.DocName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Document2.DocName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Document2.DocName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Proxy.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Proxy.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User1.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User1.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder.ShareID)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.DocID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
