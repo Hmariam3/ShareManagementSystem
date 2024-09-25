@@ -21,7 +21,7 @@ namespace Shareholder_Management_System.Models
         }
     
         public int ProxyID { get; set; }
-        public int ShID { get; set; }
+        public Nullable<int> ShID { get; set; }
         public string FullName { get; set; }
         public string Nationality { get; set; }
         public string Region { get; set; }
@@ -32,18 +32,20 @@ namespace Shareholder_Management_System.Models
         public string Kebele { get; set; }
         public string PhoneNo { get; set; }
         public string PhoneNo2 { get; set; }
-        public System.DateTime StartDate { get; set; }
-        public System.DateTime EndDate { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
         public string ProxyStatus { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
         public string ProxyAuthorizationStatus { get; set; }
         public Nullable<int> ProxyAuthorizer { get; set; }
         public Nullable<System.DateTime> AuthorizedDate { get; set; }
         public string Remark { get; set; }
+        public Nullable<int> ProxyDocument { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Document> Documents { get; set; }
+        public virtual Document Document { get; set; }
         public virtual Shareholder Shareholder { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }

@@ -36,6 +36,7 @@ namespace Shareholder_Management_System.Models
         public virtual DbSet<Proxy> Proxies { get; set; }
         public virtual DbSet<Shareholder> Shareholders { get; set; }
         public virtual DbSet<ShareTransfer> ShareTransfers { get; set; }
+        public virtual DbSet<ShCategory> ShCategories { get; set; }
         public virtual DbSet<Subscribtion> Subscribtions { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<User> Users { get; set; }

@@ -269,63 +269,66 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuditLog.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Blocked.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Branch.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Certificate.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Dividend.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DividenedDetail.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Document.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Payment.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Proxy.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ResetPasswordViewModel.cs" />
-    <Compile Include="Models\Share.Context.cs">
+    <Compile Include="Models\Shareholder Management System.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Share.Context.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Share.cs">
+    <Compile Include="Models\Shareholder Management System.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Share.Designer.cs">
+    <Compile Include="Models\Shareholder Management System.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Share.edmx</DependentUpon>
+      <DependentUpon>Shareholder Management System.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Shareholder.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShareholderSummaryViewModel.cs" />
     <Compile Include="Models\ShareTransfer.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShCategory.cs">
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Subscribtion.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
-      <DependentUpon>Share.tt</DependentUpon>
+      <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\UserProfileViewModel.cs" />
@@ -351,24 +354,24 @@
     <Content Include="js\jquery.dataTables.min.js" />
     <Content Include="js\jquery.min.js" />
     <Content Include="js\select2.min.js" />
-    <Content Include="Models\Share.Context.tt">
+    <Content Include="Models\Shareholder Management System.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Share.edmx</DependentUpon>
-      <LastGenOutput>Share.Context.cs</LastGenOutput>
+      <DependentUpon>Shareholder Management System.edmx</DependentUpon>
+      <LastGenOutput>Shareholder Management System.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\Share.tt">
+    <Content Include="Models\Shareholder Management System.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Share.edmx</DependentUpon>
-      <LastGenOutput>Share.cs</LastGenOutput>
+      <DependentUpon>Shareholder Management System.edmx</DependentUpon>
+      <LastGenOutput>Shareholder Management System.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\Share.edmx">
+    <EntityDeploy Include="Models\Shareholder Management System.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Share.Designer.cs</LastGenOutput>
+      <LastGenOutput>Shareholder Management System.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\Share.edmx.diagram">
-      <DependentUpon>Share.edmx</DependentUpon>
+    <Content Include="Models\Shareholder Management System.edmx.diagram">
+      <DependentUpon>Shareholder Management System.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
