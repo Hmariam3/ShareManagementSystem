@@ -18,7 +18,7 @@ namespace Share.Controllers
         // GET: Subscribtions
 
         // GET: Subscribtions
-       
+
         public ActionResult Filter()
         {
 
@@ -148,6 +148,8 @@ namespace Share.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscribtion)
         {
+            int branch = Convert.ToInt32(Session["ID"]);
+
             if (ModelState.IsValid)
             {
                 db.Subscribtions.Add(subscribtion);
@@ -156,6 +158,7 @@ namespace Share.Controllers
                 subscribtion.PaidSubscription = 0;
                 subscribtion.SubStatus = "UnPaid";
                 subscribtion.SubAuthorizationStatus = "Pending";
+                subscribtion.CreatedBy = branch;
                 //subscribtion.CreatedBy = Session["Username"];
 
                 subscribtion.SubAmount = subscribtion.SubNumShares * 1000;
@@ -186,7 +189,7 @@ namespace Share.Controllers
             ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
-              ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
 
             ViewBag.SubID = new SelectList(Enumerable.Empty<SelectListItem>(), "SubID", "SubID");
 
@@ -197,6 +200,9 @@ namespace Share.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddSubscriprion([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscription)
         {
+
+            int userdata = Convert.ToInt32(Session["ID"]);
+
             if (ModelState.IsValid)
             {
                 // Fetch the existing subscription for the given ShID and SubID
@@ -210,7 +216,7 @@ namespace Share.Controllers
                     existingSubscription.Premium = subscription.Premium;
                     existingSubscription.SubAmount = existingSubscription.SubNumShares * 1000; // Recalculate the total amount
 
-                        existingSubscription.UnpaidSubscription = existingSubscription.SubAmount - existingSubscription.PaidSubscription; // Recalculate unpaid subscription
+                    existingSubscription.UnpaidSubscription = existingSubscription.SubAmount - existingSubscription.PaidSubscription; // Recalculate unpaid subscription
                     existingSubscription.SubTransferFrom = subscription.SubTransferFrom; // Update the transfer from field
                     existingSubscription.PaymentDueDate = subscription.PaymentDueDate; // Update the payment due date
                     existingSubscription.Remark = subscription.Remark; // Update any remarks
@@ -222,6 +228,8 @@ namespace Share.Controllers
                     existingSubscription.AuthorizedDate = null;
 
                     // Mark the subscription as modified and save the changes
+                    existingSubscription.CreatedBy = userdata;
+                    existingSubscription.SubAuthorizer = null;
                     db.Entry(existingSubscription).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -282,6 +290,8 @@ namespace Share.Controllers
             // Get the original subscription from the database
             var originalSubscription = db.Subscribtions.AsNoTracking().FirstOrDefault(s => s.SubID == subscribtion.SubID);
 
+            int userdata = Convert.ToInt32(Session["ID"]);
+
             if (originalSubscription == null)
             {
                 return HttpNotFound();
@@ -311,7 +321,8 @@ namespace Share.Controllers
                 {
                     subscribtion.UnpaidSubscription = subscribtion.SubAmount - subscribtion.PaidSubscription;
                 }
-               
+                subscribtion.CreatedBy = userdata;
+                subscribtion.SubAuthorizer = null;
 
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -370,8 +381,10 @@ namespace Share.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public ActionResult Authorize(int id , string action)
+        public ActionResult Authorize(int id, string action)
         {
+            int userdata = Convert.ToInt32(Session["ID"]);
+
             Subscribtion subscribtion = db.Subscribtions.Find(id);
             if (subscribtion == null)
             {
@@ -389,7 +402,7 @@ namespace Share.Controllers
             {
                 subscribtion.SubAuthorizationStatus = "Rejected";
             }
-
+            subscribtion.SubAuthorizer = userdata;
             subscribtion.AuthorizedDate = DateTime.Now;
 
             db.Entry(subscribtion).Property(u => u.SubStatus).IsModified = true;

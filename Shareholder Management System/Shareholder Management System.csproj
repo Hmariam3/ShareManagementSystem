@@ -261,6 +261,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PasswordHasher.cs" />
     <Compile Include="Controllers\ShareTransfersController.cs" />
+    <Compile Include="Controllers\SubscribtionsController.cs" />
     <Compile Include="Controllers\UsersAuthorizationController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Filters\AdminRoleFilter.cs" />
@@ -313,6 +314,7 @@
     <Compile Include="Models\Shareholder.cs">
       <DependentUpon>Share.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ShareholderSummaryViewModel.cs" />
     <Compile Include="Models\ShareTransfer.cs">
       <DependentUpon>Share.tt</DependentUpon>
     </Compile>
@@ -412,6 +414,17 @@
     <Content Include="Views\Users\Profile.cshtml" />
     <Content Include="Views\Users\Unauthorized.cshtml" />
     <Content Include="Views\Home\Unauthorized.cshtml" />
+    <Content Include="Views\Subscribtions\Create.cshtml" />
+    <Content Include="Views\Subscribtions\Delete.cshtml" />
+    <Content Include="Views\Subscribtions\Details.cshtml" />
+    <Content Include="Views\Subscribtions\Edit.cshtml" />
+    <Content Include="Views\Subscribtions\Index.cshtml" />
+    <Content Include="Views\Subscribtions\Filter.cshtml" />
+    <Content Include="Views\Subscribtions\_AddonsubscriptionsList.cshtml" />
+    <Content Include="Views\Subscribtions\_SubscriptionsList.cshtml" />
+    <Content Include="Views\Subscribtions\AddSubscriprion.cshtml" />
+    <Content Include="Views\Subscribtions\Authorize.cshtml" />
+    <Content Include="Views\Subscribtions\Compiledsubs.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

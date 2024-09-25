@@ -1,4 +1,5 @@
 ﻿
+
 @model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
 
 @if (Model != null && Model.Any())
@@ -44,55 +45,55 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SubID)
-                    </td>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubID)
+                        </td>
 
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SubNumShares) Shares
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Premium)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SubAmount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PaidSubscription)
-                    </td>
-                    <td style="background-color:cyan">
-                        @Html.DisplayFor(modelItem => item.UnpaidSubscription)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PaymentDueDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SubStatus)
-                    </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubNumShares) Shares
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Premium)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PaidSubscription)
+                        </td>
+                        <td style="background-color:cyan">
+                            @Html.DisplayFor(modelItem => item.UnpaidSubscription)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PaymentDueDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubStatus)
+                        </td>
 
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                    </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                        </td>
 
-                    <td>
-                        <!-- PaidAmount input field for each row -->
-                        <input type="number" id="paidAmount-@item.SubID" class="form-input" placeholder="Enter Paid Amount" min="0" max="@item.UnpaidSubscription" style="width: 150px;" />
+                        <td>
+                            <!-- PaidAmount input field for each row -->
+                            <input type="number" id="paidAmount-@item.SubID" class="form-input" placeholder="Enter Paid Amount" min="0" max="@item.UnpaidSubscription" style="width: 150px;" />
 
-                    </td>
-                    <td>
-                        <div class="flex space-x-2">
+                        </td>
+                        <td>
+                            <div class="flex space-x-2">
 
-                            <!-- Pay button with JavaScript click handler -->
-                            <a href="javascript:void(0);" onclick="payNow(@item.SubID, @item.ShID)" class="btn btn-warning px-4 py-2 text-white bg-yellow-500 hover:bg-yellow-600 rounded mt-2">
-                                Pay
-                            </a>
-                        </div>
-                    </td>
-                </tr>
+                                <!-- Pay button with JavaScript click handler -->
+                                <a href="javascript:void(0);" onclick="payNow(@item.SubID, @item.ShID)" class="btn btn-warning px-4 py-2 text-white bg-yellow-500 hover:bg-yellow-600 rounded mt-2">
+                                    Pay
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -103,7 +104,7 @@ else
     <p>No subscriptions found for the given Share ID.</p>
 }
 
-    <script>
+<script>
         function payNow(subID, shID) {
             // Get the PaidAmount value from the input field associated with the SubID
             var paidAmount = document.getElementById('paidAmount-' + subID).value;
@@ -127,4 +128,4 @@ else
                 ]
             });
         });
-    </script>
+</script>

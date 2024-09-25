@@ -10,45 +10,53 @@
 
 
 <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        #results {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 1280px;
-            margin: auto;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+
+    #results {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 1280px;
+        margin: auto;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
         .header h1 {
             color: #333;
         }
-        .card {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            transition: box-shadow 0.3s;
-        }
+
+    .card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px 0;
+        transition: box-shadow 0.3s;
+    }
+
         .card:hover {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
-        .card-title {
-            font-size: 1.2em;
-            margin: 0 0 10px 0;
-        }
-        .card-content {
-            color: #808080;
-        }
+
+    .card-title {
+        font-size: 1.2em;
+        margin: 0 0 10px 0;
+    }
+
+    .card-content {
+        color: #808080;
+    }
+
     .centered-container {
         display: flex;
         justify-content: center; /* Center horizontally */
@@ -57,17 +65,16 @@
         margin-top: 50px;
     }
 
-        .fixed-width {
-            width: 100%; /* Make it responsive */
-        }
-       
+    .fixed-width {
+        width: 100%; /* Make it responsive */
+    }
 </style>
 
 
 
 @*<div class="col-md-10">
-    @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "shareiddCopy" })
-</div>*@
+        @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "shareiddCopy" })
+    </div>*@
 
 <div class="centered-container">
     <div class="col-md-10" style="max-width: 800px; width: 100%;">
@@ -94,20 +101,20 @@
     </div>
 }
 
-    <body>
+<body>
 
-        <div id="results">
-            <div class="header">
-                <h1>SUBSCRIPTIONS </h1>
-            </div>
-            <div class="card">
-                <h2 class="card-title">DATA OF EACH SUBSCRIPTIONS </h2>
-                <p class="card-content">There is no Filtered Data </p>
-            </div>
-
+    <div id="results">
+        <div class="header">
+            <h1>SUBSCRIPTIONS </h1>
+        </div>
+        <div class="card">
+            <h2 class="card-title">DATA OF EACH SUBSCRIPTIONS </h2>
+            <p class="card-content">There is no Filtered Data </p>
         </div>
 
-    </body>
+    </div>
+
+</body>
 
 
 <script>

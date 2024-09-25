@@ -105,28 +105,28 @@
 
 
 @*@using (Html.BeginForm("FiltereData", "Subscribtions", FormMethod.Post, new { id = "filterForm" }))
-{
+    {
 
 
-    <div class="mb-5">
-  
-        <div class="flex justify-center">
-          
+        <div class="mb-5">
 
-            <div class="w-full max-w-md">
-                @Html.TextBox("ShareId", null, new { @class = "hidden", @placeholder = "Enter Share ID", id = "shareidd" })
+            <div class="flex justify-center">
+
+
+                <div class="w-full max-w-md">
+                    @Html.TextBox("ShareId", null, new { @class = "hidden", @placeholder = "Enter Share ID", id = "shareidd" })
+                </div>
+
             </div>
-
+            <div class="flex justify-center mt-2">
+                <input type="submit" value="Filter" class="btn btn-primary w-full max-w-md" />
+            </div>
         </div>
-        <div class="flex justify-center mt-2">
-            <input type="submit" value="Filter" class="btn btn-primary w-full max-w-md" />
-        </div>
-    </div>
-}*@
+    }*@
 
 @*<div id="results">
-     Results will be loaded here 
-</div>*@
+         Results will be loaded here
+    </div>*@
 
 
 @section Scripts {
