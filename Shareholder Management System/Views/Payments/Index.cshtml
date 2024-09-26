@@ -141,47 +141,41 @@
             <table class="table-striped">
                 <thead>
                     <tr>
-                        <th>@Html.DisplayNameFor(model => model.First().PaymentMode)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().PaymentDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Shareholder.ShareID)</th>
+                        <th>Shareholder's Name</th>
+                        <th>District</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Branch1.BranchName)</th>
+                        <th>Creation Date</th>
                         <th>@Html.DisplayNameFor(model => model.First().PaidAmount)</th>
                         <th>@Html.DisplayNameFor(model => model.First().ReferenceNum)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().PaymentDate)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().CreationDate)</th>
-
-
+                        <th>@Html.DisplayNameFor(model => model.First().PaymentMode)</th>
                         <th>@Html.DisplayNameFor(model => model.First().Remark)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Branch1.BranchCode)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Document.DocName)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Shareholder.ShareID)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Subscribtion.SubStatus)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().User.FullName)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().User1.FullName)</th>
+
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
-                            <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
-                            <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
-                            <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
-                            <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Remark)</td>
 
-
-                            <td>@Html.DisplayFor(modelItem => item.Remark)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Branch1.BranchCode)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Document.DocName)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Subscribtion.SubStatus)</td>
-                            <td>@Html.DisplayFor(modelItem => item.User.FullName)</td>
-                            <td>@Html.DisplayFor(modelItem => item.User1.FullName)</td>
-                            <td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.PayID }) |
-                                @Html.ActionLink("Details", "Details", new { id = item.PayID }) |
-                                @Html.ActionLink("Delete", "Delete", new { id = item.PayID })
-                            </td>
-                        </tr>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.PayID }) |
+                            @Html.ActionLink("Details", "Details", new { id = item.PayID }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = item.PayID })
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>

@@ -190,15 +190,20 @@ namespace Shareholder_Management_System.Controllers
                 // Join all payment details into a single string
                 payment.PaymentMode = string.Join(", ", PaymentMode);
 
+                int userId = Convert.ToInt32(Session["ID"]);
+                int branchId = Convert.ToInt32(Session["Branch"]);
+
                 // Handle document creation
                 if (uploadedFile != null && uploadedFile.ContentLength > 0)
                 {
+
                     Document document = new Document
                     {
+
                         DocOwner = "Shareholder",
                         DocType = "Payment Slip",
                         ShID = payment.ShID,
-                        CreatedBy = 2,
+                        CreatedBy = userId,
                         DocAuthorizationStatus = "Pending",
                         CreatedDate = DateTime.Now,
                     };
@@ -213,9 +218,9 @@ namespace Shareholder_Management_System.Controllers
                     {
                         // Assign the Document ID to the PaymentSlip property of the payment
                         payment.CreationDate = DateTime.Now;
-                        payment.CreatedBy = 2;
+                        payment.CreatedBy = userId;
                         payment.PaymentAuthorizationStatus = "pending";
-                        payment.Branch = 100;
+                        payment.Branch = branchId;
                         payment.PaymentSlip = documentId;
 
                         // Process the selected subscription ID (SubID is now bound to the payment object)
@@ -253,7 +258,7 @@ namespace Shareholder_Management_System.Controllers
                                 db.SaveChanges();
                                 // Call RecordLog method
                                 AuditLogsController auditLogsController = new AuditLogsController();
-                                //auditLogsController.RecordLog("register", payment.PayID, "Payment", payment.CreatedBy, payment.User.Branch);
+                                auditLogsController.RecordLog("register", payment.PayID, "Payment", payment.CreatedBy, Session["Branch"].ToString());
 
 
                                 return RedirectToAction("Index");

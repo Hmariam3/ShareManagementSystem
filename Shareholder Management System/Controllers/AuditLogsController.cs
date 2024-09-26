@@ -18,7 +18,7 @@ namespace Shareholder_Management_System.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RecordLog(string actionType, int transactionId, string tableName, int performedBy, string performerBranch)
+        public ActionResult RecordLog(string actionType, int transactionId, string tableName, int?  performedBy, string performerBranch)
         {
             // Generate the Message based on the ActionType and TableName
             string message = GenerateMessage(actionType, tableName);
@@ -30,7 +30,7 @@ namespace Shareholder_Management_System.Controllers
                 ActionType = actionType,
                 TransactionID = transactionId,
                 TableName = tableName,
-                PerformedBy = performedBy,
+                PerformedBy = performedBy ?? 0,
                 PerformerBranch = performerBranch,
                 TransactionDate = DateTime.Now // Set the current date and time
             };
