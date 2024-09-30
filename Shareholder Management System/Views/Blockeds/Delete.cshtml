@@ -1,0 +1,128 @@
+﻿@model Shareholder_Management_System.Models.Blocked
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Blocked</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BlockedAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BlockedAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BlockingOrgan)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BlockingOrgan)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateBlocked)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateBlocked)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RefNum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RefNum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Reason)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Reason)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BlockedAuthorizationStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BlockedAuthorizationStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AuthorizationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AuthorizationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Remark)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Remark)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Document.DocName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Document.DocName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Payment.PaymentMode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Payment.PaymentMode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder.ShareID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User1.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User1.FullName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

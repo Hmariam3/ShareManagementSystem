@@ -270,6 +270,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Commons\PasswordHash.cs" />
     <Compile Include="Controllers\AuditLogsController.cs" />
+    <Compile Include="Controllers\BlockedsController.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PasswordHasher.cs" />
@@ -461,6 +462,11 @@
     <Content Include="Views\Payments\Details.cshtml" />
     <Content Include="Views\Payments\Edit.cshtml" />
     <Content Include="Views\Payments\Index.cshtml" />
+    <Content Include="Views\Blockeds\Create.cshtml" />
+    <Content Include="Views\Blockeds\Delete.cshtml" />
+    <Content Include="Views\Blockeds\Details.cshtml" />
+    <Content Include="Views\Blockeds\Edit.cshtml" />
+    <Content Include="Views\Blockeds\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

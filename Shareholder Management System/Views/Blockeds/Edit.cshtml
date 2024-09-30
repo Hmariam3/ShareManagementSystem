@@ -1,0 +1,149 @@
+﻿@model Shareholder_Management_System.Models.Blocked
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container flex justify-center">
+        <div class="form-container" style="width: 100%; max-width: 800px; margin-top: 20px;">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.BlockID)
+
+            
+                <div class="col-span-2">
+                    <div class="panel">
+                        <div class="flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+                            <h5 class="text-lg font-semibold" style="padding:7px;">Edit Blocked Details</h5>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Left Column -->
+                            <div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ShID, "Shareholder ID", htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.PayID, "Payment ID", htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.DropDownList("PayID", null, htmlAttributes: new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.PayID, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.BlockedAmount, htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.EditorFor(model => model.BlockedAmount, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.BlockedAmount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.BlockingOrgan, htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.EditorFor(model => model.BlockingOrgan, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.BlockingOrgan, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.DateBlocked, htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.EditorFor(model => model.DateBlocked, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.DateBlocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.RefNum, htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.EditorFor(model => model.RefNum, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.RefNum, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group text-center mt-3">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.BlockedBy, "Blocked By", htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.DropDownList("BlockedBy", null, htmlAttributes: new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.BlockedBy, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.BlockingDoc, "Blocking Document", htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.DropDownList("BlockingDoc", null, htmlAttributes: new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.BlockingDoc, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.BlockedAuthorizationStatus, htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.EditorFor(model => model.BlockedAuthorizationStatus, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.BlockedAuthorizationStatus, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.AuthorizationDate, htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.EditorFor(model => model.AuthorizationDate, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.AuthorizationDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label" })
+                                    <div>
+                                        @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    @Html.ActionLink("Back to List", "Index")
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            
+
+            <!-- Submit Button -->
+            
+        </div>
+    </div>
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
