@@ -1,9 +1,8 @@
 ﻿using Shareholder_Management_System.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity; 
 
 namespace Shareholder_Management_System.Controllers
 {
@@ -16,38 +15,37 @@ namespace Shareholder_Management_System.Controllers
             _context = new Shareholder_Management_SystemEntities1();
         }
 
+        public ActionResult RecordLog()
+        {
+            var Auditlog = _context.AuditLogs.Include(a => a.User); // Ensure AuditLog has a User navigation property
+            return View(Auditlog.ToList());
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RecordLog(string actionType, int transactionId, string tableName, int?  performedBy, string performerBranch)
+        public ActionResult RecordLog(string actionType, int transactionId, string tableName, int performedBy, string performerBranch)
         {
-            // Generate the Message based on the ActionType and TableName
             string message = GenerateMessage(actionType, tableName);
 
-            // Create a new instance of AuditLog
             var auditLog = new AuditLog
             {
                 Message = message,
                 ActionType = actionType,
                 TransactionID = transactionId,
                 TableName = tableName,
-                PerformedBy = performedBy ?? 0,
+                PerformedBy = performedBy,
                 PerformerBranch = performerBranch,
-                TransactionDate = DateTime.Now // Set the current date and time
+                TransactionDate = DateTime.Now
             };
 
-            // Add the new audit log entry to the context
             _context.AuditLogs.Add(auditLog);
-
-            // Save changes to the database
             _context.SaveChanges();
 
-            // Redirect to Index or return success message
             return RedirectToAction("Index");
         }
 
         private string GenerateMessage(string actionType, string tableName)
         {
-            // Generate a message based on the action type
             switch (actionType.ToLower())
             {
                 case "register":
@@ -58,16 +56,9 @@ namespace Shareholder_Management_System.Controllers
                     return $"{tableName} successfully deleted.";
                 case "approve":
                     return $"{tableName} successfully approved.";
-                // Add other cases as needed
                 default:
-                    return $"{tableName} action performed.";
+                    return $"{actionType} action performed.";
             }
         }
-
-        //// GET: AuditLogs
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
     }
 }

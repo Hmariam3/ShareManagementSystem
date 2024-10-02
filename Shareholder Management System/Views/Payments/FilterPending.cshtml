@@ -1,4 +1,10 @@
-﻿@*@model IEnumerable<Shareholder_Management_System.Models.Payment>
+﻿@model IEnumerable<Shareholder_Management_System.Models.Payment>
+
+@{
+    ViewBag.Title = "FilterPending";
+}
+
+@*@model IEnumerable<Shareholder_Management_System.Models.Payment>
 
     @{
         ViewBag.Title = "Index";
@@ -124,11 +130,7 @@
 
 
 
-@model IEnumerable<Shareholder_Management_System.Models.Payment>
 
-@{
-    ViewBag.Title = "Index";
-}
 
 
 <div class="panel">
@@ -169,13 +171,11 @@
                         <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
                         <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
                         <td>@Html.DisplayFor(modelItem => item.Remark)</td>
-
                         <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.PayID }, new { @class = "btn btn-primary" })
-                            @Html.ActionLink("Details", "Details", new { id = item.PayID }, new { @class = "btn btn-info" })
-                            @Html.ActionLink("Delete", "Delete", new { id = item.PayID }, new { @class = "btn btn-danger" })
-                        </td>
 
+                            @Html.ActionLink("Authorization", "Authorize", new { id = item.PayID }, new { @class = "btn btn-primary" })
+
+                        </td>
                     </tr>
                     }
                 </tbody>

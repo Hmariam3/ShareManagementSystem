@@ -13,7 +13,12 @@ namespace Shareholder_Management_System.Controllers
     public class PaymentsController : Controller
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
-
+        // GET: Payments
+        public ActionResult FilterPending()
+        {
+            var payments = db.Payments.Include(p => p.Branch1).Include(p => p.Document).Include(p => p.Shareholder).Include(p => p.Shareholder1).Include(p => p.Subscribtion).Include(p => p.User).Include(p => p.User1).Where(a => a.PaymentAuthorizationStatus != "Approved");
+            return View(payments.ToList());
+        }
         // GET: Payments
         public ActionResult Index()
         {
@@ -218,53 +223,21 @@ namespace Shareholder_Management_System.Controllers
                     {
                         // Assign the Document ID to the PaymentSlip property of the payment
                         payment.CreationDate = DateTime.Now;
-                        payment.CreatedBy = userId;
+                        payment.CreatedBy = 1;
                         payment.PaymentAuthorizationStatus = "pending";
-                        payment.Branch = branchId;
+                        payment.Branch = 100;
                         payment.PaymentSlip = documentId;
 
-                        // Process the selected subscription ID (SubID is now bound to the payment object)
-                        var selectedSubID = payment.SubID;
 
-                        // Retrieve the associated Subscribtion entity
-                        var subscribtion = db.Subscribtions.Find(payment.SubID);
-                        if (!string.IsNullOrEmpty(subscribtion.ToString()))
-                        {
+                        // Save the payment
+                        db.Payments.Add(payment);
+                        db.SaveChanges();
 
-                            if (payment.PaidAmount > subscribtion.UnpaidSubscription)
-                            {
-                                TempData["Message"] = "Paid Amount cannot be greater than Unpaid Subscription.";
-                                return RedirectToAction("Create");
-                                //ModelState.AddModelError("PaidAmount", "Paid Amount cannot be greater than Unpaid Subscription.");
-                            }
-                            else
-                            {
-                                // Update the PaidSubscription and UnpaidSubscription properties
-                                subscribtion.PaidSubscription += payment.PaidAmount; // Increase PaidSubscription
-                                subscribtion.UnpaidSubscription -= payment.PaidAmount; // Decrease UnpaidSubscription
+                        string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
 
-                                // Check if the UnpaidSubscription is 0.00 and update SubStatus
-                                if (subscribtion.UnpaidSubscription <= 0.00m)
-                                {
-                                    subscribtion.UnpaidSubscription = 0.00m; // Ensure no negative values
-                                    subscribtion.SubStatus = "Fully Paid";
-                                }
-
-                                // Mark the subscribtion as modified
-                                db.Entry(subscribtion).State = EntityState.Modified;
-
-                                // Save the payment
-                                db.Payments.Add(payment);
-                                db.SaveChanges();
-                                // Call RecordLog method
-                                AuditLogsController auditLogsController = new AuditLogsController();
-                                auditLogsController.RecordLog("register", payment.PayID, "Payment", payment.CreatedBy, Session["Branch"].ToString());
-
-
-                                return RedirectToAction("Index");
-                            }
-
-                        }
+                        // Call RecordLog method with null-safe value for CreatedBy
+                        AuditLogsController auditLogsController = new AuditLogsController();
+                        auditLogsController.RecordLog("Registration", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
 
                     }
                     else
@@ -341,6 +314,12 @@ namespace Shareholder_Management_System.Controllers
 
             if (ModelState.IsValid)
             {
+                string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+
+                // Call RecordLog method with null-safe value for CreatedBy
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Edit", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+
                 db.Entry(payment).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -376,9 +355,107 @@ namespace Shareholder_Management_System.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Payment payment = db.Payments.Find(id);
+            string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+
+            // Call RecordLog method with null-safe value for CreatedBy
+            AuditLogsController auditLogsController = new AuditLogsController();
+            auditLogsController.RecordLog("Edit", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+
             db.Payments.Remove(payment);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult Authorize(int? id, string action)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Payment paymets = db.Payments.Find(id);
+            if (paymets == null)
+            {
+                return HttpNotFound();
+            }
+            return View(paymets);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public ActionResult Authorize(int id, string action)
+        {
+            Payment payment = db.Payments.Find(id);
+            if (payment == null)
+            {
+                return HttpNotFound();
+            }
+
+
+            if (action == "approve")
+            {
+                payment.PaymentAuthorizationStatus = "Approved";
+
+                var selectedSubID = payment.SubID;
+
+                // Retrieve the associated Subscribtion entity
+                var subscribtion = db.Subscribtions.Find(payment.SubID);
+                if (!string.IsNullOrEmpty(subscribtion.ToString()))
+                {
+
+                    if (payment.PaidAmount > subscribtion.UnpaidSubscription)
+                    {
+                        TempData["Message"] = "Paid Amount cannot be greater than Unpaid Subscription.";
+                        return RedirectToAction("Create");
+                        //ModelState.AddModelError("PaidAmount", "Paid Amount cannot be greater than Unpaid Subscription.");
+                    }
+                    else
+                    {
+                        // Update the PaidSubscription and UnpaidSubscription properties
+                        subscribtion.PaidSubscription += payment.PaidAmount; // Increase PaidSubscription
+                        subscribtion.UnpaidSubscription -= payment.PaidAmount; // Decrease UnpaidSubscription
+
+                        // Check if the UnpaidSubscription is 0.00 and update SubStatus
+                        if (subscribtion.UnpaidSubscription <= 0.00m)
+                        {
+                            subscribtion.UnpaidSubscription = 0.00m; // Ensure no negative values
+                            subscribtion.SubStatus = "Fully Paid";
+                        }
+
+                        // Mark the subscribtion as modified
+                        db.Entry(subscribtion).State = EntityState.Modified;
+
+                        // Save the payment
+                        //db.Payments.Add(paymets);
+                        db.SaveChanges();
+                        string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+
+                        // Call RecordLog method with null-safe value for CreatedBy
+                        AuditLogsController auditLogsController = new AuditLogsController();
+                        auditLogsController.RecordLog("Approval", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+
+
+                        return RedirectToAction("Index");
+                    }
+
+                }
+            }
+            else if (action == "reject")
+            {
+                string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+
+                // Call RecordLog method with null-safe value for CreatedBy
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Rejection", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+                payment.PaymentAuthorizationStatus = "Rejected";              
+            }
+
+
+            db.Entry(payment).Property(u => u.PaymentAuthorizationStatus).IsModified = true;
+            db.SaveChanges();
+
+            return RedirectToAction("FilterPending");
         }
 
         protected override void Dispose(bool disposing)
