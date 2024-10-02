@@ -46,54 +46,54 @@
                     <div>
                         <div class="mb-5">
                             @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "control-label" })
-                            @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-input" })
+                            @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-input", @Readonly = "Readonly" })
                             @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="mb-5">
                             @Html.LabelFor(model => model.SubNumShares, htmlAttributes: new { @class = "control-label" })
-                            @Html.EditorFor(model => model.SubNumShares, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.EditorFor(model => model.SubNumShares, new { htmlAttributes = new { @class = "form-input", @Readonly = "Readonly" } })
                             @Html.ValidationMessageFor(model => model.SubNumShares, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="mb-5">
                             @Html.LabelFor(model => model.Premium, htmlAttributes: new { @class = "control-label" })
-                            @Html.EditorFor(model => model.Premium, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.EditorFor(model => model.Premium, new { htmlAttributes = new { @class = "form-input", @Readonly = "Readonly" } })
                             @Html.ValidationMessageFor(model => model.Premium, "", new { @class = "text-danger" })
                         </div>
-
                         <div class="mb-5">
-                            @Html.LabelFor(model => model.PaidSubscription, htmlAttributes: new { @class = "control-label" })
-                            @Html.EditorFor(model => model.PaidSubscription, new { htmlAttributes = new { @class = "form-input" } })
-                            @Html.ValidationMessageFor(model => model.PaidSubscription, "", new { @class = "text-danger" })
-                        </div>
-                        <div class="mb-5">
-                            @Html.LabelFor(model => model.SubTransferFrom, "SubTransferFrom", htmlAttributes: new { @class = "control-label" })
-                            @Html.DropDownList("SubTransferFrom", null, htmlAttributes: new { @class = "form-input", @readonly = "readonly" })
-                            @Html.ValidationMessageFor(model => model.SubTransferFrom, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <!-- Right Column -->
-                    <div>
-
-
-                        <div class="mb-5">
-                            @Html.LabelFor(model => model.PaymentDueDate, htmlAttributes: new { @class = "control-label" })
-                            @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { @class = "form-input" } })
-                            @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
+                            @Html.LabelFor(model => model.SubDate, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.SubDate, new { htmlAttributes = new { @class = "form-input", @Readonly = "Readonly" } })
+                            @Html.ValidationMessageFor(model => model.SubDate, "", new { @class = "text-danger" })
                         </div>
 
                         <div class="mb-5">
                             @Html.LabelFor(model => model.SubStatus, htmlAttributes: new { @class = "control-label" })
-                            @Html.EditorFor(model => model.SubStatus, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.EditorFor(model => model.SubStatus, new { htmlAttributes = new { @class = "form-input", @Readonly = "Readonly" } })
                             @Html.ValidationMessageFor(model => model.SubStatus, "", new { @class = "text-danger" })
                         </div>
 
+                    </div>
+
+                    <!-- Right Column -->
+                    <div>
                         <div class="mb-5">
-                            @Html.LabelFor(model => model.SubDate, htmlAttributes: new { @class = "control-label" })
-                            @Html.EditorFor(model => model.SubDate, new { htmlAttributes = new { @class = "form-input" } })
-                            @Html.ValidationMessageFor(model => model.SubDate, "", new { @class = "text-danger" })
+                            <label>Share Transfer From  </label>
+                            @Html.DropDownList("SubTransferFrom", null, htmlAttributes: new { @class = "form-input", @Readonly = "Readonly" })
+                            @Html.ValidationMessageFor(model => model.SubTransferFrom, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="mb-5">
+                            <label>Paid Subscription <span style="color:red">*</span> </label>
+                            @Html.EditorFor(model => model.PaidSubscription, new { htmlAttributes = new { @class = "form-input" } })
+                            @Html.ValidationMessageFor(model => model.PaidSubscription, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-5">
+                            <label>Subscription Due Date <span style="color:red">*</span> </label>
+                            @*@Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { @class = "form-input" } })*@
+                            @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { @class = "form-input", type = "date", Value = Model.PaymentDueDate.Value.ToString("yyyy-MM-dd") } })
+
+                            @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
                         </div>
                         <div class="mb-5">
                             @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label" })

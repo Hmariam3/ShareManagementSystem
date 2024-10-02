@@ -100,6 +100,11 @@ namespace Share.Controllers
 
 
 
+        public ActionResult PendingSubscription()
+        {
+            var subscribtions = db.Subscribtions.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1).Where(a => a.SubAuthorizationStatus != "Approved");
+            return View(subscribtions.ToList());
+        }
 
         public ActionResult Index()
         {
@@ -135,7 +140,10 @@ namespace Share.Controllers
         public ActionResult Create()
         {
 
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
+            //ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
+            //ViewBag.ShID = new SelectList(db.Shareholders.Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
@@ -149,7 +157,6 @@ namespace Share.Controllers
         public ActionResult Create([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscribtion)
         {
             int branch = Convert.ToInt32(Session["ID"]);
-
             if (ModelState.IsValid)
             {
                 db.Subscribtions.Add(subscribtion);
@@ -159,6 +166,7 @@ namespace Share.Controllers
                 subscribtion.SubStatus = "UnPaid";
                 subscribtion.SubAuthorizationStatus = "Pending";
                 subscribtion.CreatedBy = branch;
+                subscribtion.SubAuthorizer = null;
                 //subscribtion.CreatedBy = Session["Username"];
 
                 subscribtion.SubAmount = subscribtion.SubNumShares * 1000;
@@ -171,7 +179,7 @@ namespace Share.Controllers
                 return RedirectToAction("Create");
             }
 
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", subscribtion.ShID);
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "ShareID", subscribtion.SubTransferFrom);
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
@@ -186,7 +194,7 @@ namespace Share.Controllers
         {
             //ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng");
             // ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng");
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
@@ -200,7 +208,6 @@ namespace Share.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddSubscriprion([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscription)
         {
-
             int userdata = Convert.ToInt32(Session["ID"]);
 
             if (ModelState.IsValid)
@@ -227,9 +234,10 @@ namespace Share.Controllers
                     existingSubscription.SubAuthorizationStatus = "Pending"; // Update the authorization status (or retain the existing one)
                     existingSubscription.AuthorizedDate = null;
 
-                    // Mark the subscription as modified and save the changes
                     existingSubscription.CreatedBy = userdata;
                     existingSubscription.SubAuthorizer = null;
+
+                    // Mark the subscription as modified and save the changes
                     db.Entry(existingSubscription).State = EntityState.Modified;
                     db.SaveChanges();
 
@@ -243,7 +251,7 @@ namespace Share.Controllers
             }
 
             // If the model state is not valid, reload the view with the previous data
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscription.ShID);
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscription.SubTransferFrom);
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscription.SubAuthorizer);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscription.CreatedBy);
@@ -275,7 +283,8 @@ namespace Share.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.ShID);
+            //ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.ShID);
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.SubTransferFrom);
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
@@ -321,10 +330,11 @@ namespace Share.Controllers
                 {
                     subscribtion.UnpaidSubscription = subscribtion.SubAmount - subscribtion.PaidSubscription;
                 }
+
                 subscribtion.CreatedBy = userdata;
                 subscribtion.SubAuthorizer = null;
-
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "Subscription Updated successfully.";
                 return RedirectToAction("Index");
             }
 
@@ -356,10 +366,32 @@ namespace Share.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Subscribtion subscribtion = db.Subscribtions.Find(id);
-            db.Subscribtions.Remove(subscribtion);
-            db.SaveChanges();
+
+            if (subscribtion != null)
+            {
+                if (subscribtion.SubAuthorizationStatus != "Approved")
+                {
+                    db.Subscribtions.Remove(subscribtion);
+                    db.SaveChanges();
+
+                    // Success message
+                    TempData["SuccessMessage"] = "Subscription deleted successfully.";
+                }
+                else
+                {
+                    // Error message for approved subscriptions
+                    TempData["ErrorMessage"] = "Cannot delete approved subscriptions.";
+                }
+            }
+            else
+            {
+                // Error message if subscription is not found
+                TempData["ErrorMessage"] = "Subscription not found.";
+            }
+
             return RedirectToAction("Index");
         }
+
 
 
 
@@ -383,9 +415,8 @@ namespace Share.Controllers
 
         public ActionResult Authorize(int id, string action)
         {
-            int userdata = Convert.ToInt32(Session["ID"]);
-
             Subscribtion subscribtion = db.Subscribtions.Find(id);
+            int userdata = Convert.ToInt32(Session["ID"]);
             if (subscribtion == null)
             {
                 return HttpNotFound();
@@ -397,18 +428,21 @@ namespace Share.Controllers
             if (action == "approve")
             {
                 subscribtion.SubAuthorizationStatus = "Approved";
+                TempData["SuccessMessage"] = "Subscription Approved successfully.";
             }
             else if (action == "reject")
             {
                 subscribtion.SubAuthorizationStatus = "Rejected";
+                TempData["SuccessMessage"] = "Subscription Rejected successfully.";
             }
+
             subscribtion.SubAuthorizer = userdata;
             subscribtion.AuthorizedDate = DateTime.Now;
 
             db.Entry(subscribtion).Property(u => u.SubStatus).IsModified = true;
             db.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("PendingSubscription");
         }
 
 
@@ -451,3 +485,4 @@ namespace Share.Controllers
         }
     }
 }
+

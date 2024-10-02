@@ -63,6 +63,7 @@
         max-width: 800px; /* Set maximum width */
         margin: 0 auto; /* Center the container itself */
         margin-top: 50px;
+        margin-bottom: 20px;
     }
 
     .fixed-width {
@@ -82,58 +83,41 @@
     </div>
 </div>
 
-
-@using (Html.BeginForm("FiltereData", "Subscribtions", FormMethod.Post, new { id = "filterForm" }))
-{
-
-
-    <div class="mb-5">
-        @*@Html.Label("ShareId", "Select Share ID", new { @class = "control-label" })*@
-        <div class="flex justify-center">
-            <div class="w-full max-w-md">
-                @Html.TextBox("ShareId", null, new { @class = "hidden", @placeholder = "Enter Share ID", id = "shareidd", @required = "required" })
-
-            </div>
-        </div>
-        <div class="flex justify-center mt-2">
-            <input type="submit" value="Filter" class="btn btn-primary w-full max-w-md" />
-        </div>
-    </div>
-}
-
 <body>
-
     <div id="results">
         <div class="header">
-            <h1>SUBSCRIPTIONS </h1>
+            <h1>SUBSCRIPTIONS</h1>
         </div>
         <div class="card">
-            <h2 class="card-title">DATA OF EACH SUBSCRIPTIONS </h2>
-            <p class="card-content">There is no Filtered Data </p>
+            <h2 class="card-title">DATA OF EACH SUBSCRIPTION</h2>
+            <p class="card-content">There is no Filtered Data</p>
         </div>
-
     </div>
-
 </body>
-
 
 <script>
     $(document).ready(function () {
+        // Initialize Select2 for the dropdown
         $('#shareiddCopy').select2({
             placeholder: 'Select Shareholder',
             allowClear: true
         });
 
-        $('#shareiddCopy').on('input', function () {
-            $('#shareidd').val($(this).val());
-        });
+        // Event handler for dropdown change
+        $('#shareiddCopy').on('change', function () {
+            var selectedShareId = $(this).val();
 
-        $('#filterForm').submit(function (event) {
-            event.preventDefault(); // Prevent the default form submission
-            $.post($(this).attr('action'), $(this).serialize(), function (data) {
-                $('#results').html(data); // Load the partial view into the results div
-            }).fail(function () {
-                $('#results').html('<p>An error occurred while fetching data.</p>');
+            // AJAX request to fetch filtered data based on selected shareholder
+            $.ajax({
+                url: '@Url.Action("FiltereData", "Subscribtions")',
+                type: 'POST',
+                data: { ShareId: selectedShareId },
+                success: function (data) {
+                    $('#results').html(data); // Load the partial view into the results div
+                },
+                error: function () {
+                    $('#results').html('<p>An error occurred while fetching data.</p>');
+                }
             });
         });
     });

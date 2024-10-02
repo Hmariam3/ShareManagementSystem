@@ -1,11 +1,8 @@
 ﻿@model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "PendingSubscription";
 }
-
-
-
 
 
 <link href="~/Scripts/Datatables/datatables.min.css" rel="stylesheet" />
@@ -27,12 +24,11 @@
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
 
 
+!-- Pop-up Modal -->
 @{
     var successMessage = TempData["SuccessMessage"] as string;
     var errorMessage = TempData["ErrorMessage"] as string;
 }
-
-<!-- Pop-up Modal -->
 @if (!string.IsNullOrEmpty(successMessage) || !string.IsNullOrEmpty(errorMessage))
 {
     <div id="popup-message" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -69,16 +65,14 @@
         // Automatically hide the pop-up after 5 seconds
         setTimeout(function () {
             document.getElementById("popup-message").style.display = "none";
-        }, 5000);
+        }, 2000);
     </script>
 }
 
 
 
-
-
 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Subscribers Data</h5>
+    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Pending Subscriptions</h5>
 </div>
 <div style="overflow-x: auto; height: 700px;">
     <table id="subscriptionTable" class="display" style="width:100%">
@@ -131,8 +125,7 @@
 
                 <td class="border border-gray-300 px-4 py-2">
                     <div class="flex space-x-2">
-                        <a href="@Url.Action("Edit", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded">Edit</a>
-                        <a href="@Url.Action("Delete", new { id = item.SubID })" class="btn btn-danger px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded">Delete</a>
+                        <a href="@Url.Action("Authorize", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded">Authorization</a>
                     </div>
                 </td>
             </tr>

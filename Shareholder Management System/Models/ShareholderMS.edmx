@@ -259,6 +259,16 @@
           <Property Name="AuthorizedDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UID" />
@@ -853,6 +863,7 @@
           <EntitySet Name="ShareTransfer" EntityType="Self.ShareTransfer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ShCategories" EntityType="Self.ShCategories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Subscribtion" EntityType="Self.Subscribtion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_AuditLog_User" Association="Self.FK_AuditLog_User">
             <End Role="User" EntitySet="User" />
@@ -1375,6 +1386,16 @@
           <NavigationProperty Name="ShareTransfers" Relationship="Self.FK_ShareTransfer_Subscribtion" FromRole="Subscribtion" ToRole="ShareTransfer" />
           <NavigationProperty Name="User" Relationship="Self.FK_Subscribtion_User" FromRole="Subscribtion" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="Self.FK_Subscribtion_User1" FromRole="Subscribtion" ToRole="User" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -1976,7 +1997,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Shareholder_Management_SystemEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="Shareholder_Management_SystemEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AuditLogs" EntityType="Self.AuditLog" />
           <EntitySet Name="Blockeds" EntityType="Self.Blocked" />
           <EntitySet Name="Branches" EntityType="Self.Branch" />
@@ -1990,6 +2011,7 @@
           <EntitySet Name="ShareTransfers" EntityType="Self.ShareTransfer" />
           <EntitySet Name="ShCategories" EntityType="Self.ShCategory" />
           <EntitySet Name="Subscribtions" EntityType="Self.Subscribtion" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <AssociationSet Name="FK_AuditLog_User" Association="Self.FK_AuditLog_User">
             <End Role="User" EntitySet="Users" />
@@ -2185,7 +2207,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Shareholder_Management_SystemEntities1">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Shareholder_Management_SystemEntities">
           <EntitySetMapping Name="AuditLogs">
             <EntityTypeMapping TypeName="Model.AuditLog">
               <MappingFragment StoreEntitySet="AuditLog">
@@ -2450,6 +2472,17 @@
                 <ScalarProperty Name="SubAuthorizer" ColumnName="SubAuthorizer" />
                 <ScalarProperty Name="AuthorizedDate" ColumnName="AuthorizedDate" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="Model.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

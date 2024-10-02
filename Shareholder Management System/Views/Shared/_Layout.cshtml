@@ -411,12 +411,21 @@
                                             <a href="~/Subscribtions/Index">View Subscription</a>
                                         </li>
                                         <li>
-                                            <a href="~/Subscribtions/Filter">Subscription Payment</a>
+                                            <a href="~/Subscribtions/Filter">Pay Subscription</a>
                                         </li>
+                                        @if (Session["Roles"] != null)
+                                        {
+                                            if (Session["Roles"].Equals("Authorizer") || Session["Roles"].Equals("Administrator"))
+                                            {
                                         <li>
-                                            <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
+                                            <a href="~/Subscribtions/PendingSubscription">Manage Subsc</a>
                                         </li>
-                                    </ul>
+                                            }
+                                        }
+                                                <li>
+                                                    <a href="~/Subscribtions/Compiledsubs">Compiled Subsc</a>
+                                                </li>
+                                            </ul>
                                 </li>
                                 <li class="menu nav-item">
                                     <button type="button"
