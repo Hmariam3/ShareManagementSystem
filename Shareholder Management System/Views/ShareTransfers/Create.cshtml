@@ -29,7 +29,7 @@
                                 <label for="shid">Transfer From</label>
                                 @Html.DropDownList("TransferrorShID",
                                     new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                    htmlAttributes: new { id = "searchable-select_1" }
+                                    htmlAttributes: new {  @id = "TransferrorShID" }
                                 )
                             </div>
 
@@ -462,7 +462,7 @@
         var options = {
             searchable: true
         };
-        NiceSelect.bind(document.getElementById("searchable-select_1"), options);
+        NiceSelect.bind(document.getElementById("TransferrorShID"), options);
     });
 
     // Get the shareholder info
