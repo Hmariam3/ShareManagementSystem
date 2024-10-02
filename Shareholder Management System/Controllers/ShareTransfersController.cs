@@ -43,6 +43,20 @@ namespace Shareholder_Management_System.Controllers
             // Fetch the subscriptions for the dropdowns
             var subscriptions = db.Subscribtions.ToList();
 
+            // Fetch the shareholder for the dropdowns
+            var shareholders = db.Shareholders.Select(s => new SelectListItem
+            {
+                Value = s.ShID.ToString(), // ShID as value
+                Text = s.FullNameEng // FullNameEng as text
+            }).ToList();
+            shareholders.Insert(0, new SelectListItem
+            {
+                Value = "", // Null value for the default option
+                Text = "Select a Shareholder" // Text for the default option
+            });
+
+            ViewBag.Shareholders = shareholders;
+
             // Pass subscriptions data to the view
             ViewBag.Subscriptions = subscriptions;
 

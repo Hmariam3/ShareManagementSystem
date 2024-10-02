@@ -1,5 +1,8 @@
 ﻿@model Shareholder_Management_System.Models.ShareTransfer
 
+<link rel="stylesheet" type="text/css" href="~/Content/CSS/nice-select2.css">
+<script src="~/Scripts/JS/nice-select2.js"></script>
+
 @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -20,25 +23,22 @@
 
                     <div class="mb-5">
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div>
-                                <label>Transfer From</label>
-                                @Html.DropDownList("TransferrorShID", null, "Select Shareholder Name", new { @class = "form-input", @id = "TransferrorShID" })
-                                @Html.ValidationMessageFor(model => model.TransferrorShID, "", new { @class = "text-danger" })
-                                @*<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
-                                        <br />
-                                        <input type="textbox" class="form-input mt-1" placeholder="Share Id" />
-                                    </div>*@
 
+
+                            <div>
+                                <label for="shid">Transfer From</label>
+                                @Html.DropDownList("TransferrorShID",
+                                    new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
+                                    htmlAttributes: new { id = "searchable-select_1" }
+                                )
                             </div>
 
                             <div>
-                                <label>Transfer To</label>
-                                @Html.DropDownList("TransfareeShID", null, "Select Shareholder Name", htmlAttributes: new { @class = "form-input" })
-                                @Html.ValidationMessageFor(model => model.TransfareeShID, "", new { @class = "text-danger" })
-                                @*<div class="grid grid-cols-1 gap-10 sm:grid-cols-2">
-                                        <br />
-                                        <input type="textbox" class="form-input mt-1" placeholder="Share Id" />
-                                    </div>*@
+                                <label for="shid">Transfer To</label>
+                                @Html.DropDownList("TransfareeShID",
+                                    new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
+                                    htmlAttributes: new { id = "searchable-select_2" }
+                                )
                             </div>
                         </div>
                         <br />
@@ -455,5 +455,21 @@
         var currentDate = new Date().toISOString().split('T')[0];
         // Set the value of the CreationDate input field
         $('#creationDateField').val(currentDate);
+    });
+
+    // Get the shareholder info
+    document.addEventListener("DOMContentLoaded", function (e) {
+        var options = {
+            searchable: true
+        };
+        NiceSelect.bind(document.getElementById("searchable-select_1"), options);
+    });
+
+    // Get the shareholder info
+    document.addEventListener("DOMContentLoaded", function (e) {
+        var options = {
+            searchable: true
+        };
+        NiceSelect.bind(document.getElementById("searchable-select_2"), options);
     });
 </script>
