@@ -1,199 +1,459 @@
 ﻿@model Shareholder_Management_System.Models.ShareTransfer
 
-@{
-    ViewBag.Title = "Create Share Transfer";
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="animate__animated p-3" :class="[$store.app.animation]">
+        <!-- start main content section -->
+        <div x-data="form">
+            <div class="flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+                <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Share Transfer Form</h5>
+            </div>
+            <div class="grid grid-cols-1 gap-6 pt-5 ">
+                <!-- Column One -->
+                <div class="panel">
+                    <div class="mb-5 flex items-center justify-between">
+                        @*<h5 class="text-lg font-semibold dark:text-white-light">Untitled Input</h5>*@
+                    </div>
+
+                    <div class="mb-5">
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label>Transfer From</label>
+                                @Html.DropDownList("TransferrorShID", null, "Select Shareholder Name", new { @class = "form-input", @id = "TransferrorShID" })
+                                @Html.ValidationMessageFor(model => model.TransferrorShID, "", new { @class = "text-danger" })
+                                @*<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                                        <br />
+                                        <input type="textbox" class="form-input mt-1" placeholder="Share Id" />
+                                    </div>*@
+
+                            </div>
+
+                            <div>
+                                <label>Transfer To</label>
+                                @Html.DropDownList("TransfareeShID", null, "Select Shareholder Name", htmlAttributes: new { @class = "form-input" })
+                                @Html.ValidationMessageFor(model => model.TransfareeShID, "", new { @class = "text-danger" })
+                                @*<div class="grid grid-cols-1 gap-10 sm:grid-cols-2">
+                                        <br />
+                                        <input type="textbox" class="form-input mt-1" placeholder="Share Id" />
+                                    </div>*@
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <!-- Transfer Type Dropdown -->
+                            <div class="col-md-10">
+                                <!-- Transfer Type Dropdown -->
+                                <label>Transfer Type</label>
+                                @Html.DropDownListFor(model => model.TransferType,
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "Subscription", Value = "Subscription" },
+                                        new SelectListItem { Text = "Payment", Value = "Payment" },
+                                        new SelectListItem { Text = "Share", Value = "Share" }
+                                    }, "Select Transfer Type", new { @class = "form-input", id = "transferTypeDropdown" })
+                            </div>
+                            <!-- Choose Type Radio Buttons -->
+                            <div class="flex flex-col sm:flex-row mt-6" id="chooseTypeDiv" style="display: none;">
+                                <label class="rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Choose Type</label>
+                                <div class="flex-1">
+                                    <div class="mb-2">
+                                        <label class="mt-1 inline-flex cursor-pointer">
+                                            <input type="radio" name="chooseType" value="Full" class="form-radio" id="chooseTypeFull">
+                                            <span class="text-white-dark">Full</span>
+                                        </label>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="mt-1 inline-flex cursor-pointer">
+                                            <input type="radio" name="chooseType" value="Partial" class="form-radio" id="chooseTypePartial">
+                                            <span class="text-white-dark">Partial</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="mb-5 flex items-center justify-between">
+                                <h5 class="text-lg font-semibold dark:text-white-light">Subscription and Payment Status</h5>
+                            </div>
+                            <div class="mb-5">
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <!-- Subscriptions Table -->
+                                    <table id="subscriptionsTable">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Sub ID</th>
+                                                <th>No Of Shares</th>
+                                                <th>Paid Shares</th>
+                                                <th>Unpaid Shares</th>
+                                                <th>Partial Transfer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Rows will be added here -->
+                                        </tbody>
+                                    </table>
+                                    <!-- Payments Table -->
+                                    <table id="paymentsTable">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Pay ID</th>
+                                                <th>Paid Amount</th>
+                                                <th>Partial Transfer</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Rows will be added here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            <!-- No of Shares Transferred -->
+                            <div class="col-md-10">
+                                <label>No of Shares Transferred</label>
+                                @Html.TextBoxFor(model => model.NumSharesTransferred, new { @class = "form-input", @readonly = "readonly", @id = "numSharesTransferred" })
+                                @Html.ValidationMessageFor(model => model.NumSharesTransferred, "", new { @class = "text-danger" })
+                            </div>
+                            <!-- Amount Per Share (read-only) -->
+                            <div class="col-md-10">
+                                <label>Amount Per Share</label>
+                                @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "1000", @readonly = "readonly", @id = "amountPerShare" })
+                                @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-danger" })
+                            </div>
+                            <!-- Paid Amount for Transfer (read-only, calculated) -->
+                            <div class="col-md-10">
+                                <label>Paid Amount for Share</label>
+                                @Html.TextBoxFor(model => model.PaidAmountForTransfer, new { @class = "form-input", @readonly = "readonly", @id = "paidAmountForTransfer" })
+                                @Html.ValidationMessageFor(model => model.PaidAmountForTransfer, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            <div class="col-md-10">
+                                <label>Dividend For</label>
+                                @Html.DropDownListFor(model => model.DividenedFor,
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "Transferor", Value = "Transferor" },
+                                        new SelectListItem { Text = "Transferee", Value = "Transferee" },
+                                        new SelectListItem { Text = "Both", Value = "Both" }
+                                    }, "Select Dividend For", new { @class = "form-input" })
+                                @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
+                                <label>Transfer Date</label>
+                                @Html.HiddenFor(model => model.TransferDate, new { @class = "form-input", @type = "date" })
+                                @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
+                                <label>Transfer Document</label>
+                                @Html.TextBoxFor(model => model.TransferDoc, new { type = "file", @class = "form-input" })
+                                @Html.ValidationMessageFor(model => model.TransferDoc, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div class="col-md-10">
+                                <label>Remark</label>
+                                @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input" } })
+                                @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
+                                <label>Transfer Reason</label>
+                                @Html.TextAreaFor(model => model.TransferReason, new { @class = "form-input", @rows = 1, @cols = 40 })
+                                @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+                        <div class="mb-5">
+                            @*<div class="col-md-10">
+                                    <label>Subscriptions</label>
+                                    @Html.DropDownList("SubID", null, htmlAttributes: new { @class = "form-input" })
+                                    @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-danger" })
+
+                                </div>
+                                <br />
+                                <div class="col-md-10">
+                                    <label>Payments</label>
+                                    @Html.DropDownList("PayID", null, htmlAttributes: new { @class = "form-input" })
+                                    @Html.ValidationMessageFor(model => model.PayID, "", new { @class = "text-danger" })
+
+                                </div>*@
+
+                            <div class="col-md-10" style="display: none;">
+                                <label>Created By</label>
+                                @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-input" })
+                                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10" style="display: none;">
+                                <label>Creation Date</label>
+                                @Html.HiddenFor(model => model.CreationDate, new { @id = "creationDateField", @class = "form-input", @type = "date" })
+                                @Html.ValidationMessageFor(model => model.CreationDate, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10" style="display: none;">
+                                <label>Authorization Status</label>
+                                @Html.TextBoxFor(model => model.TransferAuthorizationStatus, new { htmlAttributes = new { @class = "form-input" } })
+                                @Html.ValidationMessageFor(model => model.TransferAuthorizationStatus, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10" style="display: none;">
+                                <label>Authorizer</label>
+                                @Html.DropDownList("TransferAuthorizer", null, htmlAttributes: new { @class = "form-input" })
+                                @Html.ValidationMessageFor(model => model.TransferAuthorizer, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10" style="display: none;">
+                                <label>Authorization Date</label>
+                                @Html.HiddenFor(model => model.TransferAuthorizationDate, new { @class = "form-input", @type = "date" })
+                                @Html.ValidationMessageFor(model => model.TransferAuthorizationDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column Two -->
+                @*<div class="panel">
+                        Preview
+
+                    </div>*@
+            </div>
+
+
+            <div class="btn btn-primary mt-1">
+                <input type="submit" value="Submit" class="btn btn-default" />
+            </div>
+
+
+        </div>
+    </div>
 }
 
-<div class="w-full max-w-6xl mx-auto p-6 bg-white shadow-md rounded-md">
-    <h2 class="text-2xl font-semibold mb-6">Create Share Transfer</h2>
+<script src="~/Scripts/JS/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        let transferType = '';
+        let chooseType = '';
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+        // Handle Transfer Type selection
+        $('#transferTypeDropdown').change(function () {
+            transferType = $(this).val();
+            var chooseTypeDiv = $('#chooseTypeDiv');
+            var chooseTypeFull = $('#chooseTypeFull');
+            var chooseTypePartial = $('#chooseTypePartial');
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Transferor (Shareholder) ID -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransferrorShID, "Transferor Shareholder ID", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.DropDownList("TransferrorShID", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "TransferrorShID" })
-            @Html.ValidationMessageFor(model => model.TransferrorShID, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+            // Show the "Choose Type" radio buttons based on Transfer Type
+            chooseTypeDiv.show();
 
-        <!-- Transferee (Shareholder) ID -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransfareeShID, "Transferee Shareholder ID", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.DropDownList("TransfareeShID", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "TransfareeShID" })
-            @Html.ValidationMessageFor(model => model.TransfareeShID, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+            if (transferType === 'Share') {
+                chooseTypeFull.prop('checked', true);
+                chooseTypeFull.prop('disabled', true);
+                chooseTypePartial.prop('disabled', true);
+                disableAllCheckboxes(true);
+            } else if (transferType === 'Subscription' || transferType === 'Payment') {
+                chooseTypeFull.prop('disabled', false);
+                chooseTypePartial.prop('disabled', false);
+                handleSubscriptionAndPaymentTables();
+            }
+        });
 
-        <!-- Transfer Type -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransferType, "Transfer Type", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.DropDownListFor(model => model.TransferType, new SelectList(new List<string> { "Subscription", "Payment", "Share" }),
-                              "-- Select Transfer Type --",
-                              new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "transferType" })
-            @Html.ValidationMessageFor(model => model.TransferType, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+        // On change of the 'Transfer From' dropdown (shareholder selection)
+        $('#TransferrorShID').change(function () {
+            var shareholderId = $(this).val();
 
-        <!-- Subscription ID -->
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.SubID, "Subscription ID", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.DropDownList("SubID", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md" })
-            @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+            // Reset both tables
+            $('#subscriptionsTable tbody').empty();
+            $('#paymentsTable tbody').empty();
 
-        <!-- Payment ID -->
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.PayID, "Payment ID", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.DropDownList("PayID", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md" })
-            @Html.ValidationMessageFor(model => model.PayID, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+            // Fetch the subscriptions for the selected shareholder
+            $.ajax({
+                url: '/ShareTransfers/GetShareholderData',
+                type: 'GET',
+                data: { shareholderId: shareholderId },
+                success: function (data) {
+                    // Populate the Subscriptions Table
+                    $.each(data.subscriptions, function (index, subscription) {
+                        $('#subscriptionsTable tbody').append(`
+                        <tr>
+                            <td><input type="checkbox" class="form-checkbox subscription-checkbox" data-subscription-id="${subscription.SubID}"></td>
+                            <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
+                            <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
+                            <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 1000)}" readonly /></td>
+                            <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 1000)}" readonly /></td>
+                            <td><input type="textbox" class="form-input partial-transfer-input" ${transferType === 'Subscription' && chooseType === 'Partial' ? '' : 'readonly'} placeholder="" /></td>
+                        </tr>
+                    `);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+        // Handle Choose Type and Transfer Type logic
+        $('input[name="chooseType"]').change(function () {
+            chooseType = $('input[name="chooseType"]:checked').val();
+            console.log("Choose Type: ", chooseType);
+            console.log("Transfer Type: ", transferType);
 
-        <!-- Number of Shares Transferred -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.NumSharesTransferred, "Number of Shares Transferred", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.TextBoxFor(model => model.NumSharesTransferred, new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "numShares" })
-            @Html.ValidationMessageFor(model => model.NumSharesTransferred, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
-        <!-- Result of Shares Transferred -->
-        <div class="form-group">
-            @Html.Label("Calculated Shares", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            <input type="text" id="calculatedShares" class="form-control w-full mt-1 p-2 border rounded-md" readonly />
-        </div>
+            // Reset the subscription checkboxes and clear payment table for every change in Choose Type
+            $('.subscription-checkbox').prop('disabled', false).prop('checked', false);
+            $('#paymentsTable tbody').empty();
 
-        <!-- Amount per Share -->
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.AmountPerShare, "Amount per Share", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.EditorFor(model => model.AmountPerShare, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
-            @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+            if (chooseType === 'Full') {
+                if (transferType === 'Subscription') {
+                    setPartialTransferEditable(false, false); // Disable "Partial transfer" for both tables
+                } else if (transferType === 'Payment') {
+                    setPartialTransferEditable(false, false); // Disable "Partial transfer" for both tables
+                }
+            } else if (chooseType === 'Partial') {
+                if (transferType === 'Subscription') {
+                    setPartialTransferEditable(true, false); // Enable Subscription, disable Payment
+                } else if (transferType === 'Payment') {
+                    setPartialTransferEditable(false, true); // Disable Subscription, enable Payment
+                }
+            }
+        });
 
-        <!-- Paid Amount for Transfer -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaidAmountForTransfer, "Total Amount Paid", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.EditorFor(model => model.PaidAmountForTransfer, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
-            @Html.ValidationMessageFor(model => model.PaidAmountForTransfer, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+        // On change of the subscription checkbox
+        $(document).on('change', '.subscription-checkbox', function () {
+            var subscriptionId = $(this).data('subscription-id');
 
-        <!-- Transfer Reason -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransferReason, "Reason for Transfer", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.EditorFor(model => model.TransferReason, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
-            @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+            if (chooseType === 'Full') {
+                if (transferType === 'Subscription') {
+                    if ($(this).is(':checked')) {
+                        fetchPayments(subscriptionId, true); // Fetch payments in non-editable mode
+                        setPartialTransferEditable(false, false); // Set "Partial transfer" non-editable for both tables
+                    } else {
+                        $(`#paymentsTable tbody tr[data-subscription-id="${subscriptionId}"]`).remove(); // Remove unchecked payments
+                    }
+                } else if (transferType === 'Payment') {
+                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one can be checked at a time
+                    $('#paymentsTable tbody').empty();
+                    if ($(this).is(':checked')) {
+                        fetchPayments(subscriptionId, false); // Payments in editable mode
+                        setPartialTransferEditable(false, false); // Set "Partial transfer" non-editable for both tables
+                    }
+                }
+            } else if (chooseType === 'Partial') {
+                if (transferType === 'Subscription') {
+                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one checkbox can be selected
+                    $('#paymentsTable tbody').empty();
+                    if ($(this).is(':checked')) {
+                        fetchPayments(subscriptionId, false); // Fetch payments in editable mode
+                        setPartialTransferEditable(true, false); // Enable Subscription table, disable Payment table
+                    }
+                } else if (transferType === 'Payment') {
+                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one checkbox can be selected
+                    $('#paymentsTable tbody').empty();
+                    if ($(this).is(':checked')) {
+                        fetchPayments(subscriptionId, false); // Fetch payments in editable mode
+                        setPartialTransferEditable(false, true); // Disable Subscription table, enable Payment table
+                    }
+                }
+            }
+        });
 
-        <!-- Dividend for Transfer -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.DividenedFor, "Dividend for Transfer", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.DropDownListFor(
-                model => model.DividenedFor,
-                new SelectList(new List<string> { "To Transferor", "To Transferee", "Share Equally" }),
-                "-- Select Dividend Option --",
-                new { @class = "form-control w-full mt-1 p-2 border rounded-md", id = "dividenedFor" }
-            )
-            @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
+        // Event listener for changes on the shares-input field in the table
+        $(document).on('input', '.shares-input', function () {
+            var sharesTransferred = $(this).val();  // Get the value of the input field in the table
+            $('#numSharesTransferred').val(sharesTransferred);  // Set the value to NumSharesTransferred field
+            calculatePaidAmount();
+        });
+
+        // Event listener for changes on NumSharesTransferred
+        $('#numSharesTransferred').on('input', function () {
+            calculatePaidAmount();
+        });
+
+        // Function to fetch payments for a subscription and update the payments table
+        function fetchPayments(subscriptionId, isFull) {
+            $.ajax({
+                url: '/ShareTransfers/GetPaymentsBySubscription',
+                data: { subscriptionId: subscriptionId },
+                type: 'GET',
+                success: function (response) {
+                    populatePaymentsTable(response.payments, subscriptionId, isFull);
+                },
+                error: function () {
+                    console.error('Error fetching payments for subscription');
+                }
+            });
+        }
+
+        // Function to populate the payments table
+        function populatePaymentsTable(payments, subscriptionId, isFull) {
+            var $tbody = $('#paymentsTable tbody');
+            payments.forEach(function (payment) {
+                var row = `<tr data-subscription-id="${subscriptionId}">
+                           <td><input type="checkbox" class="form-checkbox payment-checkbox" ${isFull ? 'checked disabled' : ''}></td>
+                           <td><input type="textbox" class="form-input" value="${payment.PayID}" readonly /></td>
+                           <td><input type="textbox" class="form-input" value="${payment.PaidAmount}" readonly /></td>
+                           <td><input type="textbox" class="form-input partial-transfer-input" ${isFull ? 'readonly' : ''} placeholder="" /></td>
+                       </tr>`;
+                $tbody.append(row);
+            });
+        }
+
+        // Function to disable or enable "Partial transfer" column based on the rules
+        function setPartialTransferEditable(isSubscriptionEditable, isPaymentEditable) {
+            // Apply for Subscription table
+            $('#subscriptionsTable tbody tr').each(function () {
+                var $partialTransferInput = $(this).find('.partial-transfer-input');
+                if (isSubscriptionEditable) {
+                    $partialTransferInput.prop('readonly', false); // Editable
+                } else {
+                    $partialTransferInput.prop('readonly', true);  // Non-editable
+                    $partialTransferInput.val(''); // Optionally clear input
+                }
+            });
+
+            // Apply for Payment table
+            $('#paymentsTable tbody tr').each(function () {
+                var $partialTransferInput = $(this).find('.partial-transfer-input');
+                if (isPaymentEditable) {
+                    $partialTransferInput.prop('readonly', false); // Editable
+                } else {
+                    $partialTransferInput.prop('readonly', true);  // Non-editable
+                    $partialTransferInput.val(''); // Optionally clear input
+                }
+            });
+        }
+
+        // Function to disable all checkboxes in both tables
+        function disableAllCheckboxes(shouldDisable) {
+            $('#subscriptionsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
+            $('#paymentsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
+        }
+
+        // Function to calculate Paid Amount for Transfer
+        function calculatePaidAmount() {
+            var numShares = $('#numSharesTransferred').val(); // Get the number of shares transferred
+            var amountPerShare = $('#amountPerShare').val(); // Get the amount per share (1000)
+
+            // Ensure amountPerShare is a valid number, otherwise default to 0
+            if (!amountPerShare) {
+                amountPerShare = 0;
+            }
+
+            var paidAmount = numShares * amountPerShare; // Calculate total paid amount
+            $('#paidAmount').val(paidAmount); // Set paid amount to the form field
+        }
+
+    });
 
 
-        <!-- Transfer Document -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransferDoc, "Transfer Document", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.EditorFor(model => model.TransferDoc, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
-            @Html.ValidationMessageFor(model => model.TransferDoc, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
-
-        <!-- Transfer Date -->
-        <div class="form-group">
-            @Html.LabelFor(model => model.TransferDate, "Transfer Date", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.EditorFor(model => model.TransferDate, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md", type = "date" } })
-            @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
-
-        <!-- Created By -->
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.CreatedBy, "Created By", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md" })
-            @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
-
-        <!-- Creation Date -->
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.CreationDate, "Creation Date", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.EditorFor(model => model.CreationDate, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
-            @Html.ValidationMessageFor(model => model.CreationDate, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
-
-        <!-- Authorization Status -->
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.TransferAuthorizationStatus, "Authorization Status", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.EditorFor(model => model.TransferAuthorizationStatus, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
-            @Html.ValidationMessageFor(model => model.TransferAuthorizationStatus, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
-
-        <!-- Authorizer -->
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.TransferAuthorizer, "Authorizer", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.DropDownList("TransferAuthorizer", null, htmlAttributes: new { @class = "form-control w-full mt-1 p-2 border rounded-md" })
-            @Html.ValidationMessageFor(model => model.TransferAuthorizer, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
-
-        <!-- Authorization Date -->
-        <div class="form-group hidden">
-            @Html.LabelFor(model => model.TransferAuthorizationDate, "Authorization Date", htmlAttributes: new { @class = "block font-medium text-gray-700" })
-            @Html.EditorFor(model => model.TransferAuthorizationDate, new { htmlAttributes = new { @class = "form-control w-full mt-1 p-2 border rounded-md" } })
-            @Html.ValidationMessageFor(model => model.TransferAuthorizationDate, "", new { @class = "text-red-500 text-sm mt-1" })
-        </div>
-    </div>
-
-        <div class="form-group mt-6">
-            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md" style="color: white; background-color: aqua;">
-                Submit
-            </button>
-        </div>
-    }
-
-    <!-- Container for both tables -->
-    <div class="tables-container grid grid-cols-2 gap-4">
-        <!-- Subscription Table -->
-        <div id="subscriptionTable" class="hidden">
-            <h3 class="text-xl font-semibold mb-4">Subscription Data</h3>
-            <table class="w-full border-collapse border border-gray-200">
-                <thead>
-                    <tr>
-                        <!-- Define table headers -->
-                        <th class="border border-gray-300 p-2">Shareholder ID</th>
-                        <th class="border border-gray-300 p-2">Subscription ID</th>
-                        <th class="border border-gray-300 p-2">Subsctiption Number of Shares</th>
-                        <th class="border border-gray-300 p-2">Paid Subscription in Amount</th>
-                        <th class="border border-gray-300 p-2">Unpaid Subscription in Amount</th>
-                        <!-- Add more headers as needed -->
-                    </tr>
-                </thead>
-                <tbody id="subscriptionTableBody">
-                    <!-- Data will be dynamically populated here -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Payment Table -->
-        <div id="paymentTable" class="hidden">
-            <h3 class="text-xl font-semibold mb-4">Payment Data</h3>
-            <table class="w-full border-collapse border border-gray-200">
-                <thead>
-                    <tr>
-                        <!-- Define table headers -->
-                        <th class="border border-gray-300 p-2">Payment ID</th>
-                        <th class="border border-gray-300 p-2">Shareholder ID</th>
-                        <th class="border border-gray-300 p-2">Subscribtion ID</th>
-                        <th class="border border-gray-300 p-2">Paid Amount</th>
-                        <th class="border border-gray-300 p-2">Payment Mode</th>
-                        <!-- Add more headers as needed -->
-                    </tr>
-                </thead>
-                <tbody id="paymentTableBody">
-                    <!-- Data will be dynamically populated here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+    // Get the current date in YYYY-MM-DD format
+    $(document).ready(function () {
+        var currentDate = new Date().toISOString().split('T')[0];
+        // Set the value of the CreationDate input field
+        $('#creationDateField').val(currentDate);
+    });
+</script>
