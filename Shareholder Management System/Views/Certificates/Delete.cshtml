@@ -1,0 +1,136 @@
+﻿@model Shareholder_Management_System.Models.Certificate
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Certificate</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentIDs)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentIDs)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BeginingSerial)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BeginingSerial)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndingSerial)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndingSerial)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CertNum)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CertNum)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveredBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeliveredBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CertAuthorizationStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CertAuthorizationStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CertGenerationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CertGenerationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Remark)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Remark)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder.ShareID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User1.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User1.FullName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

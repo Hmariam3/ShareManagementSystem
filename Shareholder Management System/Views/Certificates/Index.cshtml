@@ -1,0 +1,245 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Certificate>
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+}
+
+
+<h2>Index</h2>
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
+<script defer="" src="~/Scripts/JS/popper.min.js"></script>
+<script defer="" src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
+<script defer="" src="~/Scripts/JS/sweetalert.min.js"></script>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@*<div class="table-responsive ml-3 mr-3 mt-3">*@
+    @*<table class="table-auto w-full border-collapse border border-gray-300">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CertNum)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Shareholder.FullNameEng)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Shareholder.FullNameAfanOromo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Shareholder.SHCategory)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BeginingSerial)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EndingSerial)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PaymentIDs)
+                    </th>
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.DeliveryStatus)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DeliveredBy)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DeliveryDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CertGenerationDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Remark)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            @foreach (var item in Model)
+            {
+                <tbody>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CertNum)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Shareholder.FullNameAfanOromo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Shareholder.SHCategory)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BeginingSerial)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EndingSerial)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PaymentIDs)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DeliveryStatus)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DeliveredBy)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DeliveryDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CertGenerationDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Remark)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.CertID }) |
+                            @Html.ActionLink("Details", "Details", new { id = item.CertID }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = item.CertID })
+                        </td>
+                    </tr>
+                    </tbody>
+            }
+
+        </table>*@
+@*</div>*@
+<div class="animate__animated p-4" :@class="[$store.app.animation]">
+    <!-- start main content section -->
+    <div x-data="multipleTable">
+        <div class="panel mt-1">
+            <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">Certificates</h5>
+            <table id="myTable1" class="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr>
+                        <th>CertNum</th>
+                        <th>ShareID</th>
+                        <th>FullNameEng</th>
+                        <th>FullNameAfanOromo</th>
+                        <th>SHCategory</th>
+                        <th>BeginingSerial</th>
+                        <th>EndingSerial</th>
+                        <th>PaymentIDs</th>
+                        <th>DeliveryStatus</th>
+                        <th>DeliveredBy</th>
+                        <th>DeliveryDate</th>
+                        <th>CertGenerationDate</th>
+                        <th>Remark</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
+
+    </div>
+</div>
+
+@*<script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('multipleTable', () => ({
+                init() {
+                    // Ensure SimpleDatatables is initialized after the DOM is ready
+                    const dataTable1 = new simpleDatatables.DataTable('#myTable1');
+                    const dataTable2 = new simpleDatatables.DataTable('#myTable2');
+                }
+            }))
+        })
+    </script>*@
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('multipleTable', () => ({
+            datatable1: null,
+            init() {
+                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+                    data: {
+                        headings: [
+                            'CertNum',
+                            'ShareID',
+                            'FullNameEng',
+                            'FullNameAfanOromo',
+                            'SHCategory',
+                            'BeginingSerial',
+                            'EndingSerial',
+                            'PaymentIDs',
+                            'DeliveryStatus',
+                            'DeliveredBy',
+                            'DeliveryDate',
+                            'CertGenerationDate',
+                            'Remark',
+                            'Action'
+                        ],
+                       data: [
+    @foreach (var item in Model)
+    {
+        <text>
+        [
+            "@item.CertNum", // CertNum
+            "@item.Shareholder.ShareID", // Shareholder.ShareID
+            "@item.Shareholder.FullNameEng", // FullNameEng
+            "@item.Shareholder.FullNameAfanOromo", // FullNameAfanOromo
+            "@item.Shareholder.SHCategory", // SHCategory
+            "@item.BeginingSerial", // BeginingSerial
+            "@item.EndingSerial", // EndingSerial
+            "@item.PaymentIDs", // PaymentIDs
+            "@item.DeliveryStatus", // DeliveryStatus
+            "@item.DeliveredBy", // DeliveredBy
+            "@(item.DeliveryDate.HasValue ? item.DeliveryDate.Value.ToString("yyyy-MM-dd") : "")", // DeliveryDate
+            "@(item.CertGenerationDate.HasValue ? item.CertGenerationDate.Value.ToString("yyyy-MM-dd") : "")", // CertGenerationDate
+            "@item.Remark", // Remark
+            `<a href="@Url.Action("Edit", new { id = item.CertID })">Edit</a> |
+             <a href="@Url.Action("Details", new { id = item.CertID })">Details</a> |
+             <a href="@Url.Action("Delete", new { id = item.CertID })">Delete</a>`
+        ],
+        </text>
+    }
+]
+ 
+                    },
+                    searchable: true,
+                    perPage: 10,
+                    columns: [
+                        { select: 10, render: (data) => this.formatDate(data) }, // DeliveryDate column
+                        { select: 11, render: (data) => this.formatDate(data) }, // CertGenerationDate column
+                    ],
+                    firstLast: true,
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    },
+                });
+            },
+            formatDate(date) {
+                if (date) {
+                    const dt = new Date(date);
+                    const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
+                    const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+                    return day + '/' + month + '/' + dt.getFullYear();
+                }
+                return '';
+            }
+        }));
+    });
+</script>
+
+
+
+

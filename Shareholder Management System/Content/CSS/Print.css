@@ -1,0 +1,46 @@
+/* print.css */
+@media print {
+    .certificate {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        font-size: 12pt; /* Adjust font size for better readability in print */
+    }
+
+        .certificate .flex {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .certificate h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .certificate .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .certificate .table-striped {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .certificate .table-striped th,
+            .certificate .table-striped td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .certificate .table-striped th {
+                background-color: #f2f2f2;
+            }
+
+        .certificate .text-white-dark {
+            color: #333;
+        }
+
+        
+}
