@@ -174,7 +174,7 @@ namespace Shareholder_Management_System.Controllers
                         db.Payments.Add(payment);
                         db.SaveChanges();
 
-                        string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+                        //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
 
                         // Call RecordLog method with null-safe value for CreatedBy
                         AuditLogsController auditLogsController = new AuditLogsController();
@@ -255,11 +255,11 @@ namespace Shareholder_Management_System.Controllers
 
             if (ModelState.IsValid)
             {
-                string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+                //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
 
                 // Call RecordLog method with null-safe value for CreatedBy
                 AuditLogsController auditLogsController = new AuditLogsController();
-                auditLogsController.RecordLog("Edit", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+                auditLogsController.RecordLog("Edit", payment.PayID, "Payment", payment.CreatedBy ?? 0, Session["BranchName"].ToString());
 
                 db.Entry(payment).State = EntityState.Modified;
                 db.SaveChanges();
@@ -296,11 +296,11 @@ namespace Shareholder_Management_System.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Payment payment = db.Payments.Find(id);
-            string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+            //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
 
             // Call RecordLog method with null-safe value for CreatedBy
             AuditLogsController auditLogsController = new AuditLogsController();
-            auditLogsController.RecordLog("Edit", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+            auditLogsController.RecordLog("Edit", payment.PayID, "Payment", payment.CreatedBy ?? 0, Session["BranchName"].ToString());
 
             db.Payments.Remove(payment);
             db.SaveChanges();
@@ -370,11 +370,11 @@ namespace Shareholder_Management_System.Controllers
                         // Save the payment
                         //db.Payments.Add(paymets);
                         db.SaveChanges();
-                        string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+                        //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
 
                         // Call RecordLog method with null-safe value for CreatedBy
                         AuditLogsController auditLogsController = new AuditLogsController();
-                        auditLogsController.RecordLog("Approval", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+                        auditLogsController.RecordLog("Approval", payment.PayID, "Payment", payment.CreatedBy ?? 0, Session["BranchName"].ToString());
 
 
                         return RedirectToAction("Index");
@@ -384,11 +384,11 @@ namespace Shareholder_Management_System.Controllers
             }
             else if (action == "reject")
             {
-                string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+               //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
 
                 // Call RecordLog method with null-safe value for CreatedBy
                 AuditLogsController auditLogsController = new AuditLogsController();
-                auditLogsController.RecordLog("Rejection", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+                auditLogsController.RecordLog("Rejection", payment.PayID, "Payment", payment.CreatedBy ?? 0, Session["BranchName"].ToString());
                 payment.PaymentAuthorizationStatus = "Rejected";              
             }
 
