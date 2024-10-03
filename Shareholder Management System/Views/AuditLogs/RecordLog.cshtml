@@ -1,61 +1,99 @@
 ﻿@model IEnumerable<Shareholder_Management_System.Models.AuditLog>
 
 @{
-    ViewBag.Title = "RecordLog";
+    ViewBag.Title = "Audit Log Records";
 }
 
-<h2>RecordLog</h2>
+<h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">
+    Audit Log Records
+</h5>
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Message)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ActionType)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TransactionID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TableName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PerformerBranch)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TransactionDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.User.FullName)
-        </th>
-        <th></th>
-    </tr>
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <!-- Main Content Section -->
+    <div x-data="miscellaneous">
+        <div class="space-y-6">
+            <div class="panel">
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Message)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ActionType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TransactionID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TableName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PerformerBranch)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TransactionDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.FullName)
-        </td>
-    </tr>
-}
+                <!-- Filter Form with Static Layout -->
+                <form method="get" action="@Url.Action("RecordLog")" class="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
+                    <!-- Left: Filter Fields -->
+                    <div class="flex flex-wrap space-x-4">
+                        <!-- Branch Filter -->
+                        <div class="flex flex-col">
+                            <label for="branch" class="block text-sm font-medium text-gray-700">Branch</label>
+                            <input type="text" id="branch" name="branch" placeholder="Search Branch..." class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["branch"]" />
+                        </div>
 
-</table>
+                        <!-- User Name Filter -->
+                        <div class="flex flex-col">
+                            <label for="userName" class="block text-sm font-medium text-gray-700">User Name</label>
+                            <input type="text" id="userName" name="userName" placeholder="Search User Name..." class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["userName"]" />
+                        </div>
+
+                        <!-- Table Name Filter -->
+                        <div class="flex flex-col">
+                            <label for="tableName" class="block text-sm font-medium text-gray-700">Table Name</label>
+                            <input type="text" id="tableName" name="tableName" placeholder="Search Table Name..." class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["tableName"]" />
+                        </div>
+
+                        <!-- Start Date Filter -->
+                        <div class="flex flex-col">
+                            <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
+                            <input type="date" id="startDate" name="startDate" class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["startDate"]" />
+                        </div>
+
+                        <!-- End Date Filter -->
+                        <div class="flex flex-col">
+                            <label for="endDate" class="block text-sm font-medium text-gray-700">End Date</label>
+                            <input type="date" id="endDate" name="endDate" class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["endDate"]" />
+                        </div>
+                    </div>
+
+                    <!-- Right: Filter and Reset Buttons -->
+                    <div class="flex space-x-2 mt-4 md:mt-0">
+                        <!-- Filter Button -->
+                        <button type="submit" class="btn btn-primary px-4 py-2">
+                            Filter
+                        </button>
+
+                        <!-- Reset Button -->
+                        <button type="button" class="btn btn-secondary px-4 py-2" onclick="window.location = '@Url.Action("RecordLog")'">
+                            Reset
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Display Filtered Data -->
+                <div class="table-responsive mt-4">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Message</th>
+                                <th>Action Type</th>
+                                <th>Transaction ID</th>
+                                <th>Table Name</th>
+                                <th>Performer Branch</th>
+                                <th>Transaction Date</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Message)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ActionType)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.TransactionID)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.TableName)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.PerformerBranch)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.TransactionDate)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.User.FullName)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

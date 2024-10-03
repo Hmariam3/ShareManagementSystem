@@ -15,10 +15,40 @@ namespace Shareholder_Management_System.Controllers
             _context = new Shareholder_Management_SystemEntities1();
         }
 
-        public ActionResult RecordLog()
+        //public ActionResult RecordLog()
+        //{
+        //    var Auditlog = _context.AuditLogs.Include(a => a.User); // Ensure AuditLog has a User navigation property
+        //    return View(auditLogs);
+        //}
+
+        public ActionResult RecordLog(string branch, DateTime? startDate, DateTime? endDate, string userName, string tableName)
         {
-            var Auditlog = _context.AuditLogs.Include(a => a.User); // Ensure AuditLog has a User navigation property
-            return View(Auditlog.ToList());
+            var query = _context.AuditLogs.Include(a => a.User).AsQueryable();
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(branch))
+            {
+                query = query.Where(a => a.PerformerBranch.Contains(branch));
+            }
+            if (startDate.HasValue)
+            {
+                query = query.Where(a => a.TransactionDate >= startDate.Value);
+            }
+            if (endDate.HasValue)
+            {
+                query = query.Where(a => a.TransactionDate <= endDate.Value);
+            }
+            if (!string.IsNullOrEmpty(userName))
+            {
+                query = query.Where(a => a.User.FullName.Contains(userName));
+            }
+            if (!string.IsNullOrEmpty(tableName))
+            {
+                query = query.Where(a => a.TableName.Contains(tableName));
+            }
+
+            // Return the filtered list to the view
+            return View(query.ToList());
         }
 
         [HttpPost]

@@ -70,37 +70,8 @@ namespace Shareholder_Management_System.Controllers
             return View();
 
 
-            //// Fetch and pass subscription details if subId is provided
-            //if (subId.HasValue)
-            //{
-            //    var subscribtion = db.Subscribtions.Find(subId.Value);
-            //    if (subscribtion != null)
-            //    {
-            //        ViewBag.UnpaidSubscription = subscribtion.UnpaidSubscription;
-            //    }
-            //}
-
         }
-        //// GET: Payments/GetSubscriptionsByShareholder
-        //public JsonResult GetSubscriptionsByShareholder(int shId)
-        //{
-        //    var subscriptions = db.Subscribtions
-        //                          .Where(s => s.ShID == shId && s.SubAuthorizationStatus == "approved" && s.UnpaidSubscription > 00 && s.PaymentDueDate > DateTime.Now)  // Filter by ShID and SubAuthorizationStatus
-        //                          .Select(s => new
-        //                          {
-        //                              s.SubID,
-        //                              s.ShID,
-        //                              s.SubNumShares,
-        //                              s.SubAmount,
-        //                              s.PaidSubscription,
-        //                              s.UnpaidSubscription,
-        //                              s.SubAuthorizationStatus,
-        //                              s.SubStatus
-        //                          })  // Select all the necessary fields
-        //                          .ToList();
-
-        //    return Json(subscriptions, JsonRequestBehavior.AllowGet);  // Return the filtered list as JSON
-        //}
+    
         // GET: Payments/GetSubscriptionsByShareholder
         public JsonResult GetSubscriptionsByShareholder(int shId)
         {
@@ -120,37 +91,6 @@ namespace Shareholder_Management_System.Controllers
 
             return Json(subscriptions, JsonRequestBehavior.AllowGet);
         }
-
-
-        //public JsonResult GetShareholders(string term)
-        //{
-        //    // Log or inspect the incoming term to ensure it's passed correctly
-        //    if (string.IsNullOrWhiteSpace(term))
-        //    {
-        //        // If no search term, return an empty list
-        //        return Json(new List<object>(), JsonRequestBehavior.AllowGet);
-        //    }
-
-        //    // Search for shareholders based on the term
-        //    var shareholders = db.Shareholders
-        //                         .Where(s => s.FullNameEng.Contains(term) || s.PhoneNo.Contains(term))
-        //                         .Select(s => new
-        //                         {
-        //                             Value = s.ShID, // This will be the value in the dropdown
-        //                     Text = s.FullNameEng // This will be the displayed name in the dropdown
-        //                 })
-        //                         .ToList();
-
-        //    // Check if any shareholders were found
-        //    if (!shareholders.Any())
-        //    {
-        //        // Return a message if no shareholders were found
-        //        return Json(new { message = "No shareholders found" }, JsonRequestBehavior.AllowGet);
-        //    }
-
-        //    // Return the result as JSON
-        //    return Json(shareholders, JsonRequestBehavior.AllowGet);
-        //}
 
 
         // POST: Payments/Create
@@ -223,10 +163,11 @@ namespace Shareholder_Management_System.Controllers
                     {
                         // Assign the Document ID to the PaymentSlip property of the payment
                         payment.CreationDate = DateTime.Now;
-                        payment.CreatedBy = 1;
+                        payment.CreatedBy = userId;
                         payment.PaymentAuthorizationStatus = "pending";
-                        payment.Branch = 100;
+                        payment.Branch = branchId;
                         payment.PaymentSlip = documentId;
+
 
 
                         // Save the payment
@@ -237,7 +178,7 @@ namespace Shareholder_Management_System.Controllers
 
                         // Call RecordLog method with null-safe value for CreatedBy
                         AuditLogsController auditLogsController = new AuditLogsController();
-                        auditLogsController.RecordLog("Registration", payment.PayID, "Payment", payment.CreatedBy ?? 0, branchName);
+                        auditLogsController.RecordLog("Registration", payment.PayID, "Payment", payment.CreatedBy ?? 0, Session["BranchName"].ToString());
 
                     }
                     else
