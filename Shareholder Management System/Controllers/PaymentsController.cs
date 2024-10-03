@@ -162,7 +162,12 @@ namespace Shareholder_Management_System.Controllers
                     if (documentId > 0)
                     {
                         // Assign the Document ID to the PaymentSlip property of the payment
-                        payment.CreationDate = DateTime.Now;
+                        var formattedDateTime = payment.CreationDate.HasValue
+                            ? payment.CreationDate.Value.ToString("MM/dd/yyyy hh:mm:ss tt")
+                            : "No Date";
+
+
+                        payment.CreationDate = DateTime.UtcNow;
                         payment.CreatedBy = userId;
                         payment.PaymentAuthorizationStatus = "pending";
                         payment.Branch = branchId;
