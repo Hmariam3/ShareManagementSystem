@@ -103,6 +103,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-span-1">
                         <div class="space-y-4">
                             <div class="flex items-center space-x-2">
@@ -135,54 +136,57 @@
                     </div>
 
                     <input type="hidden" id="UnpaidSubscription" value="@Model?.UnpaidSubscription" />
-                    <div class="col-span-1">
-                        <div class="space-y-4">
-                            <div class="mb-5">
-                                @Html.LabelFor(model => model.PaymentDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.EditorFor(model => model.PaymentDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @id = "payment-date-picker", @required = "required" } })
-                                    @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="mb-5">
-                                @Html.LabelFor(model => model.ReferenceNum, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="amount-input-container flex flex-col ml-4">
-                                    @Html.EditorFor(model => model.ReferenceNum, new { htmlAttributes = new { @class = "form-input" } })
-                                    @Html.ValidationMessageFor(model => model.ReferenceNum, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    @*<div class="mb-5">
-            @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
-                @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
-
-                    <div class="col-span-1">
-                        <div class="space-y-4">
-                            <div class="mb-5">
-                                @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="amount-input-container flex flex-col ml-4">
-                                    @Html.TextAreaFor(model => model.Remark, 2, 20, new { @class = "form-input" })
-                                    @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-
-                            <div class="custom-file-container" data-upload-id="myFirstImage">
-                                <label class="custom-file-container__custom-file">
-                                    <input type="file" class="custom-file-container__custom-file__custom-file-input" accept="*" name="uploadedFile">
-                                    <span class="custom-file-container__custom-file__custom-file-control"></span>
-                                </label>
-                                <div class="custom-file-container__image-preview"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+                    <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <div x-data="form" class="grid grid-cols-1 gap-6 pt-0 lg:grid-cols-2">
+                        <div class="col-span-1">
+                            <div class="space-y-4">
+                                <div class="mb-5">
+                                    @Html.LabelFor(model => model.PaymentDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.PaymentDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @id = "payment-date-picker", @required = "required" } })
+                                        @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="mb-5">
+                                    @Html.LabelFor(model => model.ReferenceNum, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="amount-input-container flex flex-col ml-4">
+                                        @Html.EditorFor(model => model.ReferenceNum, new { htmlAttributes = new { @class = "form-input" } })
+                                        @Html.ValidationMessageFor(model => model.ReferenceNum, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="mb-5">
+                @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
+                    @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+                        <div class="col-span-1">
+                            <div class="space-y-4">
+                                <div class="mb-5">
+                                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="amount-input-container flex flex-col ml-4">
+                                        @Html.TextAreaFor(model => model.Remark, 2, 20, new { @class = "form-input" })
+                                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+                                <div class="custom-file-container" data-upload-id="myFirstImage">
+                                    <label class="custom-file-container__custom-file">
+                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" accept="*" name="uploadedFile">
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             <div class="mt-6 flex justify-end">
                 <button type="submit" class="btn btn-primary mr-2" style="width: 2000px; height: 50px">Submit</button>

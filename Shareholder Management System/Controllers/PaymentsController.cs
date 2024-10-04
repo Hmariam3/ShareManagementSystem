@@ -230,50 +230,146 @@ namespace Shareholder_Management_System.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            // Find the payment record
             Payment payment = db.Payments.Find(id);
             if (payment == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", payment.Branch);
-            ViewBag.PaymentSlip = new SelectList(db.Documents, "DocID", "DocName", payment.PaymentSlip);
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", payment.ShID);
-            ViewBag.PaymentTransferFrom = new SelectList(db.Shareholders, "ShID", "ShareID", payment.PaymentTransferFrom);
-            ViewBag.SubID = new SelectList(db.Subscribtions, "SubID", "SubStatus", payment.SubID);
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", payment.CreatedBy);
-            ViewBag.PaymentAuthorizer = new SelectList(db.Users, "UID", "FullName", payment.PaymentAuthorizer);
-            return View(payment);
+
+            // Retrieve Shareholders for the dropdown and pre-select the existing one
+            var subscriptions = db.Subscribtions
+       .Where(s => s.ShID == payment.ShID) // Replace with your actual logic to get subscriptions
+       .ToList();
+            // Populate Shareholders for dropdown
+            ViewBag.Shareholders1 = db.Shareholders
+                .Select(s => new SelectListItem
+                {
+                    Value = s.ShID.ToString(),
+                    Text = s.FullNameEng // Adjust this according to your model
+                }).ToList();
+            var viewModel = new Payment
+            {
+                SubID = payment.SubID,
+                ReferenceNum = payment.ReferenceNum,
+                Remark = payment.Remark,
+              
+                PaidAmount = payment.PaidAmount,
+                PaymentDate = payment.PaymentDate,
+                ShID = payment.ShID, // Current selected Shareholder ID
+               
+            };
+            // Pass subscriptions to the view
+            ViewBag.Subscriptions = subscriptions;
+
+            return View(viewModel);
         }
 
         // POST: Payments/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PayID,ShID,SubID,PaymentMode,Branch,PaidAmount,BlockedAmount,ReferenceNum,PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer,AuthorizationDate,Remark")] Payment payment)
+        public ActionResult Edit(int id, [Bind(Include = "PayID,ShID,SubID,PaymentMode,PaidAmount,BlockedAmount,ReferenceNum,PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer,AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions, string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string AccountAmount)
         {
-
             if (ModelState.IsValid)
             {
-                //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+                // Retrieve the existing payment record
+                var existingPayment = db.Payments.Find(id);
+                if (existingPayment == null)
+                {
+                    return HttpNotFound();
+                }
 
-                // Call RecordLog method with null-safe value for CreatedBy
-                AuditLogsController auditLogsController = new AuditLogsController();
-                auditLogsController.RecordLog("Edit", payment.PayID, "Payment", payment.CreatedBy ?? 0, Session["BranchName"].ToString());
+                // Update existing payment properties
+                existingPayment.ShID = payment.ShID;
+                existingPayment.SubID = payment.SubID;
+                existingPayment.PaidAmount = payment.PaidAmount;
+                existingPayment.BlockedAmount = payment.BlockedAmount;
+                existingPayment.ReferenceNum = payment.ReferenceNum;
+                existingPayment.PaymentDate = payment.PaymentDate;
+                existingPayment.PaymentTransferFrom = payment.PaymentTransferFrom;
+                existingPayment.Remark = payment.Remark;
 
-                db.Entry(payment).State = EntityState.Modified;
+                // Handle updating payment modes
+                var paymentModes = new List<string>();
+                if (!string.IsNullOrEmpty(cashAmount)) paymentModes.Add($"Cash = {cashAmount}");
+                if (!string.IsNullOrEmpty(AccountAmount)) paymentModes.Add($"Account = {AccountAmount}");
+                if (!string.IsNullOrEmpty(cpoAmount)) paymentModes.Add($"CPO = {cpoAmount}");
+                if (!string.IsNullOrEmpty(dividendAmount)) paymentModes.Add($"Dividend = {dividendAmount}");
+                if (!string.IsNullOrEmpty(chequeAmount)) paymentModes.Add($"Cheque = {chequeAmount}");
+                existingPayment.PaymentMode = string.Join(", ", paymentModes);
+
+                // Update user and branch details
+                int userId = Convert.ToInt32(Session["ID"]);
+                existingPayment.CreatedBy = userId;
+                existingPayment.Branch = Convert.ToInt32(Session["Branch"]);
+                existingPayment.CreationDate = DateTime.Now;
+                existingPayment.PaymentAuthorizationStatus = "pending";
+
+                // Handle document creation (if file uploaded)
+                if (uploadedFile != null && uploadedFile.ContentLength > 0)
+                {
+                    Document document = new Document
+                    {
+                        DocOwner = "Shareholder",
+                        DocType = "Payment Slip",
+                        ShID = existingPayment.ShID,
+                        CreatedBy = userId,
+                        DocAuthorizationStatus = "Pending",
+                        CreatedDate = DateTime.Now
+                    };
+
+                    DocumentsController documentsController = new DocumentsController();
+                    documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+
+                    int documentId = documentsController.Create(document, uploadedFile);
+                    if (documentId > 0)
+                    {
+                        existingPayment.PaymentSlip = documentId;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Document could not be created. Please try again.");
+                    }
+                }
+
+                // Save the updated payment
+                db.Entry(existingPayment).State = EntityState.Modified;
                 db.SaveChanges();
+
+                // Log the update
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Edit", existingPayment.PayID, "Payment", existingPayment.CreatedBy ?? 0, Session["BranchName"].ToString());
+
                 return RedirectToAction("Index");
             }
+
+            // Re-populate dropdowns if validation fails
+            var shareholders1 = db.Shareholders.Select(s => new SelectListItem
+            {
+                Value = s.ShID.ToString(),
+                Text = s.FullNameEng
+            }).ToList();
+            shareholders1.Insert(0, new SelectListItem
+            {
+                Value = "",
+                Text = "Select a Shareholder"
+            });
+
+            ViewBag.Shareholders1 = shareholders1;
+
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", payment.Branch);
             ViewBag.PaymentSlip = new SelectList(db.Documents, "DocID", "DocName", payment.PaymentSlip);
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", payment.ShID);
-            ViewBag.PaymentTransferFrom = new SelectList(db.Shareholders, "ShID", "ShareID", payment.PaymentTransferFrom);
-            ViewBag.SubID = new SelectList(db.Subscribtions, "SubID", "SubStatus", payment.SubID);
+            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", payment.ShID);
+            ViewBag.PaymentTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", payment.PaymentTransferFrom);
+            ViewBag.SubID = new SelectList(db.Subscribtions, "SubID", "UnpaidSubscription", payment.SubID);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", payment.CreatedBy);
             ViewBag.PaymentAuthorizer = new SelectList(db.Users, "UID", "FullName", payment.PaymentAuthorizer);
+
             return View(payment);
         }
+
+
 
         // GET: Payments/Delete/5
         public ActionResult Delete(int? id)
