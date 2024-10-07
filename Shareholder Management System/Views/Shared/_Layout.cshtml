@@ -1083,7 +1083,10 @@
                                     }
 
                                     <li>
-                                        <a href="@Url.Action("Profile", "Users", new { id = sessionId })"
+                                        @{
+                                            string encryptedId = TripleDESEncryptionHelper.Encrypt(sessionId.ToString());
+                                        }
+                                        <a href="@Url.Action("Profile", "Users", new { id = encryptedId })"
                                            class="dark:hover:text-white">
                                             <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
                                                  width="18"
