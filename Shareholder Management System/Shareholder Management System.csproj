@@ -522,6 +522,9 @@
     <Content Include="Scripts\JS\swiper-bundle.min.js" />
     <Content Include="Scripts\JS\tippy-bundle.umd.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\tailwind.min.css" />
+    <Content Include="Scripts\tailwind.min.sec.css" />
+    <Content Include="Scripts\tailwind.min.thrid.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

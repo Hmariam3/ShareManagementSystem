@@ -1,4 +1,5 @@
-﻿using Shareholder_Management_System.Models;
+﻿using Shareholder_Management_System.Controllers;
+using Shareholder_Management_System.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -176,6 +177,10 @@ namespace Share.Controllers
 
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Subscription created successfully!";
+
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("register", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy, Session["BranchName"].ToString());
+
                 return RedirectToAction("Create");
             }
 
@@ -242,6 +247,9 @@ namespace Share.Controllers
                     db.SaveChanges();
 
                     TempData["SuccessMessage"] = "Subscription updated successfully! Total shares now: " + existingSubscription.SubNumShares;
+                    AuditLogsController auditLogsController = new AuditLogsController();
+                    auditLogsController.RecordLog("Addon", existingSubscription.SubID, "Subscribtion", existingSubscription.CreatedBy, Session["BranchName"].ToString());
+
                     return RedirectToAction("Create");
                 }
                 else
@@ -335,6 +343,9 @@ namespace Share.Controllers
                 subscribtion.SubAuthorizer = null;
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Subscription Updated successfully.";
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Update", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy, Session["BranchName"].ToString());
+
                 return RedirectToAction("Index");
             }
 
@@ -376,6 +387,8 @@ namespace Share.Controllers
 
                     // Success message
                     TempData["SuccessMessage"] = "Subscription deleted successfully.";
+                    AuditLogsController auditLogsController = new AuditLogsController();
+                    auditLogsController.RecordLog("Delete", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy, Session["BranchName"].ToString());
                 }
                 else
                 {
@@ -429,11 +442,15 @@ namespace Share.Controllers
             {
                 subscribtion.SubAuthorizationStatus = "Approved";
                 TempData["SuccessMessage"] = "Subscription Approved successfully.";
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Approved", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy, Session["BranchName"].ToString());
             }
             else if (action == "reject")
             {
                 subscribtion.SubAuthorizationStatus = "Rejected";
                 TempData["SuccessMessage"] = "Subscription Rejected successfully.";
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Rejected", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy, Session["BranchName"].ToString());
             }
 
             subscribtion.SubAuthorizer = userdata;

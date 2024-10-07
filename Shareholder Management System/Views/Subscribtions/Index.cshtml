@@ -14,7 +14,9 @@
 <link href="~/Scripts/Datatables/datatables.css" rel="stylesheet" />
 <script src="~/Scripts/Datatables/datatables.js"></script>
 
-
+<link href="~/Scripts/tailwind.min.sec.css" rel="stylesheet" />
+<link href="~/Scripts/tailwind.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
@@ -122,7 +124,36 @@
                 <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaymentDueDate)</td>
                 <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubStatus)</td>
                 <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubDate)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAuthorizationStatus)</td>
+                @*<td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAuthorizationStatus)</td>*@
+                <td class="border border-gray-300 px-4 py-2 text-center">
+                    @if (item.SubAuthorizationStatus == "Approved")
+                    {
+                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
+                            <i class="fas fa-check-circle mr-2"></i> <!-- Check-circle icon for approved status -->
+                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                        </span>
+                    }
+                    else if (item.SubAuthorizationStatus == "Pending")
+                    {
+                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                            <i class="fas fa-clock mr-2"></i> <!-- Clock icon for pending status -->
+                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                        </span>
+                    }
+                    else if (item.SubAuthorizationStatus == "Rejected")
+                    {
+                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
+                            <i class="fas fa-times-circle mr-2"></i> <!-- Times-circle icon for rejected status -->
+                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-gray-700 bg-gray-200 rounded-full">
+                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                        </span>
+                    }
+                </td>
                 <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.AuthorizedDate)</td>
                 <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Remark)</td>
                 <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder1.ShareID)</td>
@@ -131,9 +162,12 @@
 
                 <td class="border border-gray-300 px-4 py-2">
                     <div class="flex space-x-2">
-                        <a href="@Url.Action("Edit", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded">Edit</a>
-                        <a href="@Url.Action("Delete", new { id = item.SubID })" class="btn btn-danger px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded">Delete</a>
-                    </div>
+                        <a href="@Url.Action("Edit", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="@Url.Action("Delete", new { id = item.SubID })" class="btn btn-danger px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>  </div>
                 </td>
             </tr>
             }
