@@ -28,6 +28,7 @@ namespace Shareholder_Management_System.Controllers
         // GET: Users
         public ActionResult Index()
         {
+            ViewBag.Breadcrumb = BreadcrumbHelper.GenerateBreadcrumb(this);
             var users = db.Users.Include(u => u.Branch1);
             return View(users.ToList());
         }
@@ -35,6 +36,7 @@ namespace Shareholder_Management_System.Controllers
         // GET: Users/Details/5
         public ActionResult Details(string id)
         {
+            ViewBag.Breadcrumb = BreadcrumbHelper.GenerateBreadcrumb(this);
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -67,6 +69,7 @@ namespace Shareholder_Management_System.Controllers
         // GET: Users/Create
         public ActionResult Create()
         {
+            ViewBag.Breadcrumb = BreadcrumbHelper.GenerateBreadcrumb(this);
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName");
             return View();
         }
@@ -193,6 +196,7 @@ namespace Shareholder_Management_System.Controllers
         // GET: Users/Edit/5
         public ActionResult Edit(string id)
         {
+            ViewBag.Breadcrumb = BreadcrumbHelper.GenerateBreadcrumb(this);
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -276,6 +280,7 @@ namespace Shareholder_Management_System.Controllers
         // GET: Users/Profile/5
         public ActionResult Profile(string id)
         {
+            ViewBag.Breadcrumb = BreadcrumbHelper.GenerateBreadcrumb(this);
             if (id == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -327,6 +332,7 @@ namespace Shareholder_Management_System.Controllers
         // Unauthorized action
         public ActionResult Unauthorized()
         {
+            ViewBag.Breadcrumb = BreadcrumbHelper.GenerateBreadcrumb(this);
             return View();
         }
 
@@ -380,6 +386,7 @@ namespace Shareholder_Management_System.Controllers
 
         public ActionResult View(string id)
         {
+            ViewBag.Breadcrumb = BreadcrumbHelper.GenerateBreadcrumb(this);
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
