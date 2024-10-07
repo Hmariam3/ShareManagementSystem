@@ -1,4 +1,4 @@
-﻿@model Shareholder_Management_System.Models.User
+﻿﻿@model Shareholder_Management_System.Models.User
 
 @{
     ViewBag.Title = "Edit";
@@ -23,7 +23,6 @@
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.UID)
-
         <div class="space-y-6">
             @Html.ValidationSummary(true, "", new { @class = "text-red-500 mb-4" })
 
@@ -79,9 +78,12 @@
                         @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "block text-gray-700 text-sm font-bold mb-2" })
 
                         <!-- Display the CreatedDate as read-only -->
-                        <span class="block mt-1 text-gray-700 text-sm font-medium">
+                        <span class="block mt-1 dark:text-white-light font-semibold font-semibold text-sm font-medium">
                             @Html.DisplayFor(model => model.CreatedDate)
                         </span>
+
+                        <!-- Hidden field to ensure the CreatedDate is sent to the server -->
+                        @Html.HiddenFor(model => model.CreatedDate)
 
                         @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-red-500 text-sm" })
                     </div>
@@ -112,7 +114,10 @@
                 </button>
             </div>
             <div class="flex justify-between items-center mt-8" style="display: flex; justify-content: center; align-items: center;">
-                <a href="@Url.Action("Index")" class="text-sm text-blue-500 hover:text-blue-800 font-semibold">
+                <a href="@Url.Action("Index")" class="flex items-center text-sm text-blue-500 hover:text-blue-800 font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
                     Back to List
                 </a>
             </div>

@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Shareholder_Management_System.commons;
 using Shareholder_Management_System.Models;
 using System.Net.Mail;
+using Shareholder_Management_System.ViewModel;
 
 namespace Shareholder_Management_System.Controllers
 {
@@ -32,13 +33,30 @@ namespace Shareholder_Management_System.Controllers
         }
 
         // GET: Users/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            int decryptedId;
+
+            try
+            {
+                decryptedId = int.Parse(TripleDESEncryptionHelper.Decrypt(id));
+            }
+            catch
+            {
+                return HttpNotFound();
+            }
+
+            User user = db.Users.Find(decryptedId);
             if (user == null)
             {
                 return HttpNotFound();
@@ -69,8 +87,8 @@ namespace Shareholder_Management_System.Controllers
                              .Select(b => new
                              {
                                  Value = b.ID, // This will be the value in the dropdown
-                         Text = b.BranchName // This will be the displayed name in the dropdown
-                     })
+                                 Text = b.BranchName // This will be the displayed name in the dropdown
+                             })
                              .ToList();
 
             // Return the result as JSON
@@ -106,14 +124,14 @@ namespace Shareholder_Management_System.Controllers
                 user.Status = true;
 
                 int id = Convert.ToInt32(Session["ID"]);
-               
+
                 // Add the new user to the database
                 db.Users.Add(user);
                 db.SaveChanges();
 
                 // Call RecordLog method
                 AuditLogsController auditLogsController = new AuditLogsController();
-                auditLogsController.RecordLog("register", user.UID, "User", id, Session["Branch"].ToString());
+                auditLogsController.RecordLog("register", user.UID, "User", id, Session["BranchName"].ToString());
 
 
                 //var emailAddress1 = "hailemariam.kebede@coopbankoromiasc.com";
@@ -173,13 +191,30 @@ namespace Shareholder_Management_System.Controllers
 
 
         // GET: Users/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(string id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            int decryptedId;
+
+            try
+            {
+                decryptedId = int.Parse(TripleDESEncryptionHelper.Decrypt(id));
+            }
+            catch
+            {
+                return HttpNotFound();
+            }
+
+            User user = db.Users.Find(decryptedId);
             if (user == null)
             {
                 return HttpNotFound();
@@ -201,7 +236,7 @@ namespace Shareholder_Management_System.Controllers
 
                 // Call RecordLog method
                 AuditLogsController auditLogsController = new AuditLogsController();
-                auditLogsController.RecordLog("edit", user.UID, "User", id, Session["Branch"].ToString());
+                auditLogsController.RecordLog("edit", user.UID, "User", id, Session["BranchName"].ToString());
 
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
@@ -239,24 +274,44 @@ namespace Shareholder_Management_System.Controllers
 
         [AllowAnonymous]
         // GET: Users/Profile/5
-        public ActionResult Profile(int? id)
+        public ActionResult Profile(string id)
         {
             if (id == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (string.IsNullOrEmpty(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // User information
-            User user = db.Users.Find(id);
-            if (user == null)
+            int decryptedId;
+
+            try
+            {
+                decryptedId = int.Parse(TripleDESEncryptionHelper.Decrypt(id));
+            }
+            catch
             {
                 return HttpNotFound();
+            }
+
+            // User information
+            User user = db.Users.Find(decryptedId);
+            if (user == null)
+            {
+                // Store a temporary message
+                TempData["Message"] = "User not found.";
+
+                // Redirect to another action or return a view
+                return RedirectToAction("Index");  // or any other action/view
             }
 
 
             // User Activity: Retrieve a list of audit logs for the user
             List<AuditLog> auditLogs = db.AuditLogs
-                                        .Where(a => a.PerformedBy == id)
+                                        .Where(a => a.PerformedBy == decryptedId)
                                         .ToList();
 
             // Pass both user and audit logs to the view model
@@ -279,11 +334,15 @@ namespace Shareholder_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ResetPasswordOwn(ResetPasswordViewModel resetPasswordModel)
         {
+            //Capturing Session User ID
+            int userId2 = Convert.ToInt32(Session["ID"]);
+
+            string encryptedId = TripleDESEncryptionHelper.Encrypt(userId2.ToString());
             // Check if the model state is valid
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Invalid data.";
-                return RedirectToAction("Profile", "Users", new { id = Session["ID"] });
+                return RedirectToAction("Profile", "Users", new { id = encryptedId });
             }
 
             int userId = Convert.ToInt32(Session["ID"]);
@@ -292,7 +351,7 @@ namespace Shareholder_Management_System.Controllers
             if (user == null)
             {
                 TempData["ErrorMessage"] = "User not found.";
-                return RedirectToAction("Profile", "Users", new { id = Session["ID"] }); // Redirect to Profile page with error message
+                return RedirectToAction("Profile", "Users", new { id = encryptedId }); // Redirect to Profile page with error message
             }
 
             // Hash the current password to compare with stored hash
@@ -300,14 +359,14 @@ namespace Shareholder_Management_System.Controllers
             if (user.Password != hashedCurrentPassword)
             {
                 TempData["ErrorMessage"] = "Current password is incorrect.";
-                return RedirectToAction("Profile", "Users", new { id = Session["ID"] }); // Redirect to Profile page with error message
+                return RedirectToAction("Profile", "Users", new { id = encryptedId }); // Redirect to Profile page with error message
             }
 
             // Check if new password and confirm password match
             if (resetPasswordModel.NewPassword != resetPasswordModel.ConfirmPassword)
             {
                 TempData["ErrorMessage"] = "New password and confirm password do not match.";
-                return RedirectToAction("Profile", "Users", new { id = Session["ID"] }); // Redirect to Profile page with error message
+                return RedirectToAction("Profile", "Users", new { id = encryptedId }); // Redirect to Profile page with error message
             }
 
             // Update the user's password (hash the new password)
@@ -316,7 +375,228 @@ namespace Shareholder_Management_System.Controllers
 
             TempData["SuccessMessage"] = "Password reset successfully.";
 
-            return RedirectToAction("Profile", "Users", new { id = Session["ID"] }); // Redirect to Profile page after successful reset
+            return RedirectToAction("Profile", "Users", new { id = encryptedId }); // Redirect to Profile page after successful reset
+        }
+
+        public ActionResult View(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            int decryptedId;
+
+            try
+            {
+                decryptedId = int.Parse(TripleDESEncryptionHelper.Decrypt(id));
+            }
+            catch
+            {
+                return HttpNotFound();
+            }
+            // Fetch the user based on the provided ID
+
+            int userID = Convert.ToInt32(Session["ID"]);
+            string encryptedId = TripleDESEncryptionHelper.Encrypt(userID.ToString());
+
+            string encodedId = HttpUtility.UrlEncode(encryptedId);
+
+            var user = db.Users.Find(decryptedId);
+            if (user == null)
+            {
+                TempData["Message"] = "User not found.";
+                return RedirectToAction("Profile", "Users", new { id = encryptedId });
+            }
+
+            // Fetch the latest audit log for this user based on TransactionDate
+            var latestAuditLog = db.AuditLogs
+                                  .Where(a => a.TransactionID == decryptedId)
+                                  .OrderByDescending(a => a.TransactionDate)
+                                  .FirstOrDefault();
+
+            // Fetch the user who performed the action based on PerformedBy ID
+            var performedByUser = latestAuditLog != null
+                                  ? db.Users.Find(latestAuditLog.PerformedBy)
+                                  : null;
+
+            // Prepare the ViewModel
+            var viewModel = new UserAuditLogViewModel
+            {
+                User = user,
+                Message = latestAuditLog?.Message,
+                ActionType = latestAuditLog?.ActionType,
+                TransactionID = latestAuditLog?.TransactionID ?? 0,
+                TableName = latestAuditLog?.TableName,
+                PerformedBy = performedByUser?.UserName ?? "Unknown", // Display the UserName of the one who performed
+                PerformerBranch = latestAuditLog?.PerformerBranch,
+                TransactionDate = latestAuditLog?.TransactionDate ?? DateTime.MinValue
+            };
+
+            return View(viewModel);
+        }
+
+        // GET: Users/Reset
+        public ActionResult Reset(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            int decryptedId;
+
+            try
+            {
+                decryptedId = int.Parse(TripleDESEncryptionHelper.Decrypt(id));
+            }
+            catch
+            {
+                return HttpNotFound();
+            }
+            // Find the user by ID
+            var user = db.Users.SingleOrDefault(u => u.UID == decryptedId); // Assuming UID is the user's ID in the table
+
+            if (user != null)
+            {
+                // Create the new password in the required format
+                string currentYear = DateTime.Now.Year.ToString();
+                string newPassword = $"Coopbank@{currentYear}";
+                user.Password = newPassword;
+
+                // Hash the password and set initial user values
+                user.Password = _passwordHasher.HashPassword(user.Password);
+                user.IsFirstLogin = true;
+                user.Locked = 0;
+
+                // Save changes to the database
+                db.SaveChanges();
+
+                TempData["ResetMessage"] = "Password has been reset successfully!";
+            }
+            else
+            {
+                TempData["ResetMessage"] = "User not found!";
+            }
+
+            int uid = Convert.ToInt32(Session["ID"]);
+
+            // Call RecordLog method
+            AuditLogsController auditLogsController = new AuditLogsController();
+            auditLogsController.RecordLog("Password Reset", user.UID, "User", uid, Session["BranchName"].ToString());
+
+            // Redirect to some view, e.g., the user list page
+            return RedirectToAction("Index");
+        }
+
+        // GET: Users/Activate
+        public ActionResult Activate(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            int decryptedId;
+
+            try
+            {
+                decryptedId = int.Parse(TripleDESEncryptionHelper.Decrypt(id));
+            }
+            catch
+            {
+                return HttpNotFound();
+            }
+            // Find the user by ID
+            var user = db.Users.SingleOrDefault(u => u.UID == decryptedId); // Assuming UID is the user's ID in the table
+
+            if (user != null)
+            {
+
+                //Activate an Account that has been Inactivated Before
+                user.Status = true;
+
+
+                // Save changes to the database
+                db.SaveChanges();
+
+                TempData["ResetMessage"] = "Account has been activated successfully!";
+            }
+            else
+            {
+                TempData["ResetMessage"] = "User not found!";
+            }
+
+            int uid = Convert.ToInt32(Session["ID"]);
+
+            // Call RecordLog method
+            AuditLogsController auditLogsController = new AuditLogsController();
+            auditLogsController.RecordLog("Account Activated", user.UID, "User", uid, Session["BranchName"].ToString());
+
+            // Redirect to some view, e.g., the user list page
+            return RedirectToAction("Index");
+        }
+
+        // GET: Users/Inactivate
+        public ActionResult Inactivate(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            int decryptedId;
+
+            try
+            {
+                decryptedId = int.Parse(TripleDESEncryptionHelper.Decrypt(id));
+            }
+            catch
+            {
+                return HttpNotFound();
+            }
+            // Find the user by ID
+            var user = db.Users.SingleOrDefault(u => u.UID == decryptedId); // Assuming UID is the user's ID in the table
+
+            if (user != null)
+            {
+
+                //Activate an Account that has been Inactivated Before
+                user.Status = false;
+
+
+                // Save changes to the database
+                db.SaveChanges();
+
+                TempData["ResetMessage"] = "Account has been deactivated successfully!";
+            }
+            else
+            {
+                TempData["ResetMessage"] = "User not found!";
+            }
+
+            int uid = Convert.ToInt32(Session["ID"]);
+
+            // Call RecordLog method
+            AuditLogsController auditLogsController = new AuditLogsController();
+            auditLogsController.RecordLog("Account Inactivated", user.UID, "User", uid, Session["BranchName"].ToString());
+
+            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
