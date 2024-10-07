@@ -47,7 +47,7 @@ namespace Shareholder_Management_System.Controllers
             var shareholders1 = db.Shareholders.Select(s => new SelectListItem
             {
                 Value = s.ShID.ToString(),
-                Text = s.FullNameEng
+                Text = s.FullNameEng + " / " + s.ShareID
 
             }).ToList();
             shareholders1.Insert(0, new SelectListItem
@@ -68,8 +68,6 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
             ViewBag.PaymentAuthorizer = new SelectList(db.Users, "UID", "FullName");
             return View();
-
-
         }
     
         // GET: Payments/GetSubscriptionsByShareholder
@@ -161,15 +159,10 @@ namespace Shareholder_Management_System.Controllers
 
                     if (documentId > 0)
                     {
-                        // Assign the Document ID to the PaymentSlip property of the payment
-                        var formattedDateTime = payment.CreationDate.HasValue
-                            ? payment.CreationDate.Value.ToString("MM/dd/yyyy hh:mm:ss tt")
-                            : "No Date";
-
-
+                        
                         payment.CreationDate = DateTime.UtcNow;
                         payment.CreatedBy = userId;
-                        payment.PaymentAuthorizationStatus = "pending";
+                        payment.PaymentAuthorizationStatus = "Pending";
                         payment.Branch = branchId;
                         payment.PaymentSlip = documentId;
 
@@ -309,7 +302,7 @@ namespace Shareholder_Management_System.Controllers
                 existingPayment.CreatedBy = userId;
                 existingPayment.Branch = Convert.ToInt32(Session["Branch"]);
                 existingPayment.CreationDate = DateTime.Now;
-                existingPayment.PaymentAuthorizationStatus = "pending";
+                existingPayment.PaymentAuthorizationStatus = "Pending";
 
                 // Handle document creation (if file uploaded)
                 if (uploadedFile != null && uploadedFile.ContentLength > 0)
