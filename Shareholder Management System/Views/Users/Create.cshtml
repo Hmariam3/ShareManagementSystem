@@ -105,7 +105,46 @@
         }
     </div>
 </div>
+<script>
+    
+                   $(document).ready(function() {
+                    $('#branch-search').on('keyup', function() {
+                        var query = $(this).val();
 
+                        if (query.length > 2) { // Start searching after 3 characters
+                            $.ajax({
+                                url: '@Url.Action("SearchBranches", "Users")',
+                                type: 'GET',
+                                data: { searchTerm: query },
+                                success: function(data) {
+                                    $('#branch-results').empty();
+                                    if (data.length > 0) {
+                                        $.each(data, function(index, branch) {
+                                            $('#branch-results').append('<div class="branch-item" data-id="' + branch.Value + '">' + branch.Text + '</div>');
+                                        });
+                                    } else {
+                                        $('#branch-results').append('<div>No branches found</div>');
+                                    }
+                                },
+                                error: function() {
+                                    $('#branch-results').empty().append('<div>Error retrieving branches</div>');
+                                }
+                            });
+                        } else {
+                            $('#branch-results').empty();
+                        }
+                    });
+
+                // Handle branch selection
+                $(document).on('click', '.branch-item', function() {
+                    var branchId = $(this).data('id');
+                    var branchName = $(this).text();
+                    $('#branch-search').val(branchName); // Set the input value
+                    $('#branch-results').empty(); // Clear results
+                    $('#Branch').val(branchId); // Set the hidden input value for submission
+                });
+            });
+</script>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
