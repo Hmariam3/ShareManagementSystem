@@ -14,10 +14,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Share Management System - Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="icon" type="image/x-icon" href="~/assets/cooplmsloader.gif" />
-    <link href="@Url.Content("~/Content/CSS/css2.css?family=Inter:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap")" rel="stylesheet" />
-
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link href="css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="~/assets/css/style.css">
+    <link href="css2?family=Nunito:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet" />
     <link rel="stylesheet"
           type="text/css"
           media="screen"
@@ -31,11 +32,12 @@
           type="text/css"
           media="screen"
           href="~/Content/CSS/animate.css" />
-
-    <script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
-    <script defer="" src="~/Scripts/JS/popper.min.js"></script>
-    <script defer="" src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
-    <script defer="" src="~/Scripts/JS/sweetalert.min.js"></script>
+    @*@Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")*@
+    <script src="~/Script/JS/perfect-scrollbar.min.js"></script>
+    <script defer="" src="~/Script/JS/popper.min.js"></script>
+    <script defer="" src="~/Script/JS/tippy-bundle.umd.min.js"></script>
+    <script defer="" src="~/Script/JS/sweetalert.min.js"></script>
     <script src="~/Scripts/JS/alpine-collaspe.min.js"></script>
     <script src="~/Scripts/JS/alpine-persist.min.js"></script>
     <script defer="" src="~/Scripts/JS/alpine-ui.min.js"></script>
@@ -43,7 +45,6 @@
     <script defer="" src="~/Scripts/JS/alpine.min.js"></script>
     <script src="~/Scripts/JS/custom.js"></script>
     <script src="~/Scripts/jquery.min.js"></script>
-
 </head>
 
 <body x-data="main" class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased" :class="[ $store.app.sidebar ? 'toggle-sidebar' : '', $store.app.theme === 'dark' || $store.app.isDarkMode ?  'dark' : '', $store.app.menu, $store.app.layout,$store.app.rtlClass]">
@@ -106,123 +107,16 @@
         </div>
     </div>
 
-    <script>
-        // main section
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('scrollToTop', () => ({
-                showTopButton: false,
-                init() {
-                    window.onscroll = () => {
-                        this.scrollFunction();
-                    };
-                },
 
-                scrollFunction() {
-                    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-                        this.showTopButton = true;
-                    } else {
-                        this.showTopButton = false;
-                    }
-                },
 
-                goToTop() {
-                    document.body.scrollTop = 0;
-                    document.documentElement.scrollTop = 0;
-                },
-            }));
+    <script src="~/assets/js/alpine-collaspe.min.js"></script>
+    <script src="~/assets/js/alpine-persist.min.js"></script>
+    <script defer="" src="~/assets/js/alpine-ui.min.js"></script>
+    <script defer="" src="~/assets/js/alpine-focus.min.js"></script>
+    <script defer="" src="~/assets/js/alpine.min.js"></script>
 
-            Alpine.data('auth', () => ({
-                languages: [
-                    {
-                        id: 1,
-                        key: 'Khmer',
-                        value: 'kh',
-                    },
-                    {
-                        id: 2,
-                        key: 'Danish',
-                        value: 'da',
-                    },
-                    {
-                        id: 3,
-                        key: 'English',
-                        value: 'en',
-                    },
-                    {
-                        id: 4,
-                        key: 'French',
-                        value: 'fr',
-                    },
-                    {
-                        id: 5,
-                        key: 'German',
-                        value: 'de',
-                    },
-                    {
-                        id: 6,
-                        key: 'Greek',
-                        value: 'el',
-                    },
-                    {
-                        id: 7,
-                        key: 'Hungarian',
-                        value: 'hu',
-                    },
-                    {
-                        id: 8,
-                        key: 'Italian',
-                        value: 'it',
-                    },
-                    {
-                        id: 9,
-                        key: 'Japanese',
-                        value: 'ja',
-                    },
-                    {
-                        id: 10,
-                        key: 'Polish',
-                        value: 'pl',
-                    },
-                    {
-                        id: 11,
-                        key: 'Portuguese',
-                        value: 'pt',
-                    },
-                    {
-                        id: 12,
-                        key: 'Russian',
-                        value: 'ru',
-                    },
-                    {
-                        id: 13,
-                        key: 'Spanish',
-                        value: 'es',
-                    },
-                    {
-                        id: 14,
-                        key: 'Swedish',
-                        value: 'sv',
-                    },
-                    {
-                        id: 15,
-                        key: 'Turkish',
-                        value: 'tr',
-                    },
-                    {
-                        id: 16,
-                        key: 'Arabic',
-                        value: 'ae',
-                    },
-                ],
-            }));
-        });
-        const button = document.getElementById('gradientButton');
-        button.onmouseover = function () {
-            button.style.backgroundImage = 'linear-gradient(to right, black, #00ADEF)';
-        };
-        button.onmouseout = function () {
-            button.style.backgroundImage = 'linear-gradient(to right, #00ADEF, black)';
-        };
-    </script>
+    <script src="~/assets/js/custom.js"></script>
+
+   
 </body>
 </html>
