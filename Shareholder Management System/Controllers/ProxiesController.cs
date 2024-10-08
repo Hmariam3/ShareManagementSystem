@@ -31,6 +31,8 @@ namespace Shareholder_Management_System.Controllers
             });
 
             ViewBag.Shareholders = shareholders;
+            ViewBag.ShareID = "";
+
 
             if (String.IsNullOrEmpty(ShID) && String.IsNullOrEmpty(shareID))
             {
@@ -55,9 +57,11 @@ namespace Shareholder_Management_System.Controllers
                     shareholder = db.Shareholders
                                 .Where(s => s.ShareID == shareID).FirstOrDefault();
                     proxies = db.Proxies.Where(p => p.Shareholder.ShareID == shareID).ToList();
+
                 }
 
                 // Return the Partial View with fetched proxies
+                ViewBag.ShareID = shareholder.ShareID;
                 ViewBag.Shareholder = shareholder;
             }
             ViewBag.NewProxy = new Proxy();
@@ -69,6 +73,9 @@ namespace Shareholder_Management_System.Controllers
         [HttpPost]
         public ActionResult UpdateProxyDocument(int proxyID, HttpPostedFileBase proxyFile)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
             if (proxyFile == null || proxyFile.ContentLength == 0)
             {
                 return Json(new { success = false, message = "File is required." });
@@ -86,7 +93,7 @@ namespace Shareholder_Management_System.Controllers
                 DocOwner = "Shareholder",
                 DocType = "DelegationLetter",
                 ShID = proxy.ShID,
-                CreatedBy = 1,  // Assuming 1 is the user creating it, update as per your logic
+                CreatedBy = userId,  // Assuming 1 is the user creating it, update as per your logic
                 DocAuthorizationStatus = "Pending",
                 CreatedDate = DateTime.Now,
             };
@@ -152,10 +159,12 @@ namespace Shareholder_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Proxy proxy, HttpPostedFileBase proxyFile)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
 
             if (ModelState.IsValid)
             {
-                proxy.CreatedBy = 1;
+                proxy.CreatedBy = userId;
                 proxy.ProxyStatus = "Active";
                 proxy.CreatedDate = DateTime.Now;
                 proxy.ProxyAuthorizationStatus = "Pending";
@@ -176,7 +185,7 @@ namespace Shareholder_Management_System.Controllers
                         DocOwner = "Shareholder",
                         DocType = "ShareholderInfo",
                         ShID = proxy.ShID,
-                        CreatedBy = 1,
+                        CreatedBy = userId,
                         DocAuthorizationStatus = "Pending",
                         CreatedDate = DateTime.Now,
                     };
@@ -259,9 +268,12 @@ namespace Shareholder_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Proxy proxy)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
             if (ModelState.IsValid)
             {
-                proxy.CreatedBy = 1;
+                proxy.CreatedBy = userId;
                 proxy.ProxyStatus = "Active";
                 proxy.CreatedDate = DateTime.Now;
                 proxy.ProxyAuthorizationStatus = "Pending";

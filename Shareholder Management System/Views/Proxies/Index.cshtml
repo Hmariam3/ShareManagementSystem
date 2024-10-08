@@ -32,7 +32,7 @@
                         </div>
                         <div>
                             <label for="shareID">Via Shareholder ID</label>
-                            <input id="shareID" name="shareID" type="text" placeholder="Enter shareID and hit enter" class="form-input" />
+                            <input id="shareID" name="shareID" type="text" placeholder="Enter shareID and hit enter" class="form-input" value="@ViewBag.ShareID" />
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary  mx-3 ">Fetch</button>
@@ -213,70 +213,70 @@
                                                     @using (Html.BeginForm("Create", "Proxies", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                                     {
                                                         @Html.AntiForgeryToken()
-                                                        <div class="form-section">
-                                                            <h2>
-                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
-                                                                    <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                </svg>
-                                                                <span class="list-text">Basic Information</span>
-                                                            </h2>
+                                                    <div class="form-section">
+                                                        <h2>
+                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
+                                                                <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            </svg>
+                                                            <span class="list-text">Basic Information</span>
+                                                        </h2>
 
-                                                            @if (shareholder != null)
-                                                            {
-                                                                @Html.Hidden("ShID", shareholder.ShID, new { Name = "proxy.ShID" })
-
-                                                            }
-                                                            <div class="!mt-2">
-                                                                @Html.LabelFor(model => proxy.FullName, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.FullName, new { htmlAttributes = new { @class = "form-input", @placeholder = "Full Name In English *" } })
-                                                                @Html.ValidationMessageFor(model => proxy.FullName, "", new { @class = "text-danger" })
-                                                            </div>
-
-                                                            <div class="!mt-2">
-                                                                @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.Nationality, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Nationality *" } })
-                                                                @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
-                                                            </div>
-
-                                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
-                                                                <div>
-                                                                    @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
-                                                                    @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Primary Mobile Number" } })
-                                                                    @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
-                                                                </div>
-                                                                <div>
-                                                                    @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
-                                                                    @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Additional Mobile Number" } })
-                                                                    @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
-                                                                </div>
-                                                            </div>
-                                                            <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                                <div>
-                                                                    <label for="startDate" class="text-white-dark">Start Date </label>
-                                                                    @Html.EditorFor(model => proxy.StartDate, new
-                                                                    {
-                                                                        htmlAttributes = new
-                                                                        {
-                                                                            id = "startDate",
-                                                                            @class = "form-input",
-                                                                            @type = "date", // Ensuring the input is of type "date"
-                                                                        }
-                                                                    })
-                                                                </div>
-                                                                <div>
-                                                                    <label for="endDate" class="text-white-dark">End Date </label>
-                                                                    @Html.EditorFor(model => proxy.EndDate, new
-                                                                    {
-                                                                        htmlAttributes = new
-                                                                        {
-                                                                            id = "endDate",
-                                                                            @class = "form-input",
-                                                                            @type = "date", // Ensuring the input is of type "date"
-                                                                        }
-                                                                    })
-                                                                </div>
-                                                            </fieldset>
+                                                        @if (shareholder != null)
+                                                        {
+                                                            @*@Html.Hidden("ShID", new { Name = "proxy.ShID" })*@
+                                                            @Html.HiddenFor(model => proxy.ShID, new { Value = proxy.ShID ??  shareholder.ShID })
+                                                        }
+                                                        <div class="!mt-2">
+                                                            @Html.LabelFor(model => proxy.FullName, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.EditorFor(model => proxy.FullName, new { htmlAttributes = new { @class = "form-input", @placeholder = "Full Name In English *" } })
+                                                            @Html.ValidationMessageFor(model => proxy.FullName, "", new { @class = "text-danger" })
                                                         </div>
+
+                                                        <div class="!mt-2">
+                                                            @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.EditorFor(model => proxy.Nationality, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Nationality *" } })
+                                                            @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
+                                                        </div>
+
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                            <div>
+                                                                @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
+                                                                @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Primary Mobile Number" } })
+                                                                @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div>
+                                                                @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
+                                                                @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Additional Mobile Number" } })
+                                                                @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                        <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label for="startDate" class="text-white-dark">Start Date </label>
+                                                                @Html.EditorFor(model => proxy.StartDate, new
+                                                                {
+                                                                    htmlAttributes = new
+                                                                    {
+                                                                        id = "startDate",
+                                                                        @class = "form-input",
+                                                                        @type = "date", // Ensuring the input is of type "date"
+                                                                    }
+                                                                })
+                                                            </div>
+                                                            <div>
+                                                                <label for="endDate" class="text-white-dark">End Date </label>
+                                                                @Html.EditorFor(model => proxy.EndDate, new
+                                                                {
+                                                                    htmlAttributes = new
+                                                                    {
+                                                                        id = "endDate",
+                                                                        @class = "form-input",
+                                                                        @type = "date", // Ensuring the input is of type "date"
+                                                                    }
+                                                                })
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
 
                                                         <div class="!mt-2">
                                                             <div class="form-section">
@@ -680,7 +680,7 @@
                                     "@item.Kebele", // Kebele
                                     "@item.PhoneNo", // PhoneNo
                                     "@item.PhoneNo2", // PhoneNo2
-                                    "@item.CreatedDate.ToString("yyyy-MM-dd")", // CreatedDate
+                                    "@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
                                     "@(item.AuthorizedDate.HasValue ? item.AuthorizedDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
                                     "@item.Remark", // Remark
                                     "@(item.User != null ? item.User.FullName : "")", // User.FullName
