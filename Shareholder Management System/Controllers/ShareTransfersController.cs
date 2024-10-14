@@ -64,7 +64,9 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.TransfareeShID = new SelectList(db.Shareholders, "ShID", "FullNameEng");
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
             ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName");
-
+            // Populate the ViewBag with subscription and payment options
+            ViewBag.SubID = new SelectList(db.Subscribtions, "SubID", "SubNumShares"); // Replace "SubscriptionNumber" with the correct field name
+            ViewBag.PayID = new SelectList(db.Payments, "PayID", "PaidAmount"); // Replace "PaymentReference" with the correct field name
             return View();
         }
 
@@ -107,9 +109,6 @@ namespace Shareholder_Management_System.Controllers
 
 
 
-        // POST: ShareTransfers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "TransferID,TransferrorShID,TransfareeShID,TransferType,SubID,PayID,NumSharesTransferred,AmountPerShare,PaidAmountForTransfer,TransferReason,DividenedFor,TransferDoc,TransferDate,CreatedBy,CreationDate,TransferAuthorizationStatus,TransferAuthorizer,TransferAuthorizationDate,Remark")] ShareTransfer shareTransfer)
@@ -129,6 +128,8 @@ namespace Shareholder_Management_System.Controllers
                         if (transferrorSubscription != null)
                         {
                             transferrorSubscription.SubNumShares -= shareTransfer.NumSharesTransferred;
+                            transferrorSubscription.SubAmount -= shareTransfer.PaidAmountForTransfer;
+                            transferrorSubscription.PaidSubscription -= shareTransfer.PaidAmountForTransfer;
                             db.Entry(transferrorSubscription).State = EntityState.Modified;
                         }
 
@@ -137,38 +138,44 @@ namespace Shareholder_Management_System.Controllers
                         {
                             ShID = shareTransfer.TransfareeShID,
                             SubNumShares = shareTransfer.NumSharesTransferred,
-                            PaidSubscription = transferrorSubscription?.PaidSubscription ?? 0, // If needed, we can transfer part of the paid subscription
-                            UnpaidSubscription = transferrorSubscription?.UnpaidSubscription ?? 0, // Or part of unpaid
-                            SubStatus = "Active", // Mark it as active
+                            SubAmount = shareTransfer.PaidAmountForTransfer,
+                            PaidSubscription = shareTransfer.PaidAmountForTransfer,
+                            UnpaidSubscription = transferrorSubscription?.UnpaidSubscription ?? 0,
+                            SubTransferFrom = shareTransfer.TransferrorShID,
+                            SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
-                            SubDate = DateTime.Now
+                            SubDate = DateTime.Now,
+                            SubAuthorizationStatus = "Pending"
                         };
                         db.Subscribtions.Add(newSubscription);
                         db.SaveChanges();
 
                         // Update payment records if the transfer type is related to payments
-                        if (shareTransfer.TransferType == "Payment")
+                        var payment = db.Payments.FirstOrDefault(p => p.PayID == shareTransfer.PayID && p.ShID == shareTransfer.TransferrorShID);
+                        if (payment != null)
                         {
-                            var payment = db.Payments.FirstOrDefault(p => p.PayID == shareTransfer.PayID);
-                            if (payment != null)
-                            {
-                                // Reduce the PaidAmount for the transferror
-                                payment.PaidAmount -= shareTransfer.PaidAmountForTransfer;
-                                db.Entry(payment).State = EntityState.Modified;
-
-                                // Add a new payment for the transferee
-                                var newPayment = new Payment
-                                {
-                                    ShID = shareTransfer.TransfareeShID,
-                                    SubID = newSubscription.SubID, // Link to the newly created subscription
-                                    PaidAmount = shareTransfer.PaidAmountForTransfer,
-                                    PaymentMode = payment.PaymentMode,
-                                    PaymentDate = DateTime.Now,
-                                    CreatedBy = shareTransfer.CreatedBy
-                                };
-                                db.Payments.Add(newPayment);
-                            }
+                            // Reduce the PaidAmount for the transferror
+                            payment.PaidAmount -= shareTransfer.PaidAmountForTransfer;
+                            db.Entry(payment).State = EntityState.Modified;
                         }
+
+                        // Add a new payment for the transferee shareholder
+                        var newPayments = new Payment
+                        {
+                            ShID = shareTransfer.TransfareeShID,
+                            SubID = newSubscription.SubID,
+                            PaymentMode = "Cheque",
+                            PaidAmount = shareTransfer.PaidAmountForTransfer,
+                            ReferenceNum = "123456789",
+                            PaymentTransferFrom = shareTransfer.TransferrorShID,
+                            PaymentDate = DateTime.Now,
+                            CreatedBy = shareTransfer.CreatedBy,
+                            PaymentAuthorizationStatus = "Pending"
+
+                        };
+                        db.Payments.Add(newPayments);
+                        db.SaveChanges();
+
 
                         // Commit the transaction after all updates
                         db.SaveChanges();
@@ -192,8 +199,11 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareTransfer.CreatedBy);
             ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName", shareTransfer.TransferAuthorizer);
 
+            
+
             return View(shareTransfer);
         }
+
 
 
         // GET: ShareTransfers/Edit/5

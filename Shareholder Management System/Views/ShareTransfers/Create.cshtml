@@ -50,7 +50,7 @@
                                     {
                                         new SelectListItem { Text = "Subscription", Value = "Subscription" },
                                         new SelectListItem { Text = "Payment", Value = "Payment" },
-                                        new SelectListItem { Text = "Share", Value = "Share" }
+                                        new SelectListItem { Text = "Full Transfer", Value = "Full Transfer" }
                                     }, "Select Transfer Type", new { @class = "form-input", id = "transferTypeDropdown" })
                             </div>
                             <!-- Choose Type Radio Buttons -->
@@ -147,46 +147,48 @@
                                 @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
+                                <label>Reason for Transfer</label>
+                                @Html.DropDownListFor(model => model.TransferReason,
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "Sale", Value = "Sale" },
+                                        new SelectListItem { Text = "Gift", Value = "Gift" },
+                                        new SelectListItem { Text = "Heir", Value = "Heir" },
+                                        new SelectListItem { Text = "Court Decision", Value = "Court Decision" },
+                                    }, "Select Transfer Reason", new { @class = "form-input", @id = "transferReason" })
+                                @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
                                 <label>Transfer Date</label>
                                 @Html.HiddenFor(model => model.TransferDate, new { @class = "form-input", @type = "date", @id = "transferDate" })
                                 @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10">
-                                <label>Transfer Document</label>
-                                @Html.TextBoxFor(model => model.TransferDoc, new { type = "file", @class = "form-input", @id = "transferDocument" })
-                                @Html.ValidationMessageFor(model => model.TransferDoc, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <br />
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div class="col-md-10">
+                                <label>Transfer Document</label>
+                                @Html.TextBoxFor(model => model.TransferDoc, new { type = "file", @class = "form-input", @id = "transferDocument" })
+                                @Html.ValidationMessageFor(model => model.TransferDoc, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-10">
                                 <label>Remark</label>
                                 @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input", @id = "remark" } })
                                 @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
-                                <label>Transfer Reason</label>
-                                @Html.TextAreaFor(model => model.TransferReason, new { @class = "form-input", @id = "transferReason", @rows = 1, @cols = 40 })
-                                @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
+                                <label>SubID</label>
+                                @Html.DropDownList("SubID", null, htmlAttributes: new { @class = "form-input", id = "SubID" })
+                                @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-danger" })
                             </div>
-
+                            <div class="col-md-10">
+                                <label>PayID</label>
+                                @Html.DropDownList("PayID", null, htmlAttributes: new { @class = "form-input", id = "PayID" })
+                                @Html.ValidationMessageFor(model => model.PayID, "", new { @class = "text-danger" })
+                            </div>
                         </div>
                         <div class="mb-5">
-                            @*<div class="col-md-10">
-                                    <label>Subscriptions</label>
-                                    @Html.DropDownList("SubID", null, htmlAttributes: new { @class = "form-input" })
-                                    @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-danger" })
-
-                                </div>
-                                <br />
-                                <div class="col-md-10">
-                                    <label>Payments</label>
-                                    @Html.DropDownList("PayID", null, htmlAttributes: new { @class = "form-input" })
-                                    @Html.ValidationMessageFor(model => model.PayID, "", new { @class = "text-danger" })
-
-                                </div>*@
-
                             <div class="col-md-10" style="display: none;">
                                 <label>Created By</label>
                                 @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-input" })
@@ -238,6 +240,8 @@
     $(document).ready(function () {
         let transferType = '';
         let chooseType = '';
+        $('#PayID').val(''); // Clear the dropdown
+        $('#SubID').val(''); // Clear the dropdown
 
 
         // Handle Transfer Type selection
@@ -250,11 +254,12 @@
             $('#numSharesTransferred').val(''); // Clear value when transfer dropdown changed
             $('#paidAmountForTransfer').val('');
             // Reset the Choose Type radio buttons
-            $('input[name="chooseType"]').prop('checked', false); // Uncheck the Choose Type radio buttons
+            $('input[name="chooseType"]').prop('checked', false);// Uncheck the Choose Type radio buttons
             // Hide partial transfer columns in both tables
             $('#subscriptionsTable .partial-transfer-col').hide(); // Hide partial transfer column in subscriptions
             $('#paymentsTable .partial-transfer-col').hide(); // Hide partial transfer column in payments
-
+            $('#PayID').val(''); // Clear the dropdown
+            $('#SubID').val(''); // Clear the dropdown
             var chooseTypeDiv = $('#chooseTypeDiv');
             var chooseTypeFull = $('#chooseTypeFull');
             var chooseTypePartial = $('#chooseTypePartial');
@@ -262,7 +267,7 @@
             // Show the "Choose Type" radio buttons based on Transfer Type
             chooseTypeDiv.show();
 
-            if (transferType === 'Share') {
+            if (transferType === 'Full Transfer') {
                 chooseTypeFull.prop('checked', true);
                 chooseTypeFull.prop('disabled', true);
                 chooseTypePartial.prop('disabled', true);
@@ -300,6 +305,8 @@
             $('#transferDocument').val(''); // Reset transfer document to default
             $('#remark').val(''); // Reset remark to default
             $('#transferReason').val(''); // Reset transfer reason to default
+            $('#PayID').val(''); // Clear the dropdown
+            $('#SubID').val(''); // Clear the dropdown
 
 
             // Fetch the subscriptions for the selected shareholder
@@ -310,6 +317,7 @@
                 success: function (data) {
                     // Populate the Subscriptions Table
                     $.each(data.subscriptions, function (index, subscription) {
+                        console.log(subscription)
                         $('#subscriptionsTable tbody').append(`
                         <tr>
                             <td><input type="checkbox" class="form-checkbox subscription-checkbox" data-subscription-id="${subscription.SubID}"></td>
@@ -350,6 +358,23 @@
         // On change of the subscription checkbox
         $(document).on('change', '.subscription-checkbox', function () {
             var subscriptionId = $(this).data('subscription-id');
+            var selectedSubscriptions = [];
+            $('#SubID').empty(); // Clear the dropdown
+
+            // Find all checked subscriptions and populate the dropdown
+            $('.subscription-checkbox:checked').each(function () {
+                var subscriptionId = $(this).data('subscription-id');
+                var subscriptionRow = $(this).closest('tr');
+                var subscriptionNumShares = subscriptionRow.find('td:eq(2) input').val(); // Assuming 3rd column has number of shares
+
+                // Add the selected subscription to the dropdown
+                selectedSubscriptions.push({ id: subscriptionId, text: `${subscriptionId}` });
+            });
+
+            // Populate the SubID dropdown with the selected subscriptions
+            selectedSubscriptions.forEach(function (sub) {
+                $('#SubID').append(`<option value="${sub.id}">${sub.text}</option>`);
+            });
 
             if (chooseType === 'Full') {
                 if (transferType === 'Subscription') {
@@ -394,15 +419,24 @@
 
             // Update visibility of partial transfer columns based on the current choose type
             updatePartialTransferColumns();
-
-            // Log to debug
-            console.log("Paid Share (if Subscription):", paidShare);
-            console.log("Paid Amount (if Payment):", paidAmount);
-            console.log("Partial Transfer Value:", partialTransferValue);
         });
 
         // On change of the payment checkbox (for Payment transfer type)
         $(document).on('change', '.payment-checkbox', function () {
+            var selectedPayments = [];
+            $('#PayID').empty(); // Clear the dropdown
+            // Find all checked payments and populate the dropdown
+            $('.payment-checkbox:checked').each(function () {
+                var paymentId = $(this).closest('tr').find('td:eq(1) input').val(); // Assuming the 2nd column has payment ID
+                var paidAmount = $(this).closest('tr').find('td:eq(2) input').val(); // Assuming 3rd column has paid amount
+
+                // Add the selected payment to the dropdown
+                selectedPayments.push({ id: paymentId, text: `${paymentId}` });
+            });
+            // Populate the PayID dropdown with the selected payments
+            selectedPayments.forEach(function (pay) {
+                $('#PayID').append(`<option value="${pay.id}">${pay.text}</option>`);
+            });
             if (chooseType === 'Full') {
                 if (transferType === 'Payment') {
                     if ($(this).is(':checked')) {
