@@ -237,30 +237,40 @@ namespace Shareholder_Management_System.Controllers
                 return HttpNotFound();
             }
 
-            // Retrieve Shareholders for the dropdown and pre-select the existing one
+            // Retrieve Subscriptions related to the Shareholder for the dropdown
             var subscriptions = db.Subscribtions
-       .Where(s => s.ShID == payment.ShID) // Replace with your actual logic to get subscriptions
-       .ToList();
+                   .Where(s => s.ShID == payment.ShID
+                         && s.SubAuthorizationStatus == "approved"
+                         && s.UnpaidSubscription > 0
+                         && s.PaymentDueDate > DateTime.Now)
+                .ToList();
+
+            // Retrieve the UnpaidSubscription for the pre-selected subscription
+            var selectedSubscription = db.Subscribtions.FirstOrDefault(s => s.SubID == payment.SubID);
+            decimal unpaidSubscription = selectedSubscription?.UnpaidSubscription ?? 0;
+
             // Populate Shareholders for dropdown
             ViewBag.Shareholders1 = db.Shareholders
                 .Select(s => new SelectListItem
                 {
                     Value = s.ShID.ToString(),
-                    Text = s.FullNameEng // Adjust this according to your model
+                    Text = s.FullNameEng // Adjust according to your model
                 }).ToList();
+
+            // Pass the necessary data to the view model
             var viewModel = new Payment
             {
                 SubID = payment.SubID,
                 ReferenceNum = payment.ReferenceNum,
                 Remark = payment.Remark,
-              
                 PaidAmount = payment.PaidAmount,
                 PaymentDate = payment.PaymentDate,
                 ShID = payment.ShID, // Current selected Shareholder ID
-               
             };
-            // Pass subscriptions to the view
+
+            // Pass subscriptions and unpaidSubscription to the view
             ViewBag.Subscriptions = subscriptions;
+            ViewBag.UnpaidSubscription = unpaidSubscription; // Pass this value to the view
 
             return View(viewModel);
         }
