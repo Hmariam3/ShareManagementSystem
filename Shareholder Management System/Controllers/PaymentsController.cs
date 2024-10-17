@@ -245,6 +245,15 @@ namespace Shareholder_Management_System.Controllers
                          && s.PaymentDueDate > DateTime.Now)
                 .ToList();
 
+
+
+            //simbo 
+
+
+
+
+
+
             // Retrieve the UnpaidSubscription for the pre-selected subscription
             var selectedSubscription = db.Subscribtions.FirstOrDefault(s => s.SubID == payment.SubID);
             decimal unpaidSubscription = selectedSubscription?.UnpaidSubscription ?? 0;
