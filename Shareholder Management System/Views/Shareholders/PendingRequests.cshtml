@@ -1,0 +1,724 @@
+﻿@model Shareholder_Management_System.Models.ApprovalsViewModel
+
+
+@{
+    ViewBag.Title = "PendingRequests";
+}
+
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <!-- start main content section -->
+    <!-- Border Tabs -->
+    <div class="panel">
+        <div class="mb-5 flex items-center justify-between">
+            <h5 class="text-lg font-semibold dark:text-white-light">
+                Needs Your Immideate
+                Approvals/Attentions
+            </h5>
+        </div>
+        <div class="mb-5" x-data="{tab: 'shareholder'}">
+            <div>
+                <ul class="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger dark:border-[#191e3a]"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='shareholder' }"
+                           @@click="tab = 'shareholder'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path opacity="0.5"
+                                      d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path d="M12 15L12 18" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round">
+                                </path>
+                            </svg>
+
+                            Sharholder <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Shareholders.Count()</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='profile' }"
+                           @@click="tab = 'profile'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <circle cx="12" cy="6" r="4" stroke="currentColor" stroke-width="1.5">
+                                </circle>
+                                <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor"
+                                         stroke-width="1.5"></ellipse>
+                            </svg>
+                            Proxies <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Proxies.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='contact' }"
+                           @@click="tab = 'contact'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Subscription <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Subscribtions.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='contact' }"
+                           @@click="tab = 'contact'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Payments <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Payments.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='contact' }"
+                           @@click="tab = 'contact'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Transfers <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.ShareTransfers.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='contact' }"
+                           @@click="tab = 'contact'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Blocks <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Blockeds.Count()</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex-1 border border-t-0 border-white-light p-4 text-sm dark:border-[#191e3a]">
+                <template x-if="tab === 'shareholder'">
+                    <div class="active">
+                        <div x-data="shareholder">
+                            <div class="flex flex-wrap items-center justify-between gap-4">
+                                <h2 class="text-xl"></h2>
+                                <div class="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+                                    <div class="flex gap-3">
+                                        <div>
+                                            <button type="button" class="btn btn-outline-primary p-2"
+                                                    :class="{ 'bg-primary text-white': displayType === 'list' }"
+                                                    @@click="setDisplayType('list')">
+                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                                                    <path d="M2 5.5L3.21429 7L7.5 3" stroke="currentColor"
+                                                          stroke-width="1.5" stroke-linecap="round"
+                                                          stroke-linejoin="round"></path>
+                                                    <path opacity="0.5" d="M2 12.5L3.21429 14L7.5 10"
+                                                          stroke="currentColor" stroke-width="1.5"
+                                                          stroke-linecap="round" stroke-linejoin="round">
+                                                    </path>
+                                                    <path d="M2 19.5L3.21429 21L7.5 17"
+                                                          stroke="currentColor" stroke-width="1.5"
+                                                          stroke-linecap="round" stroke-linejoin="round">
+                                                    </path>
+                                                    <path d="M22 19L12 19" stroke="currentColor"
+                                                          stroke-width="1.5" stroke-linecap="round">
+                                                    </path>
+                                                    <path opacity="0.5" d="M22 12L12 12"
+                                                          stroke="currentColor" stroke-width="1.5"
+                                                          stroke-linecap="round"></path>
+                                                    <path d="M22 5L12 5" stroke="currentColor"
+                                                          stroke-width="1.5" stroke-linecap="round"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <div>
+                                            <button type="button" class="btn btn-outline-primary p-2"
+                                                    :class="{ 'bg-primary text-white': displayType === 'grid' }"
+                                                    @@click="setDisplayType('grid')">
+                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                                                    <path opacity="0.5"
+                                                          d="M2.5 6.5C2.5 4.61438 2.5 3.67157 3.08579 3.08579C3.67157 2.5 4.61438 2.5 6.5 2.5C8.38562 2.5 9.32843 2.5 9.91421 3.08579C10.5 3.67157 10.5 4.61438 10.5 6.5C10.5 8.38562 10.5 9.32843 9.91421 9.91421C9.32843 10.5 8.38562 10.5 6.5 10.5C4.61438 10.5 3.67157 10.5 3.08579 9.91421C2.5 9.32843 2.5 8.38562 2.5 6.5Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                    <path opacity="0.5"
+                                                          d="M13.5 17.5C13.5 15.6144 13.5 14.6716 14.0858 14.0858C14.6716 13.5 15.6144 13.5 17.5 13.5C19.3856 13.5 20.3284 13.5 20.9142 14.0858C21.5 14.6716 21.5 15.6144 21.5 17.5C21.5 19.3856 21.5 20.3284 20.9142 20.9142C20.3284 21.5 19.3856 21.5 17.5 21.5C15.6144 21.5 14.6716 21.5 14.0858 20.9142C13.5 20.3284 13.5 19.3856 13.5 17.5Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                    <path d="M2.5 17.5C2.5 15.6144 2.5 14.6716 3.08579 14.0858C3.67157 13.5 4.61438 13.5 6.5 13.5C8.38562 13.5 9.32843 13.5 9.91421 14.0858C10.5 14.6716 10.5 15.6144 10.5 17.5C10.5 19.3856 10.5 20.3284 9.91421 20.9142C9.32843 21.5 8.38562 21.5 6.5 21.5C4.61438 21.5 3.67157 21.5 3.08579 20.9142C2.5 20.3284 2.5 19.3856 2.5 17.5Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                    <path d="M13.5 6.5C13.5 4.61438 13.5 3.67157 14.0858 3.08579C14.6716 2.5 15.6144 2.5 17.5 2.5C19.3856 2.5 20.3284 2.5 20.9142 3.08579C21.5 3.67157 21.5 4.61438 21.5 6.5C21.5 8.38562 21.5 9.32843 20.9142 9.91421C20.3284 10.5 19.3856 10.5 17.5 10.5C15.6144 10.5 14.6716 10.5 14.0858 9.91421C13.5 9.32843 13.5 8.38562 13.5 6.5Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="relative">
+                                        <input type="text" placeholder="Search Shareholders"
+                                               class="peer form-input py-2 ltr:pr-11 rtl:pl-11"
+                                               x-model="searchUser" @@keyup="searchShareholders">
+                                        <div class="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
+                                            <svg class="mx-auto" width="16" height="16" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5"></circle>
+                                                <path d="M18.5 18.5L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel mt-5 overflow-hidden border-0 p-0">
+                                <template x-if="displayType === 'list'">
+                                    <div>
+                                        <div class="table-responsive">
+
+                                            <table id="shareholderTable" class="whitespace-nowrap table-striped table-hover table-bordered table-compact">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            <input type="checkbox" class="form-checkbox" @@click="toggleAll" x-model="selectAll">
+                                                        </th>
+                                                        <th>Share ID</th>
+                                                        <th>Full Name (Eng)</th>
+                                                        <th>Full Name (Afan Oromo)</th>
+                                                        <th>Full Name (Amharic)</th>
+                                                        <th>Status</th>
+                                                        <th>Nationality</th>
+                                                        <th>SH Category</th>
+                                                        <th>TIN Number</th>
+                                                        <th>Account Number</th>
+                                                        <th>Region</th>
+                                                        <th>Zone</th>
+                                                        <th>City</th>
+                                                        <th>Subcity</th>
+                                                        <th>Woreda</th>
+                                                        <th>Kebele</th>
+                                                        <th>House No</th>
+                                                        <th>PoBox</th>
+                                                        <th>Phone No</th>
+                                                        <th>Phone No2</th>
+                                                        <th>Phone No3</th>
+                                                        <th>TeleHome</th>
+                                                        <th>TeleWork</th>
+                                                        <th>Email</th>
+                                                        <th>Email2</th>
+                                                        <th>Email3</th>
+                                                        <th>Created Date</th>
+                                                        <th>Remark</th>
+                                                        <th>Branch Name</th>
+                                                        <th>Created By</th>
+                                                        <th class="!text-center">Action</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Loop through filteredShareholders -->
+                                                    <template x-for="shareholder in filteredShareholders" :key="shareholder.id">
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="form-checkbox" :value="shareholder.id" x-model="selectedShareholders">
+                                                            </td>
+                                                            <td x-text="shareholder.shareid"></td>
+                                                            <td x-text="shareholder.fullNameEng"></td>
+                                                            <td x-text="shareholder.fullNameAfanOromo"></td>
+                                                            <td x-text="shareholder.fullNameAmharic"></td>
+                                                            <td x-text="shareholder.status"></td>
+                                                            <td x-text="shareholder.nationality"></td>
+                                                            <td x-text="shareholder.shCategory"></td>
+                                                            <td x-text="shareholder.tinNum"></td>
+                                                            <td x-text="shareholder.accountNumber"></td>
+                                                            <td x-text="shareholder.region"></td>
+                                                            <td x-text="shareholder.zone"></td>
+                                                            <td x-text="shareholder.city"></td>
+                                                            <td x-text="shareholder.subcity"></td>
+                                                            <td x-text="shareholder.woreda"></td>
+                                                            <td x-text="shareholder.kebele"></td>
+                                                            <td x-text="shareholder.houseNo"></td>
+                                                            <td x-text="shareholder.poBox"></td>
+                                                            <td x-text="shareholder.phoneNo"></td>
+                                                            <td x-text="shareholder.phoneNo2"></td>
+                                                            <td x-text="shareholder.phoneNo3"></td>
+                                                            <td x-text="shareholder.teleHome"></td>
+                                                            <td x-text="shareholder.teleWork"></td>
+                                                            <td x-text="shareholder.email"></td>
+                                                            <td x-text="shareholder.email2"></td>
+                                                            <td x-text="shareholder.email3"></td>
+                                                            <td x-text="shareholder.createdDate"></td>
+                                                            <td x-text="shareholder.remark"></td>
+                                                            <td x-text="shareholder.branchName"></td>
+                                                            <td x-text="shareholder.createdBy"></td>
+                                                            <td class="text-center">
+                                                                <ul class="flex items-center justify-center gap-2">
+                                                                    <li>
+                                                                        <a :href="'@Url.Action("Details", "Shareholders", new { id = "__ShID__" })'.replace('__ShID__', shareholder.id)"
+                                                                           class="hover:text-primary">
+                                                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                                                                 xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                                                                <path d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                                                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
+                                                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                                                            </svg>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:;">
+                                                                            <svg width="24" height="24"
+                                                                                 viewbox="0 0 24 24" fill="none"
+                                                                                 xmlns="http://www.w3.org/2000/svg"
+                                                                                 class="h-5 w-5 ">
+                                                                                <path opacity="0.5"
+                                                                                      d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
+                                                                                      stroke="currentColor"
+                                                                                      stroke-width="1.5"
+                                                                                      stroke-linecap="round"
+                                                                                      stroke-linejoin="round">
+                                                                                </path>
+                                                                                <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625"
+                                                                                      stroke="currentColor"
+                                                                                      stroke-width="1.5"
+                                                                                      stroke-linecap="round"
+                                                                                      stroke-linejoin="round"></path>
+                                                                            </svg>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:;">
+                                                                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary">
+                                                                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                                                                <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                            </svg>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:;">
+                                                                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
+                                                                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                                                                <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                                            </svg>
+                                                                        </a>
+                                                                    </li>
+                                                                </ul>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                    <template x-if="filteredShareholders.length === 0">
+                                                        <tr>
+                                                            <td colspan="31" class="text-center">No Requests found</td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                        <div class="mt-3 flex w-1/2 gap-4">
+                                            <button type="button" class="btn btn-outline-success w-1/2"
+                                                    @@click="editUser(shareholder)">
+                                                Approve
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger w-1/2"
+                                                    @@click="deleteUser(shareholder)">
+                                                Reject
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </template>
+                            </div>
+                            <template x-if="displayType === 'grid'">
+                                <div class="my-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3">
+                                    <template x-for="shareholder in filteredShareholders" :key="shareholder.id">
+                                        <div class="relative overflow-hidden rounded-md bg-white text-center shadow-[4px_6px_10px_-3px_#bfc9d4] dark:bg-[#1c232f] dark:shadow-none rounded border border-[#e0e6ed] dark:border-[#1b2e4b] ">
+                                            <div class="px-2 py-4 ">
+                                                <div class="flex flex-wrap justify-between ">
+                                                    <div class="flex">
+                                                        <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                            Share ID :
+                                                        </div>
+                                                        <div class="font-bold" x-text="shareholder.shareid">
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div>
+                                                            <span class="badge badge-outline-primary" x-text="shareholder.status"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="border-[#e0e6ed] dark:border-[#1b2e4b]">
+
+                                            <div class="relative mt-3 px-6 pb-24">
+                                                <div class="rounded-md bg-white px-2 py-4 shadow-md dark:bg-gray-900">
+                                                    <div class="flex flex-wrap justify-between ">
+                                                        <div class="w-2/3">
+                                                            <div class="font-bold text-left block" x-text="shareholder.fullNameEng">
+                                                            </div>
+                                                            <div class="text-white-dark text-left block flex-wrap"
+                                                                 x-text="shareholder.shCategory">
+                                                            </div>
+                                                        </div>
+                                                        <div class="w-1/3">
+                                                            <div class="text-muted" x-text="shareholder.createdDate">
+                                                            </div>
+                                                            <div class="flex flex-wrap items-center justify-between gap-3">
+
+                                                                <a :href="'@Url.Action("Details", "Shareholders", new { id = "__ShID__" })'.replace('__ShID__', shareholder.id)"
+                                                                   class="hover:text-secondary btn btn-success btn-sm">
+                                                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                                                         xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                                                        <path d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                                              stroke="currentColor" stroke-width="1.5"></path>
+                                                                        <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
+                                                                              stroke="currentColor" stroke-width="1.5"></path>
+                                                                    </svg>
+                                                                </a>
+                                                                <button type="button"
+                                                                        class=" hover:text-secondary btn btn-danger btn-sm">
+                                                                    <svg width="24" height="24"
+                                                                         viewbox="0 0 24 24" fill="none"
+                                                                         xmlns="http://www.w3.org/2000/svg"
+                                                                         class="h-5 w-5 ">
+                                                                        <path opacity="0.5"
+                                                                              d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
+                                                                              stroke="currentColor"
+                                                                              stroke-width="1.5"
+                                                                              stroke-linecap="round"
+                                                                              stroke-linejoin="round">
+                                                                        </path>
+                                                                        <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625"
+                                                                              stroke="currentColor"
+                                                                              stroke-width="1.5"
+                                                                              stroke-linecap="round"
+                                                                              stroke-linejoin="round"></path>
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <hr class="my-3 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                                                <div class="flex items-center">
+                                                    <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                        Remark :
+                                                    </div>
+                                                    <div class="text-white-dark flex-wrap" x-text="shareholder.remark">
+                                                        Updating the
+                                                        users list to implement the correcta information
+                                                        i want to update the text as long as i can
+                                                    </div>
+                                                </div>
+                                                <hr class=" border-[#e0e6ed] dark:border-[#1b2e4b]">
+                                                <div class="mt-6 grid grid-cols-1 gap-4 ltr:text-left rtl:text-right">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                            Email :
+                                                        </div>
+                                                        <div class="truncate text-white-dark"
+                                                             x-text="shareholder.email"></div>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                            Phone :
+                                                        </div>
+                                                        <div class="text-white-dark" x-text="shareholder.phoneNo">
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                            Address
+                                                            :
+                                                        </div>
+                                                        <div class="text-white-dark truncate" x-text="[shareholder.region, shareholder.zone, shareholder.city, shareholder.subcity, shareholder.woreda, shareholder.kebele].filter(value => value).join(' / ') || 'No address information available'"></div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="absolute bottom-0 mt-6 flex w-full gap-4 p-6 ltr:left-0 rtl:right-0">
+                                                <button type="button" class="btn btn-outline-success w-1/2"
+                                                        @@click="approveRequest(shareholder.id)">
+                                                    Approve
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger w-1/2"
+                                                        @@click="openRejectModal(shareholder.id)">
+                                                    Reject
+                                                </button>
+                                            </div>
+                                            <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60"
+                                                 :class="rejectModalOpen ? '!block' : 'hidden'">
+                                                <div class="flex min-h-screen items-center justify-center px-4" @@click.self="closeRejectModal">
+                                                    <div class="panel w-full max-w-md my-8 overflow-hidden rounded-lg border-0 p-6">
+                                                        <h2 class="text-xl font-semibold mb-4">Reason for Rejection</h2>
+                                                        <textarea x-model="rejectionReason" class="form-input w-full h-28"></textarea>
+                                                        <div class="flex justify-end gap-4 mt-4">
+                                                            <button type="button" class="btn btn-outline-secondary" @@click="closeRejectModal">
+                                                                Cancel
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger" @@click="submitRejection(selectedShareholderId)">
+                                                                Submit
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+                <template x-if="tab === 'profile'">
+                    <div>
+                        <div class="flex items-start">
+
+                            <div class="flex-auto">
+                                <h5 class="mb-4 text-xl font-medium">Media heading</h5>
+                                <p class="text-white-dark">
+                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
+                                    ante
+                                    sollicitudin. Cras
+                                    purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce
+                                    condimentum nunc ac
+                                    nisi
+                                    vulputate fringilla. Donec lacinia congue felis in faucibus.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template x-if="tab === 'contact'">
+                    <div>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                            incididunt ut
+                            labore et
+                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                            laboris nisi ut
+                            aliquip
+                            ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                            velit esse cillum
+                            dolore eu
+                            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                            culpa qui officia
+                            deserunt mollit anim id est laborum.
+                        </p>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('shareholder', () => ({
+            displayType: 'list',
+            searchUser: '',
+            filteredShareholders: [], // Holds the filtered data for display
+            selectAll: false, // Keeps track of the "Select All" checkbox
+            selectedShareholders: [], // Array to hold the IDs of selected shareholders
+            rejectModalOpen: false, // Controls the rejection modal visibility
+            rejectionReason: '',
+            selectedShareholderId: null, // Stores the selected shareholder ID
+
+            shareholderList: [
+                @foreach (var item in Model.Shareholders)
+                {
+                    <text>
+                    {
+                        id: @item.ShID,
+                        shareid: "@item.ShareID",
+                        fullNameEng: "@item.FullNameEng",
+                        fullNameAfanOromo: "@item.FullNameAfanOromo",
+                        fullNameAmharic: "@item.FullNameAmharic",
+                        status: "@item.Status",
+                        nationality: "@item.Nationality",
+                        shCategory: "@item.SHCategory",
+                        tinNum: "@item.TINNum",
+                        accountNumber: "@item.AccountNumber",
+                        region: "@item.Region",
+                        zone: "@item.Zone",
+                        city: "@item.City",
+                        subcity: "@item.Subcity",
+                        woreda: "@item.Woreda",
+                        kebele: "@item.Kebele",
+                        houseNo: "@item.HouseNo",
+                        poBox: "@item.PoBox",
+                        phoneNo: "@item.PhoneNo",
+                        phoneNo2: "@item.PhoneNo2",
+                        phoneNo3: "@item.PhoneNo3",
+                        teleHome: "@item.TeleHome",
+                        teleWork: "@item.TeleWork",
+                        email: "@item.Email",
+                        email2: "@item.Email2",
+                        email3: "@item.Email3",
+                        createdDate: "@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("yyyy-MM-dd") : "")",
+                        remark: "@item.Remark",
+                        branchName: "@(item.Branch1 != null ? item.Branch1.BranchName : "N/A")", // Handle null for Branch1
+                        createdBy: "@(item.User != null ? item.User.FullName : "N/A")", // Handle null for User
+                    },
+                    </text>
+                }
+            ],
+
+            init() {
+                this.filteredShareholders = this.shareholderList;
+
+                this.$watch('selectedShareholders', (newVal) => {
+                    this.selectAll = newVal.length === this.filteredShareholders.length;
+                });
+
+            },
+            toggleAll() {
+                this.selectAll = !this.selectAll; // Correct inversion of the selectAll state
+                if (this.selectAll) {
+                    // Check all checkboxes
+                    this.selectedShareholders = this.filteredShareholders.map((shareholder) => shareholder.id);
+                } else {
+                    // Uncheck all checkboxes
+                    this.selectedShareholders = [];
+                }
+            },
+            searchShareholders() {
+                // Perform case-insensitive filtering based on FullNameEng, Status, or PhoneNo
+                this.filteredShareholders = this.shareholderList.filter(shareholder =>
+                    shareholder.shareid.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    shareholder.fullNameEng.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    shareholder.phoneNo.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    shareholder.status.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    shareholder.email.toLowerCase().includes(this.searchUser.toLowerCase())
+                );
+            },
+            setDisplayType(type) {
+                this.displayType = type;
+            },
+
+            approveRequest(id) {
+                fetch('@Url.Action("Approve", "Shareholders")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder successfully Approved.', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to approve shareholder.');
+                    }
+                })
+                .catch(error => {
+                    showMessage(data.message || 'An error occurred while approving the shareholder document.', 'error');
+                });
+
+            },
+
+            openRejectModal(shareholderId) {
+                this.selectedShareholderId = shareholderId;
+                this.rejectionReason = ''; // Clear any previous reason
+                this.rejectModalOpen = true;
+             },
+
+            // Close Rejection Modal
+            closeRejectModal() {
+                this.rejectionReason = '';
+                this.rejectModalOpen = false;
+            },
+
+            // Submit Rejection with Reason
+            submitRejection(id) {
+                console.log(this.rejectionReason);
+                fetch('@Url.Action("Reject", "Shareholders")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id,
+                        remark: this.rejectionReason
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder rejected successfully.', 'success');
+
+                        this.closeRejectModal();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to reject shareholder.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('An unexpected error occurred.', 'error');
+                });
+            },
+
+        }));
+    });
+    // Success message function (Toast)
+    async function showMessage(msg = '', type = 'success') {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    }
+</script>

@@ -62,7 +62,7 @@ namespace Shareholder_Management_System.Controllers
             {
                 shareholder.Branch = branchId;
                 shareholder.CreatedBy = userId;
-                shareholder.Status = "InActive";
+                shareholder.Status = "New";
                 shareholder.CreatedDate = DateTime.Now;
                 shareholder.AuthorizationStatus = "Pending";
 
@@ -132,6 +132,39 @@ namespace Shareholder_Management_System.Controllers
         }
 
 
+        // POST: Shareholders/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Shareholder shareholder)
+        {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
+            if (ModelState.IsValid)
+            {
+                shareholder.Branch = branchId;
+                shareholder.CreatedBy = userId;
+                shareholder.Status = "Updated";
+                shareholder.CreatedDate = DateTime.Now;
+                shareholder.AuthorizationStatus = "Pending";
+
+                db.Entry(shareholder).State = EntityState.Modified;
+                db.Entry(shareholder).Property(x => x.ShDocument).IsModified = false;
+
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
+            ViewBag.Authorizer = new SelectList(db.Users, "UID", "FullName", shareholder.Authorizer);
+            ViewBag.ShCategories = new SelectList(db.ShCategories, "ShCategories", "ShCategories", shareholder.SHCategory);
+
+            return View(shareholder);
+        }
+
+
         [HttpPost]
         public ActionResult UpdateShDocument(int shID, HttpPostedFileBase shFile)
         {
@@ -167,7 +200,7 @@ namespace Shareholder_Management_System.Controllers
             shareholder.ShDocument = documentId;
             shareholder.Branch = branchId;
             shareholder.CreatedBy = userId;
-            shareholder.Status = "InActive";
+            shareholder.Status = "Document Updated";
             shareholder.CreatedDate = DateTime.Now;
             shareholder.AuthorizationStatus = "Pending";
 
@@ -274,37 +307,72 @@ namespace Shareholder_Management_System.Controllers
             return Json(new { success = true });
         }
 
-
-        // POST: Shareholders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Shareholder shareholder)
+        // GET: Shareholders
+        public ActionResult PendingRequests()
         {
-            int userId = Convert.ToInt32(Session["ID"]);
-            int branchId = Convert.ToInt32(Session["Branch"]);
+            // Assuming a context named 'db' exists for database operations
+            var shareholders = db.Shareholders.Where(s => s.AuthorizationStatus == "Pending").ToList();
+            var proxies = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Pending").ToList();
+            var subscriptions = db.Subscribtions.Where(sub => sub.SubAuthorizationStatus == "Pending").ToList();
+            var payments = db.Payments.Where(pay => pay.PaymentAuthorizationStatus == "Pending").ToList();
+            var shareTransfers = db.ShareTransfers.Where(st => st.TransferAuthorizationStatus == "Pending").ToList();
+            var blockeds = db.Blockeds.Where(b => b.BlockedAuthorizationStatus == "Pending").ToList();
+            var documents = db.Documents.Where(doc => doc.DocAuthorizationStatus == "Pending").ToList();
 
-            if (ModelState.IsValid)
+            // Creating a new view model instance and populating it with the pending entities
+            var viewModel = new ApprovalsViewModel
             {
+                Shareholders = shareholders,
+                Proxies = proxies,
+                Subscribtions = subscriptions,
+                Payments = payments,
+                ShareTransfers = shareTransfers,
+                Blockeds = blockeds,
+                Documents = documents
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Approve(int id)
+        {
+            var shareholder = db.Shareholders.Find(id);
+            if (shareholder != null)
+            {
+                int userId = Convert.ToInt32(Session["ID"]);
+                int branchId = Convert.ToInt32(Session["Branch"]);
+
+                shareholder.Status = "Active";
+                shareholder.AuthorizationStatus = "Approved";
                 shareholder.Branch = branchId;
-                shareholder.CreatedBy = userId;
-                shareholder.Status = "InActive";
-                shareholder.CreatedDate = DateTime.Now;
-                shareholder.AuthorizationStatus = "Pending";
+                shareholder.Authorizer = userId;
+                shareholder.AuthorizedDate = DateTime.Now;
 
                 db.Entry(shareholder).State = EntityState.Modified;
-                db.Entry(shareholder).Property(x => x.ShDocument).IsModified = false;
-
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
-            ViewBag.Authorizer = new SelectList(db.Users, "UID", "FullName", shareholder.Authorizer);
-            ViewBag.ShCategories = new SelectList(db.ShCategories, "ShCategories", "ShCategories", shareholder.SHCategory);
+                return Json(new { success = true });
 
-            return View(shareholder);
+            }
+            return Json(new { success = false });
+        }
+
+        [HttpPost]
+        public ActionResult Reject(int id, string remark)
+        {
+            var shareholder = db.Shareholders.Find(id);
+            if (shareholder != null)
+            {
+                shareholder.Status = "Rejected";
+                shareholder.AuthorizationStatus = "Approved";
+                shareholder.Remark = remark;
+
+                db.Entry(shareholder).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
         }
 
         // GET: Shareholders/Delete/5
