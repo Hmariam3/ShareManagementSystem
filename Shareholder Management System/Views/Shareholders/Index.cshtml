@@ -1,4 +1,4 @@
-﻿﻿@model IEnumerable<Shareholder_Management_System.Models.Shareholder>
+﻿@model IEnumerable<Shareholder_Management_System.Models.Shareholder>
 @using Newtonsoft.Json
 
 @{
@@ -52,7 +52,7 @@
                             </div>
                         </div>
                     </div>
-                    <table id="myTable1" class="whitespace-nowrap table-striped table-hover table-bordered table-compact">
+                    <table id="myTable1" class="whitespace-nowrap">
                         <thead>
                             <tr>
 
@@ -184,7 +184,7 @@
                 { name: 'User (Created By)', hidden: false },
                 { name: 'User1 (Modified By)', hidden: false },
                 { name: 'Actions', hidden: true },
-                { name: 'Download', hidden: false },
+                { name: 'Download', hidden: false }, 
             ],
 
             hideCols: [],
@@ -258,7 +258,7 @@
                                 ],
                                 </text>
                             }
-                         ]
+                         ] 
                     },
                     perPage: 10,
                     perPageSelect: [10, 20, 30, 50, 100],
@@ -272,7 +272,7 @@
                             render: function (data, cell, row) {
                                 let editUrl = '@Url.Action("Edit", "Shareholders", new { id = "__ShID__" })'.replace("__ShID__", data);
                                 let detailsUrl = '@Url.Action("Details", "Shareholders", new { id = "__ShID__" })'.replace("__ShID__", data);
-                                const status = row.cells[4].data;
+                                const status = row.cells[4].data; 
 
                                 return `<div class="flex gap-4 items-center">
                                     <a href="${editUrl}" class="hover:text-info">
@@ -302,7 +302,7 @@
                                 </div>`;
 
                             },
-                        },
+                        }, 
                         {
                             select: 33,
                             sortable: false,
@@ -348,7 +348,7 @@
                 cols.hide(this.hideCols);
                 cols.show(this.showCols);
             },
-
+            
             blockSh(ShID) {
                 this.shID = ShID;
                 this.blockShModal = true;
@@ -368,24 +368,15 @@
                 if (data == 'Active') {
                     styleClass = 'badge-outline-success';
                     statusText = 'Active'; // Display 'Active' if true
-                } else if (data == 'New') {
-                    styleClass = 'badge-outline-primary';
-                    statusText = 'New'; // Display 'Active' if true
-                } else if (data == 'Updated') {
+                } else if (data == 'InActive') {
                     styleClass = 'badge-outline-secondary';
-                    statusText = 'Updated'; // Display 'Active' if true
-                } else if (data == 'Document Updated') {
-                    styleClass = 'badge-outline-secondary';
-                    statusText = 'Document-Updated'; // Display 'Active' if true
+                    statusText = 'InActive'; // Display 'Active' if true
                 } else if (data == 'Blocked') {
                     styleClass = 'badge-outline-danger';
                     statusText = 'Blocked'; // Display 'Inactive' if false
                 } else if (data == 'UnBlocked') {
                     styleClass = 'badge-outline-warning';
                     statusText = 'UnBlocked'; // Display 'Inactive' if false
-                } else if (data == 'Rejected') {
-                    styleClass = 'badge-outline-danger';
-                    statusText = 'Rejected'; // Display 'Inactive' if false
                 }
 
                 return '<span class="badge ' + styleClass + '">' + statusText + '</span>';
@@ -394,26 +385,23 @@
             formatAuthorizationStatus(data) {
                 let styleClass = '';
                 if (data == 'Approved') {
-                    styleClass = 'bg-success';
+                    styleClass = 'badge-outline-success';
                 } else if (data == 'Pending') {
-                    styleClass = 'bg-warning';
-                    data = "Pending-Approval";
+                    styleClass = 'badge-outline-warning';
                 } else if (data == 'Rejected') { // This should be else if instead of else
-                    styleClass = 'bg-danger';
+                    styleClass = 'badge-outline-danger';
                 } else {
                     styleClass = ''; // Default class if none of the conditions are met
                 }
                 return '<span class="badge ' + styleClass + '">' + data + '</span>';
             },
-
             submitShDocument() {
                 const form = document.getElementById('shForm');
                 const formData = new FormData(form);
-
                 fetch('@Url.Action("UpdateShDocument", "Shareholders")', {
                     method: 'POST',
                     body: formData,
-
+                    
                 })
                 .then(response => response.json())
                 .then(data => {
@@ -424,7 +412,7 @@
                             location.reload();
                         }, 2000);
                     } else {
-                        showMessage('Failed to update shareholder document.');
+                        showMessage('Failed to update proxy document.');
                     }
                 })
                 .catch(error => {
@@ -434,7 +422,7 @@
             submitShBlock() {
                 const form = document.getElementById('shForm1');
                 const formData = new FormData(form);
-                
+                console.log(formData);
                 fetch('@Url.Action("BlockSh", "Shareholders")', {
                     method: 'POST',
                     body: formData,
@@ -478,7 +466,7 @@
                     showMessage(data.message || 'An error occurred while unblocking the shareholder document.', 'error');
                 });
             },
-
+            
             createDownloadButton(documentId) {
                // Generate the download URL using Razor's Url.Action
                console.log(documentId);
@@ -493,29 +481,17 @@
             },
             openDocumentInNewTab(documentId) {
                 if (documentId) {
-                    // Make an AJAX request to fetch the document path
-                    fetch(`@Url.Action("GetDocumentPath", "Documents")?id=${documentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Open the document in a new tab using the retrieved file path
-                                const documentUrl = window.location.origin + data.filePath; // Make sure it's a full URL
-                                console.log(documentUrl);
-                                window.open(documentUrl, '_blank', 'width=800,height=600');
-                            } else {
-                                alert(data.message || "Failed to retrieve document path.");
-                            }
-                        })
-                        .catch(error => {
-                            console.error("Error fetching document path:", error);
-                            alert("An error occurred while trying to fetch the document.");
-                        });
+                    // Generate the download URL using Razor's Url.Action
+                    let documentUrl = '@Url.Action("DownloadDocument", "Documents", new { id = "__documentId__" })';
+                    // Replace the placeholder with the actual document ID
+                    documentUrl = documentUrl.replace("__documentId__", documentId);
+        
+                    // Open the document in a new tab
+                    window.open(documentUrl, '_blank');
                 } else {
                     alert("Document ID is missing!");
                 }
             },
-
-
             formatDate(date) {
                 if (date) {
                     const dt = new Date(date);
@@ -525,7 +501,7 @@
                 }
                 return '';
             },
-        }));
+        }));       
     });
 
     // Success message function (Toast)
@@ -544,3 +520,5 @@
     }
 
 </script>
+
+

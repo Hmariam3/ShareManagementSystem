@@ -290,7 +290,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\ApprovalsViewModel.cs" />
     <Compile Include="Models\AuditLog.cs">
       <DependentUpon>Shareholder Management System.tt</DependentUpon>
     </Compile>
@@ -608,7 +607,6 @@
     <Content Include="Views\Branches\Edit.cshtml" />
     <Content Include="Views\Branches\Index.cshtml" />
     <Content Include="Views\Users\View.cshtml" />
-    <Content Include="Views\Shareholders\PendingRequests.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
