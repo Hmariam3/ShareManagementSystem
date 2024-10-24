@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Payment>
+
+@{
+    ViewBag.Title = "FilterPending";
+}
+
+
+
+<div class="panel">
+    <div class="mb-5 flex items-center justify-between">
+        <h5 class="text-lg font-semibold dark:text-white-light">Payment Table</h5>
+    </div>
+
+    <div class="mb-5">
+        <div class="table-responsive">
+            <table class="table-striped">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.First().PaymentDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Shareholder.ShareID)</th>
+                        <th>Shareholder's Name</th>
+                        <th>District</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Branch1.BranchName)</th>
+                        <th>Creation Date</th>
+                        <th>@Html.DisplayNameFor(model => model.First().PaidAmount)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().ReferenceNum)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().PaymentMode)</th>
+                        <th>@Html.DisplayNameFor(model => model.First().Remark)</th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
+                        <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Remark)</td>
+                        <td>
+
+                            @Html.ActionLink("Authorization", "Authorize", new { id = item.PayID }, new { @class = "btn btn-primary" })
+
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

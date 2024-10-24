@@ -19,12 +19,12 @@
         <div class="col-span-1">
             <div class="panel">
                 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-                    <h5 class="text-lg font-semibold" style="padding:7px;">Share Holder Detail</h5>
-                </div>
+                        <h5 class="text-lg font-semibold" style="padding:7px;">Share Holder Detail</h5>
+                    </div>
 
+                @*<div class="text-lg font-semibold">Shareholder Details</div>*@
 
-
-                <div>
+                <div class="mb-5">
                     <label for="shid">ShareHolder</label>
                     @Html.DropDownList("ShID",
                         new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders1, "Value", "Text"),
@@ -43,7 +43,7 @@
 
                 <!-- Scrollable container for the table -->
                 <div class="table-responsive mt-4 mb-5" style="max-height: 300px; overflow-y: auto;">
-                    <table class="table-auto w-full border-collapse border border-gray-300 bg-white shadow-lg z-10" id="subscriptionTable">
+                    <table class="table-auto w-full border-collapse border border-gray-300 mt-8" id="subscriptionTable">
                         <thead class="bg-gray-100">
                             <tr class="text-left">
                                 <th class="px-4 py-2">Select</th>
@@ -76,111 +76,120 @@
             <div class="panel">
                 <!-- Panel Header -->
                 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color: white;">
-                    <h5 class="text-lg font-semibold" style="padding: 7px;">Payment Details</h5>
-                </div>
-                @Html.Label("Payment Mode", htmlAttributes: new { @class = "block text-gray-700 text-sm font-bold mb-0" })
+                        <h5 class="text-lg font-semibold" style="padding: 7px;">Payment Details</h5>
+                    </div>
+                @*<div class="text-lg font-semibold">Payment Details</div>*@
+                @Html.Label("Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })
                 <div x-data="form" class="grid grid-cols-1 gap-6 pt-0 lg:grid-cols-2">
                     <div class="col-span-1">
                         <div class="space-y-4">
                             <div class="flex items-center space-x-2">
-                                @Html.Label("Cash", htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.Label("Cash", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="cashAmount" class="form-input payment-field" min="0" step="0.01" value="0" />
+                                    <input type="number" name="cashAmount" class="form-input payment-field" min="0" step="0.01"/>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
-                                @Html.Label("Account", htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.Label("Account", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="AccountAmount" class="form-input payment-field" min="0" step="0.01" value="0" />
+                                    <input type="number" name="AccountAmount" class="form-input payment-field" min="0" step="0.01"/>
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
-                                @Html.Label("CPO", htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.Label("CPO", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="cpoAmount" class="form-input payment-field" min="0" step="0.01" value="0" />
+                                    <input type="number" name="cpoAmount" class="form-input payment-field" min="0" step="0.01"/>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-span-1">
                         <div class="space-y-4">
                             <div class="flex items-center space-x-2">
-                                @Html.Label("Dividend", htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.Label("Dividend", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="dividendAmount" class="form-input payment-field" min="0" step="0.01" value="0" />
+                                    <input type="number" name="dividendAmount" class="form-input payment-field" min="0" step="0.01" />
                                 </div>
                             </div>
 
                             <div class="flex items-center space-x-2">
-                                @Html.Label("Cheque", htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.Label("Cheque", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="chequeAmount" class="form-input payment-field" min="0" step="0.01" value="0" />
+                                    <input type="number" name="chequeAmount" class="form-input payment-field" min="0" step="0.01" />
                                 </div>
                             </div>
 
                             <div class="flex items-center space-x-2">
-                                @Html.LabelFor(model => model.PaidAmount, htmlAttributes: new { @class = "control-label col-md-2" })
+                                @Html.LabelFor(model => model.PaidAmount, htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    @Html.EditorFor(model => model.PaidAmount, new { htmlAttributes = new { @class = "form-input", @id = "PaidAmount", @readonly = "readonly" } })
+                                    @Html.EditorFor(model => model.PaidAmount, new { htmlAttributes = new { @class = "form-input border border-blue-500 bg-blue-50 text-blue-700", @id = "PaidAmount", @readonly = "readonly", @placeholder = "Total Paid Amount" } })
                                     @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+
+
                             @if (TempData["Message"] != null)
                             {
                                 <div class="alert alert-success">@TempData["Message"]</div>
                             }
 
-
-
                         </div>
                     </div>
 
                     <input type="hidden" id="UnpaidSubscription" value="@Model?.UnpaidSubscription" />
+                </div>
+                    <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <div x-data="form" class="grid grid-cols-1 gap-6 pt-0 lg:grid-cols-2">
+                        <div class="col-span-1">
+                            <div class="space-y-4">
+                                <div class="mb-5">
+                                    @Html.LabelFor(model => model.PaymentDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.EditorFor(model => model.PaymentDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @id = "payment-date-picker", @required = "required" } })
+                                        @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
 
-                    <div class="flex items-center space-x-2">
-                        @Html.LabelFor(model => model.PaymentDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="amount-input-container flex flex-col ml-4">
-                            @Html.EditorFor(model => model.PaymentDate, new { htmlAttributes = new { @class = "form-input", @id = "payment-date-picker" } })
-                            @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-
-                    <div class="flex items-center space-x-2">
-                        @Html.LabelFor(model => model.ReferenceNum, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="amount-input-container flex flex-col ml-4">
-                            @Html.EditorFor(model => model.ReferenceNum, new { htmlAttributes = new { @class = "form-input" } })
-                            @Html.ValidationMessageFor(model => model.ReferenceNum, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    @*<div class="mb-5">
-                            @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
-                                @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
+                                <div class="mb-5">
+                                    @Html.LabelFor(model => model.ReferenceNum, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="amount-input-container flex flex-col ml-4">
+                                        @Html.EditorFor(model => model.ReferenceNum, new { htmlAttributes = new { @class = "form-input" } })
+                                        @Html.ValidationMessageFor(model => model.ReferenceNum, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
                             </div>
-                        </div>*@
-
-
-                    <div class="flex items-center space-x-2">
-                        @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="amount-input-container flex flex-col ml-4">
-                            @Html.TextAreaFor(model => model.Remark, 2, 20, new { @class = "form-input" })
-                            @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
                         </div>
-                    </div>
+                        @*<div class="mb-5">
+                @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
+                    @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+                        <div class="col-span-1">
+                            <div class="space-y-4">
+                                <div class="mb-5">
+                                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="amount-input-container flex flex-col ml-4">
+                                        @Html.TextAreaFor(model => model.Remark, 2, 20, new { @class = "form-input" })
+                                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
 
 
-                    <div class="custom-file-container" data-upload-id="myFirstImage">
-                        <label class="custom-file-container__custom-file">
-                            <input type="file" class="custom-file-container__custom-file__custom-file-input" accept="*" name="uploadedFile">
-                            <span class="custom-file-container__custom-file__custom-file-control"></span>
-                        </label>
-                        <div class="custom-file-container__image-preview"></div>
+                                <div class="custom-file-container" data-upload-id="myFirstImage">
+                                    <label class="custom-file-container__custom-file">
+                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" accept="*" name="uploadedFile">
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+                                    <div class="custom-file-container__image-preview"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
             <div class="mt-6 flex justify-end">
                 <button type="submit" class="btn btn-primary mr-2" style="width: 2000px; height: 50px">Submit</button>
             </div>
@@ -225,6 +234,7 @@
         });
     });
 </script>
+
 
 <script>
     $(document).ready(function () {
@@ -277,7 +287,7 @@
                         $.each(subscriptions, function(index, subscription) {
                             tbody.append(
                                 '<tr>' +
-                                '<td class="px-4 py-2"><input type="radio" name="selectedSubscription" value="' + subscription.SubID + '" data-unpaid="' + subscription.UnpaidSubscription + '"></td>' +
+                                '<td class="px-4 py-2"><input type="radio" class="form-radio" name="selectedSubscription" value="' + subscription.SubID + '" data-unpaid="' + subscription.UnpaidSubscription + '"></td>' +
                                 '<td class="px-4 py-2">' + subscription.SubID + '</td>' +
                                 '<td class="px-4 py-2">' + subscription.ShID + '</td>' +
                                 '<td class="px-4 py-2">' + subscription.SubNumShares + '</td>' +

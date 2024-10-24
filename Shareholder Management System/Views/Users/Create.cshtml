@@ -1,4 +1,4 @@
-﻿@model Shareholder_Management_System.Models.User
+﻿﻿@model Shareholder_Management_System.Models.User
 
 @{
     ViewBag.Title = "Create";
@@ -34,7 +34,7 @@
             @Html.AntiForgeryToken()
 
             <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-white mb-4" style="background-color: #101010; padding: 15px; border-radius: 8px;">
+                <h2 class="text-3xl font-bold text-dark dark:text-white-light mb-4" padding: 15px; border-radius: 8px;">
                     Create User Account
                 </h2>
                 @Html.ValidationSummary(true, "", new { @class = "text-red-500 mb-4" })
@@ -42,25 +42,25 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="form-group">
-                    @Html.LabelFor(model => model.FullName, new { @class = "block text-gray-700 text-sm font-semibold mb-2" })
+                    @Html.LabelFor(model => model.FullName, new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
                     @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" } })
                     @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-red-500 text-sm" })
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.UserName, new { @class = "block text-gray-700 text-sm font-semibold mb-2" })
+                    @Html.LabelFor(model => model.UserName, new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
                     @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" } })
                     @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-red-500 text-sm" })
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Password, new { @class = "block text-gray-700 text-sm font-semibold mb-2" })
+                    @Html.LabelFor(model => model.Password, new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
                     @Html.EditorFor(model => model.Password, new { htmlAttributes = new { type = "password", @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" } })
                     @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-red-500 text-sm" })
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Role, new { @class = "block text-gray-700 text-sm font-semibold mb-2" })
+                    @Html.LabelFor(model => model.Role, new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
                     @Html.DropDownListFor(model => model.Role,
                         new SelectList(new List<SelectListItem>
                         {
@@ -74,7 +74,7 @@
                 </div>
 
                 <div class="form-group col-span-2">
-                    @Html.LabelFor(model => model.Branch, "Branch", new { @class = "block text-gray-700 text-sm font-semibold mb-2" })
+                    @Html.LabelFor(model => model.Branch, "Branch", new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
 
                     <div style="position: relative;">
                         <input type="text" id="branch-search" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" placeholder="Search for a branch..." />
@@ -90,20 +90,61 @@
             <!-- Save Button and Back Link -->
             <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
                 <button type="submit"
-                        style="background-color: #1d4ed8; color: white; display: block; visibility: visible; position: relative; z-index: 10; border-radius: 0.375rem; font-size: 0.875rem; padding: 0.625rem 2rem; width: 200px;"
+                        style="background-color: #00ADEF; color: white; display: block; visibility: visible; position: relative; z-index: 10; border-radius: 0.375rem; font-size: 0.875rem; padding: 0.625rem 2rem; width: 200px;"
                         class="hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
                     <i class="fas fa-plus mr-2"></i> Create
                 </button>
             </div>
             <div class="flex justify-between items-center mt-8" style="display: flex; justify-content: center; align-items: center; margin-bottom: 10px;">
-                <a href="@Url.Action("Index")" class="text-sm text-blue-500 hover:text-blue-800 font-semibold">
-                    <i class="fas fa-arrow-left mr-2"></i>Back to List
+                <a href="@Url.Action("Index")" class="flex text-sm text-blue-500 hover:text-blue-800 font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>Back to List
                 </a>
             </div>
         }
     </div>
 </div>
+<script>
+    
+                   $(document).ready(function() {
+                    $('#branch-search').on('keyup', function() {
+                        var query = $(this).val();
 
+                        if (query.length > 2) { // Start searching after 3 characters
+                            $.ajax({
+                                url: '@Url.Action("SearchBranches", "Users")',
+                                type: 'GET',
+                                data: { searchTerm: query },
+                                success: function(data) {
+                                    $('#branch-results').empty();
+                                    if (data.length > 0) {
+                                        $.each(data, function(index, branch) {
+                                            $('#branch-results').append('<div class="branch-item" data-id="' + branch.Value + '">' + branch.Text + '</div>');
+                                        });
+                                    } else {
+                                        $('#branch-results').append('<div>No branches found</div>');
+                                    }
+                                },
+                                error: function() {
+                                    $('#branch-results').empty().append('<div>Error retrieving branches</div>');
+                                }
+                            });
+                        } else {
+                            $('#branch-results').empty();
+                        }
+                    });
+
+                // Handle branch selection
+                $(document).on('click', '.branch-item', function() {
+                    var branchId = $(this).data('id');
+                    var branchName = $(this).text();
+                    $('#branch-search').val(branchName); // Set the input value
+                    $('#branch-results').empty(); // Clear results
+                    $('#Branch').val(branchId); // Set the hidden input value for submission
+                });
+            });
+</script>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
