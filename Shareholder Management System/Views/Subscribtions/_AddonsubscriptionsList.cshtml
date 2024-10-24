@@ -1,113 +1,110 @@
 ﻿
 @model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
 
-@if (Model != null && Model.Any())
-{
-    <div style="overflow-x: auto;">
-        <table id="subscriptionTable" class="display" style="width:100%">
-            <thead>
-                <tr>
-                    <th>FullName</th>
-                    <th>Sub ID</th>
 
-                    <th>
-                        Number of Shares
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Premium)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.SubAmount)
-                    </th>
-                    <th>
-                        Paid Subscription
-                    </th>
-                    <th>
-                        Unpaid Subscription
-                    </th>
-                    <th>
-                        Due Date
-                    </th>
-                    <th>
-                        SubStatus
-                    </th>
+<div class="bg-white shadow-md rounded-lg overflow-hidden panel">
+    
+    <div class="p-6 overflow-x-auto">
+        @if (Model != null && Model.Any())
+        {
+            <div style="overflow-x: auto;">
+                <table id="subscriptionTable" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>FullName</th>
+                            <th>Sub ID</th>
 
-                    <th>
-                        Auth. Status
-                    </th>
+                            <th>
+                                Number of Shares
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Premium)
+                            </th>
+                            <th>
+                                Validity
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.SubAmount)
+                            </th>
+                            <th>
+                                Paid Subscription
+                            </th>
+                            <th>
+                                Unpaid Subscription
+                            </th>
+                            <th>
+                                Due Date
+                            </th>
+                            <th>
+                                SubStatus
+                            </th>
 
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SubID)
-                        </td>
+                            <th>
+                                Auth. Status
+                            </th>
 
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SubNumShares) Shares
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Premium)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SubAmount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PaidSubscription)
-                        </td>
-                        <td style="background-color:cyan">
-                            @Html.DisplayFor(modelItem => item.UnpaidSubscription)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PaymentDueDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SubStatus)
-                        </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SubID)
+                            </td>
 
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SubNumShares)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Premium)
+                            </td>
+                           
+                            <td>
+                                @if (item.PaidSubscription >= item.SubAmount * (decimal)0.25)
+                                {
+                                    <span style="color:green">Valid</span>
+                                }
+                                else
+                                {
+                                    <span style="color:red">25% Not Paid</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SubAmount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PaidSubscription)
+                            </td>
+                            <td style="background-color:cyan">
+                                @Html.DisplayFor(modelItem => item.UnpaidSubscription)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PaymentDueDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SubStatus)
+                            </td>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p>No subscriptions found for the given Share ID.</p>
+        }
+   
+</div>
     </div>
-}
-else
-{
-    <p>No subscriptions found for the given Share ID.</p>
-}
 
-@*<script>
-            function payNow(subID, shID) {
-                // Get the PaidAmount value from the input field associated with the SubID
-                var paidAmount = document.getElementById('paidAmount-' + subID).value;
 
-                // Check if a valid PaidAmount is entered
-                if (paidAmount && paidAmount > 0) {
-                    // Redirect to the Payments Create action with SubID, ShID, and PaidAmount
-                    var url = '@Url.Action("CreateSubPayment", "Payments")' + '?id=' + subID + '&shareid=' + shID + '&paidAmount=' + encodeURIComponent(paidAmount);
-                    window.location.href = url;
-                } else {
-                    alert('Please enter a valid Paid Amount.');
-                }
-            }
-
-            // Initialize DataTables
-            $(document).ready(function () {
-                $('#subscriptionTable').DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'csvHtml5', 'excelHtml5', 'pdfHtml5', 'print'
-                    ]
-                });
-            });
-    </script>*@
 

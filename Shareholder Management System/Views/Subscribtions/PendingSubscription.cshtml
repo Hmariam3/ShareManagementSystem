@@ -5,28 +5,12 @@
 }
 
 
-<link href="~/Scripts/Datatables/datatables.min.css" rel="stylesheet" />
-<script src="~/Scripts/jquery-3.3.1.min.js"></script>
-<script src="~/Scripts/Datatables/datatables.min.js"></script>
-<link href="~/Scripts/Datatables/datatables.css" rel="stylesheet" />
-<script src="~/Scripts/Datatables/datatables.js"></script>
-<link href="~/Scripts/tailwind.min.css" rel="stylesheet" />
-<link href="~/Scripts/tailwind.min.sec.css" rel="stylesheet" />
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.flash.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
-
 @{
     var successMessage = TempData["SuccessMessage"] as string;
     var errorMessage = TempData["ErrorMessage"] as string;
 }
+
+<!-- Pop-up Modal -->
 @if (!string.IsNullOrEmpty(successMessage) || !string.IsNullOrEmpty(errorMessage))
 {
     <div id="popup-message" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -63,116 +47,129 @@
         // Automatically hide the pop-up after 5 seconds
         setTimeout(function () {
             document.getElementById("popup-message").style.display = "none";
-        }, 2000);
+        }, 5000);
     </script>
 }
 
 
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<link href="~/Scripts/tailwind.min.css" rel="stylesheet" />
+<link href="~/Scripts/tailwind.min.sec.css" rel="stylesheet" />
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
 
-<div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Pending Subscriptions</h5>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+
+<div class="bg-white shadow-md rounded-lg overflow-hidden panel">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-700">User Information</h2>
+    </div>
+    <div class="p-6 overflow-x-auto">
+        <table id="userTable" class="min-w-full leading-normal">
+            <thead>
+                <tr class="bg-gray-100">
+                    <!-- Table headers -->
+                    <th class="border border-gray-300 px-4 py-2">FullName of Shareholders</th>
+                    <th class="border border-gray-300 px-4 py-2">Sub ID</th>
+                    <th class="border border-gray-300 px-4 py-2">Shareholder ID</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubNumShares)</th>
+                    <th class="border border-gray-300 px-4 py-2">Category</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.Premium)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubAmount)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.PaidSubscription)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.UnpaidSubscription)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.PaymentDueDate)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubStatus)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubDate)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubAuthorizationStatus)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.AuthorizedDate)</th>
+                    <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.Remark)</th>
+                    <th class="border border-gray-300 px-4 py-2">Share ID From</th>
+                    <th class="border border-gray-300 px-4 py-2">CreatedBy</th>
+                    <th class="border border-gray-300 px-4 py-2">Authorizer</th>
+                    <th class="border border-gray-300 px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubID)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubNumShares) Shares</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.SHCategory)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Premium)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAmount)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaidSubscription)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.UnpaidSubscription)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaymentDueDate)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubStatus)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubDate)</td>
+                        @*<td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAuthorizationStatus)</td>*@
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            @if (item.SubAuthorizationStatus == "Approved")
+                            {
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
+                                    <i class="fas fa-check-circle mr-2"></i> <!-- Check-circle icon for approved status -->
+                                    @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                </span>
+                            }
+                            else if (item.SubAuthorizationStatus == "Pending")
+                            {
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                    <i class="fas fa-clock mr-2"></i> <!-- Clock icon for pending status -->
+                                    @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                </span>
+                            }
+                            else if (item.SubAuthorizationStatus == "Rejected")
+                            {
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
+                                    <i class="fas fa-times-circle mr-2"></i> <!-- Times-circle icon for rejected status -->
+                                    @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-gray-700 bg-gray-200 rounded-full">
+                                    @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                </span>
+                            }
+                        </td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.AuthorizedDate)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Remark)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder1.ShareID)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User1.FullName)</td>
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User.FullName)</td>
+
+                        <td class="border border-gray-300 px-4 py-2">
+                            <div class="flex space-x-2">
+                                <a href="@Url.Action("Authorize", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded">Authorization</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
-<div style="overflow-x: auto; height: 700px;">
-    <table id="subscriptionTable" class="display" style="width:100%">
-        <thead>
-            <tr class="bg-gray-100">
-                <!-- Table headers -->
-                <th class="border border-gray-300 px-4 py-2">FullName of Shareholders</th>
-                <th class="border border-gray-300 px-4 py-2">Sub ID</th>
-                <th class="border border-gray-300 px-4 py-2">Shareholder ID</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubNumShares)</th>
-                <th class="border border-gray-300 px-4 py-2">Category</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.Premium)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubAmount)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.PaidSubscription)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.UnpaidSubscription)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.PaymentDueDate)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubStatus)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubDate)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.SubAuthorizationStatus)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.AuthorizedDate)</th>
-                <th class="border border-gray-300 px-4 py-2">@Html.DisplayNameFor(model => model.Remark)</th>
-                <th class="border border-gray-300 px-4 py-2">Share ID From</th>
-                <th class="border border-gray-300 px-4 py-2">CreatedBy</th>
-                <th class="border border-gray-300 px-4 py-2">Authorizer</th>
-                <th class="border border-gray-300 px-4 py-2">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-            <tr>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubID)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubNumShares) Shares</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.SHCategory)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Premium)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAmount)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaidSubscription)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.UnpaidSubscription)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaymentDueDate)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubStatus)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubDate)</td>
-                @*<td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAuthorizationStatus)</td>*@
-                 <td class="border border-gray-300 px-4 py-2 text-center">
-                        @if (item.SubAuthorizationStatus == "Approved")
-                        {
-                            <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
-                                <i class="fas fa-check-circle mr-2"></i> <!-- Check-circle icon for approved status -->
-                                @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                            </span>
-                        }
-                        else if (item.SubAuthorizationStatus == "Pending")
-                        {
-                            <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
-                                <i class="fas fa-clock mr-2"></i> <!-- Clock icon for pending status -->
-                                @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                            </span>
-                        }
-                        else if (item.SubAuthorizationStatus == "Rejected")
-                        {
-                            <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
-                                <i class="fas fa-times-circle mr-2"></i> <!-- Times-circle icon for rejected status -->
-                                @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-gray-700 bg-gray-200 rounded-full">
-                                @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                            </span>
-                        }
-                    </td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.AuthorizedDate)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Remark)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder1.ShareID)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User1.FullName)</td>
-                <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User.FullName)</td>
 
-                <td class="border border-gray-300 px-4 py-2">
-                    <div class="flex space-x-2">
-                        <a href="@Url.Action("Authorize", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded">Authorization</a>
-                    </div>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
+<!-- Initialize DataTable -->
 <script>
     $(document).ready(function () {
-        $('#subscriptionTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'csvHtml5', 'excelHtml5', 'pdfHtml5', 'print'
-            ],
-            paging: true,    // Enables pagination
-            searching: true, // Enables search filter functionality
-            ordering: true,  // Enables sorting
+        $('#userTable').DataTable({
+            pageLength: 5, // Number of rows to show per page
+            lengthMenu: [5, 10, 15, 25] // Options for the number of rows per page
         });
     });
 </script>
-
-

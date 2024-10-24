@@ -158,6 +158,10 @@ namespace Share.Controllers
         public ActionResult Create([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscribtion)
         {
             int branch = Convert.ToInt32(Session["ID"]);
+            if (subscribtion.PaymentDueDate < DateTime.Today)
+            {
+                ModelState.AddModelError("PaymentDueDate", "The Payment Due Date cannot be in the past.");
+            }
             if (ModelState.IsValid)
             {
                 db.Subscribtions.Add(subscribtion);
@@ -235,7 +239,11 @@ namespace Share.Controllers
 
                     // Set other fields
                     existingSubscription.SubDate = DateTime.Now; // Update the date
-                    existingSubscription.SubStatus = "UnPaid"; // Update the status (or retain the existing one if needed)
+                    //existingSubscription.SubStatus = "UnPaid"; // Update the status (or retain the existing one if needed)
+                    if (existingSubscription.PaidSubscription > 0)
+                    {
+                        existingSubscription.SubStatus = "Partial Paid"; // Update the status (or retain the existing one if needed)
+                    }
                     existingSubscription.SubAuthorizationStatus = "Pending"; // Update the authorization status (or retain the existing one)
                     existingSubscription.AuthorizedDate = null;
 
@@ -271,7 +279,11 @@ namespace Share.Controllers
         public ActionResult GetSubIDs(int shareholderId)
         {
             var subIDs = db.Subscribtions
-                           .Where(s => s.ShID == shareholderId && s.SubAuthorizationStatus == "Approved" && s.UnpaidSubscription > 0 && s.PaymentDueDate >= DateTime.Now) // Adjust the condition as needed
+                           .Where(s => s.ShID == shareholderId
+                                        && s.SubAuthorizationStatus == "Approved"
+                                        && s.UnpaidSubscription > 0
+                                        && s.PaymentDueDate >= DateTime.Now
+                                        && s.PaidSubscription.Value >= 0.25m * s.SubAmount.Value) // Ensure PaidSubscription is at least 25% of SubAmount
                            .Select(s => new { s.SubID, s.SubNumShares }) // Customize the fields as necessary
                            .ToList();
 
@@ -371,7 +383,6 @@ namespace Share.Controllers
             return View(subscribtion);
         }
 
-        // POST: Subscribtions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -380,15 +391,23 @@ namespace Share.Controllers
 
             if (subscribtion != null)
             {
-                if (subscribtion.SubAuthorizationStatus != "Approved")
+                // Check if the subscription has been used in any payment
+                bool hasPayments = db.Payments.Any(p => p.SubID == subscribtion.SubID);
+
+                if (hasPayments)
                 {
+                    // Error message if the subscription is used in a payment
+                    TempData["ErrorMessage"] = "Cannot Delete Subscriptions The Payment is Already Started.";
+                }
+                else if (subscribtion.SubAuthorizationStatus != "Approved")
+                {
+                    // Delete subscription if it is not approved and not used in payments
                     db.Subscribtions.Remove(subscribtion);
                     db.SaveChanges();
 
                     // Success message
                     TempData["SuccessMessage"] = "Subscription deleted successfully.";
-                    AuditLogsController auditLogsController = new AuditLogsController();
-                    auditLogsController.RecordLog("Delete", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy, Session["BranchName"].ToString());
+
                 }
                 else
                 {
@@ -404,6 +423,7 @@ namespace Share.Controllers
 
             return RedirectToAction("Index");
         }
+
 
 
 
