@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Shareholder_Management_System.commons;
 using Shareholder_Management_System.Models;
 using System.Net.Mail;
+using System.IO;
 using Shareholder_Management_System.ViewModel;
 
 namespace Shareholder_Management_System.Controllers
