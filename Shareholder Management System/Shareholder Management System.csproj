@@ -287,66 +287,66 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuditLog.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Blocked.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Branch.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Certificate.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Dividend.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DividenedDetail.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Document.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Payment.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Proxy.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\Shareholder.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ShareholderMS.Context.cs">
+    <Compile Include="Models\ShareholderManagementSystem.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderMS.Context.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ShareholderMS.cs">
+    <Compile Include="Models\ShareholderManagementSystem.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ShareholderMS.Designer.cs">
+    <Compile Include="Models\ShareholderManagementSystem.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderMS.edmx</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\ShareholderSummaryViewModel.cs" />
     <Compile Include="Models\ShareTransfer.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShCategory.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Subscribtion.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareholderManagementSystem.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\BreadcrumbHelper.cs" />
@@ -466,24 +466,24 @@
     <Content Include="js\jquery.dataTables.min.js" />
     <Content Include="js\jquery.min.js" />
     <Content Include="js\select2.min.js" />
-    <Content Include="Models\ShareholderMS.Context.tt">
+    <Content Include="Models\ShareholderManagementSystem.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ShareholderMS.edmx</DependentUpon>
-      <LastGenOutput>ShareholderMS.Context.cs</LastGenOutput>
+      <DependentUpon>ShareholderManagementSystem.edmx</DependentUpon>
+      <LastGenOutput>ShareholderManagementSystem.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\ShareholderMS.tt">
+    <Content Include="Models\ShareholderManagementSystem.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ShareholderMS.edmx</DependentUpon>
-      <LastGenOutput>ShareholderMS.cs</LastGenOutput>
+      <DependentUpon>ShareholderManagementSystem.edmx</DependentUpon>
+      <LastGenOutput>ShareholderManagementSystem.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\ShareholderMS.edmx">
+    <EntityDeploy Include="Models\ShareholderManagementSystem.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ShareholderMS.Designer.cs</LastGenOutput>
+      <LastGenOutput>ShareholderManagementSystem.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\ShareholderMS.edmx.diagram">
-      <DependentUpon>ShareholderMS.edmx</DependentUpon>
+    <Content Include="Models\ShareholderManagementSystem.edmx.diagram">
+      <DependentUpon>ShareholderManagementSystem.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -525,6 +525,72 @@
     <Content Include="Scripts\JS\swiper-bundle.min.js" />
     <Content Include="Scripts\JS\tippy-bundle.umd.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\select2\css\select2.css" />
+    <Content Include="Scripts\select2\css\select2.min.css" />
+    <Content Include="Scripts\select2\js\i18n\af.js" />
+    <Content Include="Scripts\select2\js\i18n\ar.js" />
+    <Content Include="Scripts\select2\js\i18n\az.js" />
+    <Content Include="Scripts\select2\js\i18n\bg.js" />
+    <Content Include="Scripts\select2\js\i18n\bn.js" />
+    <Content Include="Scripts\select2\js\i18n\bs.js" />
+    <Content Include="Scripts\select2\js\i18n\build.txt" />
+    <Content Include="Scripts\select2\js\i18n\ca.js" />
+    <Content Include="Scripts\select2\js\i18n\cs.js" />
+    <Content Include="Scripts\select2\js\i18n\da.js" />
+    <Content Include="Scripts\select2\js\i18n\de.js" />
+    <Content Include="Scripts\select2\js\i18n\dsb.js" />
+    <Content Include="Scripts\select2\js\i18n\el.js" />
+    <Content Include="Scripts\select2\js\i18n\en.js" />
+    <Content Include="Scripts\select2\js\i18n\es.js" />
+    <Content Include="Scripts\select2\js\i18n\et.js" />
+    <Content Include="Scripts\select2\js\i18n\eu.js" />
+    <Content Include="Scripts\select2\js\i18n\fa.js" />
+    <Content Include="Scripts\select2\js\i18n\fi.js" />
+    <Content Include="Scripts\select2\js\i18n\fr.js" />
+    <Content Include="Scripts\select2\js\i18n\gl.js" />
+    <Content Include="Scripts\select2\js\i18n\he.js" />
+    <Content Include="Scripts\select2\js\i18n\hi.js" />
+    <Content Include="Scripts\select2\js\i18n\hr.js" />
+    <Content Include="Scripts\select2\js\i18n\hsb.js" />
+    <Content Include="Scripts\select2\js\i18n\hu.js" />
+    <Content Include="Scripts\select2\js\i18n\hy.js" />
+    <Content Include="Scripts\select2\js\i18n\id.js" />
+    <Content Include="Scripts\select2\js\i18n\is.js" />
+    <Content Include="Scripts\select2\js\i18n\it.js" />
+    <Content Include="Scripts\select2\js\i18n\ja.js" />
+    <Content Include="Scripts\select2\js\i18n\ka.js" />
+    <Content Include="Scripts\select2\js\i18n\km.js" />
+    <Content Include="Scripts\select2\js\i18n\ko.js" />
+    <Content Include="Scripts\select2\js\i18n\lt.js" />
+    <Content Include="Scripts\select2\js\i18n\lv.js" />
+    <Content Include="Scripts\select2\js\i18n\mk.js" />
+    <Content Include="Scripts\select2\js\i18n\ms.js" />
+    <Content Include="Scripts\select2\js\i18n\nb.js" />
+    <Content Include="Scripts\select2\js\i18n\ne.js" />
+    <Content Include="Scripts\select2\js\i18n\nl.js" />
+    <Content Include="Scripts\select2\js\i18n\pl.js" />
+    <Content Include="Scripts\select2\js\i18n\ps.js" />
+    <Content Include="Scripts\select2\js\i18n\pt-BR.js" />
+    <Content Include="Scripts\select2\js\i18n\pt.js" />
+    <Content Include="Scripts\select2\js\i18n\ro.js" />
+    <Content Include="Scripts\select2\js\i18n\ru.js" />
+    <Content Include="Scripts\select2\js\i18n\sk.js" />
+    <Content Include="Scripts\select2\js\i18n\sl.js" />
+    <Content Include="Scripts\select2\js\i18n\sq.js" />
+    <Content Include="Scripts\select2\js\i18n\sr-Cyrl.js" />
+    <Content Include="Scripts\select2\js\i18n\sr.js" />
+    <Content Include="Scripts\select2\js\i18n\sv.js" />
+    <Content Include="Scripts\select2\js\i18n\th.js" />
+    <Content Include="Scripts\select2\js\i18n\tk.js" />
+    <Content Include="Scripts\select2\js\i18n\tr.js" />
+    <Content Include="Scripts\select2\js\i18n\uk.js" />
+    <Content Include="Scripts\select2\js\i18n\vi.js" />
+    <Content Include="Scripts\select2\js\i18n\zh-CN.js" />
+    <Content Include="Scripts\select2\js\i18n\zh-TW.js" />
+    <Content Include="Scripts\select2\js\select2.full.js" />
+    <Content Include="Scripts\select2\js\select2.full.min.js" />
+    <Content Include="Scripts\select2\js\select2.js" />
+    <Content Include="Scripts\select2\js\select2.min.js" />
     <Content Include="Scripts\tailwind.min.css" />
     <Content Include="Scripts\tailwind.min.sec.css" />
     <Content Include="Scripts\tailwind.min.thrid.css" />
