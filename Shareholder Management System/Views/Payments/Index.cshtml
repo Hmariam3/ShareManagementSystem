@@ -1,185 +1,158 @@
-﻿@*@model IEnumerable<Shareholder_Management_System.Models.Payment>
-
-    @{
-        ViewBag.Title = "Index";
-    }
-
-    <h2>Index</h2>
-
-    <p>
-        @Html.ActionLink("Create New", "Create")
-    </p>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentMode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaidAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BlockedAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReferenceNum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentAuthorizationStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AuthorizationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Remark)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Branch1.BranchCode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Document.DocName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User1.FullName)
-            </th>
-            <th></th>
-        </tr>
-
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentMode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaidAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BlockedAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReferenceNum)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentAuthorizationStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AuthorizationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Remark)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Branch1.BranchCode)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Document.DocName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Shareholder1.ShareID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subscribtion.SubStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User1.FullName)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.PayID }) |
-                @Html.ActionLink("Details", "Details", new { id=item.PayID }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.PayID })
-            </td>
-        </tr>
-    }
-
-    </table>*@
-
-
-
-@model IEnumerable<Shareholder_Management_System.Models.Payment>
+﻿@model IEnumerable<Shareholder_Management_System.Models.Payment>
 
 @{
     ViewBag.Title = "Index";
 }
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <!-- Main Content Section -->
+    <div x-data="miscellaneous">
+        <div class="space-y-6">
+            <div class="panel">
+
+                <div class="mb-5">
+                    <div>
+
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="mb-5 flex items-center justify-between">
+                                <h5 class="text-lg font-semibold dark:text-white-light">Payment Table</h5>
+                            </div>
+                            <!-- Search Field with Overlay -->
+                            <form x-data="{ focus: false }" @@click.outside="focus = false" class="w-1/3">
+                                <div class="search-form-overlay relative border border-white-dark/20 rounded-md h-12 w-full focus && 'input-focused'" @@click="focus = true">
+                                    <input type="text" placeholder="Search..." class="form-input bg-white h-full placeholder:tracking-wider hidden ltr:pl-12 rtl:pr-12 peer" :class="{'!block':focus}" @@input="searchPayments()" />
+                                    <button type="submit" class="text-dark/70 absolute ltr:right-1 rtl:left-1 inset-y-0 my-auto w-9 h-9 p-0 flex items-center justify-center peer-focus:text-primary" :class="{'ltr:!right-auto ltr:left-1 rtl:right-1': focus}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+                                            <path d="M 21.5 8 C 14.057 8 8 14.057 8 21.5 C 8 28.943 14.057 35 21.5 35 C 24.789065 35 27.805703 33.816017 30.150391 31.853516 C 30.435292 32.138417 39.711913 41.416007 39.943359 41.648438 C 40.413359 42.118437 41.176484 42.118437 41.646484 41.648438 C 42.116484 41.178438 42.116484 40.415312 41.646484 39.945312 C 41.415038 39.712882 32.138417 30.435292 31.853516 30.150391 C 33.816017 27.805703 35 24.789065 35 21.5 C 35 14.057 28.943 8 21.5 8 z M 21.5 9 C 28.392 9 34 14.608 34 21.5 C 34 28.392 28.392 34 21.5 34 C 14.608 34 9 28.392 9 21.5 C 9 14.608 14.608 9 21.5 9 z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="table-responsive mt-4">
+
+                            <table class="table-striped">
+                                <thead class="whitespace-nowrap">
+                                    <tr>
+                                        <th>Payment Date</th>
+                                        <th>@Html.DisplayNameFor(model => model.First().Shareholder.ShareID)</th>
+                                        <th>Full Name</th>
+                                        <th>District</th>
+                                        <th>@Html.DisplayNameFor(model => model.First().Branch1.BranchName)</th>
+                                        <th>Creation Date</th>
+                                        <th>@Html.DisplayNameFor(model => model.First().PaidAmount)</th>
+                                        <th>@Html.DisplayNameFor(model => model.First().ReferenceNum)</th>
+                                        <th>Mode of Payment</th>
+
+                                        <th>Status</th>
+                                        <th>Remark</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentTableBody">
+                                    @foreach (var item in Model)
+                                    {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
+                                        <td>
+                                            @{
+                                                string statusClass;
+                                                if (item.PaymentAuthorizationStatus == "Approved")
+                                                {
+                                                    statusClass = "badge-outline-success";
+                                                }
+                                                else if (item.PaymentAuthorizationStatus == "Pending")
+                                                {
+                                                    statusClass = "badge-outline-warning";
+                                                }
+                                                else if (item.PaymentAuthorizationStatus == "Rejected")
+                                                {
+                                                    statusClass = "badge-outline-danger";
+                                                }
+                                                else
+                                                {
+                                                    statusClass = ""; // Default class if none of the conditions are met
+                                                }
+                                            }
+                                            <span class="badge @statusClass">@item.PaymentAuthorizationStatus</span>
+                                        </td>
+                                        <td>@Html.DisplayFor(modelItem => item.Remark)</td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                @if (item.PaymentAuthorizationStatus == "Pending" || item.PaymentAuthorizationStatus == "Rejected")
+                                                {
+                                                    <!-- Edit Icon -->
+                                                    <a href="@Url.Action("Edit", "Payments", new { id = item.PayID })" class="hover:text-info">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                                            <!-- SVG content for Edit (pencil icon) -->
+                                                            <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                            <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                            <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                                        </svg>
+                                                    </a>
+
+                                                    <!-- Delete Icon -->
+                                                    <a href="@Url.Action("Delete", "Payments", new { id = item.PayID })" class="text-danger">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                                            <!-- SVG content for Delete (trash icon) -->
+                                                            <path d="M3 6H5H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M10 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M14 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                    </a>
+                                                }
+
+                                                <!-- Details Icon (always visible) -->
+                                                <a href="@Url.Action("Details", "Payments", new { id = item.PayID })" class="text-info">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                                        <!-- SVG content for Details (eye icon) -->
+                                                        <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </td>
 
 
-<div class="panel">
-    <div class="mb-5 flex items-center justify-between">
-        <h5 class="text-lg font-semibold dark:text-white-light">Payment Table</h5>
-    </div>
 
-    <div class="mb-5">
-        <div class="table-responsive">
-            <table class="table-striped">
-                <thead>
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.First().PaymentDate)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Shareholder.ShareID)</th>
-                        <th>Shareholder's Name</th>
-                        <th>District</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Branch1.BranchName)</th>
-                        <th>Creation Date</th>
-                        <th>@Html.DisplayNameFor(model => model.First().PaidAmount)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().ReferenceNum)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().PaymentMode)</th>
-                        <th>@Html.DisplayNameFor(model => model.First().Remark)</th>
 
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
-                        <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
-                        <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
-                        <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Remark)</td>
 
-                        <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.PayID }, new { @class = "btn btn-primary" })
-                            @Html.ActionLink("Details", "Details", new { id = item.PayID }, new { @class = "btn btn-info" })
-                            @Html.ActionLink("Delete", "Delete", new { id = item.PayID }, new { @class = "btn btn-danger" })
-                        </td>
-
-                    </tr>
-                    }
-                </tbody>
-            </table>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<script>
+    function searchPayments() {
+        const input = document.querySelector('.search-form-overlay input');
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll('#paymentTableBody tr');
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            let shouldShow = false;
+
+            cells.forEach(cell => {
+                if (cell.innerText.toLowerCase().includes(filter)) {
+                    shouldShow = true;
+                }
+            });
+
+            row.style.display = shouldShow ? '' : 'none';
+        });
+    }
+</script>

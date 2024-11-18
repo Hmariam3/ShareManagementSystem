@@ -47,7 +47,7 @@ namespace Shareholder_Management_System.Controllers
             var shareholders1 = db.Shareholders.Select(s => new SelectListItem
             {
                 Value = s.ShID.ToString(),
-                Text = s.FullNameEng
+                Text = s.FullNameEng + " / " + s.ShareID
 
             }).ToList();
             shareholders1.Insert(0, new SelectListItem
@@ -68,10 +68,8 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
             ViewBag.PaymentAuthorizer = new SelectList(db.Users, "UID", "FullName");
             return View();
-
-
         }
-    
+
         // GET: Payments/GetSubscriptionsByShareholder
         public JsonResult GetSubscriptionsByShareholder(int shId)
         {
@@ -91,6 +89,7 @@ namespace Shareholder_Management_System.Controllers
 
             return Json(subscriptions, JsonRequestBehavior.AllowGet);
         }
+
 
 
         // POST: Payments/Create
@@ -161,15 +160,10 @@ namespace Shareholder_Management_System.Controllers
 
                     if (documentId > 0)
                     {
-                        // Assign the Document ID to the PaymentSlip property of the payment
-                        var formattedDateTime = payment.CreationDate.HasValue
-                            ? payment.CreationDate.Value.ToString("MM/dd/yyyy hh:mm:ss tt")
-                            : "No Date";
-
 
                         payment.CreationDate = DateTime.UtcNow;
                         payment.CreatedBy = userId;
-                        payment.PaymentAuthorizationStatus = "pending";
+                        payment.PaymentAuthorizationStatus = "Pending";
                         payment.Branch = branchId;
                         payment.PaymentSlip = documentId;
 
@@ -228,7 +222,7 @@ namespace Shareholder_Management_System.Controllers
 
             return View(payment);
         }
-        // GET: Payments/Edit/5
+        // GET: Payments/Edit/5 
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -243,38 +237,62 @@ namespace Shareholder_Management_System.Controllers
                 return HttpNotFound();
             }
 
-            // Retrieve Shareholders for the dropdown and pre-select the existing one
+            // Retrieve Subscriptions related to the Shareholder for the dropdown
             var subscriptions = db.Subscribtions
-       .Where(s => s.ShID == payment.ShID) // Replace with your actual logic to get subscriptions
-       .ToList();
+                   .Where(s => s.ShID == payment.ShID
+                         && s.SubAuthorizationStatus == "approved"
+                         && s.UnpaidSubscription > 0
+                         && s.PaymentDueDate > DateTime.Now)
+                .ToList();
+
+            // Retrieve the UnpaidSubscription for the pre-selected subscription
+            var selectedSubscription = db.Subscribtions.FirstOrDefault(s => s.SubID == payment.SubID);
+            decimal unpaidSubscription = selectedSubscription?.UnpaidSubscription ?? 0;
+
             // Populate Shareholders for dropdown
             ViewBag.Shareholders1 = db.Shareholders
                 .Select(s => new SelectListItem
                 {
                     Value = s.ShID.ToString(),
-                    Text = s.FullNameEng // Adjust this according to your model
-                }).ToList();
+                    Text = s.FullNameEng // Adjust according to your model
+        }).ToList();
+
+            // Parse PaymentMode (e.g., "cash=100,account=50,cpo=200")
+            var paymentModeDict = payment.PaymentMode?
+                .Split(',')
+                .Select(x => x.Split('='))
+                .ToDictionary(x => x[0].Trim().ToLower(), x => Convert.ToDecimal(x[1])) ?? new Dictionary<string, decimal>();
+
+            // Pass parsed payment modes to the view only if they exist
+            ViewBag.CashAmount = paymentModeDict.ContainsKey("cash") ? (decimal?)paymentModeDict["cash"] : null;
+            ViewBag.AccountAmount = paymentModeDict.ContainsKey("account") ? (decimal?)paymentModeDict["account"] : null;
+            ViewBag.CpoAmount = paymentModeDict.ContainsKey("cpo") ? (decimal?)paymentModeDict["cpo"] : null;
+            ViewBag.DividendAmount = paymentModeDict.ContainsKey("dividend") ? (decimal?)paymentModeDict["dividend"] : null;
+            ViewBag.ChequeAmount = paymentModeDict.ContainsKey("cheque") ? (decimal?)paymentModeDict["cheque"] : null;
+
+            // Pass the necessary data to the view model
             var viewModel = new Payment
             {
                 SubID = payment.SubID,
                 ReferenceNum = payment.ReferenceNum,
                 Remark = payment.Remark,
-              
                 PaidAmount = payment.PaidAmount,
                 PaymentDate = payment.PaymentDate,
                 ShID = payment.ShID, // Current selected Shareholder ID
-               
             };
-            // Pass subscriptions to the view
+
+            // Pass subscriptions and unpaidSubscription to the view
             ViewBag.Subscriptions = subscriptions;
+            ViewBag.UnpaidSubscription = unpaidSubscription; // Pass this value to the view
 
             return View(viewModel);
         }
 
+
         // POST: Payments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, [Bind(Include = "PayID,ShID,SubID,PaymentMode,PaidAmount,BlockedAmount,ReferenceNum,PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer,AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions, string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string AccountAmount)
+        public ActionResult Edit(int id, [Bind(Include = "PayID,ShID,SubID,PaymentMode,PaidAmount,BlockedAmount,ReferenceNum,PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer,AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions, string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string accountAmount)
         {
             if (ModelState.IsValid)
             {
@@ -297,19 +315,19 @@ namespace Shareholder_Management_System.Controllers
 
                 // Handle updating payment modes
                 var paymentModes = new List<string>();
-                if (!string.IsNullOrEmpty(cashAmount)) paymentModes.Add($"Cash = {cashAmount}");
-                if (!string.IsNullOrEmpty(AccountAmount)) paymentModes.Add($"Account = {AccountAmount}");
-                if (!string.IsNullOrEmpty(cpoAmount)) paymentModes.Add($"CPO = {cpoAmount}");
-                if (!string.IsNullOrEmpty(dividendAmount)) paymentModes.Add($"Dividend = {dividendAmount}");
-                if (!string.IsNullOrEmpty(chequeAmount)) paymentModes.Add($"Cheque = {chequeAmount}");
-                existingPayment.PaymentMode = string.Join(", ", paymentModes);
+                if (!string.IsNullOrEmpty(cashAmount)) paymentModes.Add($"cash={cashAmount}");
+                if (!string.IsNullOrEmpty(accountAmount)) paymentModes.Add($"account={accountAmount}");
+                if (!string.IsNullOrEmpty(cpoAmount)) paymentModes.Add($"cpo={cpoAmount}");
+                if (!string.IsNullOrEmpty(dividendAmount)) paymentModes.Add($"dividend={dividendAmount}");
+                if (!string.IsNullOrEmpty(chequeAmount)) paymentModes.Add($"cheque={chequeAmount}");
+                existingPayment.PaymentMode = string.Join(",", paymentModes);
 
                 // Update user and branch details
                 int userId = Convert.ToInt32(Session["ID"]);
                 existingPayment.CreatedBy = userId;
                 existingPayment.Branch = Convert.ToInt32(Session["Branch"]);
                 existingPayment.CreationDate = DateTime.Now;
-                existingPayment.PaymentAuthorizationStatus = "pending";
+                existingPayment.PaymentAuthorizationStatus = "Pending";
 
                 // Handle document creation (if file uploaded)
                 if (uploadedFile != null && uploadedFile.ContentLength > 0)
@@ -362,7 +380,6 @@ namespace Shareholder_Management_System.Controllers
             });
 
             ViewBag.Shareholders1 = shareholders1;
-
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", payment.Branch);
             ViewBag.PaymentSlip = new SelectList(db.Documents, "DocID", "DocName", payment.PaymentSlip);
             ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", payment.ShID);
@@ -485,12 +502,12 @@ namespace Shareholder_Management_System.Controllers
             }
             else if (action == "reject")
             {
-               //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+                //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
 
                 // Call RecordLog method with null-safe value for CreatedBy
                 AuditLogsController auditLogsController = new AuditLogsController();
                 auditLogsController.RecordLog("Rejection", payment.PayID, "Payment", payment.CreatedBy ?? 0, Session["BranchName"].ToString());
-                payment.PaymentAuthorizationStatus = "Rejected";              
+                payment.PaymentAuthorizationStatus = "Rejected";
             }
 
 

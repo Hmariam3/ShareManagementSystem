@@ -55,10 +55,13 @@ namespace Shareholder_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Shareholder shareholder, HttpPostedFileBase shFile)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
             if (ModelState.IsValid)
             {
-                shareholder.Branch = 1;
-                shareholder.CreatedBy = 1;
+                shareholder.Branch = branchId;
+                shareholder.CreatedBy = userId;
                 shareholder.Status = "InActive";
                 shareholder.CreatedDate = DateTime.Now;
                 shareholder.AuthorizationStatus = "Pending";
@@ -79,7 +82,7 @@ namespace Shareholder_Management_System.Controllers
                         DocOwner = "Shareholder",
                         DocType = "ShareholderInfo",
                         ShID = shareholder.ShID,
-                        CreatedBy = 1,
+                        CreatedBy = userId,
                         DocAuthorizationStatus = "Pending",
                         CreatedDate = DateTime.Now,
                     };
@@ -132,6 +135,9 @@ namespace Shareholder_Management_System.Controllers
         [HttpPost]
         public ActionResult UpdateShDocument(int shID, HttpPostedFileBase shFile)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
             if (shFile == null || shFile.ContentLength == 0)
             {
                 return Json(new { success = false, message = "File is required." });
@@ -149,7 +155,7 @@ namespace Shareholder_Management_System.Controllers
                 DocOwner = "Shareholder",
                 DocType = "ShareholderInfo",
                 ShID = shareholder.ShID,
-                CreatedBy = 1,
+                CreatedBy = userId,
                 DocAuthorizationStatus = "Pending",
                 CreatedDate = DateTime.Now,
             };
@@ -159,8 +165,8 @@ namespace Shareholder_Management_System.Controllers
 
             int documentId = documentsController.Create(document, shFile);
             shareholder.ShDocument = documentId;
-            shareholder.Branch = 1;
-            shareholder.CreatedBy = 1;
+            shareholder.Branch = branchId;
+            shareholder.CreatedBy = userId;
             shareholder.Status = "InActive";
             shareholder.CreatedDate = DateTime.Now;
             shareholder.AuthorizationStatus = "Pending";
@@ -176,6 +182,10 @@ namespace Shareholder_Management_System.Controllers
         [HttpPost]
         public ActionResult BlockSh(int shID, string reason, HttpPostedFileBase shFile)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
+
             if (shFile == null || shFile.ContentLength == 0)
             {
                 return Json(new { success = false, message = "File is required." });
@@ -193,7 +203,7 @@ namespace Shareholder_Management_System.Controllers
                 DocOwner = "Shareholder",
                 DocType = "ShBlockLetter",
                 ShID = shareholder.ShID,
-                CreatedBy = 1,
+                CreatedBy = userId,
                 DocAuthorizationStatus = "Pending",
                 CreatedDate = DateTime.Now,
             };
@@ -201,8 +211,8 @@ namespace Shareholder_Management_System.Controllers
             DocumentsController documentsController = new DocumentsController();
             documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
 
-            shareholder.Branch = 1;
-            shareholder.CreatedBy = 1;
+            shareholder.Branch = branchId;
+            shareholder.CreatedBy = userId;
             shareholder.Status = "Blocked";
             shareholder.CreatedDate = DateTime.Now;
             shareholder.AuthorizationStatus = "Pending";
@@ -220,6 +230,9 @@ namespace Shareholder_Management_System.Controllers
         [HttpPost]
         public ActionResult UnBlockSh(int shID, string reason, HttpPostedFileBase shFile)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
             if (shFile == null || shFile.ContentLength == 0)
             {
                 return Json(new { success = false, message = "File is required." });
@@ -237,7 +250,7 @@ namespace Shareholder_Management_System.Controllers
                 DocOwner = "Shareholder",
                 DocType = "ShUnBlockLetter",
                 ShID = shareholder.ShID,
-                CreatedBy = 1,
+                CreatedBy = userId,
                 DocAuthorizationStatus = "Pending",
                 CreatedDate = DateTime.Now,
             };
@@ -245,8 +258,8 @@ namespace Shareholder_Management_System.Controllers
             DocumentsController documentsController = new DocumentsController();
             documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
 
-            shareholder.Branch = 1;
-            shareholder.CreatedBy = 1;
+            shareholder.Branch = branchId;
+            shareholder.CreatedBy = userId;
             shareholder.Status = "UnBlocked";
             shareholder.CreatedDate = DateTime.Now;
             shareholder.AuthorizationStatus = "Pending";
@@ -269,10 +282,13 @@ namespace Shareholder_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Shareholder shareholder)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
             if (ModelState.IsValid)
             {
-                shareholder.Branch = 1;
-                shareholder.CreatedBy = 1;
+                shareholder.Branch = branchId;
+                shareholder.CreatedBy = userId;
                 shareholder.Status = "InActive";
                 shareholder.CreatedDate = DateTime.Now;
                 shareholder.AuthorizationStatus = "Pending";
