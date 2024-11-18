@@ -44,6 +44,7 @@ namespace Shareholder_Management_System.Models
         public Nullable<System.DateTime> AuthorizedDate { get; set; }
         public string Remark { get; set; }
         public Nullable<int> ProxyDocument { get; set; }
+        public Nullable<int> PendingDoc { get; set; }
         public Nullable<int> Branch { get; set; }
         public Nullable<int> KebeleID { get; set; }
     
@@ -52,6 +53,7 @@ namespace Shareholder_Management_System.Models
         public virtual ICollection<Document> Documents { get; set; }
         public virtual Document Document { get; set; }
         public virtual Document Document1 { get; set; }
+        public virtual Document Document2 { get; set; }
         public virtual Shareholder Shareholder { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }

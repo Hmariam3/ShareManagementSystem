@@ -38,7 +38,9 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> SubAuthorizer { get; set; }
         public Nullable<System.DateTime> AuthorizedDate { get; set; }
         public string Remark { get; set; }
+        public Nullable<int> Branch { get; set; }
     
+        public virtual Branch Branch1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

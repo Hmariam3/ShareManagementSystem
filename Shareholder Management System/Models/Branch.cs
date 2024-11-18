@@ -24,6 +24,7 @@ namespace Shareholder_Management_System.Models
             this.Shareholders = new HashSet<Shareholder>();
             this.ShareTransfers = new HashSet<ShareTransfer>();
             this.SimulationDivideneds = new HashSet<SimulationDividened>();
+            this.Subscribtions = new HashSet<Subscribtion>();
             this.Users = new HashSet<User>();
         }
     
@@ -47,6 +48,8 @@ namespace Shareholder_Management_System.Models
         public virtual ICollection<ShareTransfer> ShareTransfers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SimulationDividened> SimulationDivideneds { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Subscribtion> Subscribtions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
     }

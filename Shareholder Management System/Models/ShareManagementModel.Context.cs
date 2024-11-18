@@ -13,10 +13,10 @@ namespace Shareholder_Management_System.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class ShareManagementDBEntities : DbContext
+    public partial class Shareholder_Management_SystemEntities1 : DbContext
     {
-        public ShareManagementDBEntities()
-            : base("name=ShareManagementDBEntities")
+        public Shareholder_Management_SystemEntities1()
+            : base("name=Shareholder_Management_SystemEntities1")
         {
         }
     

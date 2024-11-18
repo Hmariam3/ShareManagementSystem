@@ -43,7 +43,7 @@ namespace Shareholder_Management_System.Models
         public string FullName { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public bool Status { get; set; }
         public string Role { get; set; }
         public Nullable<int> Branch { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }

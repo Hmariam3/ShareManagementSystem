@@ -13,7 +13,7 @@ namespace Shareholder_Management_System.Controllers
 {
     public class ShareTransfersController : Controller
     {
-        private ShareManagementDBEntities db = new ShareManagementDBEntities();
+        private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
         //// GET: ShareTransfers
         public ActionResult Index()
@@ -284,6 +284,8 @@ namespace Shareholder_Management_System.Controllers
                             PaidSubscription = shareTransfer.PaidAmountForTransfer,
                             SubTransferFrom = shareTransfer.TransferrorShID,
                             PaymentDueDate = shareTransfer.TransferDate,
+                            AuthorizedDate = DateTime.Now,
+                            SubAuthorizer = AuthorizerId,
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
@@ -310,6 +312,8 @@ namespace Shareholder_Management_System.Controllers
                                     PaymentDate = payment.PaymentDate,
                                     CreatedBy = shareTransfer.CreatedBy,
                                     PaymentAuthorizationStatus = "Approved",
+                                    PaymentAuthorizer = AuthorizerId,
+                                    AuthorizationDate = DateTime.Now,
                                     TransferedPayID = payment.PayID,
                                     TransferID = shareTransfer.TransferID,
                                     TransferAmount = payment.PaidAmount
@@ -346,6 +350,8 @@ namespace Shareholder_Management_System.Controllers
                             UnpaidSubscription = 0.00M, // Explicitly set UnpaidSubscription to 0.00
                             SubTransferFrom = shareTransfer.TransferrorShID,
                             PaymentDueDate = shareTransfer.TransferDate,
+                            AuthorizedDate = DateTime.Now,
+                            SubAuthorizer = AuthorizerId,
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
@@ -366,6 +372,8 @@ namespace Shareholder_Management_System.Controllers
                             PaymentDate = shareTransfer.TransferDate,
                             CreatedBy = shareTransfer.CreatedBy,
                             PaymentAuthorizationStatus = "Approved",
+                            PaymentAuthorizer = AuthorizerId,
+                            AuthorizationDate = DateTime.Now,
                             TransferID = shareTransfer.TransferID,
                             TransferAmount = shareTransfer.PaidAmountForTransfer
 
@@ -399,6 +407,8 @@ namespace Shareholder_Management_System.Controllers
                             UnpaidSubscription = 0.00M, // Explicitly set UnpaidSubscription to 0.00
                             SubTransferFrom = shareTransfer.TransferrorShID,
                             PaymentDueDate = shareTransfer.TransferDate,
+                            AuthorizedDate = DateTime.Now,
+                            SubAuthorizer = AuthorizerId,
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
@@ -427,6 +437,8 @@ namespace Shareholder_Management_System.Controllers
                                     PaymentDate = payment.PaymentDate,
                                     CreatedBy = shareTransfer.CreatedBy,
                                     PaymentAuthorizationStatus = "Approved",
+                                    PaymentAuthorizer = AuthorizerId,
+                                    AuthorizationDate = DateTime.Now,
                                     TransferedPayID = payment.PayID,
                                     TransferID = shareTransfer.TransferID,
                                     TransferAmount = payment.PaidAmount
@@ -466,6 +478,8 @@ namespace Shareholder_Management_System.Controllers
                             UnpaidSubscription = 0.00M, // Explicitly set UnpaidSubscription to 0.00
                             SubTransferFrom = shareTransfer.TransferrorShID,
                             PaymentDueDate = shareTransfer.TransferDate,
+                            AuthorizedDate = DateTime.Now,
+                            SubAuthorizer = AuthorizerId,
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
@@ -495,6 +509,8 @@ namespace Shareholder_Management_System.Controllers
                             PaymentDate = shareTransfer.TransferDate,
                             CreatedBy = shareTransfer.CreatedBy,
                             PaymentAuthorizationStatus = "Approved",
+                            PaymentAuthorizer = AuthorizerId,
+                            AuthorizationDate = DateTime.Now,
                             TransferedPayID = payment.PayID,
                             TransferID = shareTransfer.TransferID,
                             TransferAmount = shareTransfer.PaidAmountForTransfer
@@ -531,6 +547,8 @@ namespace Shareholder_Management_System.Controllers
                             PaidSubscription = shareTransfer.PaidAmountForTransfer,
                             SubTransferFrom = shareTransfer.TransferrorShID,
                             PaymentDueDate = shareTransfer.TransferDate,
+                            AuthorizedDate = DateTime.Now,
+                            SubAuthorizer = AuthorizerId,
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
@@ -558,6 +576,8 @@ namespace Shareholder_Management_System.Controllers
                                     PaymentDate = payment.PaymentDate,
                                     CreatedBy = shareTransfer.CreatedBy,
                                     PaymentAuthorizationStatus = "Approved",
+                                    PaymentAuthorizer = AuthorizerId,
+                                    AuthorizationDate = DateTime.Now,
                                     TransferedPayID = payment.PayID,
                                     TransferID = shareTransfer.TransferID,
                                     TransferAmount = payment.PaidAmount

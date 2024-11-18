@@ -176,6 +176,7 @@
           <Property Name="AuthorizedDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
           <Property Name="ProxyDocument" Type="int" />
+          <Property Name="PendingDoc" Type="int" />
           <Property Name="Branch" Type="int" />
           <Property Name="KebeleID" Type="int" />
         </EntityType>
@@ -295,6 +296,7 @@
           <Property Name="SubAuthorizer" Type="int" />
           <Property Name="AuthorizedDate" Type="date" />
           <Property Name="Remark" Type="nvarchar(max)" />
+          <Property Name="Branch" Type="int" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -718,6 +720,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Proxy_Pending">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
+          <End Role="Proxy" Type="Self.Proxy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="DocID" />
+            </Principal>
+            <Dependent Role="Proxy">
+              <PropertyRef Name="PendingDoc" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Proxy_Shareholder">
           <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
           <End Role="Proxy" Type="Self.Proxy" Multiplicity="*" />
@@ -958,6 +972,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Subscribtion_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="0..1" />
+          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Subscribtion">
+              <PropertyRef Name="Branch" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Subscribtion_Shareholder">
           <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
           <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="*" />
@@ -1167,6 +1193,10 @@
             <End Role="Document" EntitySet="Document" />
             <End Role="Proxy" EntitySet="Proxy" />
           </AssociationSet>
+          <AssociationSet Name="FK_Proxy_Pending" Association="Self.FK_Proxy_Pending">
+            <End Role="Document" EntitySet="Document" />
+            <End Role="Proxy" EntitySet="Proxy" />
+          </AssociationSet>
           <AssociationSet Name="FK_Proxy_Shareholder" Association="Self.FK_Proxy_Shareholder">
             <End Role="Shareholder" EntitySet="Shareholder" />
             <End Role="Proxy" EntitySet="Proxy" />
@@ -1246,6 +1276,10 @@
           <AssociationSet Name="FK_SimulationDividened_User" Association="Self.FK_SimulationDividened_User">
             <End Role="User" EntitySet="User" />
             <End Role="SimulationDividened" EntitySet="SimulationDividened" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subscribtion_Branch" Association="Self.FK_Subscribtion_Branch">
+            <End Role="Branch" EntitySet="Branch" />
+            <End Role="Subscribtion" EntitySet="Subscribtion" />
           </AssociationSet>
           <AssociationSet Name="FK_Subscribtion_Shareholder" Association="Self.FK_Subscribtion_Shareholder">
             <End Role="Shareholder" EntitySet="Shareholder" />
@@ -1329,6 +1363,7 @@
           <NavigationProperty Name="Shareholders" Relationship="Self.FK_Shareholder_Branch" FromRole="Branch" ToRole="Shareholder" />
           <NavigationProperty Name="ShareTransfers" Relationship="Self.FK_ShareTransfer_Branch" FromRole="Branch" ToRole="ShareTransfer" />
           <NavigationProperty Name="SimulationDivideneds" Relationship="Self.FK_SimulationDividened_Branch" FromRole="Branch" ToRole="SimulationDividened" />
+          <NavigationProperty Name="Subscribtions" Relationship="Self.FK_Subscribtion_Branch" FromRole="Branch" ToRole="Subscribtion" />
           <NavigationProperty Name="Users" Relationship="Self.FK_User_Branch" FromRole="Branch" ToRole="User" />
         </EntityType>
         <EntityType Name="Certificate">
@@ -1425,6 +1460,7 @@
           <NavigationProperty Name="Payments" Relationship="Self.FK_Payment_Document" FromRole="Document" ToRole="Payment" />
           <NavigationProperty Name="Proxies" Relationship="Self.FK_Proxy_Document" FromRole="Document" ToRole="Proxy" />
           <NavigationProperty Name="Proxies1" Relationship="Self.FK_Proxy_Document1" FromRole="Document" ToRole="Proxy" />
+          <NavigationProperty Name="Proxies2" Relationship="Self.FK_Proxy_Pending" FromRole="Document" ToRole="Proxy" />
           <NavigationProperty Name="Shareholders" Relationship="Self.FK_Shareholder_Document" FromRole="Document" ToRole="Shareholder" />
           <NavigationProperty Name="Shareholders1" Relationship="Self.FK_Shareholder_DocumentKebele" FromRole="Document" ToRole="Shareholder" />
           <NavigationProperty Name="Shareholders2" Relationship="Self.FK_Shareholder_DocumentPending" FromRole="Document" ToRole="Shareholder" />
@@ -1495,12 +1531,14 @@
           <Property Name="AuthorizedDate" Type="DateTime" Precision="0" />
           <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ProxyDocument" Type="Int32" />
+          <Property Name="PendingDoc" Type="Int32" />
           <Property Name="Branch" Type="Int32" />
           <Property Name="KebeleID" Type="Int32" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_Proxy_Branch" FromRole="Proxy" ToRole="Branch" />
           <NavigationProperty Name="Documents" Relationship="Self.FK_Document_Proxy" FromRole="Proxy" ToRole="Document" />
           <NavigationProperty Name="Document" Relationship="Self.FK_Proxy_Document" FromRole="Proxy" ToRole="Document" />
           <NavigationProperty Name="Document1" Relationship="Self.FK_Proxy_Document1" FromRole="Proxy" ToRole="Document" />
+          <NavigationProperty Name="Document2" Relationship="Self.FK_Proxy_Pending" FromRole="Proxy" ToRole="Document" />
           <NavigationProperty Name="Shareholder" Relationship="Self.FK_Proxy_Shareholder" FromRole="Proxy" ToRole="Shareholder" />
           <NavigationProperty Name="User" Relationship="Self.FK_Proxy_User" FromRole="Proxy" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="Self.FK_Proxy_User1" FromRole="Proxy" ToRole="User" />
@@ -1651,6 +1689,8 @@
           <Property Name="SubAuthorizer" Type="Int32" />
           <Property Name="AuthorizedDate" Type="DateTime" Precision="0" />
           <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Branch" Type="Int32" />
+          <NavigationProperty Name="Branch1" Relationship="Self.FK_Subscribtion_Branch" FromRole="Subscribtion" ToRole="Branch" />
           <NavigationProperty Name="DividenedDetails" Relationship="Self.FK_Dividened_Detail_Subscription" FromRole="Subscribtion" ToRole="DividenedDetail" />
           <NavigationProperty Name="Payments" Relationship="Self.FK_Payment_Subscribtion" FromRole="Subscribtion" ToRole="Payment" />
           <NavigationProperty Name="Shareholder" Relationship="Self.FK_Subscribtion_Shareholder" FromRole="Subscribtion" ToRole="Shareholder" />
@@ -1858,6 +1898,18 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="SimulationDividened">
+              <PropertyRef Name="Branch" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subscribtion_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="0..1" />
+          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Subscribtion">
               <PropertyRef Name="Branch" />
             </Dependent>
           </ReferentialConstraint>
@@ -2075,6 +2127,18 @@
             </Principal>
             <Dependent Role="Proxy">
               <PropertyRef Name="KebeleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Proxy_Pending">
+          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
+          <End Role="Proxy" Type="Self.Proxy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Document">
+              <PropertyRef Name="DocID" />
+            </Principal>
+            <Dependent Role="Proxy">
+              <PropertyRef Name="PendingDoc" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2402,7 +2466,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ShareManagementDBEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="Shareholder_Management_SystemEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AuditLogs" EntityType="Self.AuditLog" />
           <EntitySet Name="Blockeds" EntityType="Self.Blocked" />
           <EntitySet Name="Branches" EntityType="Self.Branch" />
@@ -2470,6 +2534,10 @@
           <AssociationSet Name="FK_SimulationDividened_Branch" Association="Self.FK_SimulationDividened_Branch">
             <End Role="Branch" EntitySet="Branches" />
             <End Role="SimulationDividened" EntitySet="SimulationDivideneds" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subscribtion_Branch" Association="Self.FK_Subscribtion_Branch">
+            <End Role="Branch" EntitySet="Branches" />
+            <End Role="Subscribtion" EntitySet="Subscribtions" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Branch" Association="Self.FK_User_Branch">
             <End Role="Branch" EntitySet="Branches" />
@@ -2540,6 +2608,10 @@
             <End Role="Proxy" EntitySet="Proxies" />
           </AssociationSet>
           <AssociationSet Name="FK_Proxy_Document1" Association="Self.FK_Proxy_Document1">
+            <End Role="Document" EntitySet="Documents" />
+            <End Role="Proxy" EntitySet="Proxies" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Proxy_Pending" Association="Self.FK_Proxy_Pending">
             <End Role="Document" EntitySet="Documents" />
             <End Role="Proxy" EntitySet="Proxies" />
           </AssociationSet>
@@ -2657,7 +2729,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ShareManagementDBModelStoreContainer" CdmEntityContainer="ShareManagementDBEntities1">
+        <EntityContainerMapping StorageEntityContainer="ShareManagementDBModelStoreContainer" CdmEntityContainer="Shareholder_Management_SystemEntities1">
           <EntitySetMapping Name="AuditLogs">
             <EntityTypeMapping TypeName="ShareManagementDBModel.AuditLog">
               <MappingFragment StoreEntitySet="AuditLog">
@@ -2836,6 +2908,7 @@
                 <ScalarProperty Name="AuthorizedDate" ColumnName="AuthorizedDate" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
                 <ScalarProperty Name="ProxyDocument" ColumnName="ProxyDocument" />
+                <ScalarProperty Name="PendingDoc" ColumnName="PendingDoc" />
                 <ScalarProperty Name="Branch" ColumnName="Branch" />
                 <ScalarProperty Name="KebeleID" ColumnName="KebeleID" />
               </MappingFragment>
@@ -2960,6 +3033,7 @@
                 <ScalarProperty Name="SubAuthorizer" ColumnName="SubAuthorizer" />
                 <ScalarProperty Name="AuthorizedDate" ColumnName="AuthorizedDate" />
                 <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="Branch" ColumnName="Branch" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
