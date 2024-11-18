@@ -1,9 +1,8 @@
 ﻿@model IEnumerable<Shareholder_Management_System.Models.ShareTransfer>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Authorize";
 }
-<!-- SweetAlert2 CDN -->
 
 <script src="~/Scripts/JS/sweetalert.min.js"></script>
 @section Scripts {
@@ -91,7 +90,6 @@
         </div>
     </div>
     <!-- end main content section -->
-
 </div>
 
 
@@ -184,7 +182,7 @@
             init() {
                 this.datatable = new simpleDatatables.DataTable('#myTable', {
                     data: {
-                        headings: ['Transfer From', 'Transfer To', 'TID', 'Transfer Category', 'Transfer Type', 'Shares Transferred', 'Paid Amount','Transfer Reason','Dividened For','Authorization Status',''],
+                        headings: ['Transfer From', 'Transfer To', 'TID', 'Transfer Category', 'Transfer Type', 'Shares Transferred', 'Paid Amount', 'Transfer Reason','Dividened For','Authorization Status','Take Action'],
                         data: [
                         @foreach (var item in Model)
                         {
@@ -214,78 +212,31 @@
                                             <span class="badge badge-outline-danger" style="font-size: 0.9em; padding: 0.5em 1em;">Rejected</span>
                                         }
                                         `,
-                                    @*`@if (item.TransferAuthorizationStatus == "Pending")
+                                    `@if (item.TransferAuthorizationStatus == "Pending")
                                         {
-                                            <div style="display: flex; gap: 8px; align-items: center;">
-                                                @using (Html.BeginForm("Approve", "ShareTransfers", FormMethod.Post, new { @id = item.TransferID }))
-                                                {
-                                                    <input type="hidden" name="id" value="@item.TransferID" />
-                                                    <button type="submit" title="Approve" style="border: none; background: none; transform: scale(1.2);">
-                                                        <svg width="20" height="15" viewbox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
-                                                            <circle opacity="0.9" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
-                                                            <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                        </svg>
-                                                    </button>
-                                                }
-
-                                                @using (Html.BeginForm("Reject", "ShareTransfers", FormMethod.Post, new { @id = item.TransferID }))
-                                                {
-                                                    <input type="hidden" name="id" value="@item.TransferID" />
-                                                    <button type="submit" title="Reject" style="border: none; background: none; transform: scale(1.2);">
-                                                        <svg width="20" height="15" viewbox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
-                                                            <circle opacity="0.9" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
-                                                            <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                                        </svg>
-                                                    </button>
-                                                }
-                                            </div>
-                                        }
-                                        `,*@
-                                   `@if (item.TransferAuthorizationStatus == "Pending")
-                                   {
-
-                                    <div style="display: flex; align-items: center;">
-                                        <a href="@Url.Action("Edit", new { id = item.TransferID })" title="Edit" style="margin-right: 10px;">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-primary">
-                                                <path d="M5 2h8a2 2 0 0 1 2 2v4h4v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="currentColor" opacity="0.1"/>
-                                                <path d="M9 13l6-6 2 2-6 6H9v-2z" fill="currentColor"/>
-                                                <path d="M15 7.5l1.5-1.5 2 2L17 9.5 15 7.5z" fill="currentColor"/>
-                                            </svg>
-                                        </a>
-                                        <a href="@Url.Action("Details", new { id = item.TransferID })" title="View Details" style="margin-right: 10px;">
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
-                                                <path d="M12 4.5C7.26 4.5 3.07 7.28 1 12c2.07 4.72 6.26 7.5 11 7.5s8.93-2.78 11-7.5c-2.07-4.72-6.26-7.5-11-7.5z"
-                                                      stroke="currentColor" stroke-width="1.5" fill="none"></path>
-                                                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
-                                            </svg>
-                                        </a>
-                                        <form id="deleteForm" action="@Url.Action("Delete", "ShareTransfers", new { id = item.TransferID })" method="post" style="display:inline;">
-                                            @Html.AntiForgeryToken() 
-                                            <button type="button" onclick="showAlert('delete', event)" >
-                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
-                                                    <path d="M3 6h18M10 11v6M14 11v6M5 6h14l-1 14H6L5 6zm4-2h6v1H9V4zm5-2H10a1 1 0 0 0-1 1v1H6V3a1 1 0 0 0-1-1z"
-                                                          stroke="red" stroke-width="1.5" fill="none"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </div>
-
-                                   }
-                                   else
-                                   {
-                                       <div style="display: flex; align-items: center;">
-                                             
-                                            <a href="@Url.Action("Details", new { id = item.TransferID })" title="View Details" style="margin-right: 20px;">
+                                            <a href="@Url.Action("Authorize_Details", new { id = item.TransferID }) " class="btn btn-primary  gap-2">
                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
-                                                    <path d="M12 4.5C7.26 4.5 3.07 7.28 1 12c2.07 4.72 6.26 7.5 11 7.5s8.93-2.78 11-7.5c-2.07-4.72-6.26-7.5-11-7.5z"
-                                                          stroke="currentColor" stroke-width="1.5" fill="none"></path>
-                                                    <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+
+                                                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                    <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                    <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
                                                 </svg>
+                                                Authorize
                                             </a>
-                                           
-                                        </div>
-                                   }
-                                    `,
+                                    }
+                                    else
+                                    {
+                                        
+                                        <a href="@Url.Action("Details", new { id = item.TransferID }) " class="btn btn-secondary  gap-2">
+                                            <svg width="5" height="5" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" fill="none" />
+                                                <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                                            </svg>
+                                            Authorized
+                                        </a>
+                                        
+                                    }
+                                        `,
                                 ],
                                 </text>
                             }
@@ -321,32 +272,32 @@
 </script>
 <script>
     async function showAlert(action, event) {
-        // Prevent the default form submission if action is delete
+        // Prevent the default link navigation if action is delete
         if (action === 'delete') {
             event.preventDefault();
         }
 
-        // Set alert text and button text based on action type
-        let actionText = action === 'delete' ? 'Delete this Transfer' : '';
+        // Set alert text based on action type
+        let actionText = action === 'delete' ? 'delete this transfer' : '';
         let confirmText = action === 'delete' ? 'Delete' : '';
 
         // Display confirmation dialog
         new window.Swal({
             icon: 'warning',
-            //title: 'Are you sure?',
+            title: 'Are you sure?',
             text: `You are about to ${actionText}. This action cannot be undone!`,
             showCancelButton: true,
             confirmButtonText: confirmText,
             cancelButtonText: 'Cancel',
-            confirmButtonColor: '#dc3545',
             padding: '2em',
         }).then((result) => {
             if (result.isConfirmed) {
-                // Submit the form if confirmed
+                // Navigate to the delete link if confirmed
                 if (action === 'delete') {
-                    document.getElementById('deleteForm').submit();
+                    window.location.href = document.getElementById('deleteTransfer').href;
                 }
             }
         });
     }
 </script>
+

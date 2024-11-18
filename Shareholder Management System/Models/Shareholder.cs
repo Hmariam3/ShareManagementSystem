@@ -26,6 +26,7 @@ namespace Shareholder_Management_System.Models
             this.Proxies = new HashSet<Proxy>();
             this.ShareTransfers = new HashSet<ShareTransfer>();
             this.ShareTransfers1 = new HashSet<ShareTransfer>();
+            this.SimulationDivideneds = new HashSet<SimulationDividened>();
             this.Subscribtions = new HashSet<Subscribtion>();
             this.Subscribtions1 = new HashSet<Subscribtion>();
         }
@@ -64,6 +65,8 @@ namespace Shareholder_Management_System.Models
         public Nullable<System.DateTime> AuthorizedDate { get; set; }
         public string Remark { get; set; }
         public Nullable<int> ShDocument { get; set; }
+        public Nullable<int> KebeleID { get; set; }
+        public Nullable<int> PendingDoc { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Blocked> Blockeds { get; set; }
@@ -75,6 +78,8 @@ namespace Shareholder_Management_System.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Document> Documents { get; set; }
         public virtual Document Document { get; set; }
+        public virtual Document Document1 { get; set; }
+        public virtual Document Document2 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Payment> Payments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -87,6 +92,8 @@ namespace Shareholder_Management_System.Models
         public virtual ICollection<ShareTransfer> ShareTransfers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShareTransfer> ShareTransfers1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SimulationDividened> SimulationDivideneds { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Subscribtion> Subscribtions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

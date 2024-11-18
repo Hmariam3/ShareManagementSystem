@@ -15,12 +15,12 @@ namespace Shareholder_Management_System.Models
     public partial class Blocked
     {
         public int BlockID { get; set; }
-        public int ShID { get; set; }
-        public int PayID { get; set; }
-        public decimal BlockedAmount { get; set; }
+        public Nullable<int> ShID { get; set; }
+        public Nullable<int> PayID { get; set; }
+        public Nullable<decimal> BlockedAmount { get; set; }
         public string BlockingOrgan { get; set; }
-        public int BlockedBy { get; set; }
-        public System.DateTime DateBlocked { get; set; }
+        public Nullable<int> BlockedBy { get; set; }
+        public Nullable<System.DateTime> DateBlocked { get; set; }
         public Nullable<int> BlockingDoc { get; set; }
         public string RefNum { get; set; }
         public string Reason { get; set; }
@@ -28,7 +28,9 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> BlockedAuthorizer { get; set; }
         public Nullable<System.DateTime> AuthorizationDate { get; set; }
         public string Remark { get; set; }
+        public Nullable<int> Branch { get; set; }
     
+        public virtual Branch Branch1 { get; set; }
         public virtual Document Document { get; set; }
         public virtual Payment Payment { get; set; }
         public virtual Shareholder Shareholder { get; set; }

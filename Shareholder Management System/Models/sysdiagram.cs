@@ -12,17 +12,12 @@ namespace Shareholder_Management_System.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class AuditLog
+    public partial class sysdiagram
     {
-        public int LogID { get; set; }
-        public string Message { get; set; }
-        public string ActionType { get; set; }
-        public Nullable<int> TransactionID { get; set; }
-        public string TableName { get; set; }
-        public Nullable<int> PerformedBy { get; set; }
-        public string PerformerBranch { get; set; }
-        public Nullable<System.DateTime> TransactionDate { get; set; }
-    
-        public virtual User User { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

@@ -13,10 +13,10 @@ namespace Shareholder_Management_System.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class Shareholder_Management_SystemEntities1 : DbContext
+    public partial class ShareManagementDBEntities : DbContext
     {
-        public Shareholder_Management_SystemEntities1()
-            : base("name=Shareholder_Management_SystemEntities1")
+        public ShareManagementDBEntities()
+            : base("name=ShareManagementDBEntities")
         {
         }
     
@@ -37,7 +37,9 @@ namespace Shareholder_Management_System.Models
         public virtual DbSet<Shareholder> Shareholders { get; set; }
         public virtual DbSet<ShareTransfer> ShareTransfers { get; set; }
         public virtual DbSet<ShCategory> ShCategories { get; set; }
+        public virtual DbSet<SimulationDividened> SimulationDivideneds { get; set; }
         public virtual DbSet<Subscribtion> Subscribtions { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<User> Users { get; set; }
     }
 }

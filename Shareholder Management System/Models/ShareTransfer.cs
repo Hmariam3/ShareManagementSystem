@@ -14,12 +14,19 @@ namespace Shareholder_Management_System.Models
     
     public partial class ShareTransfer
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ShareTransfer()
+        {
+            this.Payments = new HashSet<Payment>();
+        }
+    
         public int TransferID { get; set; }
         public Nullable<int> TransferrorShID { get; set; }
         public Nullable<int> TransfareeShID { get; set; }
+        public string TransferCategory { get; set; }
         public string TransferType { get; set; }
-        public Nullable<int> SubID { get; set; }
-        public Nullable<int> PayID { get; set; }
+        public string SubID { get; set; }
+        public string PayID { get; set; }
         public Nullable<int> NumSharesTransferred { get; set; }
         public Nullable<decimal> AmountPerShare { get; set; }
         public Nullable<decimal> PaidAmountForTransfer { get; set; }
@@ -28,16 +35,18 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> TransferDoc { get; set; }
         public Nullable<System.DateTime> TransferDate { get; set; }
         public Nullable<int> CreatedBy { get; set; }
+        public Nullable<int> Branch { get; set; }
         public Nullable<System.DateTime> CreationDate { get; set; }
         public string TransferAuthorizationStatus { get; set; }
         public Nullable<int> TransferAuthorizer { get; set; }
         public Nullable<System.DateTime> TransferAuthorizationDate { get; set; }
         public string Remark { get; set; }
     
-        public virtual Payment Payment { get; set; }
+        public virtual Branch Branch1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Payment> Payments { get; set; }
         public virtual Shareholder Shareholder { get; set; }
         public virtual Shareholder Shareholder1 { get; set; }
-        public virtual Subscribtion Subscribtion { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
     }

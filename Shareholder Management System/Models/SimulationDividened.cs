@@ -12,9 +12,9 @@ namespace Shareholder_Management_System.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DividenedDetail
+    public partial class SimulationDividened
     {
-        public int ID { get; set; }
+        public int SimID { get; set; }
         public Nullable<int> DivID { get; set; }
         public Nullable<int> ShID { get; set; }
         public Nullable<int> PayID { get; set; }

@@ -17,10 +17,13 @@ namespace Shareholder_Management_System.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Branch()
         {
+            this.Blockeds = new HashSet<Blocked>();
             this.DividenedDetails = new HashSet<DividenedDetail>();
-            this.DividenedDetails1 = new HashSet<DividenedDetail>();
             this.Payments = new HashSet<Payment>();
+            this.Proxies = new HashSet<Proxy>();
             this.Shareholders = new HashSet<Shareholder>();
+            this.ShareTransfers = new HashSet<ShareTransfer>();
+            this.SimulationDivideneds = new HashSet<SimulationDividened>();
             this.Users = new HashSet<User>();
         }
     
@@ -31,13 +34,19 @@ namespace Shareholder_Management_System.Models
         public string Process { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }
+        public virtual ICollection<Blocked> Blockeds { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DividenedDetail> DividenedDetails1 { get; set; }
+        public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Payment> Payments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Proxy> Proxies { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shareholder> Shareholders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShareTransfer> ShareTransfers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SimulationDividened> SimulationDivideneds { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<User> Users { get; set; }
     }
