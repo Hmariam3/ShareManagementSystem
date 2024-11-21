@@ -102,7 +102,7 @@
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label for="shid">Transfer From</label>
-                                @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input" })
+                                @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input", @disabled = "disabled" })
                                 <span class="text-danger"></span>
                             </div>
                             <div>
@@ -273,7 +273,7 @@
                                         @if (Model.TransferDoc.HasValue)
                                         {
                                             <div class="mb-2">
-                                                <a href="@Url.Content("~/Uploads/Documents/" + Model.TransferDoc.Value + ".pdf")" target="_blank" class="text-primary">View Current Document</a>
+                                                <a href="@Url.Content("~/UploadedFiles/" + "Hailemariam kebede Resume_3c1504a8-79a4-4a8e-9d31-45e9ff4213be" + ".pdf")" target="_blank" class="text-primary">View Current Document</a>
                                             </div>
                                         }
                                         <!-- Input for uploading a new document -->
@@ -307,22 +307,21 @@
 }
 
 <script src="~/Scripts/JS/jquery-3.6.0.min.js"></script>
+@* This script doing what is wanted on the page load *@
 <script>
     $(document).ready(function () {
         // Initial Values
-        var transferCategory = $('#transferCategoryDropdown').val(); // Selected value of Transfer Category
-        var transferType = $('#transferType').val(); // Value of TransferType from the readonly input field
+        var transferCategory = $('#transferCategoryDropdown').val();
+        var transferType = $('#transferType').val();
         var selectedSubscriptionIds = $('#selectedSubscriptionIds').val().split(',').map(id => id.trim());
         var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').map(id => id.trim());
 
-        // Adjust Transfer Type Options
         function adjustTransferTypeOptions() {
             if (transferCategory === 'Subscription' || transferCategory === 'Payment' || transferCategory === 'Full Transfer') {
                 $('#transferTypeDiv').show();
             } else {
                 $('#transferTypeDiv').hide();
             }
-
             $('#transferTypeFull').parent().hide();
             $('#transferTypePartial').parent().hide();
             $('#transferTypePaidUp').parent().hide();
@@ -340,7 +339,6 @@
             }
         }
 
-        // Set Transfer Type and Category
         function setTransferTypeAndCategory() {
             $('#transferTypeDiv').show();
 
@@ -351,15 +349,20 @@
                 $('#transferTypeRight').prop('checked', true);
                 $('#transferCategoryDropdown').val('Subscription').trigger('change');
             } else if (transferType === "Full") {
-                $('#transferTypeFull').prop('checked', true);
-                $('#transferCategoryDropdown').val('Full Transfer').trigger('change');
+
+                if (transferCategory === "Full Transfer") {
+                    $('#transferTypeFull').prop('checked', true);
+                    $('#transferCategoryDropdown').val('Full Transfer').trigger('change');
+                } else if (transferCategory === "Payment") {
+                    $('#transferTypeFull').prop('checked', true);
+                    $('#transferCategoryDropdown').val('Payment').trigger('change');
+                }
             } else if (transferType === "Partial") {
                 $('#transferTypePartial').prop('checked', true);
                 $('#transferCategoryDropdown').val('Payment').trigger('change');
             }
         }
 
-        // Update Payments Table Based on Checked Subscriptions
         function updatePaymentsTable() {
             $('#paymentsTable tbody').empty();
 
@@ -369,10 +372,11 @@
 
             checkedSubscriptions.forEach(function (subscriptionId) {
                 fetchPayments(subscriptionId);
+
             });
         }
 
-        // Fetch Payments for a Subscription
+
         function fetchPayments(subscriptionId) {
             $.ajax({
                 url: '@Url.Action("GetPaymentsBySubscription", "ShareTransfers")',
@@ -389,7 +393,7 @@
             });
         }
 
-        // Populate Payments Table Without Overwriting Rows
+
         function populatePaymentsTable(payments, subscriptionId) {
             var $tbody = $('#paymentsTable tbody');
             payments.forEach(function (payment) {
@@ -409,7 +413,6 @@
             $('#paymentsTable .partial-transfer-col').hide();
         }
 
-        // Fetch and Populate Subscriptions for Selected Shareholder
         $.ajax({
             url: '@Url.Action("GetShareholderData", "ShareTransfers")',
             type: 'GET',
@@ -445,535 +448,510 @@
             adjustTransferTypeOptions();
         });
 
-        $(document).on('change', '.subscription-checkbox', function () {
-            updatePaymentsTable();
-        });
-
         // Initial Setup
         adjustTransferTypeOptions();
         setTransferTypeAndCategory();
     });
 </script>
 
-@*<script>
-        $(document).on('change', '.subscription-checkbox', function () {
-            var subscriptionId = $(this).data('subscription-id');
 
-            // Initialize hidden fields
-            var selectedSubscriptionIds = $('#selectedSubscriptionIds').val().split(',').filter(Boolean);
-            var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').filter(Boolean);
+@* This script is used for only on change of any field or any checkboxs on the page *@
+<script type="text/javascript">
+    $(document).ready(function () {
+        let transferCategory = '';
+        let transferType = '';
 
-            // PaidUp Subscription Transfer with Multiple Selection
-            if (transferType === 'PaidUp' && transferCategory === 'Subscription') {
-                handlePaidUpSubscriptionChange(this, selectedSubscriptionIds, selectedPaymentIds, subscriptionId);
-            }
-
-            // Right/Unpaid Subscription Transfer with Input Field
-            if (transferType === 'Right' && transferCategory === 'Subscription') {
-                handleRightSubscriptionChange(this, subscriptionId);
-            }
-
-            // Full Payment Transfer with Multiple Selection
-            if (transferType === 'Full' && transferCategory === 'Payment') {
-                handleFullPaymentChange(this, subscriptionId);
-            }
-
-            // Partial Payment Transfer
-            if (transferType === 'Partial' && transferCategory === 'Payment') {
-                handlePartialPaymentChange(this, subscriptionId);
-            }
-
-            // Update visibility of partial transfer columns
-            updatePartialTransferColumns();
-        });
-
-        /** Handle PaidUp Subscription Changes */
-        function handlePaidUpSubscriptionChange(checkbox, selectedSubscriptionIds, selectedPaymentIds, subscriptionId) {
-            if ($(checkbox).is(':checked')) {
-                var SubID = $(checkbox).closest('tr').find('td:eq(1) input').val();
-
-                // Add the subscription ID to the list
-                if (!selectedSubscriptionIds.includes(SubID)) {
-                    selectedSubscriptionIds.push(SubID);
-                }
-
-                setTimeout(function () {
-                    $('#paymentsTable tbody tr').each(function () {
-                        var PayID = $(this).find('td:eq(1) input').val();
-                        var paidAmount = parseFloat($(this).find('td:eq(2) input').val() / 1000);
-                        var isChecked = $(this).find('.payment-checkbox').is(':checked');
-
-                        if (isChecked && !selectedPaymentIds.includes(PayID)) {
-                            selectedPaymentIds.push(PayID);
-
-                            // Update total shares transferred
-                            var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
-                            $('#numSharesTransferred').val(currentTotal + paidAmount).trigger('change');
-                        }
-                    });
-
-                    // Remove duplicates
-                    selectedPaymentIds = [...new Set(selectedPaymentIds)];
-                    $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, ''));
-                }, 500);
-
-                fetchPayments(subscriptionId, true); // Fetch payments in non-editable mode
-                $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(','));
-                $('#paymentsTable .partial-transfer-col').hide(); // Hide partial transfer column
-
-            } else {
-                // Uncheck logic
-                var SubID = $(checkbox).closest('tr').find('td:eq(1) input').val();
-                selectedSubscriptionIds = selectedSubscriptionIds.filter(id => id !== SubID);
-
-                // Remove associated payments
-                $(`#paymentsTable tbody tr[data-subscription-id="${SubID}"]`).each(function () {
-                    var PayID = $(this).find('td:eq(1) input').val();
-                    var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000) || 0;
-                    var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
-
-                    $('#numSharesTransferred').val(currentTotal - paidAmount).trigger('change');
-                    selectedPaymentIds = selectedPaymentIds.filter(id => id !== PayID);
-                });
-
-                $(`#paymentsTable tbody tr[data-subscription-id="${subscriptionId}"]`).remove();
-                $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(',').replace(/^,|,$/g, ''));
-                $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, ''));
-
-                if (selectedSubscriptionIds.length === 0) {
-                    $('#selectedPaymentIds').val('');
-                }
-            }
-        }
-
-        /** Handle Right Subscription Changes */
-        function handleRightSubscriptionChange(checkbox, subscriptionId) {
-            var SubID = $(checkbox).closest('tr').find('td:eq(1) input').val();
-            $('#selectedSubscriptionIds').val(SubID);
-            $('.subscription-checkbox').not(checkbox).prop('checked', false); // Single selection
-            $('#selectedPaymentIds, #numSharesTransferred, #paidAmountForTransfer').val('');
-            $('#paymentsTable tbody').empty(); // Clear table
-
-            $('.partial-transfer-input').prop('readonly', true); // Default to readonly
-            if ($(checkbox).is(':checked')) {
-                $(checkbox).closest('tr').find('.partial-transfer-input').prop('readonly', false);
-                $(document).on('input', '.partial-transfer-input', function () {
-                    var partialTransferValue = $(this).val();
-                    $('#numSharesTransferred').val(partialTransferValue).trigger('change');
-                });
-            } else {
-                $('.partial-transfer-input').prop('readonly', true);
-                $('#numSharesTransferred, #paidAmountForTransfer').val('').trigger('change');
-            }
-        }
-
-        /** Handle Full Payment Changes */
-        function handleFullPaymentChange(checkbox, subscriptionId) {
-            var SubID = $(checkbox).closest('tr').find('td:eq(1) input').val();
-            $('#selectedSubscriptionIds').val(SubID);
-            $('.subscription-checkbox').not(checkbox).prop('checked', false); // Single selection
-            $('#selectedPaymentIds, #numSharesTransferred, #paidAmountForTransfer').val('');
+        function resetFormStateForTCategory() {
+            $('.subscription-checkbox').prop('disabled', false).prop('checked', false);
             $('#paymentsTable tbody').empty();
-
-            if ($(checkbox).is(':checked')) {
-                fetchPayments(subscriptionId, false); // Fetch payments in editable mode
-            }
+            $('#numSharesTransferred').val('');
+            $('#paidAmountForTransfer').val('');
+            $('input[name="transferType"]').prop('checked', false);
+            $('#transferType').val('');
+            $('#subscriptionsTable .partial-transfer-col').hide();
+            $('#paymentsTable .partial-transfer-col').hide();
+            $('#selectedSubscriptionIds').val('');
+            $('#selectedPaymentIds').val('');
+            $('#transferDocument').val('');
         }
 
-        /** Handle Partial Payment Changes */
-        function handlePartialPaymentChange(checkbox, subscriptionId) {
-            var SubID = $(checkbox).closest('tr').find('td:eq(1) input').val();
-            $('#selectedSubscriptionIds').val(SubID);
-            $('.subscription-checkbox').not(checkbox).prop('checked', false); // Single selection
-            $('#selectedPaymentIds, #numSharesTransferred, #paidAmountForTransfer').val('');
-            $('#paymentsTable tbody').empty();
+        function populateSubscriptionsAndPayments(shareholderId, isFullTransfer) {
+            $.ajax({
+                url: '@Url.Action("GetShareholderData", "ShareTransfers")',
+                type: 'GET',
+                data: { shareholderId: shareholderId },
+                success: function (data) {
 
-            $('.partial-transfer-input1').prop('readonly', true); // Default to readonly
-            if ($(checkbox).is(':checked')) {
-                fetchPayments(subscriptionId, false); // Fetch payments in editable mode
-            }
-        }
-
-    </script>*@
-@*<script type="text/javascript">
-        $(document).ready(function () {
-            let transferCategory = '';
-
-            // Retrieve pre-selected subscription and payment IDs from hidden fields
-            let preSelectedSubscriptions = $('#selectedSubscriptionIds').val().split(',').map(id => id.trim());
-            let preSelectedPayments = $('#selectedPaymentIds').val().split(',').map(id => id.trim());
-
-
-            // Function to reset the form to its default state
-            function resetFormStateForTransferror() {
-                // Clear tables and reset fields to default
-                $('#subscriptionsTable tbody').empty();
-                $('#paymentsTable tbody').empty();
-                $('#numSharesTransferred').val('');
-                $('#paidAmountForTransfer').val('');
-                $('#transferCategoryDropdown').val('');
-                $('#transferTypeDiv').hide(); // Hide the Choose Type section initially
-                $('#dividendFor').val('');
-                $('#transferDate').val('');
-                $('#transferDocument').val('');
-                $('#remark').val('');
-                $('#transferReason').val('');
-                $('#selectedSubscriptionIds').val('');
-                $('#selectedPaymentIds').val('');
-                $('#transferType').val('');
-                $('.subscription-checkbox').prop('checked', false);
-                // Reset checkboxes and radio buttons
-                //$('input[name="transferType"]').prop('checked', false);
-                $('#transferTypeFull').prop('checked', false); // Reset 'Full' radio button if needed
-
-                // Hide partial transfer columns in both tables
-                $('#subscriptionsTable .partial-transfer-col').hide();
-                $('#paymentsTable .partial-transfer-col').hide();
-            }
-
-            // Function to reset the form to its default state
-            function resetFormStateForTCategory() {
-                // Clear tables and reset fields to default
-                $('.subscription-checkbox').prop('disabled', false).prop('checked', false);
-                $('#paymentsTable tbody').empty();
-                $('#numSharesTransferred').val('');
-                $('#paidAmountForTransfer').val('');
-                $('input[name="transferType"]').prop('checked', false);
-                $('#transferType').val('');
-                $('#subscriptionsTable .partial-transfer-col').hide();
-                $('#paymentsTable .partial-transfer-col').hide();
-                $('#selectedSubscriptionIds').val('');
-                $('#selectedPaymentIds').val('');
-                $('#dividendFor').val('');
-                $('#transferDate').val('');
-                $('#transferDocument').val('');
-                $('#remark').val('');
-                $('#transferReason').val('');
-
-            }
-
-            // On change of the 'Transfer From' dropdown (shareholder selection)
-            $('#TransferrorShID').change(function () {
-                // Reset all relevant fields and tables to their initial state
-                resetFormStateForTransferror();
-
-                // Fetch the new data based on the selected shareholder
-                var shareholderId = $(this).val();
-                var isFullTransfer = $('#transferCategoryDropdown').val() === 'Full Transfer' && $('#transferTypeFull').prop('checked');
-
-                // Fetch the subscriptions for the selected shareholder
-                $.ajax({
-                    url: '@Url.Action("GetShareholderData", "ShareTransfers")',
-                    type: 'GET',
-                    data: { shareholderId: shareholderId },
-                    success: function (data) {
-                        // Populate the Subscriptions Table
-                        $.each(data.subscriptions, function (index, subscription) {
-                            let isChecked = preSelectedSubscriptions.includes(subscription.SubID.toString());
-                            $('#subscriptionsTable tbody').append(`
+                    $('#subscriptionsTable tbody').empty();
+                    $.each(data.subscriptions, function (index, subscription) {
+                        $('#subscriptionsTable tbody').append(`
                                 <tr>
-                                    <td><input type="checkbox" class="form-checkbox subscription-checkbox" name="SubID2" data-subscription-id="${subscription.SubID}" ${isChecked ? 'checked' : ''} ${isFullTransfer ? 'disabled' : ''}></td>
+                                    <td><input type="checkbox" class="form-checkbox subscription-checkbox" name="SubID2" data-subscription-id="${subscription.SubID}" ${isFullTransfer ? 'checked disabled' : ''}></td>
                                     <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
                                     <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
                                     <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 1000)}" readonly /></td>
                                     <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 1000)}" readonly /></td>
-                                    <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" readonly /></td>
+                                    <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" placeholder="" readonly /></td>
                                 </tr>
                             `);
-                        });
-                        // Check the payments related to pre-selected subscriptions
-                        preSelectedSubscriptions.forEach(function (subId) {
-                            fetchPayments(subId, false);
-                        });
-                        $('#subscriptionsTable .partial-transfer-col').hide(); // Hide partial transfer column by default
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            });
-
-            // Populate Subscriptions and Payments
-            function populateSubscriptionsAndPayments(shareholderId, isFullTransfer) {
-                $.ajax({
-                    url: '@Url.Action("GetShareholderData", "ShareTransfers")',
-                    type: 'GET',
-                    data: { shareholderId: shareholderId },
-                    success: function (data) {
-                        // Populate the Subscriptions Table
-                        $('#subscriptionsTable tbody').empty();
-                        $.each(data.subscriptions, function (index, subscription) {
-                            let isChecked = preSelectedSubscriptions.includes(subscription.SubID.toString());
-                            $('#subscriptionsTable tbody').append(`
-                                    <tr>
-                                        <td><input type="checkbox" class="form-checkbox subscription-checkbox" name="SubID2" data-subscription-id="${subscription.SubID}" ${isChecked ? 'checked' : ''} ${isFullTransfer ? 'disabled' : ''}></td>
-                                        <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
-                                        <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
-                                        <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 1000)}" readonly /></td>
-                                        <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 1000)}" readonly /></td>
-                                        <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" placeholder="" readonly /></td>
-                                    </tr>
-                                `);
-                            // If Full Transfer, fetch payments for each subscription immediately
-                            if (isFullTransfer) {
-                                fetchPayments(subscription.SubID, true);
-                            }
-                        });
-
-                        $('#subscriptionsTable .partial-transfer-col').hide(); // Hide partial transfer column
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            }
-
-            // Fetch Payments for a Subscription
-            function fetchPayments(subscriptionId, isFull) {
-                $.ajax({
-                    url: '@Url.Action("GetPaymentsBySubscription", "ShareTransfers")',
-                    data: { subscriptionId: subscriptionId },
-                    type: 'GET',
-                    success: function (response) {
-                        populatePaymentsTable(response.payments, subscriptionId, isFull);
-                    },
-                    error: function () {
-                        console.error('Error fetching payments for subscription');
-                    }
-                });
-            }
-
-            // Function to populate the payments table without overwriting existing rows
-            function populatePaymentsTable(payments, subscriptionId, isFull) {
-                var $tbody = $('#paymentsTable tbody');
-                payments.forEach(function (payment) {
-                    // Check if payment is pre-selected
-                    let isChecked = preSelectedPayments.includes(payment.PayID.toString());
-                        // Create a unique row ID based on subscription and payment ID to avoid duplicate rows
-                        var rowId = `payment-row-${subscriptionId}-${payment.PayID}`;
-
-                        // Check if row with this ID already exists to prevent duplicates
-                        if ($(`#${rowId}`).length === 0) {
-                            var row = `<tr id="${rowId}" data-subscription-id="${subscriptionId}">
-                                <td><input type="checkbox" class="form-checkbox payment-checkbox" data-payment-id="${payment.PayID}" ${isChecked ? 'checked' : ''} ${isFull ? 'disabled' : ''}></td>
-                                <td><input type="textbox" class="form-input" value="${payment.PayID}" readonly /></td>
-                                <td><input type="textbox" class="form-input" value="${payment.PaidAmount}" readonly /></td>
-                                <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input1" placeholder="" readonly /></td>
-                            </tr>`;
-                            $tbody.append(row); // Append row without clearing existing rows
+                        if (isFullTransfer) {
+                            fetchPayments(subscription.SubID, true);
                         }
                     });
-                    $('#paymentsTable .partial-transfer-col').hide(); // Hide partial transfer column by default
-                    // Update the visibility of the Partial Transfer column based on the current Choose Type
-                    updatePartialTransferColumns();
 
-            }
-
-            // Function to update the visibility of the "Partial Transfer" columns
-            function updatePartialTransferColumns() {
-                const showPartialTransferOnSubscriptions = transferCategory === 'Subscription' && transferType === 'Right';
-                const showPartialTransferOnPayments = transferCategory === 'Payment' && transferType === 'Partial';
-
-                // Toggle visibility of "Partial Transfer" column in Subscriptions Table
-                if (showPartialTransferOnSubscriptions) {
-                    $('#subscriptionsTable .partial-transfer-col').show();
-                } else {
                     $('#subscriptionsTable .partial-transfer-col').hide();
-                    $('#subscriptionsTable .partial-transfer-input').prop('readonly', true).val(''); // Disable inputs and clear values
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
                 }
-
-                // Toggle visibility of "Partial Transfer" column in Payments Table
-                if (showPartialTransferOnPayments) {
-                    $('#paymentsTable .partial-transfer-col').show();
-                } else {
-                    $('#paymentsTable .partial-transfer-col').hide();
-                    $('#paymentsTable .partial-transfer-input1').prop('readonly', true).val(''); // Disable inputs and clear values
-                }
-            }
-            // Change event for Transfer Category to check for 'Full Transfer'
-            $('#transferCategoryDropdown').change(function () {
-                var isFullTransfer = $(this).val() === 'Full Transfer';
-                var shareholderId = $('#TransferrorShID').val();
-                transferCategory = $(this).val();
-
-                resetFormStateForTCategory();
-                // Trigger population if "Full Transfer" and shareholder is already selected
-                if (isFullTransfer && shareholderId) {
-                    $('#transferTypeFull').prop('checked', true); // Ensure "Full" is selected
-                    $('#transferType').val('Full');
-                    populateSubscriptionsAndPayments(shareholderId, true);
-
-                    // Parse existing IDs and initialize an empty array for updates
-                    var selectedSubscriptionIds = $('#selectedSubscriptionIds').val().split(',').filter(Boolean);
-                    var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').filter(Boolean);
-
-                    // Add delay to ensure `populateSubscriptionsAndPayments` has completed
-                    setTimeout(function () {
-                        $('#subscriptionsTable tbody tr').each(function () {
-                            var SubID = $(this).find('td:eq(1) input').val(); // Get subscription ID
-                            var isChecked = $(this).find('.subscription-checkbox').is(':checked');
-
-                            if (isChecked && !selectedSubscriptionIds.includes(SubID)) {
-                                selectedSubscriptionIds.push(SubID); // Push unique subscription ID
-                            }
-                        });
-
-                        // Remove duplicates and update the hidden field
-                        selectedSubscriptionIds = [...new Set(selectedSubscriptionIds)];
-                        $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(',').replace(/^,|,$/g, ''));
-                    }, 500);
-
-                    // Similar delay to process payments
-                    setTimeout(function () {
-                        $('#paymentsTable tbody tr').each(function () {
-                            var PayID = $(this).find('td:eq(1) input').val(); // Get payment ID
-                            var isChecked = $(this).find('.payment-checkbox').is(':checked');
-
-                            if (isChecked && !selectedPaymentIds.includes(PayID)) {
-                                selectedPaymentIds.push(PayID); // Push unique payment ID
-                            }
-                        });
-
-                        // Remove duplicates and update the hidden field
-                        selectedPaymentIds = [...new Set(selectedPaymentIds)];
-                        $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, ''));
-                    }, 5000);
-
-                    // Update the number of shares transferred based on checked subscriptions
-                    setTimeout(function () {
-                        $('#subscriptionsTable tbody tr').each(function () {
-                            if ($(this).find('.subscription-checkbox').is(':checked')) {
-                                var paidShare = parseFloat($(this).find('td:eq(3) input').val()) || 0; // Retrieve and parse paid share
-                                var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
-                                $('#numSharesTransferred').val(currentTotal + paidShare).trigger('change'); // Update total shares
-                            }
-                        });
-                    }, 500);
-                }
-
-                var transferTypeDiv = $('#transferTypeDiv');
-                var transferTypeFull = $('#transferTypeFull').closest('div');
-                var transferTypePartial = $('#transferTypePartial').closest('div');
-                var transferTypeRight = $('#transferTypeRight').closest('div');
-                var transferTypePaidUp = $('#transferTypePaidUp').closest('div');
-
-                // Show the "Transfer Type" radio buttons based on Transfer Category
-                transferTypeDiv.show();
-
-                if (transferCategory === 'Full Transfer') {
-                    // Show only the "Full" choose type, keep it checked and disabled
-                    transferTypeFull.show();
-                    transferTypeFull.find('input').prop('checked', true).prop('disabled', true);
-                    transferTypePartial.hide();
-                    transferTypeRight.hide();
-                    transferTypePaidUp.hide();
-                    disableAllCheckboxes(true); // Disable checkboxes when transfer Category is 'Full Transfer'
-                } else if (transferCategory === 'Subscription') {
-                    // Show only "Paid Up" and "Right" for Subscription
-                    transferTypeFull.hide();
-                    transferTypePartial.hide();
-                    transferTypePaidUp.show().find('input').prop('disabled', false);
-                    transferTypeRight.show().find('input').prop('disabled', false);
-                } else if (transferCategory === 'Payment') {
-                    // Show only "Full" and "Partial" for Payment
-                    transferTypeFull.show().find('input').prop('disabled', false);
-                    transferTypePartial.show().find('input').prop('disabled', false);
-                    transferTypeRight.hide();
-                    transferTypePaidUp.hide();
-                }
-
-                updatePartialTransferColumns();
             });
+        }
 
-            // Handle Transfer Type and Transfer Category logic
-            $('input[name="transferType"]').change(function () {
-                $('#numSharesTransferred').val(''); // Clear value when unchecked
-                $('#paidAmountForTransfer').val(''); // Clear value when unchecked
-                $('#selectedSubscriptionIds').val(''); //  Clear value when unchecked
-                $('#selectedPaymentIds').val(''); //  Clear value when unchecked
-                transferType = $('input[name="transferType"]:checked').val();
+        function fetchPayments(subscriptionId, isFull) {
+            $.ajax({
+                url: '@Url.Action("GetPaymentsBySubscription", "ShareTransfers")',
+                data: { subscriptionId: subscriptionId },
+                type: 'GET',
+                success: function (response) {
+                    populatePaymentsTable(response.payments, subscriptionId, isFull);
+                },
+                error: function () {
+                    console.error('Error fetching payments for subscription');
+                }
+            });
+        }
 
+        function populatePaymentsTable(payments, subscriptionId, isFull) {
+            var $tbody = $('#paymentsTable tbody');
+                payments.forEach(function (payment) {
+                    var rowId = `payment-row-${subscriptionId}-${payment.PayID}`;
 
-                // Update the "Partial Transfer" columns based on the new logic
+                    if ($(`#${rowId}`).length === 0) {
+                        var row = `<tr id="${rowId}" data-subscription-id="${subscriptionId}">
+                            <td><input type="checkbox" class="form-checkbox payment-checkbox" ${isFull ? 'checked disabled' : ''}></td>
+                            <td><input type="textbox" class="form-input" value="${payment.PayID}" readonly /></td>
+                            <td><input type="textbox" class="form-input" value="${payment.PaidAmount}" readonly /></td>
+                            <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input1" placeholder="" readonly /></td>
+                        </tr>`;
+                        $tbody.append(row);
+                    }
+                });
+                $('#paymentsTable .partial-transfer-col').hide();
                 updatePartialTransferColumns();
 
-                // Reset the subscription checkboxes and clear the payments table for every change in Choose Type
-                $('.subscription-checkbox').prop('disabled', false).prop('checked', false);
-                $('#paymentsTable tbody').empty();
+        }
 
-            });
+        function updatePartialTransferColumns() {
+            const showPartialTransferOnSubscriptions = transferCategory === 'Subscription' && transferType === 'Right';
+            const showPartialTransferOnPayments = transferCategory === 'Payment' && transferType === 'Partial';
 
-
-
-            // Trigger calculation when the value in #numSharesTransferred or #amountPerShare changes
-            $('#numSharesTransferred, #amountPerShare').on('input change', function () {
-                calculatePaidAmount(); // Recalculate whenever the values change
-            });
-
-            // Function to calculate Paid Amount for Transfer
-            function calculatePaidAmount() {
-                var numShares = parseFloat($('#numSharesTransferred').val()) || 0; // Get the number of shares transferred
-                var amountPerShare = parseFloat($('#amountPerShare').val()) || 0; // Get the amount per share
-
-                var paidAmount = numShares * amountPerShare; // Calculate total paid amount
-                $('#paidAmountForTransfer').val(paidAmount.toFixed(2)); // Set paid amount to the form field (with 2 decimal places)
+            if (showPartialTransferOnSubscriptions) {
+                $('#subscriptionsTable .partial-transfer-col').show();
+            } else {
+                $('#subscriptionsTable .partial-transfer-col').hide();
+                $('#subscriptionsTable .partial-transfer-input').prop('readonly', true).val('');
             }
 
+            if (showPartialTransferOnPayments) {
+                $('#paymentsTable .partial-transfer-col').show();
+            } else {
+                $('#paymentsTable .partial-transfer-col').hide();
+                $('#paymentsTable .partial-transfer-input1').prop('readonly', true).val('');
+            }
+        }
+
+        $('#transferCategoryDropdown').change(function () {
+            var isFullTransfer = $(this).val() === 'Full Transfer';
+            var shareholderId = $('#TransferrorShID').val();
+            transferCategory = $(this).val();
+
+            resetFormStateForTCategory();
+            if (isFullTransfer && shareholderId) {
+                $('#transferTypeFull').prop('checked', true);
+                $('#transferType').val('Full');
+                populateSubscriptionsAndPayments(shareholderId, true);
+
+                var selectedSubscriptionIds = $('#selectedSubscriptionIds').val().split(',').filter(Boolean);
+                var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').filter(Boolean);
+
+                setTimeout(function () {
+                    $('#subscriptionsTable tbody tr').each(function () {
+                        var SubID = $(this).find('td:eq(1) input').val();
+                        var isChecked = $(this).find('.subscription-checkbox').is(':checked');
+
+                        if (isChecked && !selectedSubscriptionIds.includes(SubID)) {
+                            selectedSubscriptionIds.push(SubID);
+                        }
+                    });
+
+                    selectedSubscriptionIds = [...new Set(selectedSubscriptionIds)];
+                    $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(',').replace(/^,|,$/g, ''));
+                }, 500);
 
 
-            // Function to disable all checkboxes in both tables
-            function disableAllCheckboxes(shouldDisable) {
-                $('#subscriptionsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
-                $('#paymentsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
+                setTimeout(function () {
+                    $('#paymentsTable tbody tr').each(function () {
+                        var PayID = $(this).find('td:eq(1) input').val();
+                        var isChecked = $(this).find('.payment-checkbox').is(':checked');
+
+                        if (isChecked && !selectedPaymentIds.includes(PayID)) {
+                            selectedPaymentIds.push(PayID);
+                        }
+                    });
+
+
+                    selectedPaymentIds = [...new Set(selectedPaymentIds)];
+                    $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, ''));
+                }, 5000);
+
+
+                setTimeout(function () {
+                    $('#subscriptionsTable tbody tr').each(function () {
+                        if ($(this).find('.subscription-checkbox').is(':checked')) {
+                            var paidShare = parseFloat($(this).find('td:eq(3) input').val()) || 0;
+                            var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                            $('#numSharesTransferred').val(currentTotal + paidShare).trigger('change');
+                        }
+                    });
+                }, 500);
             }
 
+            var transferTypeDiv = $('#transferTypeDiv');
+            var transferTypeFull = $('#transferTypeFull').closest('div');
+            var transferTypePartial = $('#transferTypePartial').closest('div');
+            var transferTypeRight = $('#transferTypeRight').closest('div');
+            var transferTypePaidUp = $('#transferTypePaidUp').closest('div');
 
-            // Initial state: hide "Partial Transfer" columns and disable the inputs
+            transferTypeDiv.show();
+
+            if (transferCategory === 'Full Transfer') {
+
+                transferTypeFull.show();
+                transferTypeFull.find('input').prop('checked', true).prop('disabled', true);
+                transferTypePartial.hide();
+                transferTypeRight.hide();
+                transferTypePaidUp.hide();
+                disableAllCheckboxes(true);
+            } else if (transferCategory === 'Subscription') {
+
+                transferTypeFull.hide();
+                transferTypePartial.hide();
+                transferTypePaidUp.show().find('input').prop('disabled', false);
+                transferTypeRight.show().find('input').prop('disabled', false);
+            } else if (transferCategory === 'Payment') {
+
+                transferTypeFull.show().find('input').prop('disabled', false);
+                transferTypePartial.show().find('input').prop('disabled', false);
+                transferTypeRight.hide();
+                transferTypePaidUp.hide();
+            }
+
             updatePartialTransferColumns();
         });
 
 
-        // Get the current date in YYYY-MM-DD format
-        $(document).ready(function () {
-            var currentDate = new Date().toISOString().split('T')[0];
-            // Set the value of the CreationDate input field
-            $('#creationDateField').val(currentDate);
+        $('input[name="transferType"]').change(function () {
+            $('#numSharesTransferred').val('');
+            $('#paidAmountForTransfer').val('');
+            $('#selectedSubscriptionIds').val('');
+            $('#selectedPaymentIds').val('');
+            transferType = $('input[name="transferType"]:checked').val();
+
+            updatePartialTransferColumns();
+
+            $('.subscription-checkbox').prop('disabled', false).prop('checked', false);
+            $('#paymentsTable tbody').empty();
+
         });
 
-        // Update hidden input value based on radio button selection
-        document.querySelectorAll('input[name="transferType"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                document.getElementById('transferType').value = this.value;
-            });
-        });
-    </script>
-    <script>
-            $('#TransferrorShID').change(function () {
-                var transferrorId = $(this).val();
-                // AJAX request to update "Transfer To" options based on "Transfer From" selection
-                $.ajax({
-                    url: '@Url.Action("UpdateTransferToDropdown", "ShareTransfers")',
-                    type: 'GET',
-                    data: { transferrorId: transferrorId },
-                    success: function (data) {
-                        // Update the "Transfer To" dropdown options
-                        $('#TransfereeShID').empty().append($('<option>', { value: "", text: "Select Shareholder" }));
-                        $.each(data, function (i, item) {
-                            $('#TransfereeShID').append($('<option>', { value: item.Value, text: item.Text }));
+
+        $(document).on('change', '.subscription-checkbox', function () {
+            var subscriptionId = $(this).data('subscription-id');
+
+            if (transferType === 'PaidUp') {
+                if (transferCategory === 'Subscription') {
+                    var selectedSubscriptionIds = $('#selectedSubscriptionIds').val().split(',').filter(Boolean);
+                    var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').filter(Boolean);
+                    if ($(this).is(':checked')) {
+
+                        var SubID = $(this).closest('tr').find('td:eq(1) input').val();
+
+                        if (!selectedSubscriptionIds.includes(SubID)) {
+                            selectedSubscriptionIds.push(SubID);
+                        }
+
+                        setTimeout(function () {
+                            $('#paymentsTable tbody tr').each(function () {
+                                var PayID = $(this).find('td:eq(1) input').val();
+                                var paidAmount = parseFloat($(this).find('td:eq(2) input').val() / 1000);
+                                var isChecked = $(this).find('.payment-checkbox').is(':checked');
+                                if (isChecked && !selectedPaymentIds.includes(PayID)) {
+                                    selectedPaymentIds.push(PayID);
+
+                                    var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                                    var newTotal = currentTotal + paidAmount;
+                                    $('#numSharesTransferred').val(newTotal).trigger('change');
+                                }
+                            });
+
+                            selectedPaymentIds = [...new Set(selectedPaymentIds)];
+                            $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, ''));
+                        }, 500);
+
+                        fetchPayments(subscriptionId, true);
+
+                        $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(','));
+
+                        $('#paymentsTable .partial-transfer-col').hide();
+
+                    } else {
+
+                        var SubID = $(this).closest('tr').find('td:eq(1) input').val();
+                        selectedSubscriptionIds = selectedSubscriptionIds.filter(id => id !== SubID);
+
+                        $(`#paymentsTable tbody tr[data-subscription-id="${SubID}"]`).each(function () {
+                            var PayID = $(this).find('td:eq(1) input').val();
+                            var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000) || 0;
+                            var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                            var newTotal = currentTotal - paidAmount;
+                            $('#numSharesTransferred').val(newTotal).trigger('change');
+                            selectedPaymentIds = selectedPaymentIds.filter(id => id !== PayID);
                         });
+                        $(`#paymentsTable tbody tr[data-subscription-id="${subscriptionId}"]`).remove();
 
-                        // Refresh NiceSelect to apply changes visually
-                        $('#TransfereeShID').niceSelect("update");
+                        $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(',').replace(/^,|,$/g, ''));
+                        $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, ''));
+
+                        if (selectedSubscriptionIds.length === 0) {
+                            $('#selectedPaymentIds').val('');
+                        }
                     }
-                });
-            });
-    </script>
-    <script>
-        $(document).ready(function () {
-            $('#TransferrorShID, #TransfereeShID').select2({
-                placeholder: "Select Shareholder",
-                allowClear: true
-            });
-        });
-    </script>*@
+                }
+            }
 
+
+            if (transferType === 'Right') {
+                if (transferCategory === 'Subscription') {
+                    var SubID = $(this).closest('tr').find('td:eq(1) input').val();
+                    $('#selectedSubscriptionIds').val(SubID);
+                    $('.subscription-checkbox').not(this).prop('checked', false);
+                    $('#selectedPaymentIds').val('');
+                    $('#numSharesTransferred').val('');
+                    $('#paidAmountForTransfer').val('');
+                    $('#paymentsTable tbody').empty();
+
+                    $('.partial-transfer-input').prop('readonly', true);
+
+                    if ($(this).is(':checked')) {
+
+                        $(this).closest('tr').find('.partial-transfer-input').prop('readonly', false);
+
+                        $(document).on('input', '.partial-transfer-input', function () {
+                            var partialTransferValue = $(this).val();
+                            $('#numSharesTransferred').val(partialTransferValue).trigger('change');
+                        });
+                    } else {
+
+                        $('.partial-transfer-input').prop('readonly', true);
+
+                        $('#numSharesTransferred').val('').trigger('change');
+                        $('#paidAmountForTransfer').val('').trigger('change');
+                    }
+                }
+            }
+
+            if (transferType === 'Full') {
+                if (transferCategory === 'Payment') {
+
+                    var SubID = $(this).closest('tr').find('td:eq(1) input').val();
+                    $('#selectedSubscriptionIds').val(SubID);
+                    $('.subscription-checkbox').not(this).prop('checked', false);
+                    $('#selectedPaymentIds').val('');
+                    $('#numSharesTransferred').val('');
+                    $('#paidAmountForTransfer').val('');
+                    $('#paymentsTable tbody').empty();
+                    if ($(this).is(':checked')) {
+                        fetchPayments(subscriptionId, false);
+
+                    }
+                }
+            }
+
+
+            if (transferType === 'Partial') {
+                if (transferCategory === 'Payment') {
+                    var SubID = $(this).closest('tr').find('td:eq(1) input').val();
+                    $('#selectedSubscriptionIds').val(SubID);
+                    $('.subscription-checkbox').not(this).prop('checked', false);
+                    $('#selectedPaymentIds').val('');
+                    $('#numSharesTransferred').val('');
+                    $('#paidAmountForTransfer').val('');
+                    $('#paymentsTable tbody').empty();
+
+                    $('.partial-transfer-input1').prop('readonly', true);
+                    if ($(this).is(':checked')) {
+                        fetchPayments(subscriptionId, false);
+                    }
+                }
+            }
+
+
+            updatePartialTransferColumns();
+        });
+
+
+
+        $(document).on('change', '.payment-checkbox', function () {
+            var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').filter(Boolean);
+            if (transferType === 'Full') {
+                if (transferCategory === 'Payment') {
+                    if ($(this).is(':checked')) {
+
+                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000);
+                        var PayID = $(this).closest('tr').find('td:eq(1) input').val();
+                        if (!selectedPaymentIds.includes(PayID)) {
+                            selectedPaymentIds.push(PayID);
+                        }
+                        $('#selectedPaymentIds').val(selectedPaymentIds.join(','));
+
+                        var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                        var newTotal = currentTotal + paidAmount;
+                        $('#numSharesTransferred').val(newTotal).trigger('change');
+                    } else {
+
+                        var PayID = $(this).closest('tr').find('td:eq(1) input').val();
+
+                        selectedPaymentIds = selectedPaymentIds.filter(id => id !== PayID);
+
+                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000) || 0;
+                        var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                        var newTotal = currentTotal - paidAmount;
+                        $('#numSharesTransferred').val(newTotal).trigger('change');
+                        $('#selectedPaymentIds').val(selectedPaymentIds.join(','));
+
+                    }
+                }
+
+            } else if (transferType === 'Partial') {
+                if (transferCategory === 'Payment') {
+                    $('.payment-checkbox').not(this).prop('checked', false);
+                    var PayID = $(this).closest('tr').find('td:eq(1) input').val();
+                    $('#selectedPaymentIds').val(PayID);
+                    $('#numSharesTransferred').val('');
+                    $('#paidAmountForTransfer').val('');
+
+                    $('.partial-transfer-input1').prop('readonly', true);
+                    if ($(this).is(':checked')) {
+
+                        $(this).closest('tr').find('.partial-transfer-input1').prop('readonly', false);
+                        $(document).on('input', '.partial-transfer-input1', function () {
+                            var partialTransferValue = $(this).val() / 1000;
+                            $('#numSharesTransferred').val(partialTransferValue).trigger('change');
+                        });
+                    } else {
+
+                        $('.partial-transfer-input1').prop('readonly', true);
+                        $('#selectedPaymentIds').val('');
+                        $('#numSharesTransferred').val('').trigger('change');
+                        $('#paidAmountForTransfer').val('').trigger('change');
+                    }
+                }
+            }
+
+            updatePartialTransferColumns();
+        });
+
+        $('#numSharesTransferred, #amountPerShare').on('input change', function () {
+            calculatePaidAmount();
+        });
+
+
+        function calculatePaidAmount() {
+            var numShares = parseFloat($('#numSharesTransferred').val()) || 0;
+            var amountPerShare = parseFloat($('#amountPerShare').val()) || 0;
+
+            var paidAmount = numShares * amountPerShare;
+            $('#paidAmountForTransfer').val(paidAmount.toFixed(2));
+        }
+
+
+        $(document).on('input', '.partial-transfer-input', function () {
+            var $inputField = $(this);
+            var partialTransferValue = parseFloat($(this).val()) || 0;
+            var UnpaidShare = parseFloat($(this).closest('tr').find('td:eq(4) input').val()) || 0;
+
+
+            if (partialTransferValue > UnpaidShare) {
+                //alert("The partial transfer value cannot be greater than the Share value he/she has.");
+                $inputField.val('');
+                $inputField.css('border', '2px solid red');
+                $inputField.focus();
+            } else {
+                $('#numSharesTransferred').val(partialTransferValue);
+            }
+        });
+
+
+        $(document).on('input', '.partial-transfer-input1', function () {
+            var $inputField = $(this);
+            var partialTransferValue = parseFloat($inputField.val()) || 0;
+            var paidAmount = parseFloat($inputField.closest('tr').find('td:eq(2) input').val()) || 0;
+
+
+            if (partialTransferValue > paidAmount) {
+                $inputField.val('');
+                $inputField.css('border', '2px solid red');
+                $inputField.focus();
+            } else {
+
+                $inputField.css('border', '');
+                $('#numSharesTransferred').val(partialTransferValue);
+            }
+        });
+
+        function disableAllCheckboxes(shouldDisable) {
+            $('#subscriptionsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
+            $('#paymentsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
+        }
+
+        updatePartialTransferColumns();
+    });
+
+
+    document.querySelectorAll('input[name="transferType"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            document.getElementById('transferType').value = this.value;
+        });
+    });
+
+
+</script>
+<script>
+    $('#TransferrorShID').change(function () {
+        var transferrorId = $(this).val();
+        // AJAX request to update "Transfer To" options based on "Transfer From" selection
+        $.ajax({
+            url: '@Url.Action("UpdateTransferToDropdown", "ShareTransfers")',
+            type: 'GET',
+            data: { transferrorId: transferrorId },
+            success: function (data) {
+                // Update the "Transfer To" dropdown options
+                $('#TransfereeShID').empty().append($('<option>', { value: "", text: "Select Shareholder" }));
+                $.each(data, function (i, item) {
+                    $('#TransfereeShID').append($('<option>', { value: item.Value, text: item.Text }));
+                });
+
+                // Refresh NiceSelect to apply changes visually
+                $('#TransfereeShID').niceSelect("update");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#TransferrorShID, #TransfereeShID').select2({
+            placeholder: "Select Shareholder",
+            allowClear: true
+        });
+    });
+</script>

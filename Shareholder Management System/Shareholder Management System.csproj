@@ -275,6 +275,7 @@
     <Compile Include="Controllers\AuditLogsController.cs" />
     <Compile Include="Controllers\BlockedsController.cs" />
     <Compile Include="Controllers\CertificatesController.cs" />
+    <Compile Include="Controllers\DividendsController.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PasswordHasher.cs" />
@@ -609,6 +610,11 @@
     <Content Include="Views\Payments\Authorize.cshtml" />
     <Content Include="Views\ShareTransfers\Authorize.cshtml" />
     <Content Include="Views\ShareTransfers\Authorize_Details.cshtml" />
+    <Content Include="Views\Dividends\Create.cshtml" />
+    <Content Include="Views\Dividends\Delete.cshtml" />
+    <Content Include="Views\Dividends\Details.cshtml" />
+    <Content Include="Views\Dividends\Edit.cshtml" />
+    <Content Include="Views\Dividends\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
