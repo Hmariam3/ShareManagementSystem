@@ -31,6 +31,51 @@
     }
 </style>
 
+<!-- Pop-up Modal -->
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+@if (!string.IsNullOrEmpty(successMessage) || !string.IsNullOrEmpty(errorMessage))
+{
+    <div id="popup-message" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md text-center">
+            <!-- Success Message -->
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="mb-4 p-4 text-green-800 bg-green-200 rounded">
+                    <p class="text-lg font-semibold">@successMessage</p>
+                </div>
+            }
+
+            <!-- Error Message -->
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="mb-4 p-4 text-red-800 bg-red-200 rounded">
+                    <p class="text-lg font-semibold">@errorMessage</p>
+                </div>
+            }
+
+            <!-- Close Button -->
+            <button id="close-popup" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript for Pop-up Control -->
+    <script>
+        document.getElementById("close-popup").addEventListener("click", function () {
+            document.getElementById("popup-message").style.display = "none";
+        });
+
+        // Automatically hide the pop-up after 5 seconds
+        setTimeout(function () {
+            document.getElementById("popup-message").style.display = "none";
+        }, 5000);
+    </script>
+}
+
 <div class="container">
 
     @using (Html.BeginForm())
@@ -52,7 +97,7 @@
 
                 <!-- Searchable Dropdown for Shareholder -->
                 <div class="mb-5">
-                    @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "block text-sm font-medium text-gray-700 mb-2" })
+                    <label>Shareholder Name<span style="color:red">*</span> </label>
                     <div class="relative">
                         @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "shareholderDropdown" })
                         @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-xs mt-1" })
@@ -63,15 +108,21 @@
 
                 <!-- Other Form Fields -->
                 <div class="mb-5">
-                    @Html.LabelFor(model => model.SubNumShares, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <label>Number of Share Sub <span style="color:red">*</span> </label>
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.SubNumShares, new { htmlAttributes = new { @class = "form-input", @required = "required", @placeholder = "Enter Number of Shares", min = "1" } })
                         @Html.ValidationMessageFor(model => model.SubNumShares, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
                 <div class="mb-5">
-                    @Html.LabelFor(model => model.Premium, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <label>Subscription Due Date <span style="color:red">*</span> </label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @required = "required" } })
+                        @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label>Premium  </label>
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.Premium, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Premium Amount" } })
                         @Html.ValidationMessageFor(model => model.Premium, "", new { @class = "text-danger" })
@@ -79,16 +130,7 @@
                 </div>
 
                 <div class="mb-5">
-                    @Html.LabelFor(model => model.PaymentDueDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @required = "required" } })
-                        @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
-                <div class="mb-5">
-                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <label>Remark </label>
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Remark" } })
                         @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })

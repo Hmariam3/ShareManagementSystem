@@ -3,133 +3,350 @@
 @{
     ViewBag.Title = "Index";
 }
+<!-- SweetAlert2 CDN -->
 
-<h2>Index</h2>
+<script src="~/Scripts/JS/sweetalert.min.js"></script>
+@section Scripts {
+    <script>
+        // Store TempData message in a JavaScript variable
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.TransferType)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NumSharesTransferred)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.AmountPerShare)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PaidAmountForTransfer)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TransferReason)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DividenedFor)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TransferDoc)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TransferDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CreationDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TransferAuthorizationStatus)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TransferAuthorizationDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Remark)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Payment.PaymentMode)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.User.FullName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.User1.FullName)
-        </th>
-        <th></th>
-    </tr>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Display success message if it exists
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Approved!',
+                    text: successMessage,
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'colored-toast success' // Added 'success' class
+                    }
+                });
+            }
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.TransferType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NumSharesTransferred)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AmountPerShare)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PaidAmountForTransfer)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TransferReason)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DividenedFor)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TransferDoc)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TransferDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CreationDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TransferAuthorizationStatus)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TransferAuthorizationDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Remark)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Payment.PaymentMode)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Shareholder1.ShareID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Subscribtion.SubStatus)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.User.FullName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.User1.FullName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.TransferID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.TransferID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.TransferID })
-        </td>
-    </tr>
+            // Display error message if it exists
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Rejected!',
+                    text: errorMessage,
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'colored-toast error' // Added 'error' class
+                    }
+                });
+            }
+        });
+    </script>
 }
 
-</table>
+<style>
+
+    /* Hover effect */
+    button[title="Approve"]:hover svg {
+        transform: scale(1.5);
+        cursor: pointer;
+    }
+
+    button[title="Reject"]:hover svg {
+        transform: scale(1.5);
+        cursor: pointer;
+    }
+
+    .swal2-popup.colored-toast {
+        padding: 15px 20px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+        .swal2-popup.colored-toast.success {
+            background-color: #1abc9c !important; /* Success color */
+            color: white;
+        }
+
+        .swal2-popup.colored-toast.error {
+            background-color: #e74c3c !important; /* Error color */
+            color: white;
+        }
+</style>
+
+
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <!-- start main content section -->
+    <div x-data="basic">
+        <div class="panel mt-6 sticky-column">
+            <h5 class="text-lg font-semibold dark:text-white-light">ShareTransfer Table</h5>
+            <table id="myTable" class="table-hover whitespace-nowrap"></table>
+        </div>
+    </div>
+    <!-- end main content section -->
+
+</div>
+
+
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
+<script defer="" src="~/Scripts/JS/popper.min.js"></script>
+<script defer="" src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
+<script defer="" src="~/Scripts/JS/sweetalert.min.js"></script>
+<script src="assets/js/highlight.min.js"></script>
+<script src="assets/js/alpine-collaspe.min.js"></script>
+<script src="assets/js/alpine-persist.min.js"></script>
+<script defer="" src="assets/js/alpine-ui.min.js"></script>
+<script defer="" src="assets/js/alpine-focus.min.js"></script>
+<script defer="" src="assets/js/alpine.min.js"></script>
+<script src="assets/js/custom.js"></script>
+<script defer="" src="assets/js/apexcharts.js"></script>
+<script src="assets/js/simple-datatables.js"></script>
+<script>
+    document.addEventListener('alpine:init', () => {
+        // main section
+        Alpine.data('scrollToTop', () => ({
+            showTopButton: false,
+            init() {
+                window.onscroll = () => {
+                    this.scrollFunction();
+                };
+            },
+
+            scrollFunction() {
+                if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                    this.showTopButton = true;
+                } else {
+                    this.showTopButton = false;
+                }
+            },
+
+            goToTop() {
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            },
+        }));
+
+        // theme customization
+        Alpine.data('customizer', () => ({
+            showCustomizer: false,
+        }));
+
+        // sidebar section
+        Alpine.data('sidebar', () => ({
+            init() {
+                const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
+                if (selector) {
+                    selector.classList.add('active');
+                    const ul = selector.closest('ul.sub-menu');
+                    if (ul) {
+                        let ele = ul.closest('li.menu').querySelectorAll('.nav-link');
+                        if (ele) {
+                            ele = ele[0];
+                            setTimeout(() => {
+                                ele.click();
+                            });
+                        }
+                    }
+                }
+            },
+        }));
+
+        // header section
+        Alpine.data('header', () => ({
+            init() {
+                const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
+                if (selector) {
+                    selector.classList.add('active');
+                    const ul = selector.closest('ul.sub-menu');
+                    if (ul) {
+                        let ele = ul.closest('li.menu').querySelectorAll('.nav-link');
+                        if (ele) {
+                            ele = ele[0];
+                            setTimeout(() => {
+                                ele.classList.add('active');
+                            });
+                        }
+                    }
+                }
+            },
+        }));
+
+        Alpine.data('basic', () => ({
+            datatable: null,
+            init() {
+                this.datatable = new simpleDatatables.DataTable('#myTable', {
+                    data: {
+                        headings: ['Transfer From', 'Transfer To', 'TID', 'Transfer Category', 'Transfer Type', 'Shares Transferred', 'Paid Amount','Transfer Reason','Dividened For','Authorization Status',''],
+                        data: [
+                        @foreach (var item in Model)
+                        {
+
+                                <text>
+                                [
+                                    
+                                    "@item.Shareholder.FullNameEng",
+                                    "@item.Shareholder1.FullNameEng",
+                                    "@item.TransferID",
+                                    "@item.TransferCategory",
+                                    "@item.TransferType",
+                                    "@item.NumSharesTransferred",
+                                    "@item.PaidAmountForTransfer",
+                                    "@item.TransferReason",
+                                    "@item.DividenedFor",
+                                    `@if (item.TransferAuthorizationStatus == "Pending")
+                                        {
+                                            <span class="badge badge-outline-primary" style="font-size: 0.9em; padding: 0.5em 1em; align-items: center;">Pending</span>
+                                        }
+                                        else if (item.TransferAuthorizationStatus == "Approved")
+                                        {
+                                            <span class="badge badge-outline-success" style="font-size: 0.9em; padding: 0.5em 1em;">Approved</span>
+                                        }
+                                        else if (item.TransferAuthorizationStatus == "Rejected")
+                                        {
+                                            <span class="badge badge-outline-danger" style="font-size: 0.9em; padding: 0.5em 1em;">Rejected</span>
+                                        }
+                                        `,
+                                    @*`@if (item.TransferAuthorizationStatus == "Pending")
+                                        {
+                                            <div style="display: flex; gap: 8px; align-items: center;">
+                                                @using (Html.BeginForm("Approve", "ShareTransfers", FormMethod.Post, new { @id = item.TransferID }))
+                                                {
+                                                    <input type="hidden" name="id" value="@item.TransferID" />
+                                                    <button type="submit" title="Approve" style="border: none; background: none; transform: scale(1.2);">
+                                                        <svg width="20" height="15" viewbox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                            <circle opacity="0.9" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                                            <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                    </button>
+                                                }
+
+                                                @using (Html.BeginForm("Reject", "ShareTransfers", FormMethod.Post, new { @id = item.TransferID }))
+                                                {
+                                                    <input type="hidden" name="id" value="@item.TransferID" />
+                                                    <button type="submit" title="Reject" style="border: none; background: none; transform: scale(1.2);">
+                                                        <svg width="20" height="15" viewbox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                                                            <circle opacity="0.9" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                                            <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                        </svg>
+                                                    </button>
+                                                }
+                                            </div>
+                                        }
+                                        `,*@
+                                   `@if (item.TransferAuthorizationStatus == "Pending")
+                                   {
+
+                                    <div style="display: flex; align-items: center;">
+                                        <a href="@Url.Action("Edit", new { id = item.TransferID })" title="Edit" style="margin-right: 10px;">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-primary">
+                                                <path d="M5 2h8a2 2 0 0 1 2 2v4h4v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="currentColor" opacity="0.1"/>
+                                                <path d="M9 13l6-6 2 2-6 6H9v-2z" fill="currentColor"/>
+                                                <path d="M15 7.5l1.5-1.5 2 2L17 9.5 15 7.5z" fill="currentColor"/>
+                                            </svg>
+                                        </a>
+                                        <a href="@Url.Action("Details", new { id = item.TransferID })" title="View Details" style="margin-right: 10px;">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                <path d="M12 4.5C7.26 4.5 3.07 7.28 1 12c2.07 4.72 6.26 7.5 11 7.5s8.93-2.78 11-7.5c-2.07-4.72-6.26-7.5-11-7.5z"
+                                                      stroke="currentColor" stroke-width="1.5" fill="none"></path>
+                                                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                                            </svg>
+                                        </a>
+                                        <form id="deleteForm" action="@Url.Action("Delete", "ShareTransfers", new { id = item.TransferID })" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken() 
+                                            <button type="button" onclick="showAlert('delete', event)" >
+                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                                                    <path d="M3 6h18M10 11v6M14 11v6M5 6h14l-1 14H6L5 6zm4-2h6v1H9V4zm5-2H10a1 1 0 0 0-1 1v1H6V3a1 1 0 0 0-1-1z"
+                                                          stroke="red" stroke-width="1.5" fill="none"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                   }
+                                   else
+                                   {
+                                       <div style="display: flex; align-items: center;">
+                                             
+                                            <a href="@Url.Action("Details", new { id = item.TransferID })" title="View Details" style="margin-right: 20px;">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                    <path d="M12 4.5C7.26 4.5 3.07 7.28 1 12c2.07 4.72 6.26 7.5 11 7.5s8.93-2.78 11-7.5c-2.07-4.72-6.26-7.5-11-7.5z"
+                                                          stroke="currentColor" stroke-width="1.5" fill="none"></path>
+                                                    <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                                                </svg>
+                                            </a>
+                                           
+                                        </div>
+                                   }
+                                    `,
+                                ],
+                                </text>
+                            }
+                        ],
+                    },
+                    searchable: true,
+                    perPage: 5,
+                    perPageSelect: [5, 10, 20,],
+                    columns: [
+
+                    ],
+                    firstLast: true,
+                    firstText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    lastText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    prevText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    nextText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    },
+                });
+
+            },
+        }));
+    });
+</script>
+<script>
+    async function showAlert(action, event) {
+        // Prevent the default form submission if action is delete
+        if (action === 'delete') {
+            event.preventDefault();
+        }
+
+        // Set alert text and button text based on action type
+        let actionText = action === 'delete' ? 'Delete this Transfer' : '';
+        let confirmText = action === 'delete' ? 'Delete' : '';
+
+        // Display confirmation dialog
+        new window.Swal({
+            icon: 'warning',
+            //title: 'Are you sure?',
+            text: `You are about to ${actionText}. This action cannot be undone!`,
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#dc3545',
+            padding: '2em',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form if confirmed
+                if (action === 'delete') {
+                    document.getElementById('deleteForm').submit();
+                }
+            }
+        });
+    }
+</script>

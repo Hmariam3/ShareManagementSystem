@@ -17,11 +17,11 @@ namespace Shareholder_Management_System.Models
         public int LogID { get; set; }
         public string Message { get; set; }
         public string ActionType { get; set; }
-        public int TransactionID { get; set; }
+        public Nullable<int> TransactionID { get; set; }
         public string TableName { get; set; }
-        public int PerformedBy { get; set; }
+        public Nullable<int> PerformedBy { get; set; }
         public string PerformerBranch { get; set; }
-        public System.DateTime TransactionDate { get; set; }
+        public Nullable<System.DateTime> TransactionDate { get; set; }
     
         public virtual User User { get; set; }
     }

@@ -20,7 +20,11 @@ namespace Shareholder_Management_System.Models
             this.Blockeds = new HashSet<Blocked>();
             this.Payments = new HashSet<Payment>();
             this.Proxies = new HashSet<Proxy>();
+            this.Proxies1 = new HashSet<Proxy>();
+            this.Proxies2 = new HashSet<Proxy>();
             this.Shareholders = new HashSet<Shareholder>();
+            this.Shareholders1 = new HashSet<Shareholder>();
+            this.Shareholders2 = new HashSet<Shareholder>();
         }
     
         public int DocID { get; set; }
@@ -47,6 +51,14 @@ namespace Shareholder_Management_System.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Proxy> Proxies { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Proxy> Proxies1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Proxy> Proxies2 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Shareholder> Shareholders { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shareholder> Shareholders1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Shareholder> Shareholders2 { get; set; }
     }
 }

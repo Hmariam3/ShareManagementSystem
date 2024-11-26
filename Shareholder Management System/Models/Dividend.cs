@@ -18,20 +18,25 @@ namespace Shareholder_Management_System.Models
         public Dividend()
         {
             this.DividenedDetails = new HashSet<DividenedDetail>();
+            this.SimulationDivideneds = new HashSet<SimulationDividened>();
         }
     
         public int DivID { get; set; }
-        public System.DateTime Year { get; set; }
-        public decimal DivPerShare { get; set; }
-        public decimal TaxableAmount { get; set; }
-        public decimal TaxRate { get; set; }
+        public Nullable<decimal> Profit { get; set; }
+        public Nullable<decimal> TotalWASA { get; set; }
+        public Nullable<System.DateTime> FiscalYear { get; set; }
+        public Nullable<decimal> DivPerShare { get; set; }
+        public Nullable<decimal> TaxableAmount { get; set; }
+        public Nullable<decimal> TaxRate { get; set; }
         public Nullable<System.DateTime> RunningDate { get; set; }
         public Nullable<int> NumOutstandingDays { get; set; }
-        public int CreatedBy { get; set; }
-        public System.DateTime CreationDate { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
     
         public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SimulationDividened> SimulationDivideneds { get; set; }
     }
 }

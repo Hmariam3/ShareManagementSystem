@@ -370,11 +370,18 @@
                                         <li>
                                             <a href="~/Subscribtions/Index">View Subscription</a>
                                         </li>
+
+                                        @if (Session["Roles"] != null)
+                                        {
+                                            if (Session["Roles"].Equals("Authorizer") || Session["Roles"].Equals("Administrator"))
+                                            {
+                                                <li>
+                                                    <a href="~/Subscribtions/PendingSubscription">Manage Subsc</a>
+                                                </li>
+                                            }
+                                        }
                                         <li>
-                                            <a href="~/Subscribtions/Filter">Subscription Payment</a>
-                                        </li>
-                                        <li>
-                                            <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
+                                            <a href="~/Subscribtions/Compiledsubs">Compiled Subsc</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -461,6 +468,9 @@
                                         <li>
                                             @Html.ActionLink("View Transfer", "Index", "ShareTransfers")
                                         </li>
+                                        <li>
+                                            @Html.ActionLink("Authorize Transfer", "Authorize", "ShareTransfers")
+                                        </li>
                                     </ul>
                                 </li>
                                 <li class="menu nav-item">
@@ -506,67 +516,159 @@
                                     </ul>
                                 </li>
 
-                                <h2>
-                                    <li class="menu nav-item">
-                                        <button type="button"
-                                                class="nav-link group"
-                                                :class="{'active' : activeDropdown === 'Certficate'}"
-                                                @@click="activeDropdown === 'Certficate' ? activeDropdown = null : activeDropdown = 'Certficate'">
-                                            <div class="flex items-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                <li class="menu nav-item">
+                                    <button type="button"
+                                            class="nav-link group"
+                                            :class="{'active' : activeDropdown === 'Certficate'}"
+                                            @@click="activeDropdown === 'Certficate' ? activeDropdown = null : activeDropdown = 'Certficate'">
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 
-                                                    <path d="M497.9 368.1l-46.6-46.6V192c0-8.844-7.156-16-16-16h-42.94l-56-112C330.1 54.72 321.3 48 311.1 48H200c-9.312 0-18.16 6.719-21.41 16L122.6 176H80c-8.844 0-16 7.156-16 16v129.5l-46.63 46.63C6.156 375.6 0 386.3 0 398.1V496c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-56h256v56c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-97.03C512 386.3 505.8 375.6 497.9 368.1zM212.3 96h87.38l36 72h-159.4L212.3 96zM64 403.3l32-32V288h320v83.31l32 32V480h-64v-56c0-8.844-7.156-16-16-16H144c-8.844 0-16 7.156-16 16v56H64V403.3z"
-                                                          fill="white" />
-                                                </svg>
+                                                <path d="M497.9 368.1l-46.6-46.6V192c0-8.844-7.156-16-16-16h-42.94l-56-112C330.1 54.72 321.3 48 311.1 48H200c-9.312 0-18.16 6.719-21.41 16L122.6 176H80c-8.844 0-16 7.156-16 16v129.5l-46.63 46.63C6.156 375.6 0 386.3 0 398.1V496c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-56h256v56c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-97.03C512 386.3 505.8 375.6 497.9 368.1zM212.3 96h87.38l36 72h-159.4L212.3 96zM64 403.3l32-32V288h320v83.31l32 32V480h-64v-56c0-8.844-7.156-16-16-16H144c-8.844 0-16 7.156-16 16v56H64V403.3z"
+                                                      fill="white" />
+                                            </svg>
 
-                                                <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Generate Certificate</span>
+                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Generate Certificate</span>
 
-                                            </div>
-                                            <div class="rtl:rotate-180"
-                                                 :class="{'!rotate-90' : activeDropdown === 'Certficate'}">
-                                                <svg width="16"
-                                                     height="16"
-                                                     viewbox="0 0 24 24"
-                                                     fill="none"
-                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M9 5L15 12L9 19"
-                                                          stroke="currentColor"
-                                                          stroke-width="1.5"
-                                                          stroke-linecap="round"
-                                                          stroke-linejoin="round"></path>
-                                                </svg>
-                                            </div>
-                                        </button>
-                                        <ul x-cloak=""
-                                            x-show="activeDropdown === 'Certficate'"
-                                            x-collapse=""
-                                            class="sub-menu text-white">
-                                            <li>
-                                                @Html.ActionLink("Order Certificate", "Create", "Certificates")
-                                            </li>
-                                            <li>
-                                                @Html.ActionLink("Certificate Report", "Index", "Certificates")
-                                            </li>
-                                            
-                                        </ul>
-                                    </li>
+                                        </div>
+                                        <div class="rtl:rotate-180"
+                                             :class="{'!rotate-90' : activeDropdown === 'Certficate'}">
+                                            <svg width="16"
+                                                 height="16"
+                                                 viewbox="0 0 24 24"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 5L15 12L9 19"
+                                                      stroke="currentColor"
+                                                      stroke-width="1.5"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"></path>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                    <ul x-cloak=""
+                                        x-show="activeDropdown === 'Certficate'"
+                                        x-collapse=""
+                                        class="sub-menu text-white">
+                                        <li>
+                                            @Html.ActionLink("Order Certificate", "Create", "Certificates")
+                                        </li>
+                                        <li>
+                                            @Html.ActionLink("Certificate Report", "Index", "Certificates")
+                                        </li>
 
-                                    <li class="menu nav-item">
-                                        <a href="@Url.Action("RecordLog", "AuditLogs")"
-                                           class="nav-link group"
-                                           :class="{'active' : activeDropdown === 'Certficate'}"
-                                           @@click="activeDropdown === '' ? activeDropdown = null : activeDropdown = ''">
-                                            <div class="flex items-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h.01M4 6h.01M4 18h.01M8 18h2m-2-6h2M8 6h2m4 0h6m-6 6h6m-6 6h6" />
-                                                </svg>
-                                                <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Record Log</span>
-                                            </div>
-                                            <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'Certficate'}"></div>
-                                        </a>
-                                    </li>
+                                    </ul>
+                                </li>
 
+                                <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+                                    <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                    <span>Compute Dividend</span>
                                 </h2>
+
+                                <li class="menu nav-item">
+                                    <button type="button"
+                                            class="nav-link group"
+                                            :class="{'active' : activeDropdown === 'DividendInfo'}"
+                                            @@click="activeDropdown === 'DividendInfo' ? activeDropdown = null : activeDropdown = 'DividendInfo'">
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+                                                <path d="M497.9 368.1l-46.6-46.6V192c0-8.844-7.156-16-16-16h-42.94l-56-112C330.1 54.72 321.3 48 311.1 48H200c-9.312 0-18.16 6.719-21.41 16L122.6 176H80c-8.844 0-16 7.156-16 16v129.5l-46.63 46.63C6.156 375.6 0 386.3 0 398.1V496c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-56h256v56c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-97.03C512 386.3 505.8 375.6 497.9 368.1zM212.3 96h87.38l36 72h-159.4L212.3 96zM64 403.3l32-32V288h320v83.31l32 32V480h-64v-56c0-8.844-7.156-16-16-16H144c-8.844 0-16 7.156-16 16v56H64V403.3z"
+                                                      fill="white" />
+                                            </svg>
+
+                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Dividend Information</span>
+
+                                        </div>
+                                        <div class="rtl:rotate-180"
+                                             :class="{'!rotate-90' : activeDropdown === 'DividendInfo'}">
+                                            <svg width="16"
+                                                 height="16"
+                                                 viewbox="0 0 24 24"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 5L15 12L9 19"
+                                                      stroke="currentColor"
+                                                      stroke-width="1.5"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"></path>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                    <ul x-cloak=""
+                                        x-show="activeDropdown === 'DividendInfo'"
+                                        x-collapse=""
+                                        class="sub-menu text-white">
+                                        <li>
+                                            @Html.ActionLink("Dividend", "Index", "Dividends")
+                                        </li>
+                                        <li>
+                                            @Html.ActionLink("Dividend Simulation", "Index", "Dividends")
+                                        </li>
+                                        <li>
+                                            @Html.ActionLink("Dividend History", "Index", "Dividends")
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="menu nav-item">
+                                    <button type="button"
+                                            class="nav-link group"
+                                            :class="{'active' : activeDropdown === 'DividendHistory'}"
+                                            @@click="activeDropdown === 'DividendHistory' ? activeDropdown = null : activeDropdown = 'DividendHistory'">
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+                                                <path d="M497.9 368.1l-46.6-46.6V192c0-8.844-7.156-16-16-16h-42.94l-56-112C330.1 54.72 321.3 48 311.1 48H200c-9.312 0-18.16 6.719-21.41 16L122.6 176H80c-8.844 0-16 7.156-16 16v129.5l-46.63 46.63C6.156 375.6 0 386.3 0 398.1V496c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-56h256v56c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-97.03C512 386.3 505.8 375.6 497.9 368.1zM212.3 96h87.38l36 72h-159.4L212.3 96zM64 403.3l32-32V288h320v83.31l32 32V480h-64v-56c0-8.844-7.156-16-16-16H144c-8.844 0-16 7.156-16 16v56H64V403.3z"
+                                                      fill="white" />
+                                            </svg>
+
+                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Dividend History</span>
+
+                                        </div>
+                                        <div class="rtl:rotate-180"
+                                             :class="{'!rotate-90' : activeDropdown === 'DividendHistory'}">
+                                            <svg width="16"
+                                                 height="16"
+                                                 viewbox="0 0 24 24"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 5L15 12L9 19"
+                                                      stroke="currentColor"
+                                                      stroke-width="1.5"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"></path>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                    <ul x-cloak=""
+                                        x-show="activeDropdown === 'DividendHistory'"
+                                        x-collapse=""
+                                        class="sub-menu text-white">
+                                        <li>
+                                            @Html.ActionLink("Order Certificate", "Create", "Certificates")
+                                        </li>
+
+                                    </ul>
+                                </li>
+                                <li class="menu nav-item">
+                                    <a href="@Url.Action("RecordLog", "AuditLogs")"
+                                       class="nav-link group"
+                                       :class="{'active' : activeDropdown === 'Certficate'}"
+                                       @@click="activeDropdown === '' ? activeDropdown = null : activeDropdown = ''">
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h.01M4 6h.01M4 18h.01M8 18h2m-2-6h2M8 6h2m4 0h6m-6 6h6m-6 6h6" />
+                                            </svg>
+                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Record Log</span>
+                                        </div>
+                                        <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'Certficate'}"></div>
+                                    </a>
+                                </li>
+
+
                             </ul>
                         </li>
 
@@ -976,8 +1078,8 @@
         </div>
     </div>
 
-    @*<!-- Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <!-- Modal -->
+    @*<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -985,7 +1087,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Content will be loaded here via Ajax -->
+                     Content will be loaded here via Ajax 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

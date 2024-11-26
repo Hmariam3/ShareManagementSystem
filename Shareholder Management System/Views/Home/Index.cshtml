@@ -379,7 +379,7 @@
                                     {
                                         <tr>
                                             <td>@Html.DisplayFor(modelItem => user.UID)</td>
-                                            <td>@user.CreatedDate.ToString("MMM dd, yyyy")</td>
+                                            <td>@user.CreatedDate?.ToString("MMM dd, yyyy")</td>
                                             <td>@user.FullName</td>
                                             <td>
                                                 @if (@user.Role == "Initiator")

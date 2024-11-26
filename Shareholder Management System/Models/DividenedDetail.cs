@@ -15,11 +15,13 @@ namespace Shareholder_Management_System.Models
     public partial class DividenedDetail
     {
         public int ID { get; set; }
-        public int DivID { get; set; }
-        public int ShID { get; set; }
-        public int PayID { get; set; }
-        public int SubID { get; set; }
-        public decimal DividenedAmount { get; set; }
+        public Nullable<int> DivID { get; set; }
+        public Nullable<int> ShID { get; set; }
+        public Nullable<int> PayID { get; set; }
+        public Nullable<int> SubID { get; set; }
+        public Nullable<int> OutstandingDays { get; set; }
+        public Nullable<decimal> WASA { get; set; }
+        public Nullable<decimal> DividenedAmount { get; set; }
         public Nullable<decimal> TaxedDividened { get; set; }
         public Nullable<decimal> Payment { get; set; }
         public Nullable<decimal> Capitalization { get; set; }
@@ -28,14 +30,12 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> Branch { get; set; }
         public Nullable<System.DateTime> DateApplication { get; set; }
         public Nullable<System.DateTime> SettlementDate { get; set; }
-        public System.DateTime DividenedYear { get; set; }
-        public int CreatedBy { get; set; }
+        public Nullable<System.DateTime> DividenedYear { get; set; }
     
         public virtual Branch Branch1 { get; set; }
-        public virtual Branch Branch2 { get; set; }
         public virtual Dividend Dividend { get; set; }
-        public virtual Shareholder Shareholder { get; set; }
         public virtual Payment Payment1 { get; set; }
+        public virtual Shareholder Shareholder { get; set; }
         public virtual Subscribtion Subscribtion { get; set; }
         public virtual User User { get; set; }
     }

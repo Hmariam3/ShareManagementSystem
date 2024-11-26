@@ -1,10 +1,11 @@
 ﻿
-
 @model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
 
 @if (Model != null && Model.Any())
 {
-    <div style="overflow-x: auto;">
+<div class="bg-white shadow-md rounded-lg overflow-hidden panel">
+
+    <div class="p-6 overflow-x-auto">
         <table id="subscriptionTable" class="display" style="width:100%">
             <thead>
                 <tr>
@@ -98,13 +99,14 @@
             </tbody>
         </table>
     </div>
-}
-else
-{
+    </div>
+    }
+    else
+    {
     <p>No subscriptions found for the given Share ID.</p>
-}
+    }
 
-<script>
+    <script>
         function payNow(subID, shID) {
             // Get the PaidAmount value from the input field associated with the SubID
             var paidAmount = document.getElementById('paidAmount-' + subID).value;
@@ -128,4 +130,4 @@ else
                 ]
             });
         });
-</script>
+    </script>
