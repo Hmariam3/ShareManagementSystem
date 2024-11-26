@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -133,6 +133,7 @@
           <Property Name="PaymentSlip" Type="int" />
           <Property Name="PaymentDate" Type="date" />
           <Property Name="PaymentTransferFrom" Type="int" />
+          <Property Name="SourceOfFunds" Type="nvarchar(max)" />
           <Property Name="CreatedBy" Type="int" />
           <Property Name="CreationDate" Type="date" />
           <Property Name="PaymentAuthorizationStatus" Type="nvarchar(max)" />
@@ -527,90 +528,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Payment_Branch">
-          <End Role="Branch" Type="Self.Branch" Multiplicity="0..1" />
-          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Branch">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="Payment">
-              <PropertyRef Name="Branch" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Payment_Document">
-          <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
-          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Document">
-              <PropertyRef Name="DocID" />
-            </Principal>
-            <Dependent Role="Payment">
-              <PropertyRef Name="PaymentSlip" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Payment_Shareholder">
-          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
-          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shareholder">
-              <PropertyRef Name="ShID" />
-            </Principal>
-            <Dependent Role="Payment">
-              <PropertyRef Name="ShID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Payment_Shareholder1">
-          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
-          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Shareholder">
-              <PropertyRef Name="ShID" />
-            </Principal>
-            <Dependent Role="Payment">
-              <PropertyRef Name="PaymentTransferFrom" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Payment_Subscribtion">
-          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="0..1" />
-          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Subscribtion">
-              <PropertyRef Name="SubID" />
-            </Principal>
-            <Dependent Role="Payment">
-              <PropertyRef Name="SubID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Payment_User">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UID" />
-            </Principal>
-            <Dependent Role="Payment">
-              <PropertyRef Name="CreatedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Payment_User1">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
-          <End Role="Payment" Type="Self.Payment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UID" />
-            </Principal>
-            <Dependent Role="Payment">
-              <PropertyRef Name="PaymentAuthorizer" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Proxy_Document">
           <End Role="Document" Type="Self.Document" Multiplicity="0..1" />
           <End Role="Proxy" Type="Self.Proxy" Multiplicity="*" />
@@ -938,34 +855,6 @@
             <End Role="User" EntitySet="User" />
             <End Role="Document" EntitySet="Document" />
           </AssociationSet>
-          <AssociationSet Name="FK_Payment_Branch" Association="Self.FK_Payment_Branch">
-            <End Role="Branch" EntitySet="Branch" />
-            <End Role="Payment" EntitySet="Payment" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Payment_Document" Association="Self.FK_Payment_Document">
-            <End Role="Document" EntitySet="Document" />
-            <End Role="Payment" EntitySet="Payment" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Payment_Shareholder" Association="Self.FK_Payment_Shareholder">
-            <End Role="Shareholder" EntitySet="Shareholder" />
-            <End Role="Payment" EntitySet="Payment" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Payment_Shareholder1" Association="Self.FK_Payment_Shareholder1">
-            <End Role="Shareholder" EntitySet="Shareholder" />
-            <End Role="Payment" EntitySet="Payment" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Payment_Subscribtion" Association="Self.FK_Payment_Subscribtion">
-            <End Role="Subscribtion" EntitySet="Subscribtion" />
-            <End Role="Payment" EntitySet="Payment" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Payment_User" Association="Self.FK_Payment_User">
-            <End Role="User" EntitySet="User" />
-            <End Role="Payment" EntitySet="Payment" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Payment_User1" Association="Self.FK_Payment_User1">
-            <End Role="User" EntitySet="User" />
-            <End Role="Payment" EntitySet="Payment" />
-          </AssociationSet>
           <AssociationSet Name="FK_Proxy_Document" Association="Self.FK_Proxy_Document">
             <End Role="Document" EntitySet="Document" />
             <End Role="Proxy" EntitySet="Proxy" />
@@ -1043,8 +932,7 @@
             <End Role="User" EntitySet="User" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1224,6 +1112,7 @@
           <NavigationProperty Name="User" Relationship="Self.FK_Payment_User" FromRole="Payment" ToRole="User" />
           <NavigationProperty Name="User1" Relationship="Self.FK_Payment_User1" FromRole="Payment" ToRole="User" />
           <NavigationProperty Name="ShareTransfers" Relationship="Self.FK_ShareTransfer_Payment" FromRole="Payment" ToRole="ShareTransfer" />
+          <Property Name="SourceOfFunds" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Proxy">
           <Key>
@@ -2310,6 +2199,7 @@
           <EntitySetMapping Name="Payments">
             <EntityTypeMapping TypeName="Model.Payment">
               <MappingFragment StoreEntitySet="Payment">
+                <ScalarProperty Name="SourceOfFunds" ColumnName="SourceOfFunds" />
                 <ScalarProperty Name="PayID" ColumnName="PayID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
                 <ScalarProperty Name="SubID" ColumnName="SubID" />

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+
+
 using Shareholder_Management_System.Models;
 
 namespace Shareholder_Management_System.Controllers
@@ -100,7 +102,7 @@ namespace Shareholder_Management_System.Controllers
         public ActionResult Create([Bind(Include = "PayID,ShID,SubID,PaymentMode,Branch,PaidAmount,BlockedAmount,ReferenceNum," +
             "PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer," +
             "AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions,
-            string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string AccountAmount)
+            string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string AccountAmount, string SourceOfFunds)
         {
 
 
@@ -133,7 +135,7 @@ namespace Shareholder_Management_System.Controllers
 
                 // Join all payment details into a single string
                 payment.PaymentMode = string.Join(", ", PaymentMode);
-
+                payment.SourceOfFunds = SourceOfFunds;
                 int userId = Convert.ToInt32(Session["ID"]);
                 int branchId = Convert.ToInt32(Session["Branch"]);
 
@@ -236,7 +238,7 @@ namespace Shareholder_Management_System.Controllers
             {
                 return HttpNotFound();
             }
-
+            
             // Retrieve Subscriptions related to the Shareholder for the dropdown
             var subscriptions = db.Subscribtions
                    .Where(s => s.ShID == payment.ShID
@@ -262,7 +264,16 @@ namespace Shareholder_Management_System.Controllers
                 .Split(',')
                 .Select(x => x.Split('='))
                 .ToDictionary(x => x[0].Trim().ToLower(), x => Convert.ToDecimal(x[1])) ?? new Dictionary<string, decimal>();
-
+            // Fetch document details if PaymentSlip exists
+            if (payment.PaymentSlip.HasValue)
+            {
+                var document = db.Documents.Find(payment.PaymentSlip);
+                if (document != null)
+                {
+                    ViewBag.ExistingDocumentName = document.DocName;
+                    ViewBag.DocumentId = document.DocID;
+                }
+            }
             // Pass parsed payment modes to the view only if they exist
             ViewBag.CashAmount = paymentModeDict.ContainsKey("cash") ? (decimal?)paymentModeDict["cash"] : null;
             ViewBag.AccountAmount = paymentModeDict.ContainsKey("account") ? (decimal?)paymentModeDict["account"] : null;
@@ -277,6 +288,7 @@ namespace Shareholder_Management_System.Controllers
                 ReferenceNum = payment.ReferenceNum,
                 Remark = payment.Remark,
                 PaidAmount = payment.PaidAmount,
+                SourceOfFunds = payment.SourceOfFunds,
                 PaymentDate = payment.PaymentDate,
                 ShID = payment.ShID, // Current selected Shareholder ID
             };
@@ -292,7 +304,7 @@ namespace Shareholder_Management_System.Controllers
         // POST: Payments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, [Bind(Include = "PayID,ShID,SubID,PaymentMode,PaidAmount,BlockedAmount,ReferenceNum,PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer,AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions, string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string accountAmount)
+        public ActionResult Edit(int id, [Bind(Include = "PayID,ShID,SubID,PaymentMode,PaidAmount,BlockedAmount,ReferenceNum,PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer,AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions, string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string accountAmount, string SourceOfFunds)
         {
             if (ModelState.IsValid)
             {
@@ -307,11 +319,13 @@ namespace Shareholder_Management_System.Controllers
                 existingPayment.ShID = payment.ShID;
                 existingPayment.SubID = payment.SubID;
                 existingPayment.PaidAmount = payment.PaidAmount;
+                existingPayment.SourceOfFunds = payment.SourceOfFunds;
                 existingPayment.BlockedAmount = payment.BlockedAmount;
                 existingPayment.ReferenceNum = payment.ReferenceNum;
                 existingPayment.PaymentDate = payment.PaymentDate;
                 existingPayment.PaymentTransferFrom = payment.PaymentTransferFrom;
                 existingPayment.Remark = payment.Remark;
+
 
                 // Handle updating payment modes
                 var paymentModes = new List<string>();
@@ -321,7 +335,7 @@ namespace Shareholder_Management_System.Controllers
                 if (!string.IsNullOrEmpty(dividendAmount)) paymentModes.Add($"dividend={dividendAmount}");
                 if (!string.IsNullOrEmpty(chequeAmount)) paymentModes.Add($"cheque={chequeAmount}");
                 existingPayment.PaymentMode = string.Join(",", paymentModes);
-
+                existingPayment.SourceOfFunds = SourceOfFunds;
                 // Update user and branch details
                 int userId = Convert.ToInt32(Session["ID"]);
                 existingPayment.CreatedBy = userId;
@@ -451,11 +465,12 @@ namespace Shareholder_Management_System.Controllers
                 return HttpNotFound();
             }
 
-
+            int userId = Convert.ToInt32(Session["ID"]);
             if (action == "approve")
             {
                 payment.PaymentAuthorizationStatus = "Approved";
-
+                payment.PaymentAuthorizer = userId;
+                payment.AuthorizationDate = DateTime.Now;
                 var selectedSubID = payment.SubID;
 
                 // Retrieve the associated Subscribtion entity
@@ -525,5 +540,7 @@ namespace Shareholder_Management_System.Controllers
             }
             base.Dispose(disposing);
         }
+
     }
+
 }

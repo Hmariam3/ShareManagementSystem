@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\user\source\repos\Shareholder-Management-System\Shareholder Management System\Models\Shareholder Management System.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\simbog\Source\Repos\Shareholder-Management-System\Shareholder Management System\Models\Shareholder Management System.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

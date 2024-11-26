@@ -42,6 +42,7 @@
                                         <th>@Html.DisplayNameFor(model => model.First().PaidAmount)</th>
                                         <th>@Html.DisplayNameFor(model => model.First().ReferenceNum)</th>
                                         <th>Mode of Payment</th>
+                                        <th>@Html.DisplayNameFor(model => model.First().SourceOfFunds)</th>
 
                                         <th>Status</th>
                                         <th>Remark</th>
@@ -61,6 +62,7 @@
                                         <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
                                         <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
                                         <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.SourceOfFunds)</td>
                                         <td>
                                             @{
                                                 string statusClass;

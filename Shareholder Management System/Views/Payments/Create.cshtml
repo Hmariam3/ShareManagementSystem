@@ -2,7 +2,12 @@
 
 <link rel="stylesheet" type="text/css" href="~/Content/CSS/nice-select2.css">
 <script src="~/Scripts/JS/nice-select2.js"></script>
-
+<style>
+    .shareholder-item:hover {
+        background-color: #3b82f6; /* Tailwind's bg-blue-500 */
+        color: white;
+    }
+</style>
 
 @{
     ViewBag.Title = "Create Payment";
@@ -19,13 +24,18 @@
         <div class="col-span-1">
             <div class="panel">
                 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-                        <h5 class="text-lg font-semibold" style="padding:7px;">Share Holder Detail</h5>
-                    </div>
+                    <h5 class="text-lg font-semibold" style="padding:7px;">Share Holder Detail</h5>
+                </div>
 
                 @*<div class="text-lg font-semibold">Shareholder Details</div>*@
 
                 <div class="mb-5">
-                    <label for="shid">ShareHolder</label>
+                    <div class="flex items-center">
+                        
+                        <label for="ShID" class="block dark:text-white-light text-sm font-semibold mb-2">Share Holder</label>
+
+                    </div>
+
                     @Html.DropDownList("ShID",
                         new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders1, "Value", "Text"),
                         htmlAttributes: new { id = "seachable-select" }
@@ -76,29 +86,33 @@
             <div class="panel">
                 <!-- Panel Header -->
                 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color: white;">
-                        <h5 class="text-lg font-semibold" style="padding: 7px;">Payment Details</h5>
-                    </div>
+                    <h5 class="text-lg font-semibold" style="padding: 7px;">Payment Details</h5>
+                </div>
+
                 @*<div class="text-lg font-semibold">Payment Details</div>*@
-                @Html.Label("Payment Mode", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="flex items-center">
+                   
+                    @Html.Label("Payment Mode", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                </div>
                 <div x-data="form" class="grid grid-cols-1 gap-6 pt-0 lg:grid-cols-2">
                     <div class="col-span-1">
                         <div class="space-y-4">
                             <div class="flex items-center space-x-2">
                                 @Html.Label("Cash", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="cashAmount" class="form-input payment-field" min="0" step="0.01"/>
+                                    <input type="number" name="cashAmount" class="form-input payment-field" min="0" step="0.01" placeholder="Enter cash amount" />
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
                                 @Html.Label("Account", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="AccountAmount" class="form-input payment-field" min="0" step="0.01"/>
+                                    <input type="number" name="AccountAmount" class="form-input payment-field" min="0" step="0.01" placeholder="Enter account amount" />
                                 </div>
                             </div>
                             <div class="flex items-center space-x-2">
                                 @Html.Label("CPO", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="cpoAmount" class="form-input payment-field" min="0" step="0.01"/>
+                                    <input type="number" name="cpoAmount" class="form-input payment-field" min="0" step="0.01" placeholder="Enter CPO amount" />
                                 </div>
                             </div>
                         </div>
@@ -109,26 +123,45 @@
                             <div class="flex items-center space-x-2">
                                 @Html.Label("Dividend", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="dividendAmount" class="form-input payment-field" min="0" step="0.01" />
+                                    <input type="number" name="dividendAmount" class="form-input payment-field" min="0" step="0.01" placeholder="Enter dividend amount" />
                                 </div>
                             </div>
 
                             <div class="flex items-center space-x-2">
                                 @Html.Label("Cheque", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
                                 <div class="amount-input-container flex flex-col ml-4">
-                                    <input type="number" name="chequeAmount" class="form-input payment-field" min="0" step="0.01" />
+                                    <input type="number" name="chequeAmount" class="form-input payment-field" min="0" step="0.01" placeholder="Enter cheque amount" />
                                 </div>
                             </div>
 
-                            <div class="flex items-center space-x-2">
-                                @Html.LabelFor(model => model.PaidAmount, htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-                                <div class="amount-input-container flex flex-col ml-4">
-                                    @Html.EditorFor(model => model.PaidAmount, new { htmlAttributes = new { @class = "form-input border border-blue-500 bg-blue-50 text-blue-700", @id = "PaidAmount", @readonly = "readonly", @placeholder = "Total Paid Amount" } })
-                                    @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
-                                </div>
+                            @*<div class="flex items-center space-x-2">
+
+            @Html.Label("Paid Amount", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+
+            <div class="amount-input-container flex flex-col ml-4">
+                @Html.EditorFor(model => model.PaidAmount, new { htmlAttributes = new { @class = "form-input border border-blue-500 bg-blue-50 text-blue-700", @id = "PaidAmount", @readonly = "readonly", @placeholder = "Total Paid Amount" } })
+                @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+                            @*<div class="flex items-center justify-between">
+            <div class="block dark:text-white-light text-sm font-semibold mb-2">Paid Amount</div>
+            <div id="PaidAmount" class="text-blue-700">ETB 0.00</div> <!-- Display area for the Paid Amount -->
+            <span id="PaidAmountValidationMessage" class="text-danger"></span> <!-- Validation message -->
+        </div>*@
+                            <div class="flex items-center justify-between">
+                                <!-- Label for Paid Amount -->
+                                <div class="block dark:text-white-light text-sm font-semibold mb-2">Paid Amount</div>
+
+                                <!-- Display area for Paid Amount with formatted value -->
+                                <div id="PaidAmount" class="text-blue-700">0.00 ETB </div>
+
+                                <!-- Validation message for Paid Amount -->
+                                <span class="text-danger" id="PaidAmountValidationMessage">
+                                    @Html.ValidationMessageFor(model => model.PaidAmount)
+                                </span>
+                                @Html.HiddenFor(model => model.PaidAmount, new { id = "PaidAmountHidden" })
+
                             </div>
-
-
                             @if (TempData["Message"] != null)
                             {
                                 <div class="alert alert-success">@TempData["Message"]</div>
@@ -136,75 +169,112 @@
 
                         </div>
                     </div>
-
                     <input type="hidden" id="UnpaidSubscription" value="@Model?.UnpaidSubscription" />
                 </div>
-                    <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
-                    <div x-data="form" class="grid grid-cols-1 gap-6 pt-0 lg:grid-cols-2">
-                        <div class="col-span-1">
-                            <div class="space-y-4">
-                                <div class="mb-5">
-                                    @Html.LabelFor(model => model.PaymentDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.PaymentDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @id = "payment-date-picker", @required = "required" } })
-                                        @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
-                                    </div>
+                <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div x-data="form" class="grid grid-cols-1 gap-6 pt-0 lg:grid-cols-2">
+                    <div class="col-span-1">
+                        <div class="space-y-4">
+                          
+                            <div class="form-group mb-5">
+                                <div class="flex items-center">
+
+                                    @Html.Label("Source Of Funds", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+
                                 </div>
 
-                                <div class="mb-5">
-                                    @Html.LabelFor(model => model.ReferenceNum, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="amount-input-container flex flex-col ml-4">
-                                        @Html.EditorFor(model => model.ReferenceNum, new { htmlAttributes = new { @class = "form-input" } })
-                                        @Html.ValidationMessageFor(model => model.ReferenceNum, "", new { @class = "text-danger" })
-                                    </div>
+                                @Html.DropDownListFor(model => model.SourceOfFunds,
+                                    new SelectList(new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "Bank Account", Value = "Bank Account" },
+                                        new SelectListItem { Text = "Dividend", Value = "Dividend" },
+                                        new SelectListItem { Text = "Bonus", Value = "Bonus" }
+                                    }, "Value", "Text"),
+                                    "Select Source of funds",
+                                    new { @class = "form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 hover-style", @id = "sourceOfFunds" }) <!-- Added ID for JavaScript -->
+                                @Html.ValidationMessageFor(model => model.SourceOfFunds, "", new { @class = "text-red-500 text-sm" })
+                            </div>
+                            <div class="mb-5">
+                                <div class="flex items-center">
+
+                                    @Html.Label("Reference Number", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+
+                                </div>
+                                <div class="amount-input-container flex flex-col ml-4">
+                                    @Html.EditorFor(model => model.ReferenceNum, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter reference number" } })
+                                    @Html.ValidationMessageFor(model => model.ReferenceNum, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+
                         </div>
-                        @*<div class="mb-5">
-                @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
-                    @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
-                </div>
-            </div>*@
 
-                        <div class="col-span-1">
-                            <div class="space-y-4">
-                                <div class="mb-5">
-                                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="amount-input-container flex flex-col ml-4">
-                                        @Html.TextAreaFor(model => model.Remark, 2, 20, new { @class = "form-input" })
-                                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
-                                    </div>
+                    </div>
+                    @*<div class="mb-5">
+                            @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
+                                @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>*@
+
+                    <div class="col-span-1">
+                        <div class="space-y-4">
+                            <div class="mb-5">
+                                <div class="flex items-center">
+                                    
+                                    @Html.Label("Date of Payment", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+
                                 </div>
-
-
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.PaymentDate, new { htmlAttributes = new {
+                                        type = "date",
+                                        @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
+                                        @id = "payment-date-picker",
+                                        max = DateTime.Now.ToString("yyyy-MM-dd") // Set max date to today
+                                    }})
+                                    @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="mb-5">
+                                @Html.Label("Upload Document", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
                                 <div class="custom-file-container" data-upload-id="myFirstImage">
-                                    <label class="custom-file-container__custom-file">
-                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" accept="*" name="uploadedFile">
+
+                                    <div class="custom-file-container__image-preview">
+                                        <input type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" accept="*" name="uploadedFile">
                                         <span class="custom-file-container__custom-file__custom-file-control"></span>
-                                    </label>
-                                    <div class="custom-file-container__image-preview"></div>
+                                    </div>
                                 </div>
+
                             </div>
+
+
                         </div>
+
                     </div>
                 </div>
+
+                <div class="mb-5">
+                    <div class="flex items-center">
+                        @Html.Label("Remark", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+
+                    </div>
+                    <div class="amount-input-container flex flex-col ml-4">
+                        @Html.TextAreaFor(model => model.Remark, 1, 40, new { @class = "form-input", @placeholder = "Enter any remarks" })
+                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                    </div>
+                    
+                </div>
+            </div>
+
             <div class="mt-6 flex justify-end">
                 <button type="submit" class="btn btn-primary mr-2" style="width: 2000px; height: 50px">Submit</button>
             </div>
         </div>
     </div>
 
-
 }
 
-<style>
-    .shareholder-item:hover {
-        background-color: #3b82f6; /* Tailwind's bg-blue-500 */
-        color: white;
-    }
-</style>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function (e) {
@@ -226,14 +296,6 @@
     });
 </script>
 
-<script>
-    $(function () {
-        $("#payment-date-picker").datepicker({
-            dateFormat: "mm/dd/yy", // Customize the date format as needed
-            maxDate: 0 // Restrict to today and earlier
-        });
-    });
-</script>
 
 
 <script>
@@ -243,8 +305,8 @@
             $('.payment-field').each(function () {
                 total += parseFloat($(this).val()) || 0;
             });
-            $('#PaidAmount').val(total);
-
+            $('#PaidAmount').text(total.toFixed(2) + 'ETB');
+            $('#PaidAmountHidden').val(total.toFixed(2)); // Set hidden field value
             // Validate against UnpaidSubscription
             var unpaidSubscription = parseFloat($('#UnpaidSubscription').val()) || 0;
             if (total > unpaidSubscription) {
@@ -259,6 +321,7 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
 
 
 <script>

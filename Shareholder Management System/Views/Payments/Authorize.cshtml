@@ -74,7 +74,17 @@
                         </h6>
                     </div>
                 </div>
-
+                <!-- Source of Payment -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Source of Payment
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.SourceOfFunds)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
                 <!-- Blocked Amount -->
                 <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
                     <div class="flex items-start justify-between py-3">
