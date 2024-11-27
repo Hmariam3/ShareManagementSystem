@@ -24,7 +24,7 @@ namespace Shareholder_Management_System.Models
         public int DivID { get; set; }
         public Nullable<decimal> Profit { get; set; }
         public Nullable<decimal> TotalWASA { get; set; }
-        public Nullable<System.DateTime> FiscalYear { get; set; }
+        public string FiscalYear { get; set; }
         public Nullable<decimal> DivPerShare { get; set; }
         public Nullable<decimal> TaxableAmount { get; set; }
         public Nullable<decimal> TaxRate { get; set; }
@@ -32,8 +32,12 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> NumOutstandingDays { get; set; }
         public Nullable<int> CreatedBy { get; set; }
         public Nullable<System.DateTime> CreationDate { get; set; }
+        public string AuthorizationStatus { get; set; }
+        public Nullable<int> Authorizer { get; set; }
+        public Nullable<System.DateTime> AuthorizedDate { get; set; }
     
         public virtual User User { get; set; }
+        public virtual User User1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -268,7 +268,7 @@ namespace Shareholder_Management_System.Controllers
                             var transferrorSubscription = db.Subscribtions.FirstOrDefault(s => s.SubID.ToString() == subscriptionId && s.ShID == shareTransfer.TransferrorShID);
                             if (transferrorSubscription != null)
                             {
-                                transferrorSubscription.SubNumShares -= (int)(transferrorSubscription.PaidSubscription / 1000);
+                                transferrorSubscription.SubNumShares -= (int)(transferrorSubscription.PaidSubscription / 100);
                                 transferrorSubscription.SubAmount -= transferrorSubscription.SubAmount;
                                 transferrorSubscription.PaidSubscription -= transferrorSubscription.PaidSubscription;                               
                                 db.Entry(transferrorSubscription).State = EntityState.Modified;
@@ -306,7 +306,7 @@ namespace Shareholder_Management_System.Controllers
                                     ShID = shareTransfer.TransfareeShID,
                                     SubID = newSubscription.SubID,
                                     PaymentMode = payment.PaymentMode,
-                                    PaidAmount = payment.PaidAmount,
+                                    PaidAmount = payment.PaidAmount,                                  
                                     ReferenceNum = payment.ReferenceNum,
                                     PaymentTransferFrom = shareTransfer.TransferrorShID,
                                     PaymentDate = payment.PaymentDate,
@@ -316,7 +316,11 @@ namespace Shareholder_Management_System.Controllers
                                     AuthorizationDate = DateTime.Now,
                                     TransferedPayID = payment.PayID,
                                     TransferID = shareTransfer.TransferID,
-                                    TransferAmount = payment.PaidAmount
+                                    TransferAmount = payment.PaidAmount,
+                                    CreationDate = shareTransfer.CreationDate,
+                                    Branch = shareTransfer.Branch,
+                                    Remark = shareTransfer.Remark
+
 
                                 };
                                 db.Payments.Add(newPayments);
@@ -367,7 +371,7 @@ namespace Shareholder_Management_System.Controllers
                             SubID = newSubscription.SubID,
                             PaymentMode = "AccountTransfer",
                             PaidAmount = shareTransfer.PaidAmountForTransfer,
-                            ReferenceNum = "123456789",
+                            ReferenceNum = "RightTransfer",
                             PaymentTransferFrom = shareTransfer.TransferrorShID,
                             PaymentDate = shareTransfer.TransferDate,
                             CreatedBy = shareTransfer.CreatedBy,
@@ -375,7 +379,11 @@ namespace Shareholder_Management_System.Controllers
                             PaymentAuthorizer = AuthorizerId,
                             AuthorizationDate = DateTime.Now,
                             TransferID = shareTransfer.TransferID,
-                            TransferAmount = shareTransfer.PaidAmountForTransfer
+                            TransferAmount = shareTransfer.PaidAmountForTransfer,
+                            CreationDate = shareTransfer.CreationDate,
+                            Branch = shareTransfer.Branch,
+                            Remark = shareTransfer.Remark
+
 
                         };
                         db.Payments.Add(newPayments);
@@ -441,7 +449,10 @@ namespace Shareholder_Management_System.Controllers
                                     AuthorizationDate = DateTime.Now,
                                     TransferedPayID = payment.PayID,
                                     TransferID = shareTransfer.TransferID,
-                                    TransferAmount = payment.PaidAmount
+                                    TransferAmount = payment.PaidAmount,
+                                    CreationDate = shareTransfer.CreationDate,
+                                    Branch = shareTransfer.Branch,
+                                    Remark = shareTransfer.Remark
 
                                 };
                                 db.Payments.Add(newPayments);
@@ -513,7 +524,10 @@ namespace Shareholder_Management_System.Controllers
                             AuthorizationDate = DateTime.Now,
                             TransferedPayID = payment.PayID,
                             TransferID = shareTransfer.TransferID,
-                            TransferAmount = shareTransfer.PaidAmountForTransfer
+                            TransferAmount = shareTransfer.PaidAmountForTransfer,
+                            CreationDate = shareTransfer.CreationDate,
+                            Branch = shareTransfer.Branch,
+                            Remark = shareTransfer.Remark
 
                         };
                         db.Payments.Add(newPayments);
@@ -531,7 +545,7 @@ namespace Shareholder_Management_System.Controllers
                             var transferrorSubscription = db.Subscribtions.FirstOrDefault(s => s.SubID.ToString() == subscriptionId && s.ShID == shareTransfer.TransferrorShID);
                             if (transferrorSubscription != null)
                             {
-                                transferrorSubscription.SubNumShares -= (int)(transferrorSubscription.PaidSubscription / 1000);
+                                transferrorSubscription.SubNumShares -= (int)(transferrorSubscription.PaidSubscription / 100);
                                 transferrorSubscription.SubAmount -= transferrorSubscription.SubAmount;
                                 transferrorSubscription.PaidSubscription -= transferrorSubscription.PaidSubscription;
                                 db.Entry(transferrorSubscription).State = EntityState.Modified;
@@ -580,7 +594,10 @@ namespace Shareholder_Management_System.Controllers
                                     AuthorizationDate = DateTime.Now,
                                     TransferedPayID = payment.PayID,
                                     TransferID = shareTransfer.TransferID,
-                                    TransferAmount = payment.PaidAmount
+                                    TransferAmount = payment.PaidAmount,
+                                    CreationDate = shareTransfer.CreationDate,
+                                    Branch = shareTransfer.Branch,
+                                    Remark = shareTransfer.Remark
                                 };
                                 db.Payments.Add(newPayments);
                                 payment.PaidAmount -= payment.PaidAmount;

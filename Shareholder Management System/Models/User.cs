@@ -23,6 +23,7 @@ namespace Shareholder_Management_System.Models
             this.Certificates = new HashSet<Certificate>();
             this.Certificates1 = new HashSet<Certificate>();
             this.Dividends = new HashSet<Dividend>();
+            this.Dividends1 = new HashSet<Dividend>();
             this.DividenedDetails = new HashSet<DividenedDetail>();
             this.Documents = new HashSet<Document>();
             this.Documents1 = new HashSet<Document>();
@@ -43,7 +44,7 @@ namespace Shareholder_Management_System.Models
         public string FullName { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
-        public bool Status { get; set; }
+        public Nullable<bool> Status { get; set; }
         public string Role { get; set; }
         public Nullable<int> Branch { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
@@ -64,6 +65,8 @@ namespace Shareholder_Management_System.Models
         public virtual ICollection<Certificate> Certificates1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Dividend> Dividends { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Dividend> Dividends1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -195,7 +195,7 @@
                             </div>
                             <div class="col-md-10">
                                 <label>Amount Per Share</label>
-                                @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "1000", @readonly = "readonly", @id = "amountPerShare" })
+                                @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "100", @readonly = "readonly", @id = "amountPerShare" })
                                 @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
@@ -276,6 +276,7 @@
     $(document).ready(function () {
         let transferCategory = '';
         let transferType = '';
+        
 
 
         // Function to reset the form to its default state
@@ -348,8 +349,8 @@
                                 <td><input type="checkbox" class="form-checkbox subscription-checkbox" name="SubID2" data-subscription-id="${subscription.SubID}" ${isFullTransfer ? 'checked disabled' : ''}></td>
                                 <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
                                 <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
-                                <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 1000)}" readonly /></td>
-                                <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 1000)}" readonly /></td>
+                                <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 100)}" readonly /></td>
+                                <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 100)}" readonly /></td>
                                 <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" readonly /></td>
                             </tr>
                         `);
@@ -378,8 +379,8 @@
                                     <td><input type="checkbox" class="form-checkbox subscription-checkbox" name="SubID2" data-subscription-id="${subscription.SubID}" ${isFullTransfer ? 'checked disabled' : ''}></td>
                                     <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
                                     <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
-                                    <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 1000)}" readonly /></td>
-                                    <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 1000)}" readonly /></td>
+                                    <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 100)}" readonly /></td>
+                                    <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 100)}" readonly /></td>
                                     <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" placeholder="" readonly /></td>
                                 </tr>
                             `);
@@ -600,7 +601,7 @@
                         setTimeout(function () {
                             $('#paymentsTable tbody tr').each(function () {
                                 var PayID = $(this).find('td:eq(1) input').val();
-                                var paidAmount = parseFloat($(this).find('td:eq(2) input').val() / 1000); // Get Paid Amount from correct column and parse as float
+                                var paidAmount = parseFloat($(this).find('td:eq(2) input').val() / 100); // Get Paid Amount from correct column and parse as float
                                 var isChecked = $(this).find('.payment-checkbox').is(':checked');
                                 if (isChecked && !selectedPaymentIds.includes(PayID)) {
                                     selectedPaymentIds.push(PayID);
@@ -631,7 +632,7 @@
                         //remove the payment IDs associated with the unchecked subscription
                         $(`#paymentsTable tbody tr[data-subscription-id="${SubID}"]`).each(function () {
                             var PayID = $(this).find('td:eq(1) input').val(); // Get the payment ID from the row
-                            var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000) || 0;
+                            var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100) || 0;
                             var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
                             var newTotal = currentTotal - paidAmount;
                             $('#numSharesTransferred').val(newTotal).trigger('change'); // Update the No of Shares Transferred field
@@ -731,7 +732,7 @@
                 if (transferCategory === 'Payment') {
                     if ($(this).is(':checked')) {
                         // Adjust the selector to get the Paid Share value correctly for Subscription
-                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000); // Get Paid amount from correct column and parse as float
+                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100); // Get Paid amount from correct column and parse as float
                         var PayID = $(this).closest('tr').find('td:eq(1) input').val(); // Get Payment ID from correct column
                         //var paidAmount = $(this).closest('tr').find('td:eq(2) input').val() / 1000; // Get Paid Amount value
 
@@ -750,7 +751,7 @@
                         // Remove the unchecked payment ID from the list
                         selectedPaymentIds = selectedPaymentIds.filter(id => id !== PayID);
                         // Subtract the unchecked Paid amount from the total
-                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000) || 0;
+                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100) || 0;
                         var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
                         var newTotal = currentTotal - paidAmount;
                         $('#numSharesTransferred').val(newTotal).trigger('change'); // Update the No of Shares Transferred field
@@ -772,7 +773,7 @@
                         // Make only the associated `.partial-transfer-input` editable
                         $(this).closest('tr').find('.partial-transfer-input1').prop('readonly', false);
                         $(document).on('input', '.partial-transfer-input1', function () {
-                            var partialTransferValue = $(this).val() / 1000; // Get the value entered in the partial transfer input for payments
+                            var partialTransferValue = $(this).val() / 100; // Get the value entered in the partial transfer input for payments
                             $('#numSharesTransferred').val(partialTransferValue).trigger('change'); // Set it to the No of Shares Transferred field
                         });
                     } else {
@@ -841,11 +842,12 @@
         });
 
 
-        // Function to disable all checkboxes in both tables
+        //// Function to disable all checkboxes in both tables
         function disableAllCheckboxes(shouldDisable) {
-            $('#subscriptionsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
-            $('#paymentsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
+            $('#subscriptionsTable input[type="checkbox"]').prop('disabled', shouldDisable);
+            $('#paymentsTable input[type="checkbox"]').prop('disabled', shouldDisable);
         }
+
 
 
         // Initial state: hide "Partial Transfer" columns and disable the inputs

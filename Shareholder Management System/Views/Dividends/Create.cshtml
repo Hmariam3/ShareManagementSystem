@@ -1,0 +1,156 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using Shareholder_Management_System.Models;
+
+namespace Shareholder_Management_System.Controllers
+{
+    public class DividendsController : Controller
+    {
+        private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
+
+        // GET: Dividends
+        public ActionResult Index()
+        {
+            var dividends = db.Dividends.Include(d => d.User);
+            ViewBag.CurrentDividend = new Dividend();
+
+            return View(dividends.ToList());
+        }
+
+        // GET: Dividends/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Dividend dividend = db.Dividends.Find(id);
+            if (dividend == null)
+            {
+                return HttpNotFound();
+            }
+            return View(dividend);
+        }
+
+        // GET: Dividends/Create
+        public ActionResult Create()
+        {
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+            return View();
+        }
+
+        // POST: Dividends/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Dividend dividend)
+        {
+            if (ModelState.IsValid)
+            {
+                int userId = Convert.ToInt32(Session["ID"]);
+
+                DateTime currentDate = DateTime.Now;
+                int currentYear = currentDate.Year;
+                int lastYear = currentDate.Year - 1;
+                DateTime fiscalYearStart, fiscalYearEnd;
+
+                fiscalYearStart = new DateTime(lastYear, 7, 1); // July 1 of the previous year
+                fiscalYearEnd = new DateTime(currentYear, 6, 30); // June 30 of the current year
+
+                // Check if the fiscal year includes a leap year
+                bool isLeapYear = DateTime.IsLeapYear(fiscalYearStart.Year);
+
+                // Determine total fiscal days
+                int totalFiscalDays = isLeapYear ? 366 : 365;
+
+                dividend.FiscalYear = lastYear + " - " + currentYear;
+                dividend.NumOutstandingDays = totalFiscalDays;
+                dividend.CreationDate = currentDate;
+                dividend.CreatedBy = userId;
+                dividend.AuthorizationStatus = "Pending";
+
+                db.Dividends.Add(dividend);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", dividend.CreatedBy);
+            return View(dividend);
+        }
+
+        // GET: Dividends/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Dividend dividend = db.Dividends.Find(id);
+            if (dividend == null)
+            {
+                return HttpNotFound();
+            }
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", dividend.CreatedBy);
+            return View(dividend);
+        }
+
+        // POST: Dividends/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "DivID,Profit,TotalWASA,FiscalYear,DivPerShare,TaxableAmount,TaxRate,RunningDate,NumOutstandingDays,CreatedBy,CreationDate")] Dividend dividend)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(dividend).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", dividend.CreatedBy);
+            return View(dividend);
+        }
+
+        // GET: Dividends/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Dividend dividend = db.Dividends.Find(id);
+            if (dividend == null)
+            {
+                return HttpNotFound();
+            }
+            return View(dividend);
+        }
+
+        // POST: Dividends/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Dividend dividend = db.Dividends.Find(id);
+            db.Dividends.Remove(dividend);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}
