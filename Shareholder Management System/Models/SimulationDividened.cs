@@ -30,7 +30,7 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> Branch { get; set; }
         public Nullable<System.DateTime> DateApplication { get; set; }
         public Nullable<System.DateTime> SettlementDate { get; set; }
-        public string DividenedYear { get; set; }
+        public Nullable<System.DateTime> DividenedYear { get; set; }
     
         public virtual Branch Branch1 { get; set; }
         public virtual Dividend Dividend { get; set; }

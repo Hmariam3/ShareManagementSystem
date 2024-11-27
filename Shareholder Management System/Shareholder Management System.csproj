@@ -418,6 +418,7 @@
     <Content Include="assets\images\flags\SV.svg" />
     <Content Include="assets\images\flags\TR.svg" />
     <Content Include="assets\images\g-8.png" />
+    <Content Include="assets\images\images.png" />
     <Content Include="assets\images\knowledge\find-solution.svg" />
     <Content Include="assets\images\knowledge\image-1.jpg" />
     <Content Include="assets\images\knowledge\image-2.jpg" />
@@ -636,6 +637,7 @@
     <Content Include="Views\Dividends\Details.cshtml" />
     <Content Include="Views\Dividends\Delete.cshtml" />
     <Content Include="Views\Dividends\Edit.cshtml" />
+    <Content Include="Views\Subscribtions\PendingSubscription.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

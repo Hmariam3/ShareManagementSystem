@@ -2,11 +2,7 @@
 <#@ include file="EF6.Utility.CS.ttinclude"#><#@
  output extension=".cs"#><#
 
-<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.Context.tt
-const string inputFile = @"ShareModel.edmx";
-========
 const string inputFile = @"ShareManagementModel.edmx";
->>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.Context.tt
 var textTransform = DynamicTextTransformation.Create(this);
 var code = new CodeGenerationTools(this);
 var ef = new MetadataTools(this);
