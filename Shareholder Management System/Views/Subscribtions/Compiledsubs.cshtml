@@ -9,8 +9,13 @@
 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
     <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Compiled Shareholder Data</h5>
 </div>
-<div style="overflow-x: auto;">
 
+<div style="overflow-x: auto;" class="mx-4 mt-5">
+
+    <a href="@Url.Action("ExportCompiledsubsToExcel")"
+       class="btn btn-primary w-44 mb-1 text-center">
+        Export to Excel
+    </a>
     <table id="compiled" class="display" style="width:100%">
         <thead>
             <tr class="bg-gray-100">

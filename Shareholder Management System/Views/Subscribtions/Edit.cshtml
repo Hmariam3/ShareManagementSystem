@@ -18,8 +18,8 @@
     }
 
     .panel {
-        width: 600px;
-        max-width: 600px;
+        width: 1200px;
+        max-width: 1200px;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -35,7 +35,7 @@
         <div class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-1 mt-20">
             <div class="panel">
                 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-                    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Create Subscription</h5>
+                    <h5 class="text-lg font-semibold dark:text-white-light uppercase" style="padding:7px;">Edit Subscription</h5>
                 </div>
 
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -103,6 +103,7 @@
                         <div class="mb-5">
                             <label>----------------------------------------------------------</label>
                             <input type="submit" value="Update" class="btn btn-primary" />
+
 
                         </div>
                     </div>

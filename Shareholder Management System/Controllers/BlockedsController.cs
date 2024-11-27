@@ -148,7 +148,7 @@ namespace Share_Management_System.Controllers
                     {
                         // Update blocked amount and save
                         decimal currentBlockedAmount = payment.BlockedAmount ?? 0;
-                        decimal newBlockedAmount = currentBlockedAmount + blocked.BlockedAmount;
+                        decimal? newBlockedAmount = currentBlockedAmount + blocked.BlockedAmount;
 
                         blocked.BlockedBy = userId; // Placeholder for BlockedBy
                         //blocked.BlockedAuthorizer = 3; // Placeholder for BlockedAuthorizer

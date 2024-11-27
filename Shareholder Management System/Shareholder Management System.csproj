@@ -51,6 +51,15 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=7.5.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.7.5.1\lib\net35\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=7.5.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.Interfaces.7.5.0\lib\net35\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.System.Drawing, Version=7.5.0.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.System.Drawing.7.5.0\lib\net35\EPPlus.System.Drawing.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Authentication, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authentication.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.dll</HintPath>
     </Reference>
@@ -145,6 +154,8 @@
     <Reference Include="Microsoft.Win32.Registry, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.4.5.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -258,6 +269,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -287,66 +299,66 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuditLog.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Blocked.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Branch.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Certificate.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Dividend.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DividenedDetail.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Document.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Payment.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Proxy.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\Shareholder.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ShareholderMS.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderMS.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ShareholderMS.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ShareholderMS.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderMS.edmx</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShareholderSummaryViewModel.cs" />
+    <Compile Include="Models\ShareModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ShareModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShareModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ShareModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ShareModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ShareModel.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\ShareTransfer.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShCategory.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SimulationDividened.cs">
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Subscribtion.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
-      <DependentUpon>ShareholderMS.tt</DependentUpon>
+      <DependentUpon>ShareModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\UserProfileViewModel.cs" />
@@ -463,24 +475,24 @@
     <Content Include="js\jquery.dataTables.min.js" />
     <Content Include="js\jquery.min.js" />
     <Content Include="js\select2.min.js" />
-    <Content Include="Models\ShareholderMS.Context.tt">
+    <Content Include="Models\ShareModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ShareholderMS.edmx</DependentUpon>
-      <LastGenOutput>ShareholderMS.Context.cs</LastGenOutput>
+      <DependentUpon>ShareModel.edmx</DependentUpon>
+      <LastGenOutput>ShareModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\ShareholderMS.tt">
+    <Content Include="Models\ShareModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ShareholderMS.edmx</DependentUpon>
-      <LastGenOutput>ShareholderMS.cs</LastGenOutput>
+      <DependentUpon>ShareModel.edmx</DependentUpon>
+      <LastGenOutput>ShareModel.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\ShareholderMS.edmx">
+    <EntityDeploy Include="Models\ShareModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ShareholderMS.Designer.cs</LastGenOutput>
+      <LastGenOutput>ShareModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\ShareholderMS.edmx.diagram">
-      <DependentUpon>ShareholderMS.edmx</DependentUpon>
+    <Content Include="Models\ShareModel.edmx.diagram">
+      <DependentUpon>ShareModel.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

@@ -15,11 +15,11 @@ namespace Shareholder_Management_System.Controllers
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
         // GET: ShareTransfers
-        public ActionResult Index()
-        {
-            var shareTransfers = db.ShareTransfers.Include(s => s.Payment).Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.Subscribtion).Include(s => s.User).Include(s => s.User1);
-            return View(shareTransfers.ToList());
-        }
+        //public ActionResult Index()
+        //{
+        //    var shareTransfers = db.ShareTransfers.Include(s => s.Payment).Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.Subscribtion).Include(s => s.User).Include(s => s.User1);
+        //    return View(shareTransfers.ToList());
+        //}
 
         // GET: ShareTransfers/Details/5
         public ActionResult Details(int? id)

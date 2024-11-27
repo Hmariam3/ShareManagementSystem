@@ -1,98 +1,97 @@
-﻿
-@model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
+﻿@model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
 
 
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<link href="~/Scripts/tailwind.min.css" rel="stylesheet" />
+<link href="~/Scripts/tailwind.min.sec.css" rel="stylesheet" />
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 <div class="bg-white shadow-md rounded-lg overflow-hidden panel">
-    
     <div class="p-6 overflow-x-auto">
         @if (Model != null && Model.Any())
         {
-            <div style="overflow-x: auto;">
+            <div style="  max-height: 300px;">
+                <!-- Make the data body scrollable -->
                 <table id="subscriptionTable" class="display" style="width:100%">
                     <thead>
                         <tr>
                             <th>FullName</th>
                             <th>Sub ID</th>
-
-                            <th>
-                                Number of Shares
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Premium)
-                            </th>
-                            <th>
-                                Validity
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.SubAmount)
-                            </th>
-                            <th>
-                                Paid Subscription
-                            </th>
-                            <th>
-                                Unpaid Subscription
-                            </th>
-                            <th>
-                                Due Date
-                            </th>
-                            <th>
-                                SubStatus
-                            </th>
-
-                            <th>
-                                Auth. Status
-                            </th>
-
+                            <th>Number of Shares</th>
+                            <th>Validity</th>
+                            <th>Sub Amount</th>
+                            <th>Paid Subscription</th>
+                            <th>Unpaid Subscription</th>
+                            <th>Due Date</th>
+                            <th>SubStatus</th>
+                            <th>Auth. Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SubID)
-                            </td>
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                                <td>@Html.DisplayFor(modelItem => item.SubID)</td>
+                                <td>@Html.DisplayFor(modelItem => item.SubNumShares)</td>
 
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SubNumShares)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Premium)
-                            </td>
-                           
-                            <td>
-                                @if (item.PaidSubscription >= item.SubAmount * (decimal)0.25)
-                                {
-                                    <span style="color:green">Valid</span>
-                                }
-                                else
-                                {
-                                    <span style="color:red">25% Not Paid</span>
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SubAmount)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PaidSubscription)
-                            </td>
-                            <td style="background-color:cyan">
-                                @Html.DisplayFor(modelItem => item.UnpaidSubscription)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PaymentDueDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SubStatus)
-                            </td>
-
-                            <td>
-                                @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                            </td>
-                        </tr>
+                                <td>
+                                    @if (item.PaidSubscription >= item.SubAmount * (decimal)0.25)
+                                    {
+                                        <span style="color:green">Valid</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color:red">25% Not Paid</span>
+                                    }
+                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.SubAmount)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PaidSubscription)</td>
+                                <td style="background-color:cyan">@Html.DisplayFor(modelItem => item.UnpaidSubscription)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PaymentDueDate)</td>
+                                <td>@Html.DisplayFor(modelItem => item.SubStatus)</td>
+                                @*<td>@Html.DisplayFor(modelItem => item.SubAuthorizationStatus)</td>*@
+                                <td>
+                                    @if (item.SubAuthorizationStatus == "Approved")
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
+                                            <i class="fas fa-check-circle mr-2"></i> <!-- Check-circle icon for approved status -->
+                                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                        </span>
+                                    }
+                                    else if (item.SubAuthorizationStatus == "Pending")
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                            <i class="fas fa-clock mr-2"></i> <!-- Clock icon for pending status -->
+                                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                        </span>
+                                    }
+                                    else if (item.SubAuthorizationStatus == "Rejected")
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
+                                            <i class="fas fa-times-circle mr-2"></i> <!-- Times-circle icon for rejected status -->
+                                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-gray-700 bg-gray-200 rounded-full">
+                                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -102,9 +101,6 @@
         {
             <p>No subscriptions found for the given Share ID.</p>
         }
-   
-</div>
     </div>
-
-
+</div>
 

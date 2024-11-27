@@ -1,138 +1,134 @@
 ﻿@model Shareholder_Management_System.Models.Subscribtion
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Subscription Details";
+
+    // Calculate the number of days left for payment
+    int daysLeft = (Model.PaymentDueDate.HasValue) ? (Model.PaymentDueDate.Value - DateTime.Now).Days : 0;
+    string daysLeftMessage;
+
+    if (Model.PaymentDueDate.HasValue)
+    {
+        if (daysLeft > 0)
+        {
+            daysLeftMessage = $"{daysLeft} days left";
+        }
+        else if (daysLeft == 0)
+        {
+            daysLeftMessage = "Due today";
+        }
+        else
+        {
+            daysLeftMessage = $"Overdue by {-daysLeft} days";
+        }
+    }
+    else
+    {
+        daysLeftMessage = "No due date specified";
+    }
 }
 
-<h2>Details</h2>
+<div class="panel mt-20 mx-4">
+    <div class="flex flex-wrap justify-between gap-4 px-4">
+        <div class="text-2xl font-semibold uppercase">Subscriptions</div>
+        <div class="shrink-0">
+            @*<img src="assets/images/logo.png" alt="image" class="w-14 ltr:ml-auto rtl:mr-auto">*@
+        </div>
+    </div>
+    <div class="flex px-4">
+        <div class="w-1/2 ltr:text-left rtl:text-right">
+            <div class="mt-6 space-y-1 text-white-dark">
+                <p class="text-lg text-gray-600 mt-2">
+                    FullName: <span class="text-gray-800 font-semibold uppercase">@Model.Shareholder.FullNameEng</span>
+                </p>
+                <p class="text-lg text-gray-600">
+                    Shareholder ID: <span class="text-gray-800">@Model.Shareholder.ShareID</span>
+                </p>
+            </div>
+        </div>
+        <div class="w-1/2 ltr:text-right rtl:text-left">
+            <div class="mt-6 space-y-1 text-white-dark">
+                <p class="text-lg text-gray-600">
+                    Payment Due Date @Model.PaymentDueDate
+                </p>
+                <p> <span class="text-sm text-red-600" style="color:red">(@daysLeftMessage)</span></p>
+            </div>
+        </div>
+    </div>
 
-<div>
-    <h4>Subscribtion</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.SubNumShares)
-        </dt>
+    <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+    <div class="flex flex-col flex-wrap justify-between gap-6 lg:flex-row">
+        <div class="flex-1">
+            <div class="space-y-1 text-white-dark">
+                @if (Model == null)
+                {
+                <p class="text-red-600">Model is null</p>
+                }
 
-        <dd>
-            @Html.DisplayFor(model => model.SubNumShares)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Premium)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Premium)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SubAmount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SubAmount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PaidSubscription)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaidSubscription)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UnpaidSubscription)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UnpaidSubscription)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentDueDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaymentDueDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SubStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SubStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SubDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SubDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SubAuthorizationStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SubAuthorizationStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorizedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AuthorizedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Remark)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Remark)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder.ShareID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder1.ShareID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.FullName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User1.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User1.FullName)
-        </dd>
-
-    </dl>
+                @if (Model?.User1 == null)
+                {
+                <p class="text-red-600">User is null</p>
+                }
+                else
+                {
+                <p class="text-lg text-gray-600">Created By: <span class="text-gray-800">@Model.User1.FullName</span></p>
+                }
+                @if (Model?.User == null)
+                {
+                <p class="text-red-600">Not Approved yet</p>
+                }
+                else
+                {
+                <p class="text-lg text-gray-600">Approved By: <span class="text-gray-800">@Model.User.FullName</span></p>
+                }
+            </div>
+            <div>
+                <p class="text-gray-800 text-lg uppercase mt-4"> Branch @Model.Branch1.BranchName </p>
+            </div>
+        </div>
+        <div class="flex flex-col justify-between gap-6 sm:flex-row lg:w-2/3">
+            <div class="xl:1/3 sm:w-1/2 lg:w-2/5">
+                <div class="mb-2 flex w-full items-center justify-between">
+                    <div class="text-white-dark">Num of Subscribed Shares :</div>
+                    <div>
+                        <p class="text-gray-800 text-lg">@Model.SubNumShares</p>
+                    </div>
+                </div>
+                <div class="mb-2 flex w-full items-center justify-between">
+                    <div class="text-white-dark">Paid Amount :</div>
+                    <div><p class="text-green-600 text-lg">@Model.PaidSubscription</p></div>
+                </div>
+                <div class="mb-2 flex w-full items-center justify-between">
+                    <div class="text-white-dark">Status :</div>
+                    <div>
+                        <p class="text-gray-800 text-lg">@Model.SubStatus</p>
+                    </div>
+                </div>
+            </div>
+            <div class="xl:1/3 sm:w-1/2 lg:w-2/5">
+                <div class="mb-2 flex w-full items-center justify-between">
+                    <div class="text-white-dark">Subscribed Amount</div>
+                    <div class="whitespace-nowrap">
+                        <p class="text-gray-800 text-lg">@Model.SubAmount</p>
+                    </div>
+                </div>
+                <div class="mb-2 flex w-full items-center justify-between">
+                    <div class="text-white-dark">UnPaid Amount:</div>
+                    <div>
+                        <p class="text-green-600 text-lg">@Model.UnpaidSubscription</p>
+                    </div>
+                </div>
+                <div class="mb-2 flex w-full items-center justify-between">
+                    <div class="text-white-dark">Authorization Status :</div>
+                    <div>
+                        <p class="text-gray-800 text-lg">@Model.SubAuthorizationStatus</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-8 text-right">
+        <a href="@Url.Action(" Index")" class="btn btn-primary w-32 py-1 bg-green-200 hover:bg-green-200 rounded text-white text-sm text-center">Back to List</a>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.SubID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+

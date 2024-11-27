@@ -19,7 +19,8 @@ namespace Shareholder_Management_System.Models
         {
             this.Blockeds = new HashSet<Blocked>();
             this.DividenedDetails = new HashSet<DividenedDetail>();
-            this.ShareTransfers = new HashSet<ShareTransfer>();
+            this.Payment1 = new HashSet<Payment>();
+            this.SimulationDivideneds = new HashSet<SimulationDividened>();
         }
     
         public int PayID { get; set; }
@@ -39,6 +40,10 @@ namespace Shareholder_Management_System.Models
         public Nullable<System.DateTime> AuthorizationDate { get; set; }
         public string Remark { get; set; }
         public Nullable<decimal> BlockedAmount { get; set; }
+        public Nullable<int> TransferedPayID { get; set; }
+        public Nullable<int> TransferID { get; set; }
+        public Nullable<decimal> TransferAmount { get; set; }
+        public string SourceOfFunds { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Blocked> Blockeds { get; set; }
@@ -48,10 +53,14 @@ namespace Shareholder_Management_System.Models
         public virtual Document Document { get; set; }
         public virtual Shareholder Shareholder { get; set; }
         public virtual Shareholder Shareholder1 { get; set; }
+        public virtual ShareTransfer ShareTransfer { get; set; }
         public virtual Subscribtion Subscribtion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Payment> Payment1 { get; set; }
+        public virtual Payment Payment2 { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ShareTransfer> ShareTransfers { get; set; }
+        public virtual ICollection<SimulationDividened> SimulationDivideneds { get; set; }
     }
 }

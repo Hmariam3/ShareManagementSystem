@@ -70,9 +70,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
 
-<div class="bg-white shadow-md rounded-lg overflow-hidden panel">
+<div class="bg-white shadow-md rounded-lg overflow-hidden panel mx-4 mt-5">
     <div class="px-6 py-4 border-b border-gray-200">
-        <h2 class="text-xl font-semibold text-gray-700">User Information</h2>
+        <h2 class="text-xl font-semibold text-gray-700 uppercase">Pending Authorization</h2>
     </div>
     <div class="p-6 overflow-x-auto">
         <table id="userTable" class="min-w-full leading-normal">
@@ -97,6 +97,7 @@
                     <th class="border border-gray-300 px-4 py-2">Share ID From</th>
                     <th class="border border-gray-300 px-4 py-2">CreatedBy</th>
                     <th class="border border-gray-300 px-4 py-2">Authorizer</th>
+                    <th class="border border-gray-300 px-4 py-2">Branch</th>
                     <th class="border border-gray-300 px-4 py-2">Action</th>
                 </tr>
             </thead>
@@ -151,7 +152,7 @@
                         <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder1.ShareID)</td>
                         <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User1.FullName)</td>
                         <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User.FullName)</td>
-
+                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
                         <td class="border border-gray-300 px-4 py-2">
                             <div class="flex space-x-2">
                                 <a href="@Url.Action("Authorize", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded">Authorization</a>
