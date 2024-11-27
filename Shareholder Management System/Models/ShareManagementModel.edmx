@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ShareManagementDB_ORGModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -137,6 +137,7 @@
           <Property Name="Branch" Type="int" />
           <Property Name="PaidAmount" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ReferenceNum" Type="nvarchar(max)" />
+          <Property Name="SourceOfFunds" Type="nvarchar(max)" />
           <Property Name="PaymentSlip" Type="int" />
           <Property Name="PaymentDate" Type="date" />
           <Property Name="PaymentTransferFrom" Type="int" />
@@ -150,7 +151,6 @@
           <Property Name="TransferedPayID" Type="int" />
           <Property Name="TransferID" Type="int" />
           <Property Name="TransferAmount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="SourceOfFunds" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Proxy">
           <Key>
@@ -1050,7 +1050,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ShareManagementDB_ORGModelStoreContainer">
+        <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="AuditLog" EntityType="Self.AuditLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Blocked" EntityType="Self.Blocked" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Branch" EntityType="Self.Branch" Schema="dbo" store:Type="Tables" />
@@ -1315,7 +1315,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="ShareManagementDB_ORGModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -1489,6 +1489,7 @@
           <Property Name="Branch" Type="Int32" />
           <Property Name="PaidAmount" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ReferenceNum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SourceOfFunds" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PaymentSlip" Type="Int32" />
           <Property Name="PaymentDate" Type="DateTime" Precision="0" />
           <Property Name="PaymentTransferFrom" Type="Int32" />
@@ -1502,7 +1503,6 @@
           <Property Name="TransferedPayID" Type="Int32" />
           <Property Name="TransferID" Type="Int32" />
           <Property Name="TransferAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="SourceOfFunds" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Blockeds" Relationship="Self.FK_Blocked_Payment" FromRole="Payment" ToRole="Blocked" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_Payment_Branch" FromRole="Payment" ToRole="Branch" />
           <NavigationProperty Name="DividenedDetails" Relationship="Self.FK_Dividened_Detail_Payment" FromRole="Payment" ToRole="DividenedDetail" />
@@ -2749,9 +2749,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ShareManagementDB_ORGModelStoreContainer" CdmEntityContainer="Shareholder_Management_SystemEntities1">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Shareholder_Management_SystemEntities1">
           <EntitySetMapping Name="AuditLogs">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.AuditLog">
+            <EntityTypeMapping TypeName="Model.AuditLog">
               <MappingFragment StoreEntitySet="AuditLog">
                 <ScalarProperty Name="LogID" ColumnName="LogID" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
@@ -2765,7 +2765,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Blockeds">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Blocked">
+            <EntityTypeMapping TypeName="Model.Blocked">
               <MappingFragment StoreEntitySet="Blocked">
                 <ScalarProperty Name="BlockID" ColumnName="BlockID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -2786,7 +2786,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Branches">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Branch">
+            <EntityTypeMapping TypeName="Model.Branch">
               <MappingFragment StoreEntitySet="Branch">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="BranchCode" ColumnName="BranchCode" />
@@ -2797,7 +2797,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Certificates">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Certificate">
+            <EntityTypeMapping TypeName="Model.Certificate">
               <MappingFragment StoreEntitySet="Certificate">
                 <ScalarProperty Name="CertID" ColumnName="CertID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -2818,7 +2818,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Dividends">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Dividend">
+            <EntityTypeMapping TypeName="Model.Dividend">
               <MappingFragment StoreEntitySet="Dividend">
                 <ScalarProperty Name="DivID" ColumnName="DivID" />
                 <ScalarProperty Name="Profit" ColumnName="Profit" />
@@ -2838,7 +2838,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DividenedDetails">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.DividenedDetail">
+            <EntityTypeMapping TypeName="Model.DividenedDetail">
               <MappingFragment StoreEntitySet="DividenedDetail">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="DivID" ColumnName="DivID" />
@@ -2861,7 +2861,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Documents">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Document">
+            <EntityTypeMapping TypeName="Model.Document">
               <MappingFragment StoreEntitySet="Document">
                 <ScalarProperty Name="DocID" ColumnName="DocID" />
                 <ScalarProperty Name="DocName" ColumnName="DocName" />
@@ -2879,7 +2879,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Payments">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Payment">
+            <EntityTypeMapping TypeName="Model.Payment">
               <MappingFragment StoreEntitySet="Payment">
                 <ScalarProperty Name="PayID" ColumnName="PayID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -2888,6 +2888,7 @@
                 <ScalarProperty Name="Branch" ColumnName="Branch" />
                 <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
                 <ScalarProperty Name="ReferenceNum" ColumnName="ReferenceNum" />
+                <ScalarProperty Name="SourceOfFunds" ColumnName="SourceOfFunds" />
                 <ScalarProperty Name="PaymentSlip" ColumnName="PaymentSlip" />
                 <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
                 <ScalarProperty Name="PaymentTransferFrom" ColumnName="PaymentTransferFrom" />
@@ -2901,12 +2902,11 @@
                 <ScalarProperty Name="TransferedPayID" ColumnName="TransferedPayID" />
                 <ScalarProperty Name="TransferID" ColumnName="TransferID" />
                 <ScalarProperty Name="TransferAmount" ColumnName="TransferAmount" />
-                <ScalarProperty Name="SourceOfFunds" ColumnName="SourceOfFunds" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Proxies">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Proxy">
+            <EntityTypeMapping TypeName="Model.Proxy">
               <MappingFragment StoreEntitySet="Proxy">
                 <ScalarProperty Name="ProxyID" ColumnName="ProxyID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -2939,7 +2939,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Shareholders">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Shareholder">
+            <EntityTypeMapping TypeName="Model.Shareholder">
               <MappingFragment StoreEntitySet="Shareholder">
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
                 <ScalarProperty Name="ShareID" ColumnName="ShareID" />
@@ -2981,7 +2981,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ShareTransfers">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.ShareTransfer">
+            <EntityTypeMapping TypeName="Model.ShareTransfer">
               <MappingFragment StoreEntitySet="ShareTransfer">
                 <ScalarProperty Name="TransferID" ColumnName="TransferID" />
                 <ScalarProperty Name="TransferrorShID" ColumnName="TransferrorShID" />
@@ -3008,7 +3008,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ShCategories">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.ShCategory">
+            <EntityTypeMapping TypeName="Model.ShCategory">
               <MappingFragment StoreEntitySet="ShCategories">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ShCategories" ColumnName="ShCategories" />
@@ -3016,7 +3016,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SimulationDivideneds">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.SimulationDividened">
+            <EntityTypeMapping TypeName="Model.SimulationDividened">
               <MappingFragment StoreEntitySet="SimulationDividened">
                 <ScalarProperty Name="SimID" ColumnName="SimID" />
                 <ScalarProperty Name="DivID" ColumnName="DivID" />
@@ -3039,7 +3039,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Subscribtions">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Subscribtion">
+            <EntityTypeMapping TypeName="Model.Subscribtion">
               <MappingFragment StoreEntitySet="Subscribtion">
                 <ScalarProperty Name="SubID" ColumnName="SubID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -3062,7 +3062,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.User">
+            <EntityTypeMapping TypeName="Model.User">
               <MappingFragment StoreEntitySet="User">
                 <ScalarProperty Name="UID" ColumnName="UID" />
                 <ScalarProperty Name="FullName" ColumnName="FullName" />

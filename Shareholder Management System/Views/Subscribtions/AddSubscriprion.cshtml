@@ -94,6 +94,7 @@
                     </div>
                 </div>
 
+
                 <!-- Additional Input Fields -->
                 <div class="mb-5">
                     @Html.LabelFor(model => model.SubNumShares, htmlAttributes: new { @class = "block text-sm font-medium text-gray-700 mb-2" })
@@ -141,31 +142,25 @@
 <div id="resultsub" class="resultsub"></div>
 <script>
     $(document).ready(function () {
-        // Initialize Select2 for the dropdown
+        // Initialize Select2 for Shareholder Dropdown
         $('#shareholderDropdown').select2({
             placeholder: "Select Shareholder",
             allowClear: true,
-            width: '100%' // Ensures the dropdown is responsive
+            width: '100%' // Ensures dropdown is responsive
         });
 
-        // On Shareholder Dropdown change, update the subscriptions
+        // Initialize Select2 for SubID Dropdown
+        $('#subIDDropdown').select2({
+            placeholder: "Select SubID",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // On Shareholder Dropdown change
         $('#shareholderDropdown').on('change', function () {
             var selectedShareId = $(this).val();
 
-            // AJAX request to fetch filtered data based on selected shareholder
-            $.ajax({
-                url: '@Url.Action("Addonsubscriptions", "Subscribtions")',
-                type: 'POST',
-                data: { ShareId: selectedShareId },
-                success: function (data) {
-                    $('#resultsub').html(data); // Load the partial view into the result div
-                },
-                error: function () {
-                    $('#resultsub').html('<p>An error occurred while fetching data.</p>');
-                }
-            });
-
-            // AJAX request to update the SubID dropdown based on Shareholder selection
+            // Update SubID Dropdown
             if (selectedShareId) {
                 $.ajax({
                     url: '@Url.Action("GetSubIDs", "Subscribtions")',
@@ -176,15 +171,48 @@
                         $.each(data, function (i, item) {
                             $('#subIDDropdown').append($('<option>').text(item.SubID).attr('value', item.SubID));
                         });
+                    },
+                    error: function () {
+                        alert('Failed to fetch SubIDs. Please try again.');
                     }
                 });
             } else {
                 $('#subIDDropdown').empty();
                 $('#subIDDropdown').append($('<option>').text('Select SubID').attr('value', ''));
             }
+
+            // Clear subscription list if no Shareholder is selected
+            if (!selectedShareId) {
+                $('#resultsub').html('');
+            }
+        });
+
+        // On SubID Dropdown change
+        $('#subIDDropdown').on('change', function () {
+            var selectedShareId = $('#shareholderDropdown').val();
+            var selectedSubId = $(this).val();
+
+            // Filter subscriptions by SubID
+            if (selectedSubId) {
+                $.ajax({
+                    url: '@Url.Action("Addonsubscriptions", "Subscribtions")',
+                    type: 'POST',
+                    data: { ShareId: selectedShareId, SubId: selectedSubId },
+                    success: function (data) {
+                        $('#resultsub').html(data); // Load the partial view into the result div
+                    },
+                    error: function () {
+                        $('#resultsub').html('<p>An error occurred while fetching data.</p>');
+                    }
+                });
+            } else {
+                // Clear the result if no SubID is selected
+                $('#resultsub').html('');
+            }
         });
     });
 </script>
+
 
 <style>
     /* Ensure the Select2 dropdown uses the full width */
