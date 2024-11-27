@@ -107,7 +107,7 @@
           <Property Name="Branch" Type="int" />
           <Property Name="DateApplication" Type="date" />
           <Property Name="SettlementDate" Type="date" />
-          <Property Name="DividenedYear" Type="date" />
+          <Property Name="DividenedYear" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Document">
           <Key>
@@ -278,7 +278,7 @@
           <Property Name="Branch" Type="int" />
           <Property Name="DateApplication" Type="date" />
           <Property Name="SettlementDate" Type="date" />
-          <Property Name="DividenedYear" Type="date" />
+          <Property Name="DividenedYear" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Subscribtion">
           <Key>
@@ -1441,7 +1441,7 @@
           <Property Name="Branch" Type="Int32" />
           <Property Name="DateApplication" Type="DateTime" Precision="0" />
           <Property Name="SettlementDate" Type="DateTime" Precision="0" />
-          <Property Name="DividenedYear" Type="DateTime" Precision="0" />
+          <Property Name="DividenedYear" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_DividenedDetail_Branch" FromRole="DividenedDetail" ToRole="Branch" />
           <NavigationProperty Name="Dividend" Relationship="Self.FK_Dividened_Detail_Dividend" FromRole="DividenedDetail" ToRole="Dividend" />
           <NavigationProperty Name="Payment1" Relationship="Self.FK_Dividened_Detail_Payment" FromRole="DividenedDetail" ToRole="Payment" />
@@ -1675,7 +1675,7 @@
           <Property Name="Branch" Type="Int32" />
           <Property Name="DateApplication" Type="DateTime" Precision="0" />
           <Property Name="SettlementDate" Type="DateTime" Precision="0" />
-          <Property Name="DividenedYear" Type="DateTime" Precision="0" />
+          <Property Name="DividenedYear" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_SimulationDividened_Branch" FromRole="SimulationDividened" ToRole="Branch" />
           <NavigationProperty Name="Dividend" Relationship="Self.FK_SimulationDividened_Dividend" FromRole="SimulationDividened" ToRole="Dividend" />
           <NavigationProperty Name="Payment1" Relationship="Self.FK_SimulationDividened_Payment" FromRole="SimulationDividened" ToRole="Payment" />

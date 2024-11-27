@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="41fc0af1373d4c08b7977c40f6f638c2" Name="Diagram1">
+      <Diagram DiagramId="cf46da5804524c7bb4f4f2c636e2214f" Name="Diagram1">
         <EntityTypeShape EntityType="ShareManagementDB_ORGModel.AuditLog" Width="1.5" PointX="5.25" PointY="51.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ShareManagementDB_ORGModel.Blocked" Width="1.5" PointX="5.25" PointY="39.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ShareManagementDB_ORGModel.Branch" Width="1.5" PointX="0.75" PointY="24.875" IsExpanded="true" />

@@ -30,12 +30,12 @@
         background-color: white;
     }
 </style>
-
-<!-- Pop-up Modal -->
 @{
     var successMessage = TempData["SuccessMessage"] as string;
     var errorMessage = TempData["ErrorMessage"] as string;
 }
+
+<!-- Pop-up Modal -->
 @if (!string.IsNullOrEmpty(successMessage) || !string.IsNullOrEmpty(errorMessage))
 {
     <div id="popup-message" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -72,7 +72,7 @@
         // Automatically hide the pop-up after 5 seconds
         setTimeout(function () {
             document.getElementById("popup-message").style.display = "none";
-        }, 5000);
+        }, 1000);
     </script>
 }
 
