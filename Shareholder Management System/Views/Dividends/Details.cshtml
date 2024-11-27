@@ -1,0 +1,98 @@
+﻿﻿@model Shareholder_Management_System.Models.Dividend
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Dividend</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Profit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Profit)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalWASA)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalWASA)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FiscalYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FiscalYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DivPerShare)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DivPerShare)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaxableAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaxableAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaxRate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaxRate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RunningDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RunningDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumOutstandingDays)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumOutstandingDays)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.DivID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

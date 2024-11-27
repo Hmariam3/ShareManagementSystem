@@ -108,6 +108,9 @@
     <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.WebUtilities.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=4.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.4.11.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Configuration.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
@@ -284,6 +287,8 @@
     <Compile Include="Controllers\AuditLogsController.cs" />
     <Compile Include="Controllers\BlockedsController.cs" />
     <Compile Include="Controllers\CertificatesController.cs" />
+    <Compile Include="Controllers\DividendsController.cs" />
+    <Compile Include="Controllers\DividenedDetailsController.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PasswordHasher.cs" />
@@ -291,6 +296,7 @@
     <Compile Include="Controllers\ProxiesController.cs" />
     <Compile Include="Controllers\ShareholdersController.cs" />
     <Compile Include="Controllers\ShareTransfersController.cs" />
+    <Compile Include="Controllers\SimulationDividenedsController.cs" />
     <Compile Include="Controllers\SubscribtionsController.cs" />
     <Compile Include="Controllers\UsersAuthorizationController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
@@ -299,68 +305,71 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuditLog.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Blocked.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Branch.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Certificate.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Dividend.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DividenedDetail.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Document.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Payment.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Proxy.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\Shareholder.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShareholderSummaryViewModel.cs" />
-    <Compile Include="Models\ShareModel.Context.cs">
+    <Compile Include="Models\ShareManagementModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ShareModel.Context.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ShareModel.cs">
+    <Compile Include="Models\ShareManagementModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ShareModel.Designer.cs">
+    <Compile Include="Models\ShareManagementModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>ShareModel.edmx</DependentUpon>
+      <DependentUpon>ShareManagementModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\ShareTransfer.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShCategory.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SimulationDividened.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Subscribtion.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
-      <DependentUpon>ShareModel.tt</DependentUpon>
+      <DependentUpon>ShareManagementModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\BreadcrumbHelper.cs" />
+    <Compile Include="Utilities\EncryptionHelper.cs" />
+    <Compile Include="ViewModel\UserAuditLogViewModel.cs" />
     <Compile Include="ViewModel\UserProfileViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -475,24 +484,24 @@
     <Content Include="js\jquery.dataTables.min.js" />
     <Content Include="js\jquery.min.js" />
     <Content Include="js\select2.min.js" />
-    <Content Include="Models\ShareModel.Context.tt">
+    <Content Include="Models\ShareManagementModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ShareModel.edmx</DependentUpon>
-      <LastGenOutput>ShareModel.Context.cs</LastGenOutput>
+      <DependentUpon>ShareManagementModel.edmx</DependentUpon>
+      <LastGenOutput>ShareManagementModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\ShareModel.tt">
+    <Content Include="Models\ShareManagementModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ShareModel.edmx</DependentUpon>
-      <LastGenOutput>ShareModel.cs</LastGenOutput>
+      <DependentUpon>ShareManagementModel.edmx</DependentUpon>
+      <LastGenOutput>ShareManagementModel.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\ShareModel.edmx">
+    <EntityDeploy Include="Models\ShareManagementModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ShareModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>ShareManagementModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\ShareModel.edmx.diagram">
-      <DependentUpon>ShareModel.edmx</DependentUpon>
+    <Content Include="Models\ShareManagementModel.edmx.diagram">
+      <DependentUpon>ShareManagementModel.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -534,9 +543,6 @@
     <Content Include="Scripts\JS\swiper-bundle.min.js" />
     <Content Include="Scripts\JS\tippy-bundle.umd.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\tailwind.min.css" />
-    <Content Include="Scripts\tailwind.min.sec.css" />
-    <Content Include="Scripts\tailwind.min.thrid.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -610,12 +616,30 @@
     <Content Include="Views\Certificates\Edit.cshtml" />
     <Content Include="Views\Certificates\Index.cshtml" />
     <Content Include="Scripts\JS\perfect-scrollbar.min.js.map" />
-    <Content Include="Views\Subscribtions\PendingSubscription.cshtml" />
+    <Content Include="Views\AuditLogs\RecordLog.cshtml" />
+    <Content Include="Views\Payments\FilterPending.cshtml" />
+    <Content Include="Views\Payments\Authorize.cshtml" />
+    <Content Include="Views\ShareTransfers\Authorize.cshtml" />
+    <Content Include="Views\ShareTransfers\Authorize_Details.cshtml" />
+    <Content Include="Views\DividenedDetails\Create.cshtml" />
+    <Content Include="Views\DividenedDetails\Delete.cshtml" />
+    <Content Include="Views\DividenedDetails\Details.cshtml" />
+    <Content Include="Views\DividenedDetails\Edit.cshtml" />
+    <Content Include="Views\DividenedDetails\Index.cshtml" />
+    <Content Include="Views\SimulationDivideneds\Create.cshtml" />
+    <Content Include="Views\SimulationDivideneds\Delete.cshtml" />
+    <Content Include="Views\SimulationDivideneds\Details.cshtml" />
+    <Content Include="Views\SimulationDivideneds\Edit.cshtml" />
+    <Content Include="Views\SimulationDivideneds\Index.cshtml" />
+    <Content Include="Views\Dividends\Create.cshtml" />
+    <Content Include="Views\Dividends\Index.cshtml" />
+    <Content Include="Views\Dividends\Details.cshtml" />
+    <Content Include="Views\Dividends\Delete.cshtml" />
+    <Content Include="Views\Dividends\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="UploadedFiles\" />
-    <Folder Include="Views\AuditLogs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

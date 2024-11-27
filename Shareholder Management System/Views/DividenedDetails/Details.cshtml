@@ -1,0 +1,146 @@
+﻿﻿@model Shareholder_Management_System.Models.DividenedDetail
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DividenedDetail</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.OutstandingDays)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OutstandingDays)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WASA)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WASA)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DividenedAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DividenedAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaxedDividened)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaxedDividened)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Payment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Payment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Capitalization)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Capitalization)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaymentStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateApplication)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateApplication)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SettlementDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SettlementDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DividenedYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DividenedYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Branch1.BranchCode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Branch1.BranchCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Dividend.DivID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dividend.DivID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Payment1.PaymentMode)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Payment1.PaymentMode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder.ShareID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Subscribtion.SubStatus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -4,149 +4,390 @@
     ViewBag.Title = "Delete";
 }
 
-<h2>Delete</h2>
+@*<h2>Delete</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Payment</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentMode)
-        </dt>
+<h3>Are you sure you want to delete this?</h3>*@
 
-        <dd>
-            @Html.DisplayFor(model => model.PaymentMode)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PaidAmount)
-        </dt>
+<!-- Set a max width and full width on smaller screens -->
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.PayID)
 
-        <dd>
-            @Html.DisplayFor(model => model.PaidAmount)
-        </dd>
+<div class="flex justify-center items-center min-h-screen">
+    <div class="panel">
 
-        <dt>
-            @Html.DisplayNameFor(model => model.BlockedAmount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.BlockedAmount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ReferenceNum)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ReferenceNum)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaymentDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreationDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreationDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentAuthorizationStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorizationDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AuthorizationDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Remark)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Remark)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Branch1.BranchCode)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Branch1.BranchCode)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Document.DocName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Document.DocName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder.ShareID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder1.ShareID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Subscribtion.SubStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.FullName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User1.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User1.FullName)
-        </dd>
-
-    </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+        <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+            <h5 class="text-lg font-semibold" style="padding:7px;">Delete Payment</h5>
         </div>
-    }
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <div class="panel">
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <!-- Shareholder Name -->
+                    <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                        <div class="flex items-start justify-between py-3">
+                            <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                                Shareholder Fullname
+                                <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                    @Html.DisplayFor(model => model.Shareholder.FullNameEng)
+                                </span>
+                            </h6>
+                        </div>
+                    </div>
+                    <!-- Shareholder ID -->
+                    <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                        <div class="flex items-start justify-between py-3">
+                            <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                                Shareholder ID
+                                <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                    @Html.DisplayFor(model => model.Shareholder.ShareID)
+                                </span>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <!-- Branch Code -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Branch Name
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.Branch1.BranchName)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+                <!-- Payment Mode -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Payment Mode
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.PaymentMode)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+                <!-- Paid Amount -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Paid Amount
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.PaidAmount)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+
+                <!-- Blocked Amount -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Blocked Amount
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.BlockedAmount)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+
+                <!-- Reference Number -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Reference Number
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.ReferenceNum)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+                
+
+            </div>
+            <div class="panel">
+
+                <!-- Payment Date -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Payment Date
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.PaymentDate)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+                <!-- Creation Date -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Creation Date
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.CreationDate)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+
+
+
+                <!-- Payment Authorization Status -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Authorization Status
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+
+                <!-- Authorization Date -->
+                @*<div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+            <div class="flex items-start justify-between py-3">
+                <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                    Authorization Date
+                    <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                        @Html.DisplayFor(model => model.AuthorizationDate)
+                    </span>
+                </h6>
+            </div>
+        </div>*@
+
+                <!-- Subscription Status -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Subscription Status
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.Subscribtion.SubStatus)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+                <!-- Remarks -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Remarks
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.Remark)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+                <!-- Document -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            Document Name
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.Document.DocName)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+                <!-- User FullName -->
+                <div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                    <div class="flex items-start justify-between py-3">
+                        <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                            User FullName
+                            <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                                @Html.DisplayFor(model => model.User.FullName)
+                            </span>
+                        </h6>
+                    </div>
+                </div>
+                <!-- User1 FullName -->
+                @*<div class="border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+            <div class="flex items-start justify-between py-3">
+                <h6 class="text-[15px] font-bold text-[#515365] dark:text-white-dark">
+                    Document Name
+                    <span class="mt-1 block text-xs font-normal text-white-dark dark:text-white-light">
+                        @Html.DisplayFor(model => model.User1.FullName)
+                    </span>
+                </h6>
+            </div>
+        </div>*@
+            </div>
+        </div>
+
+        <div class="w-full flex justify-between mt-6">
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+            <input type="submit" value="Delete" class="btn btn-danger mt-6" />
+            }
+            <a href="@Url.Action("Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
+                Back To List
+            </a>
+
+
+            @*<div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger mt-6" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>*@
+
+
+        </div>
+    </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div>
+        <h4>Payment</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.PaymentMode)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PaymentMode)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PaidAmount)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PaidAmount)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.BlockedAmount)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.BlockedAmount)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ReferenceNum)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ReferenceNum)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PaymentDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PaymentDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CreationDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CreationDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PaymentAuthorizationStatus)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.AuthorizationDate)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.AuthorizationDate)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Remark)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Remark)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Branch1.BranchCode)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Branch1.BranchCode)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Document.DocName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Document.DocName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Shareholder.ShareID)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Shareholder1.ShareID)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Subscribtion.SubStatus)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.User.FullName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.User.FullName)
+            </dd>
+            <div>
+            <dt>
+                @Html.DisplayNameFor(model => model.User1.FullName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.User1.FullName)
+            </dd>
+
+        </dl>
+
+        @using (Html.BeginForm()) {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+        }
+    </div>*@

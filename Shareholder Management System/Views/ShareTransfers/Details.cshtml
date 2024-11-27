@@ -4,159 +4,156 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<div class="main-container min-h-screen text-black dark:text-white-dark" :class="[$store.app.navbar]">
+    <div class="animate__animated p-6" :class="[$store.app.animation]">
+        <div class="text-2xl font-extrabold uppercase mb-4">Transfer Details</div>
 
-<div>
-    <h4>ShareTransfer</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.TransferType)
-        </dt>
+        @*<div class="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
 
-        <dd>
-            @Html.DisplayFor(model => model.TransferType)
-        </dd>
+                <button type="button" class="btn btn-success gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                        <path d="M7 10V21H17.5L20 10H11V4.5C11 3.7 10.3 3 9.5 3H7V10Z" stroke="white" stroke-width="1.5" fill="none"></path>
+                        <path d="M7 21H4V10H7" stroke="white" stroke-width="1.5"></path>
+                    </svg>
+                    Approve
+                </button>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.NumSharesTransferred)
-        </dt>
+                <button type="button" class="btn btn-danger gap-2">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                        <path d="M17 14V3H6.5L4 14H13V19.5C13 20.3 13.7 21 14.5 21H17V14Z" stroke="white" stroke-width="1.5" fill="none"></path>
+                        <path d="M17 3H20V14H17" stroke="white" stroke-width="1.5"></path>
+                    </svg>
+                    Reject
+                </button>
 
-        <dd>
-            @Html.DisplayFor(model => model.NumSharesTransferred)
-        </dd>
+            </div>*@
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AmountPerShare)
-        </dt>
+        <div class="panel">
+            <!-- Transfer Information -->
+            <div class="section mb-6">
+                <h2 class="text-lg font-semibold">Transfer Information</h2>
+                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div class="flex flex-wrap justify-between gap-4 px-4">
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="mb-2 flex justify-between">
+                            <span>Transfer ID:</span>
+                            <span>@Html.DisplayFor(model => model.TransferID)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Transferror Name:</span>
+                            <span>@Html.DisplayFor(model => model.Shareholder.FullNameEng)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Transferee Name:</span>
+                            <span>@Html.DisplayFor(model => model.Shareholder1.FullNameEng)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.AmountPerShare)
-        </dd>
+            <!-- Transfer Details -->
+            <div class="section mb-6">
+                <h2 class="text-lg font-semibold">Transfer Details</h2>
+                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div class="flex flex-wrap justify-between gap-4 px-4">
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="mb-2 flex justify-between">
+                            <span>Transfer Category:</span>
+                            <span>@Html.DisplayFor(model => model.TransferCategory)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Transfer Type:</span>
+                            <span>@Html.DisplayFor(model => model.TransferType)</span>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="mb-2 flex justify-between">
+                            <span>Subscription ID:</span>
+                            <span>@Html.DisplayFor(model => model.SubID)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Payment ID:</span>
+                            <span>@Html.DisplayFor(model => model.PayID)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PaidAmountForTransfer)
-        </dt>
+            <!-- Financial Information -->
+            <div class="section mb-6">
+                <h2 class="text-lg font-semibold">Financial Information</h2>
+                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div class="flex flex-wrap justify-between gap-4 px-4">
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="mb-2 flex justify-between">
+                            <span>Number of Shares Transferred:</span>
+                            <span>@Html.DisplayFor(model => model.NumSharesTransferred)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Amount Per Share:</span>
+                            <span>@Html.DisplayFor(model => model.AmountPerShare)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Paid Amount for Transfer:</span>
+                            <span>@Html.DisplayFor(model => model.PaidAmountForTransfer)</span>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="mb-2 flex justify-between">
+                            <span>Dividend For:</span>
+                            <span>@Html.DisplayFor(model => model.DividenedFor)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Transfer Reason:</span>
+                            <span>@Html.DisplayFor(model => model.TransferReason)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Transfer Date:</span>
+                            <span>@Html.DisplayFor(model => model.TransferDate)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.PaidAmountForTransfer)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TransferReason)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TransferReason)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.DividenedFor)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DividenedFor)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TransferDoc)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TransferDoc)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TransferDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TransferDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreationDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreationDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TransferAuthorizationStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TransferAuthorizationStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TransferAuthorizationDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TransferAuthorizationDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Remark)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Remark)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Payment.PaymentMode)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Payment.PaymentMode)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder.ShareID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder1.ShareID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Subscribtion.SubStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.FullName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User1.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User1.FullName)
-        </dd>
-
-    </dl>
+            <!-- Authorization Information -->
+            <div class="section mb-6">
+                <h2 class="text-lg font-semibold">Authorization Information</h2>
+                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div class="flex flex-wrap justify-between gap-4 px-4">
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="mb-2 flex justify-between">
+                            <span>Created By:</span>
+                            <span>@Html.DisplayFor(model => model.User.FullName)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Creation Date:</span>
+                            <span>@Html.DisplayFor(model => model.CreationDate)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Branch:</span>
+                            <span>@Html.DisplayFor(model => model.Branch1.BranchName)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Remark:</span>
+                            <span>@Html.DisplayFor(model => model.Remark)</span>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="mb-2 flex justify-between">
+                            <span>Authorization Status:</span>
+                            <span>@Html.DisplayFor(model => model.TransferAuthorizationStatus)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Transfer Authorizer:</span>
+                            <span>@Html.DisplayFor(model => model.User1.FullName)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Authorization Date:</span>
+                            <span>@Html.DisplayFor(model => model.TransferAuthorizationDate)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.TransferID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

@@ -30,6 +30,7 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> Branch { get; set; }
         public Nullable<decimal> PaidAmount { get; set; }
         public string ReferenceNum { get; set; }
+        public string SourceOfFunds { get; set; }
         public Nullable<int> PaymentSlip { get; set; }
         public Nullable<System.DateTime> PaymentDate { get; set; }
         public Nullable<int> PaymentTransferFrom { get; set; }
@@ -43,7 +44,6 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> TransferedPayID { get; set; }
         public Nullable<int> TransferID { get; set; }
         public Nullable<decimal> TransferAmount { get; set; }
-        public string SourceOfFunds { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Blocked> Blockeds { get; set; }

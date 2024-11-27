@@ -4,159 +4,435 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
 
 
-@using (Html.BeginForm())
+<link rel="stylesheet" type="text/css" href="~/Content/CSS/nice-select2.css">
+<script src="~/Scripts/JS/nice-select2.js"></script>
+
+@{
+    string errorMessage = TempData["ErrorMessage"] as string;
+    string successMessage = TempData["Message"] as string;
+
+
+}
+@using (Html.BeginForm("Edit", "Payments", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Payment</h4>
-        <hr />
+
+    <div x-data="form" class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-2">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.PayID)
+        <div class="col-span-1">
+            <div class="panel">
+                <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+                    <h5 class="text-lg font-semibold" style="padding:7px;">Share Holder Detail</h5>
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                @*<div class="text-lg font-semibold">Shareholder Details</div>*@
+
+                <div class="mb-5">
+                    <div class="flex items-center">
+                        <span class="text-red-500">*</span> <!-- Required asterisk -->
+                        <label for="ShID" class="block dark:text-white-light text-sm font-semibold mb-2">Share Holder</label>
+
+                    </div>
+                    
+                        @Html.DropDownList("ShID",
+                            new SelectList(ViewBag.Shareholders1, "Value", "Text", Model.ShID), // Pass the current selected ShID
+                            htmlAttributes: new { id = "seachable-select" }
+                        )
+                        @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                   
+                </div>
+
+
+
+                <!-- Scrollable container for the table -->
+                <div class="table-responsive mt-4 mb-5" style="max-height: 300px; overflow-y: auto;">
+                    <table class="table-auto w-full border-collapse border border-gray-300 mt-8" id="subscriptionTable">
+                        <thead class="bg-gray-100">
+                            <tr class="text-left">
+                                <th class="px-4 py-2">Select</th>
+                                <th class="px-4 py-2">Sub ID</th>
+                                <th class="px-4 py-2">Sh ID</th>
+                                <th class="px-4 py-2">No of Shares</th>
+                                <th class="px-4 py-2">Subscription Amount</th>
+                                <th class="px-4 py-2">Paid Subscription</th>
+                                <th class="px-4 py-2">Unpaid Subscription</th>
+                                <th class="px-4 py-2">Authorization Status</th>
+                                <th class="px-4 py-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Subscriptions != null)
+                            {
+                                foreach (var subscription in ViewBag.Subscriptions)
+                                {
+                                    <tr>
+                                        <td class="px-4 py-2">
+                                            <input type="radio" name="selectedSubscription" class="form-radio" value="@subscription.SubID"
+                                                   data-unpaid="@subscription.UnpaidSubscription"
+                                                   @(subscription.SubID == Model.SubID ? "checked" : "" ) />
+
+                                        </td>
+                                        <td class="px-4 py-2">@subscription.SubID</td>
+                                        <td class="px-4 py-2">@subscription.ShID</td>
+                                        <td class="px-4 py-2">@subscription.SubNumShares</td>
+                                        <td class="px-4 py-2">@subscription.SubAmount</td>
+                                        <td class="px-4 py-2">@subscription.PaidSubscription</td>
+                                        <td class="px-4 py-2">@subscription.UnpaidSubscription</td>
+                                        <td class="px-4 py-2">@subscription.SubAuthorizationStatus</td>
+                                        <td class="px-4 py-2">@subscription.SubStatus</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9" class="px-4 py-2 text-center text-gray-500">No subscriptions found for this shareholder.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Hidden input to store selected subscription -->
+                @Html.HiddenFor(model => model.SubID, new { @id = "selectedSubID" })
+                @Html.Hidden("UnpaidSubscription", null, new { id = "UnpaidSubscription" })
+
+
+
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.SubID, "SubID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SubID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        <div class="col-span-1">
+            <div class="panel">
+                <!-- Panel Header -->
+                <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color: white;">
+                    <h5 class="text-lg font-semibold" style="padding: 7px;">Payment Details</h5>
+                </div>
+                @*<div class="text-lg font-semibold">Payment Details</div>*@
+                <div class="flex items-center">
+                    <span class="text-red-500">*</span> <!-- Required asterisk -->
+                    @Html.Label("Payment Mode", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                </div>
+                <div x-data="form" class="grid grid-cols-1 gap-6 pt-0 lg:grid-cols-2">
+                    <div class="col-span-1">
+                        <div class="space-y-4">
+                            <!-- Cash Payment Mode -->
+                            <div class="flex items-center space-x-2">
+                                @Html.Label("Cash", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+                                <div class="amount-input-container flex flex-col ml-4">
+                                    <input type="number" name="cashAmount" class="form-input payment-field" min="0" step="0.01"
+                                           value="@(ViewBag.CashAmount != null ? ViewBag.CashAmount.ToString() : string.Empty)" />
+                                </div>
+                            </div>
+                            <!-- Account Payment Mode -->
+                            <div class="flex items-center space-x-2">
+                                @Html.Label("Account", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+                                <div class="amount-input-container flex flex-col ml-4">
+                                    <input type="number" name="accountAmount" class="form-input payment-field" min="0" step="0.01"
+                                           value="@(ViewBag.AccountAmount != null ? ViewBag.AccountAmount.ToString() : string.Empty)" />
+                                </div>
+                            </div>
+                            <!-- CPO Payment Mode -->
+                            <div class="flex items-center space-x-2">
+                                @Html.Label("CPO", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+                                <div class="amount-input-container flex flex-col ml-4">
+                                    <input type="number" name="cpoAmount" class="form-input payment-field" min="0" step="0.01"
+                                           value="@(ViewBag.CpoAmount != null ? ViewBag.CpoAmount.ToString() : string.Empty)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaymentMode, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PaymentMode, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PaymentMode, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                    <div class="col-span-1">
+                        <div class="space-y-4">
+                            <!-- Dividend Payment Mode -->
+                            <div class="flex items-center space-x-2">
+                                @Html.Label("Dividend", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+                                <div class="amount-input-container flex flex-col ml-4">
+                                    <input type="number" name="dividendAmount" class="form-input payment-field" min="0" step="0.01"
+                                           value="@(ViewBag.DividendAmount != null ? ViewBag.DividendAmount.ToString() : string.Empty)" />
+                                </div>
+                            </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Branch, "Branch", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("Branch", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Branch, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            <!-- Cheque Payment Mode -->
+                            <div class="flex items-center space-x-2">
+                                @Html.Label("Cheque", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+                                <div class="amount-input-container flex flex-col ml-4">
+                                    <input type="number" name="chequeAmount" class="form-input payment-field" min="0" step="0.01"
+                                           value="@(ViewBag.ChequeAmount != null ? ViewBag.ChequeAmount.ToString() : string.Empty)" />
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <!-- Label for Paid Amount -->
+                                <div class="block dark:text-white-light text-sm font-semibold mb-2">Paid Amount</div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaidAmount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PaidAmount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                                <!-- Display area for Paid Amount with formatted value -->
+                                <div id="PaidAmount" class="text-blue-700">
+                                    ETB @(Model.PaidAmount.HasValue ? Model.PaidAmount.Value.ToString("0.00") : "0.00")
+                                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.BlockedAmount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.BlockedAmount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BlockedAmount, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                                <!-- Validation message for Paid Amount -->
+                                <span class="text-danger" id="PaidAmountValidationMessage">
+                                    @Html.ValidationMessageFor(model => model.PaidAmount)
+                                </span>
+                                @Html.HiddenFor(model => model.PaidAmount, new { id = "PaidAmountHidden" })
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.ReferenceNum, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ReferenceNum, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ReferenceNum, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaymentSlip, "PaymentSlip", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("PaymentSlip", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PaymentSlip, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaymentDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PaymentDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            @*<div class="flex items-center space-x-2">
+                        @Html.LabelFor(model => model.PaidAmount, htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+                        <div class="amount-input-container flex flex-col ml-4">
+                            @Html.EditorFor(model => model.PaidAmount, new { htmlAttributes = new { @class = "form-input border border-blue-500 bg-blue-50 text-blue-700", @id = "PaidAmount", @readonly = "readonly", @placeholder = "Total Paid Amount" } })
+                            @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaymentTransferFrom, "PaymentTransferFrom", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
-            </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedBy, "CreatedBy", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            @if (TempData["Message"] != null)
+                            {
+                                <div class="alert alert-success">@TempData["Message"]</div>
+                            }
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreationDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreationDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreationDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                        </div>
+                    </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaymentAuthorizationStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PaymentAuthorizationStatus, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PaymentAuthorizationStatus, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                    <input type="hidden" id="UnpaidSubscription" value="@Model?.UnpaidSubscription" />
+                </div>
+                <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div x-data="form" class="grid grid-cols-1 gap-6 pt-0 lg:grid-cols-2">
+                    <div class="col-span-1">
+                        <div class="space-y-4">
+                            <div class="form-group mb-5">
+                                <div class="flex items-center">
+                                    <span class="text-red-500">*</span> <!-- Required asterisk -->
+                                    @Html.Label("Source Of Funds", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaymentAuthorizer, "PaymentAuthorizer", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("PaymentAuthorizer", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PaymentAuthorizer, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                                @Html.DropDownListFor(model => model.SourceOfFunds,
+                             new SelectList(new List<SelectListItem>
+                             {
+                                 new SelectListItem { Text = "Bank Account", Value = "Bank Account" },
+                                 new SelectListItem { Text = "Dividend", Value = "Dividend" },
+                                 new SelectListItem { Text = "Bonus", Value = "Bonus" }
+                             }, "Value", "Text"),
+                             "Select Source of funds",
+                             new { @class = "form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" })
+                                @Html.ValidationMessageFor(model => model.SourceOfFunds, "", new { @class = "text-red-500 text-sm" })
+                            </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.AuthorizationDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.AuthorizationDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AuthorizationDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                            <div class="mb-5">
+                                <div class="flex items-center">
+                                    <span class="text-red-500">*</span> <!-- Required asterisk -->
+                                    @Html.Label("Reference Number", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                                </div>
+                                <div class="amount-input-container flex flex-col ml-4">
+                                    @Html.EditorFor(model => model.ReferenceNum, new { htmlAttributes = new { @class = "form-input" } })
+                                    @Html.ValidationMessageFor(model => model.ReferenceNum, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                        </div>
+                    </div>
+                    @*<div class="mb-5">
+                @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
+                    @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                    <div class="col-span-1">
+                        <div class="space-y-4">
+                            <div class="mb-5">
+                                <div class="flex items-center">
+                                    <span class="text-red-500">*</span> <!-- Required asterisk -->
+                                    @Html.Label("Date of Payment", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+
+                                </div>
+                                <div class="col-md-10">
+
+                                    @Html.TextBoxFor(model => model.PaymentDate, "{0:yyyy-MM-dd}", new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", type = "date", @required = "required",
+                                   max = DateTime.Now.ToString("yyyy-MM-dd")})
+                                    @Html.ValidationMessageFor(model => model.PaymentDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                @Html.Label("Upload Document", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                                <div class="custom-file-container" data-upload-id="myFirstImage">
+                                    <div class="custom-file-container__image-preview">
+                                        <input type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" accept="*" name="uploadedFile" aria-label="Upload Document">
+                                    </div>
+                                </div>
+                                @if (ViewBag.ExistingDocumentName != null)
+                                {
+                                    <div class="mt-2">
+                                        <span>Current File: </span>
+                                        <a href="@Url.Action("Download", "Documents", new { id = ViewBag.DocumentId })" target="_blank">
+                                            @ViewBag.ExistingDocumentName
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <div class="flex items-center">
+                        @Html.Label("Remark", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+
+                    </div>
+                    <div class="amount-input-container flex flex-col ml-4">
+                        @Html.TextAreaFor(model => model.Remark, 1, 40, new { @class = "form-input" })
+                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <button type="submit" class="btn btn-primary mr-2" style="width: 2000px; height: 50px">Update Paymnt</button>
             </div>
         </div>
     </div>
+
+
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+<style>
+    .shareholder-item:hover {
+        background-color: #3b82f6; /* Tailwind's bg-blue-500 */
+        color: white;
+    }
+</style>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function (e) {
+        // seachable
+        var options = {
+            searchable: true
+        };
+        NiceSelect.bind(document.getElementById("seachable-select"), options);
+    });
+</script>
+
+<!-- script -->
+<script>
+    var upload = new FileUploadWithPreview('myFirstImage', {
+        images: {
+            baseImage: '~/assets/images/file-preview.png',
+            backgroundImage: '',
+        },
+    });
+</script>
+
+<script>
+    $(function () {
+        $("#payment-date-picker").datepicker({
+            dateFormat: "mm/dd/yy", // Customize the date format as needed
+            maxDate: 0 // Restrict to today and earlier
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('.payment-field').on('input', function () {
+            var total = 0;
+            $('.payment-field').each(function () {
+                total += parseFloat($(this).val()) || 0;
+            });
+            $('#PaidAmount').text('ETB' + total.toFixed(2));
+            $('#PaidAmountHidden').val(total.toFixed(2)); // Set hidden field value
+            // Validate against UnpaidSubscription
+            var unpaidSubscription = parseFloat($('#UnpaidSubscription').val()) || 0;
+            if (total > unpaidSubscription) {
+                $('#PaidAmount').next('.text-danger').text('Paid Amount cannot exceed Unpaid Subscription.');
+            } else {
+                $('#PaidAmount').next('.text-danger').text('');
+            }
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        // Trigger when a shareholder is selected
+        $('#seachable-select').on('change', function() {
+            var shareholderId = $(this).val();
+            if (shareholderId) {
+                fetchSubscriptions(shareholderId);
+            } else {
+                $('#subscriptionTable tbody').empty().append('<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">Select a shareholder to view subscriptions.</td></tr>');
+            }
+        });
+
+        // Function to fetch subscriptions for the selected shareholder
+        function fetchSubscriptions(shareholderId) {
+            $.ajax({
+                url: '@Url.Action("GetSubscriptionsByShareholder", "Payments")',
+                type: 'GET',
+                data: { shId: shareholderId },
+                success: function(subscriptions) {
+                    var tbody = $('#subscriptionTable tbody');
+                    tbody.empty(); // Clear the table before populating new data
+
+                    if (subscriptions.length > 0) {
+                        $.each(subscriptions, function(index, subscription) {
+                            tbody.append(
+                                '<tr>' +
+                                '<td class="px-4 py-2"><input type="radio" class="form-radio" name="selectedSubscription" value="' + subscription.SubID + '" data-unpaid="' + subscription.UnpaidSubscription + '"></td>' +
+                                '<td class="px-4 py-2">' + subscription.SubID + '</td>' +
+                                '<td class="px-4 py-2">' + subscription.ShID + '</td>' +
+                                '<td class="px-4 py-2">' + subscription.SubNumShares + '</td>' +
+                                '<td class="px-4 py-2">' + subscription.SubAmount + '</td>' +
+                                '<td class="px-4 py-2">' + subscription.PaidSubscription + '</td>' +
+                                '<td class="px-4 py-2">' + subscription.UnpaidSubscription + '</td>' +
+                                '<td class="px-4 py-2">' + subscription.SubAuthorizationStatus + '</td>' +
+                                '<td class="px-4 py-2">' + subscription.SubStatus + '</td>' +
+                                '</tr>'
+                            );
+                        });
+
+                        // Handle radio button selection
+                        $('input[name="selectedSubscription"]').on('change', function() {
+                            var selectedSubID = $(this).val();
+                            var unpaidSubscription = $(this).data('unpaid');
+                            $('#selectedSubID').val(selectedSubID); // Set hidden input value
+                            $('#UnpaidSubscription').val(unpaidSubscription); // Set hidden input value for UnpaidSubscription
+                        });
+                    } else {
+                        tbody.append('<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">No subscriptions found for this shareholder.</td></tr>');
+                    }
+                },
+                error: function() {
+                    alert('Error retrieving subscriptions.');
+                }
+            });
+        }
+
+        // Validate PaidAmount against UnpaidSubscription
+        $('#PaidAmount').on('input', function () {
+            var paidAmount = parseFloat($(this).val()); // Get the PaidAmount
+            var unpaidSubscription = parseFloat($('#UnpaidSubscription').val()); // Get the UnpaidSubscription
+
+            // Check if PaidAmount is greater than UnpaidSubscription
+            if (paidAmount > unpaidSubscription) {
+                $('#PaidAmount').next('.text-danger').text('Paid Amount cannot be greater than Unpaid Subscription.');
+            } else {
+                $('#PaidAmount').next('.text-danger').text(''); // Clear the error message
+            }
+        });
+    });
+</script>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

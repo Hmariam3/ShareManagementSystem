@@ -1,7 +1,53 @@
-﻿@model Shareholder_Management_System.Models.ShareTransfer
+﻿﻿@model Shareholder_Management_System.Models.ShareTransfer
 
-<link rel="stylesheet" type="text/css" href="~/Content/CSS/nice-select2.css">
-<script src="~/Scripts/JS/nice-select2.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/CSS/select2.min.css">
+<script src="~/Scripts/JS/select2.min.js"></script>
+<script src="~/Scripts/JS/sweetalert.min.js"></script>
+
+
+@section Scripts {
+    <script>
+        // Store TempData message in a JavaScript variable
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Display success message if it exists
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: successMessage,
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 6000,
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'colored-toast success' // Added 'success' class
+                    }
+                });
+            }
+
+            // Display error message if it exists
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage,
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 6000,
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'colored-toast error' // Added 'error' class
+                    }
+                });
+            }
+        });
+    </script>
+}
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -15,6 +61,14 @@
                 <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Share Transfer Form</h5>
             </div>
             <div class="grid grid-cols-1 gap-6 pt-5 ">
+                <div>
+                    <!-- Hidden input to hold selected subscription and payment IDs  type="hidden" -->
+                    <input class="form-input" id="selectedSubscriptionIds" name="selectedSubscriptionIds" style="width: 200px" placeholder="Sub ID Populate here" readonly />
+                    <input class="form-input" id="selectedPaymentIds" name="selectedPaymentIds" style="width: 500px" placeholder="Pay ID Populate here" readonly />
+                    <!-- Hidden input for TransferType -->
+                    <input class="form-input" id="transferType" name="TransferType" style="width: 500px" placeholder="Transfer Type is here" value="" readonly required />
+                </div>
+
                 <!-- Column One -->
                 <div class="panel">
                     <div class="mb-5 flex items-center justify-between">
@@ -23,117 +77,136 @@
 
                     <div class="mb-5">
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
-
                             <div>
                                 <label for="shid">Transfer From</label>
-                                @Html.DropDownList("TransferrorShID",
-                                    new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                    htmlAttributes: new {  @id = "TransferrorShID" }
-                                )
+                                @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input" })
+                                <span class="text-danger"></span>
                             </div>
-
                             <div>
                                 <label for="shid">Transfer To</label>
-                                @Html.DropDownList("TransfareeShID",
-                                    new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                    htmlAttributes: new { id = "searchable-select_2" }
-                                )
+                                @Html.DropDownList("TransfareeShID", (SelectList)ViewBag.ShareholdersTo, new { @id = "TransfereeShID", @class = "form-input" })
+                                <span class="text-danger"></span>
                             </div>
                         </div>
                         <br />
-
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <!-- Transfer Type Dropdown -->
+                            <!-- Transfer Category Dropdown -->
                             <div class="col-md-10">
-                                <!-- Transfer Type Dropdown -->
-                                <label>Transfer Type</label>
-                                @Html.DropDownListFor(model => model.TransferType,
+                                <label>Transfer Category</label>
+                                @Html.DropDownListFor(model => model.TransferCategory,
                                     new List<SelectListItem>
                                     {
                                         new SelectListItem { Text = "Subscription", Value = "Subscription" },
                                         new SelectListItem { Text = "Payment", Value = "Payment" },
-                                        new SelectListItem { Text = "Share", Value = "Share" }
-                                    }, "Select Transfer Type", new { @class = "form-input", id = "transferTypeDropdown" })
+                                        new SelectListItem { Text = "Full Transfer", Value = "Full Transfer" }
+                                    }, "Select Transfer Category", new { @class = "form-input", id = "transferCategoryDropdown" })
+                                <span class="text-danger"></span> <!-- Placeholder for error message -->
                             </div>
-                            <!-- Choose Type Radio Buttons -->
-                            <div class="flex flex-col sm:flex-row mt-6" id="chooseTypeDiv" style="display: none;">
-                                <label class="rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Choose Type</label>
+                            <!-- Transfer Type Radio Buttons -->
+                            <div class="flex flex-col sm:flex-row mt-6" id="transferTypeDiv" style="display: none;">
+                                <label class="rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Transfer Type</label>
                                 <div class="flex-1">
                                     <div class="mb-2">
                                         <label class="mt-1 inline-flex cursor-pointer">
-                                            <input type="radio" name="chooseType" value="Full" class="form-radio" id="chooseTypeFull">
+                                            <input type="radio" name="transferType" value="Full" class="form-radio" id="transferTypeFull">
                                             <span class="text-white-dark">Full</span>
                                         </label>
                                     </div>
                                     <div class="mb-2">
                                         <label class="mt-1 inline-flex cursor-pointer">
-                                            <input type="radio" name="chooseType" value="Partial" class="form-radio" id="chooseTypePartial">
+                                            <input type="radio" name="transferType" value="Partial" class="form-radio" id="transferTypePartial">
                                             <span class="text-white-dark">Partial</span>
+                                        </label>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="mt-1 inline-flex cursor-pointer">
+                                            <input type="radio" name="transferType" value="PaidUp" class="form-radio" id="transferTypePaidUp">
+                                            <span class="text-white-dark">Paid Up</span>
+                                        </label>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="mt-1 inline-flex cursor-pointer">
+                                            <input type="radio" name="transferType" value="Right" class="form-radio" id="transferTypeRight">
+                                            <span class="text-white-dark">Right</span>
                                         </label>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                         <div class="panel">
-                            <div class="mb-5 flex items-center justify-between">
-                                <h5 class="text-lg font-semibold dark:text-white-light">Subscription and Payment Status</h5>
-                            </div>
                             <div class="mb-5">
-                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div class="flex grid-cols-1 gap-4 sm:grid-cols-2">
                                     <!-- Subscriptions Table -->
-                                    <table id="subscriptionsTable">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Sub ID</th>
-                                                <th>No Of Shares</th>
-                                                <th>Paid Shares</th>
-                                                <th>Unpaid Shares</th>
-                                                <th>Partial Transfer</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Rows will be added here -->
-                                        </tbody>
-                                    </table>
+                                    <div>
+                                        <div class="mb-5 flex items-center justify-between">
+                                            <h5 class="text-lg font-semibold dark:text-white-light">Subscription Status</h5>
+                                        </div>
+                                        <div style="max-height: 400px; overflow-y: auto;  border-radius: 4px; width: 700px">
+                                            <table id="subscriptionsTable" style="width: 100%;">
+                                                <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
+                                                    <tr>
+                                                        <th style="width: 20px;"></th>
+                                                        <th>Sub ID</th>
+                                                        <th>Share Amount</th>
+                                                        <th>Paid Shares</th>
+                                                        <th>Unpaid Shares</th>
+                                                        <th class="partial-transfer-col">Right Transfer</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Rows will be added dynamically -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
                                     <!-- Payments Table -->
-                                    <table id="paymentsTable">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Pay ID</th>
-                                                <th>Paid Amount</th>
-                                                <th>Partial Transfer</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Rows will be added here -->
-                                        </tbody>
-                                    </table>
+                                    <div>
+                                        <div class="mb-5 flex items-center justify-between">
+                                            <h5 class="text-lg font-semibold dark:text-white-light">Payment Status</h5>
+                                        </div>
+                                        <div style="max-height: 400px; overflow-y: auto;  border-radius: 4px; width: 400px">
+                                            <table id="paymentsTable" style="width: 100%;">
+                                                <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
+                                                    <tr>
+                                                        <th style="width: 20px;"></th>
+                                                        <th>Pay ID</th>
+                                                        <th>Paid Amount</th>
+                                                        <th class="partial-transfer-col">Partial Transfer</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Rows will be added dynamically -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                            <!-- No of Shares Transferred -->
                             <div class="col-md-10">
                                 <label>No of Shares Transferred</label>
                                 @Html.TextBoxFor(model => model.NumSharesTransferred, new { @class = "form-input", @readonly = "readonly", @id = "numSharesTransferred" })
                                 @Html.ValidationMessageFor(model => model.NumSharesTransferred, "", new { @class = "text-danger" })
                             </div>
-                            <!-- Amount Per Share (read-only) -->
                             <div class="col-md-10">
                                 <label>Amount Per Share</label>
-                                @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "1000", @readonly = "readonly", @id = "amountPerShare" })
+                                @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "100", @readonly = "readonly", @id = "amountPerShare" })
                                 @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-danger" })
                             </div>
-                            <!-- Paid Amount for Transfer (read-only, calculated) -->
                             <div class="col-md-10">
                                 <label>Paid Amount for Share</label>
-                                @Html.TextBoxFor(model => model.PaidAmountForTransfer, new { @class = "form-input", @readonly = "readonly", @id = "paidAmountForTransfer" })
-                                @Html.ValidationMessageFor(model => model.PaidAmountForTransfer, "", new { @class = "text-danger" })
+
+                                <div class="flex">
+                                    <div class="bg-[#eee] flex justify-center items-center ltr:rounded-l-md rtl:rounded-r-md px-3 font-semibold border ltr:border-r-0 rtl:border-l-0 border-[#e0e6ed] dark:border-[#17263c] dark:bg-[#1b2e4b]">ETB</div>
+                                    @Html.TextBoxFor(model => model.PaidAmountForTransfer, new { @class = "form-input rounded-none", @readonly = "readonly", @id = "paidAmountForTransfer" })
+                                    @Html.ValidationMessageFor(model => model.PaidAmountForTransfer, "", new { @class = "text-danger" })
+
+                                </div>
                             </div>
                         </div>
                         <br />
@@ -146,90 +219,52 @@
                                         new SelectListItem { Text = "Transferor", Value = "Transferor" },
                                         new SelectListItem { Text = "Transferee", Value = "Transferee" },
                                         new SelectListItem { Text = "Both", Value = "Both" }
-                                    }, "Select Dividend For", new { @class = "form-input" })
+                                    }, "Select Dividend For", new { @class = "form-input", @id = "dividendFor" })
                                 @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
-                                <label>Transfer Date</label>
-                                @Html.HiddenFor(model => model.TransferDate, new { @class = "form-input", @type = "date" })
-                                @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
+                                <label>Reason for Transfer</label>
+                                @Html.DropDownListFor(model => model.TransferReason,
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "Sale", Value = "Sale" },
+                                        new SelectListItem { Text = "Gift", Value = "Gift" },
+                                        new SelectListItem { Text = "Heir", Value = "Heir" },
+                                        new SelectListItem { Text = "Court Decision", Value = "Court Decision" },
+                                    }, "Select Transfer Reason", new { @class = "form-input", @id = "transferReason" })
+                                @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
-                                <label>Transfer Document</label>
-                                @Html.TextBoxFor(model => model.TransferDoc, new { type = "file", @class = "form-input" })
-                                @Html.ValidationMessageFor(model => model.TransferDoc, "", new { @class = "text-danger" })
+                                <label>Transfer Date</label>
+                                @Html.TextBoxFor(model => model.TransferDate, new { @class = "form-input", @type = "date", @id = "transferDate" })
+                                @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <br />
-
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div class="mb-5">
+                                @Html.Label("Upload Document", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                                <div class="custom-file-container" data-upload-id="myFirstImage">
+                                    <div class="custom-file-container__image-preview">
+                                        <input type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" accept="*" name="uploadedFile" required>
+                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-10">
                                 <label>Remark</label>
-                                @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input" } })
+                                @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input", @id = "remark" } })
                                 @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10">
-                                <label>Transfer Reason</label>
-                                @Html.TextAreaFor(model => model.TransferReason, new { @class = "form-input", @rows = 1, @cols = 40 })
-                                @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
-                            </div>
-
-                        </div>
-                        <div class="mb-5">
-                            @*<div class="col-md-10">
-                                    <label>Subscriptions</label>
-                                    @Html.DropDownList("SubID", null, htmlAttributes: new { @class = "form-input" })
-                                    @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-danger" })
-
-                                </div>
-                                <br />
-                                <div class="col-md-10">
-                                    <label>Payments</label>
-                                    @Html.DropDownList("PayID", null, htmlAttributes: new { @class = "form-input" })
-                                    @Html.ValidationMessageFor(model => model.PayID, "", new { @class = "text-danger" })
-
-                                </div>*@
-
-                            <div class="col-md-10" style="display: none;">
-                                <label>Created By</label>
-                                @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-input" })
-                                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10" style="display: none;">
-                                <label>Creation Date</label>
-                                @Html.HiddenFor(model => model.CreationDate, new { @id = "creationDateField", @class = "form-input", @type = "date" })
-                                @Html.ValidationMessageFor(model => model.CreationDate, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10" style="display: none;">
-                                <label>Authorization Status</label>
-                                @Html.TextBoxFor(model => model.TransferAuthorizationStatus, new { htmlAttributes = new { @class = "form-input" } })
-                                @Html.ValidationMessageFor(model => model.TransferAuthorizationStatus, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10" style="display: none;">
-                                <label>Authorizer</label>
-                                @Html.DropDownList("TransferAuthorizer", null, htmlAttributes: new { @class = "form-input" })
-                                @Html.ValidationMessageFor(model => model.TransferAuthorizer, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10" style="display: none;">
-                                <label>Authorization Date</label>
-                                @Html.HiddenFor(model => model.TransferAuthorizationDate, new { @class = "form-input", @type = "date" })
-                                @Html.ValidationMessageFor(model => model.TransferAuthorizationDate, "", new { @class = "text-danger" })
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Column Two -->
-                @*<div class="panel">
-                        Preview
 
-                    </div>*@
             </div>
 
-
-            <div class="btn btn-primary mt-1">
-                <input type="submit" value="Submit" class="btn btn-default" />
-            </div>
+            <!-- Submit the form  -->
+            <button type="submit" class="btn btn-primary !mt-6">Submit Transfer</button>
 
 
         </div>
@@ -239,144 +274,134 @@
 <script src="~/Scripts/JS/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
+        let transferCategory = '';
         let transferType = '';
-        let chooseType = '';
+        
 
-        // Handle Transfer Type selection
-        $('#transferTypeDropdown').change(function () {
-            transferType = $(this).val();
-            var chooseTypeDiv = $('#chooseTypeDiv');
-            var chooseTypeFull = $('#chooseTypeFull');
-            var chooseTypePartial = $('#chooseTypePartial');
 
-            // Show the "Choose Type" radio buttons based on Transfer Type
-            chooseTypeDiv.show();
+        // Function to reset the form to its default state
+        function resetFormStateForTransferror() {
+            // Clear tables and reset fields to default
+            $('#subscriptionsTable tbody').empty();
+            $('#paymentsTable tbody').empty();
+            $('#numSharesTransferred').val('');
+            $('#paidAmountForTransfer').val('');
+            $('#transferCategoryDropdown').val('');
+            $('#transferTypeDiv').hide(); // Hide the Choose Type section initially
+            $('#dividendFor').val('');
+            $('#transferDate').val('');
+            $('#transferDocument').val('');
+            $('#remark').val('');
+            $('#transferReason').val('');
+            $('#selectedSubscriptionIds').val('');
+            $('#selectedPaymentIds').val('');
+            $('#transferType').val('');
+            $('.subscription-checkbox').prop('checked', false);
+            // Reset checkboxes and radio buttons
+            $('input[name="transferType"]').prop('checked', false);
+            $('#transferTypeFull').prop('checked', false); // Reset 'Full' radio button if needed
 
-            if (transferType === 'Share') {
-                chooseTypeFull.prop('checked', true);
-                chooseTypeFull.prop('disabled', true);
-                chooseTypePartial.prop('disabled', true);
-                disableAllCheckboxes(true);
-            } else if (transferType === 'Subscription' || transferType === 'Payment') {
-                chooseTypeFull.prop('disabled', false);
-                chooseTypePartial.prop('disabled', false);
-                handleSubscriptionAndPaymentTables();
-            }
-        });
+            // Hide partial transfer columns in both tables
+            $('#subscriptionsTable .partial-transfer-col').hide();
+            $('#paymentsTable .partial-transfer-col').hide();
+        }
+
+        // Function to reset the form to its default state
+        function resetFormStateForTCategory() {
+            // Clear tables and reset fields to default
+            $('.subscription-checkbox').prop('disabled', false).prop('checked', false);
+            $('#paymentsTable tbody').empty();
+            $('#numSharesTransferred').val('');
+            $('#paidAmountForTransfer').val('');
+            $('input[name="transferType"]').prop('checked', false);
+            $('#transferType').val('');
+            $('#subscriptionsTable .partial-transfer-col').hide();
+            $('#paymentsTable .partial-transfer-col').hide();
+            $('#selectedSubscriptionIds').val('');
+            $('#selectedPaymentIds').val('');
+            $('#dividendFor').val('');
+            $('#transferDate').val('');
+            $('#transferDocument').val('');
+            $('#remark').val('');
+            $('#transferReason').val('');
+
+        }
 
         // On change of the 'Transfer From' dropdown (shareholder selection)
         $('#TransferrorShID').change(function () {
-            var shareholderId = $(this).val();
+            // Reset all relevant fields and tables to their initial state
+            resetFormStateForTransferror();
 
-            // Reset both tables
-            $('#subscriptionsTable tbody').empty();
-            $('#paymentsTable tbody').empty();
+            // Fetch the new data based on the selected shareholder
+            var shareholderId = $(this).val();
+            var isFullTransfer = $('#transferCategoryDropdown').val() === 'Full Transfer' && $('#transferTypeFull').prop('checked');
 
             // Fetch the subscriptions for the selected shareholder
             $.ajax({
-                url: '/ShareTransfers/GetShareholderData',
+                url: '@Url.Action("GetShareholderData", "ShareTransfers")',
                 type: 'GET',
                 data: { shareholderId: shareholderId },
                 success: function (data) {
                     // Populate the Subscriptions Table
                     $.each(data.subscriptions, function (index, subscription) {
                         $('#subscriptionsTable tbody').append(`
-                        <tr>
-                            <td><input type="checkbox" class="form-checkbox subscription-checkbox" data-subscription-id="${subscription.SubID}"></td>
-                            <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
-                            <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
-                            <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 1000)}" readonly /></td>
-                            <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 1000)}" readonly /></td>
-                            <td><input type="textbox" class="form-input partial-transfer-input" ${transferType === 'Subscription' && chooseType === 'Partial' ? '' : 'readonly'} placeholder="" /></td>
-                        </tr>
-                    `);
+                            <tr>
+                                <td><input type="checkbox" class="form-checkbox subscription-checkbox" name="SubID2" data-subscription-id="${subscription.SubID}" ${isFullTransfer ? 'checked disabled' : ''}></td>
+                                <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
+                                <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
+                                <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 100)}" readonly /></td>
+                                <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 100)}" readonly /></td>
+                                <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" readonly /></td>
+                            </tr>
+                        `);
                     });
+
+                    $('#subscriptionsTable .partial-transfer-col').hide(); // Hide partial transfer column by default
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
                 }
             });
         });
-        // Handle Choose Type and Transfer Type logic
-        $('input[name="chooseType"]').change(function () {
-            chooseType = $('input[name="chooseType"]:checked').val();
-            console.log("Choose Type: ", chooseType);
-            console.log("Transfer Type: ", transferType);
 
-            // Reset the subscription checkboxes and clear payment table for every change in Choose Type
-            $('.subscription-checkbox').prop('disabled', false).prop('checked', false);
-            $('#paymentsTable tbody').empty();
+        // Populate Subscriptions and Payments
+        function populateSubscriptionsAndPayments(shareholderId, isFullTransfer) {
+            $.ajax({
+                url: '@Url.Action("GetShareholderData", "ShareTransfers")',
+                type: 'GET',
+                data: { shareholderId: shareholderId },
+                success: function (data) {
+                    // Populate the Subscriptions Table
+                    $('#subscriptionsTable tbody').empty();
+                    $.each(data.subscriptions, function (index, subscription) {
+                        $('#subscriptionsTable tbody').append(`
+                                <tr>
+                                    <td><input type="checkbox" class="form-checkbox subscription-checkbox" name="SubID2" data-subscription-id="${subscription.SubID}" ${isFullTransfer ? 'checked disabled' : ''}></td>
+                                    <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
+                                    <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
+                                    <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 100)}" readonly /></td>
+                                    <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 100)}" readonly /></td>
+                                    <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" placeholder="" readonly /></td>
+                                </tr>
+                            `);
+                        // If Full Transfer, fetch payments for each subscription immediately
+                        if (isFullTransfer) {
+                            fetchPayments(subscription.SubID, true);
+                        }
+                    });
 
-            if (chooseType === 'Full') {
-                if (transferType === 'Subscription') {
-                    setPartialTransferEditable(false, false); // Disable "Partial transfer" for both tables
-                } else if (transferType === 'Payment') {
-                    setPartialTransferEditable(false, false); // Disable "Partial transfer" for both tables
+                    $('#subscriptionsTable .partial-transfer-col').hide(); // Hide partial transfer column
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
                 }
-            } else if (chooseType === 'Partial') {
-                if (transferType === 'Subscription') {
-                    setPartialTransferEditable(true, false); // Enable Subscription, disable Payment
-                } else if (transferType === 'Payment') {
-                    setPartialTransferEditable(false, true); // Disable Subscription, enable Payment
-                }
-            }
-        });
+            });
+        }
 
-        // On change of the subscription checkbox
-        $(document).on('change', '.subscription-checkbox', function () {
-            var subscriptionId = $(this).data('subscription-id');
-
-            if (chooseType === 'Full') {
-                if (transferType === 'Subscription') {
-                    if ($(this).is(':checked')) {
-                        fetchPayments(subscriptionId, true); // Fetch payments in non-editable mode
-                        setPartialTransferEditable(false, false); // Set "Partial transfer" non-editable for both tables
-                    } else {
-                        $(`#paymentsTable tbody tr[data-subscription-id="${subscriptionId}"]`).remove(); // Remove unchecked payments
-                    }
-                } else if (transferType === 'Payment') {
-                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one can be checked at a time
-                    $('#paymentsTable tbody').empty();
-                    if ($(this).is(':checked')) {
-                        fetchPayments(subscriptionId, false); // Payments in editable mode
-                        setPartialTransferEditable(false, false); // Set "Partial transfer" non-editable for both tables
-                    }
-                }
-            } else if (chooseType === 'Partial') {
-                if (transferType === 'Subscription') {
-                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one checkbox can be selected
-                    $('#paymentsTable tbody').empty();
-                    if ($(this).is(':checked')) {
-                        fetchPayments(subscriptionId, false); // Fetch payments in editable mode
-                        setPartialTransferEditable(true, false); // Enable Subscription table, disable Payment table
-                    }
-                } else if (transferType === 'Payment') {
-                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one checkbox can be selected
-                    $('#paymentsTable tbody').empty();
-                    if ($(this).is(':checked')) {
-                        fetchPayments(subscriptionId, false); // Fetch payments in editable mode
-                        setPartialTransferEditable(false, true); // Disable Subscription table, enable Payment table
-                    }
-                }
-            }
-        });
-
-        // Event listener for changes on the shares-input field in the table
-        $(document).on('input', '.shares-input', function () {
-            var sharesTransferred = $(this).val();  // Get the value of the input field in the table
-            $('#numSharesTransferred').val(sharesTransferred);  // Set the value to NumSharesTransferred field
-            calculatePaidAmount();
-        });
-
-        // Event listener for changes on NumSharesTransferred
-        $('#numSharesTransferred').on('input', function () {
-            calculatePaidAmount();
-        });
-
-        // Function to fetch payments for a subscription and update the payments table
+        // Fetch Payments for a Subscription
         function fetchPayments(subscriptionId, isFull) {
             $.ajax({
-                url: '/ShareTransfers/GetPaymentsBySubscription',
+                url: '@Url.Action("GetPaymentsBySubscription", "ShareTransfers")',
                 data: { subscriptionId: subscriptionId },
                 type: 'GET',
                 success: function (response) {
@@ -388,65 +413,445 @@
             });
         }
 
-        // Function to populate the payments table
+        // Function to populate the payments table without overwriting existing rows
         function populatePaymentsTable(payments, subscriptionId, isFull) {
             var $tbody = $('#paymentsTable tbody');
-            payments.forEach(function (payment) {
-                var row = `<tr data-subscription-id="${subscriptionId}">
-                           <td><input type="checkbox" class="form-checkbox payment-checkbox" ${isFull ? 'checked disabled' : ''}></td>
-                           <td><input type="textbox" class="form-input" value="${payment.PayID}" readonly /></td>
-                           <td><input type="textbox" class="form-input" value="${payment.PaidAmount}" readonly /></td>
-                           <td><input type="textbox" class="form-input partial-transfer-input" ${isFull ? 'readonly' : ''} placeholder="" /></td>
-                       </tr>`;
-                $tbody.append(row);
-            });
+                payments.forEach(function (payment) {
+                    // Create a unique row ID based on subscription and payment ID to avoid duplicate rows
+                    var rowId = `payment-row-${subscriptionId}-${payment.PayID}`;
+
+                    // Check if row with this ID already exists to prevent duplicates
+                    if ($(`#${rowId}`).length === 0) {
+                        var row = `<tr id="${rowId}" data-subscription-id="${subscriptionId}">
+                            <td><input type="checkbox" class="form-checkbox payment-checkbox" ${isFull ? 'checked disabled' : ''}></td>
+                            <td><input type="textbox" class="form-input" value="${payment.PayID}" readonly /></td>
+                            <td><input type="textbox" class="form-input" value="${payment.PaidAmount}" readonly /></td>
+                            <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input1" placeholder="" readonly /></td>
+                        </tr>`;
+                        $tbody.append(row); // Append row without clearing existing rows
+                    }
+                });
+                $('#paymentsTable .partial-transfer-col').hide(); // Hide partial transfer column by default
+                // Update the visibility of the Partial Transfer column based on the current Choose Type
+                updatePartialTransferColumns();
+
         }
 
-        // Function to disable or enable "Partial transfer" column based on the rules
-        function setPartialTransferEditable(isSubscriptionEditable, isPaymentEditable) {
-            // Apply for Subscription table
-            $('#subscriptionsTable tbody tr').each(function () {
-                var $partialTransferInput = $(this).find('.partial-transfer-input');
-                if (isSubscriptionEditable) {
-                    $partialTransferInput.prop('readonly', false); // Editable
-                } else {
-                    $partialTransferInput.prop('readonly', true);  // Non-editable
-                    $partialTransferInput.val(''); // Optionally clear input
+        // Function to update the visibility of the "Partial Transfer" columns
+        function updatePartialTransferColumns() {
+            const showPartialTransferOnSubscriptions = transferCategory === 'Subscription' && transferType === 'Right';
+            const showPartialTransferOnPayments = transferCategory === 'Payment' && transferType === 'Partial';
+
+            // Toggle visibility of "Partial Transfer" column in Subscriptions Table
+            if (showPartialTransferOnSubscriptions) {
+                $('#subscriptionsTable .partial-transfer-col').show();
+                //$('#subscriptionsTable .partial-transfer-input').prop('readonly', false);
+            } else {
+                $('#subscriptionsTable .partial-transfer-col').hide();
+                $('#subscriptionsTable .partial-transfer-input').prop('readonly', true).val(''); // Disable inputs and clear values
+            }
+
+            // Toggle visibility of "Partial Transfer" column in Payments Table
+            if (showPartialTransferOnPayments) {
+                $('#paymentsTable .partial-transfer-col').show();
+                //$('#paymentsTable .partial-transfer-input1').prop('readonly', false); // Make inputs editable
+            } else {
+                $('#paymentsTable .partial-transfer-col').hide();
+                $('#paymentsTable .partial-transfer-input1').prop('readonly', true).val(''); // Disable inputs and clear values
+            }
+        }
+        // Change event for Transfer Category to check for 'Full Transfer'
+        $('#transferCategoryDropdown').change(function () {
+            var isFullTransfer = $(this).val() === 'Full Transfer';
+            var shareholderId = $('#TransferrorShID').val();
+            transferCategory = $(this).val();
+
+            resetFormStateForTCategory();
+            // Trigger population if "Full Transfer" and shareholder is already selected
+            if (isFullTransfer && shareholderId) {
+                $('#transferTypeFull').prop('checked', true); // Ensure "Full" is selected
+                $('#transferType').val('Full');
+                populateSubscriptionsAndPayments(shareholderId, true);
+
+                // Parse existing IDs and initialize an empty array for updates
+                var selectedSubscriptionIds = $('#selectedSubscriptionIds').val().split(',').filter(Boolean);
+                var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').filter(Boolean);
+
+                // Add delay to ensure `populateSubscriptionsAndPayments` has completed
+                setTimeout(function () {
+                    $('#subscriptionsTable tbody tr').each(function () {
+                        var SubID = $(this).find('td:eq(1) input').val(); // Get subscription ID
+                        var isChecked = $(this).find('.subscription-checkbox').is(':checked');
+
+                        if (isChecked && !selectedSubscriptionIds.includes(SubID)) {
+                            selectedSubscriptionIds.push(SubID); // Push unique subscription ID
+                        }
+                    });
+
+                    // Remove duplicates and update the hidden field
+                    selectedSubscriptionIds = [...new Set(selectedSubscriptionIds)];
+                    $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(',').replace(/^,|,$/g, ''));
+                }, 500);
+
+                // Similar delay to process payments
+                setTimeout(function () {
+                    $('#paymentsTable tbody tr').each(function () {
+                        var PayID = $(this).find('td:eq(1) input').val(); // Get payment ID
+                        var isChecked = $(this).find('.payment-checkbox').is(':checked');
+
+                        if (isChecked && !selectedPaymentIds.includes(PayID)) {
+                            selectedPaymentIds.push(PayID); // Push unique payment ID
+                        }
+                    });
+
+                    // Remove duplicates and update the hidden field
+                    selectedPaymentIds = [...new Set(selectedPaymentIds)];
+                    $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, ''));
+                }, 5000);
+
+                // Update the number of shares transferred based on checked subscriptions
+                setTimeout(function () {
+                    $('#subscriptionsTable tbody tr').each(function () {
+                        if ($(this).find('.subscription-checkbox').is(':checked')) {
+                            var paidShare = parseFloat($(this).find('td:eq(3) input').val()) || 0; // Retrieve and parse paid share
+                            var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                            $('#numSharesTransferred').val(currentTotal + paidShare).trigger('change'); // Update total shares
+                        }
+                    });
+                }, 500);
+            }
+
+            var transferTypeDiv = $('#transferTypeDiv');
+            var transferTypeFull = $('#transferTypeFull').closest('div');
+            var transferTypePartial = $('#transferTypePartial').closest('div');
+            var transferTypeRight = $('#transferTypeRight').closest('div');
+            var transferTypePaidUp = $('#transferTypePaidUp').closest('div');
+
+            // Show the "Transfer Type" radio buttons based on Transfer Category
+            transferTypeDiv.show();
+
+            if (transferCategory === 'Full Transfer') {
+                // Show only the "Full" choose type, keep it checked and disabled
+                transferTypeFull.show();
+                transferTypeFull.find('input').prop('checked', true).prop('disabled', true);
+                transferTypePartial.hide();
+                transferTypeRight.hide();
+                transferTypePaidUp.hide();
+                disableAllCheckboxes(true); // Disable checkboxes when transfer Category is 'Full Transfer'
+            } else if (transferCategory === 'Subscription') {
+                // Show only "Paid Up" and "Right" for Subscription
+                transferTypeFull.hide();
+                transferTypePartial.hide();
+                transferTypePaidUp.show().find('input').prop('disabled', false);
+                transferTypeRight.show().find('input').prop('disabled', false);
+            } else if (transferCategory === 'Payment') {
+                // Show only "Full" and "Partial" for Payment
+                transferTypeFull.show().find('input').prop('disabled', false);
+                transferTypePartial.show().find('input').prop('disabled', false);
+                transferTypeRight.hide();
+                transferTypePaidUp.hide();
+            }
+
+            updatePartialTransferColumns();
+        });
+
+        // Handle Transfer Type and Transfer Category logic
+        $('input[name="transferType"]').change(function () {
+            $('#numSharesTransferred').val(''); // Clear value when unchecked
+            $('#paidAmountForTransfer').val(''); // Clear value when unchecked
+            $('#selectedSubscriptionIds').val(''); //  Clear value when unchecked
+            $('#selectedPaymentIds').val(''); //  Clear value when unchecked
+            transferType = $('input[name="transferType"]:checked').val();
+
+
+            // Update the "Partial Transfer" columns based on the new logic
+            updatePartialTransferColumns();
+
+            // Reset the subscription checkboxes and clear the payments table for every change in Choose Type
+            $('.subscription-checkbox').prop('disabled', false).prop('checked', false);
+            $('#paymentsTable tbody').empty();
+
+        });
+
+        //// Ensure partial-transfer inputs are readonly by default
+        //$(document).ready(function () {
+        //    $('.partial-transfer-input').prop('readonly', true);
+        //});
+
+
+        // On change of the subscription checkbox
+        $(document).on('change', '.subscription-checkbox', function () {
+            var subscriptionId = $(this).data('subscription-id');
+
+            // PaidUp subscription Transfer with Multiple selection functionality
+            if (transferType === 'PaidUp') {
+                if (transferCategory === 'Subscription') {
+                    var selectedSubscriptionIds = $('#selectedSubscriptionIds').val().split(',').filter(Boolean); // Get existing subscription IDs
+                    var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').filter(Boolean); // Get existing Payment IDs
+                    if ($(this).is(':checked')) {
+                        // Adjust the selector to get the Paid Share value correctly for Subscription
+
+                        var SubID = $(this).closest('tr').find('td:eq(1) input').val(); // Get subscription ID from correct column
+
+                        // Add the subscription ID to the list if it's not already there
+                        if (!selectedSubscriptionIds.includes(SubID)) {
+                            selectedSubscriptionIds.push(SubID);
+                        }
+
+                        setTimeout(function () {
+                            $('#paymentsTable tbody tr').each(function () {
+                                var PayID = $(this).find('td:eq(1) input').val();
+                                var paidAmount = parseFloat($(this).find('td:eq(2) input').val() / 100); // Get Paid Amount from correct column and parse as float
+                                var isChecked = $(this).find('.payment-checkbox').is(':checked');
+                                if (isChecked && !selectedPaymentIds.includes(PayID)) {
+                                    selectedPaymentIds.push(PayID);
+                                    // Add the current Paid Share to the total
+                                    var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                                    var newTotal = currentTotal + paidAmount;
+                                    $('#numSharesTransferred').val(newTotal).trigger('change'); // Set the value to No of Shares Transferred field and trigger change
+                                }
+                            });
+
+                            selectedPaymentIds = [...new Set(selectedPaymentIds)]; // Remove duplicates
+                            $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, '')); // Ensure no extra commas
+                        }, 500);
+
+                        fetchPayments(subscriptionId, true); // Fetch payments in non-editable mode
+
+
+                        $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(',')); // Set the updated IDs to the hidden field
+
+                        $('#paymentsTable .partial-transfer-col').hide(); // Hide partial transfer column
+
+                    } else {
+                        // Get the unchecked subscription ID from the closest 'tr' even when unchecked
+                        var SubID = $(this).closest('tr').find('td:eq(1) input').val(); // Ensure we still capture the SubID when unchecking
+                        // Remove the unchecked subscription ID from the list
+                        selectedSubscriptionIds = selectedSubscriptionIds.filter(id => id !== SubID);
+
+                        //remove the payment IDs associated with the unchecked subscription
+                        $(`#paymentsTable tbody tr[data-subscription-id="${SubID}"]`).each(function () {
+                            var PayID = $(this).find('td:eq(1) input').val(); // Get the payment ID from the row
+                            var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100) || 0;
+                            var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                            var newTotal = currentTotal - paidAmount;
+                            $('#numSharesTransferred').val(newTotal).trigger('change'); // Update the No of Shares Transferred field
+                            selectedPaymentIds = selectedPaymentIds.filter(id => id !== PayID); // Remove the payment ID
+                        });
+                        $(`#paymentsTable tbody tr[data-subscription-id="${subscriptionId}"]`).remove(); // Remove unchecked payments
+
+                        $('#selectedSubscriptionIds').val(selectedSubscriptionIds.join(',').replace(/^,|,$/g, ''));
+                        $('#selectedPaymentIds').val(selectedPaymentIds.join(',').replace(/^,|,$/g, ''));
+
+                        if (selectedSubscriptionIds.length === 0) {
+                            $('#selectedPaymentIds').val(''); // Clear payment IDs if no subscriptions remain
+                        }
+                    }
                 }
-            });
+            }
 
-            // Apply for Payment table
-            $('#paymentsTable tbody tr').each(function () {
-                var $partialTransferInput = $(this).find('.partial-transfer-input');
-                if (isPaymentEditable) {
-                    $partialTransferInput.prop('readonly', false); // Editable
-                } else {
-                    $partialTransferInput.prop('readonly', true);  // Non-editable
-                    $partialTransferInput.val(''); // Optionally clear input
+            // Right/Unpaid subscription transfer with input field
+            if (transferType === 'Right') {
+                if (transferCategory === 'Subscription') {
+                    var SubID = $(this).closest('tr').find('td:eq(1) input').val(); // Capture the SubID even if unchecking
+                    $('#selectedSubscriptionIds').val(SubID); // Set SubID to hidden field
+                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one checkbox can be checked at a time
+                    $('#selectedPaymentIds').val(''); // Clear values when unchecked
+                    $('#numSharesTransferred').val(''); // Clear values when unchecked
+                    $('#paidAmountForTransfer').val(''); // Clear values when unchecked
+                    $('#paymentsTable tbody').empty(); // Clear the table for fresh data
+
+                    // Set all `partial-transfer-input` fields to readonly by default
+                    $('.partial-transfer-input').prop('readonly', true);
+
+                    if ($(this).is(':checked')) {
+                        // Make only the associated `.partial-transfer-input` editable
+                        $(this).closest('tr').find('.partial-transfer-input').prop('readonly', false);
+
+                        // For partial transfers, update the field when the partial transfer input is filled
+                        $(document).on('input', '.partial-transfer-input', function () {
+                            var partialTransferValue = $(this).val(); // Get the value entered in the partial transfer input
+                            $('#numSharesTransferred').val(partialTransferValue).trigger('change'); // Set it to the No of Shares Transferred field
+                        });
+                    } else {
+                        // If unchecked, ensure all partial transfer inputs remain readonly
+                        $('.partial-transfer-input').prop('readonly', true);
+                        //$('.partial-transfer-input').val('');
+                        $('#numSharesTransferred').val('').trigger('change'); // Clear value
+                        $('#paidAmountForTransfer').val('').trigger('change');
+                    }
                 }
-            });
-        }
+            }
 
-        // Function to disable all checkboxes in both tables
-        function disableAllCheckboxes(shouldDisable) {
-            $('#subscriptionsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
-            $('#paymentsTable input[type="checkbox"]').prop('checked', shouldDisable).prop('disabled', shouldDisable);
-        }
+
+            //Full Payment transfer with multiple selection functionality
+            if (transferType === 'Full') {
+                if (transferCategory === 'Payment') {
+                    // Logic for Payment type
+                    var SubID = $(this).closest('tr').find('td:eq(1) input').val(); // Ensure we still capture the SubID when unchecking
+                    $('#selectedSubscriptionIds').val(SubID); // get subid from the selected subscription to hidden field
+                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one can be checked at a time
+                    $('#selectedPaymentIds').val(''); //  Clear value when unchecked
+                    $('#numSharesTransferred').val(''); // Clear value when unchecked
+                    $('#paidAmountForTransfer').val(''); // Clear value when unchecked
+                    $('#paymentsTable tbody').empty(); // Clear the table for fresh data
+                    if ($(this).is(':checked')) {
+                        fetchPayments(subscriptionId, false); // Fetch payments in editable mode
+
+                    }
+                }
+            }
+
+            //Partial Payment transfer
+            if (transferType === 'Partial') {
+                if (transferCategory === 'Payment') {
+                    var SubID = $(this).closest('tr').find('td:eq(1) input').val(); // Ensure we still capture the SubID when unchecking
+                    $('#selectedSubscriptionIds').val(SubID); // get subid from the selected subscription to hidden field
+                    $('.subscription-checkbox').not(this).prop('checked', false); // Only one can be checked at a time
+                    $('#selectedPaymentIds').val(''); //  Clear value when unchecked
+                    $('#numSharesTransferred').val(''); // Clear value when unchecked
+                    $('#paidAmountForTransfer').val(''); // Clear value when unchecked
+                    $('#paymentsTable tbody').empty(); // Clear the table for fresh data
+                    // Set all `partial-transfer-input` fields to readonly by default
+                    $('.partial-transfer-input1').prop('readonly', true);
+                    if ($(this).is(':checked')) {
+                        fetchPayments(subscriptionId, false); // Fetch payments in editable mode
+                    }
+                }
+            }
+
+            // Update visibility of partial transfer columns based on the current choose type
+            updatePartialTransferColumns();
+        });
+
+
+        // On change of the payment checkbox (for Payment transfer category)
+        $(document).on('change', '.payment-checkbox', function () {
+            var selectedPaymentIds = $('#selectedPaymentIds').val().split(',').filter(Boolean); // Get existing IDs
+            if (transferType === 'Full') {
+                if (transferCategory === 'Payment') {
+                    if ($(this).is(':checked')) {
+                        // Adjust the selector to get the Paid Share value correctly for Subscription
+                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100); // Get Paid amount from correct column and parse as float
+                        var PayID = $(this).closest('tr').find('td:eq(1) input').val(); // Get Payment ID from correct column
+                        //var paidAmount = $(this).closest('tr').find('td:eq(2) input').val() / 1000; // Get Paid Amount value
+
+                        // Add the payment ID to the list if it's not already there
+                        if (!selectedPaymentIds.includes(PayID)) {
+                            selectedPaymentIds.push(PayID);
+                        }
+                        $('#selectedPaymentIds').val(selectedPaymentIds.join(',')); // Set the updated IDs to the hidden field
+                        // Add the current Paid Share to the total
+                        var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                        var newTotal = currentTotal + paidAmount;
+                        $('#numSharesTransferred').val(newTotal).trigger('change'); // Set the value to No of Shares Transferred field and trigger change
+                    } else {
+                        // Get the unchecked subscription ID from the closest 'tr' even when unchecked
+                        var PayID = $(this).closest('tr').find('td:eq(1) input').val(); // Ensure we still capture the PayID when unchecking
+                        // Remove the unchecked payment ID from the list
+                        selectedPaymentIds = selectedPaymentIds.filter(id => id !== PayID);
+                        // Subtract the unchecked Paid amount from the total
+                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100) || 0;
+                        var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
+                        var newTotal = currentTotal - paidAmount;
+                        $('#numSharesTransferred').val(newTotal).trigger('change'); // Update the No of Shares Transferred field
+                        $('#selectedPaymentIds').val(selectedPaymentIds.join(',')); // Update the hidden field with remaining IDs
+
+                    }
+                }
+
+            } else if (transferType === 'Partial') {
+                if (transferCategory === 'Payment') {
+                    $('.payment-checkbox').not(this).prop('checked', false); // Only one can be checked at a time
+                    var PayID = $(this).closest('tr').find('td:eq(1) input').val(); // Ensure we still capture the SubID when unchecking
+                    $('#selectedPaymentIds').val(PayID); // get subid from the selected subscription to hidden field
+                    $('#numSharesTransferred').val(''); // Clear value when unchecked
+                    $('#paidAmountForTransfer').val(''); // Clear value when unchecked
+                    // Set all `partial-transfer-input` fields to readonly by default
+                    $('.partial-transfer-input1').prop('readonly', true);
+                    if ($(this).is(':checked')) {
+                        // Make only the associated `.partial-transfer-input` editable
+                        $(this).closest('tr').find('.partial-transfer-input1').prop('readonly', false);
+                        $(document).on('input', '.partial-transfer-input1', function () {
+                            var partialTransferValue = $(this).val() / 100; // Get the value entered in the partial transfer input for payments
+                            $('#numSharesTransferred').val(partialTransferValue).trigger('change'); // Set it to the No of Shares Transferred field
+                        });
+                    } else {
+                        // If unchecked, ensure all partial transfer inputs remain readonly
+                        $('.partial-transfer-input1').prop('readonly', true);
+                        $('#selectedPaymentIds').val(''); //  Clear value when unchecked
+                        $('#numSharesTransferred').val('').trigger('change'); // Clear value when unchecked
+                        $('#paidAmountForTransfer').val('').trigger('change');
+                    }
+                }
+            }
+            // Update visibility of partial transfer columns based on the current choose type
+            updatePartialTransferColumns();
+        });
+
+
+
+        // Trigger calculation when the value in #numSharesTransferred or #amountPerShare changes
+        $('#numSharesTransferred, #amountPerShare').on('input change', function () {
+            calculatePaidAmount(); // Recalculate whenever the values change
+        });
 
         // Function to calculate Paid Amount for Transfer
         function calculatePaidAmount() {
-            var numShares = $('#numSharesTransferred').val(); // Get the number of shares transferred
-            var amountPerShare = $('#amountPerShare').val(); // Get the amount per share (1000)
-
-            // Ensure amountPerShare is a valid number, otherwise default to 0
-            if (!amountPerShare) {
-                amountPerShare = 0;
-            }
+            var numShares = parseFloat($('#numSharesTransferred').val()) || 0; // Get the number of shares transferred
+            var amountPerShare = parseFloat($('#amountPerShare').val()) || 0; // Get the amount per share
 
             var paidAmount = numShares * amountPerShare; // Calculate total paid amount
-            $('#paidAmount').val(paidAmount); // Set paid amount to the form field
+            $('#paidAmountForTransfer').val(paidAmount.toFixed(2)); // Set paid amount to the form field (with 2 decimal places)
         }
 
+        // On change of the subscription checkbox (or input event for partial transfer)
+        $(document).on('input', '.partial-transfer-input', function () {
+            var $inputField = $(this); // The input field itself
+            var partialTransferValue = parseFloat($(this).val()) || 0; // Get the value entered in the partial transfer input
+            var UnpaidShare = parseFloat($(this).closest('tr').find('td:eq(4) input').val()) || 0; // Get the UnPaid Share value from the correct column
+
+            // Check if the partial transfer value is greater than the paid share value
+            if (partialTransferValue > UnpaidShare) {
+                //alert("The partial transfer value cannot be greater than the Share value he/she has."); // Show an alert or error message
+                $inputField.val(''); // Clear the invalid value
+                $inputField.css('border', '2px solid red'); // Set red border to indicate an error
+                $inputField.focus(); // Refocus on the input field
+            } else {
+                $('#numSharesTransferred').val(partialTransferValue); // Set it to the No of Shares Transferred field if valid
+            }
+        });
+
+        // On input of the partial transfer input in the Payments Table
+        $(document).on('input', '.partial-transfer-input1', function () {
+            var $inputField = $(this); // The input field itself
+            var partialTransferValue = parseFloat($inputField.val()) || 0; // Get the value entered in the partial transfer input
+            var paidAmount = parseFloat($inputField.closest('tr').find('td:eq(2) input').val()) || 0; // Get the Paid Amount value from the correct column
+
+            // Check if the partial transfer value is greater than the paid amount value
+            if (partialTransferValue > paidAmount) {
+                // Clear the input, add a red border, and focus on it
+                $inputField.val(''); // Clear the invalid value
+                $inputField.css('border', '2px solid red'); // Set red border to indicate an error
+                $inputField.focus(); // Refocus on the input field
+            } else {
+                // Reset the border to the default (in case of previous errors)
+                $inputField.css('border', ''); // Remove the red border
+                $('#numSharesTransferred').val(partialTransferValue); // Set it to the No of Shares Transferred field if valid
+            }
+        });
+
+
+        //// Function to disable all checkboxes in both tables
+        function disableAllCheckboxes(shouldDisable) {
+            $('#subscriptionsTable input[type="checkbox"]').prop('disabled', shouldDisable);
+            $('#paymentsTable input[type="checkbox"]').prop('disabled', shouldDisable);
+        }
+
+
+
+        // Initial state: hide "Partial Transfer" columns and disable the inputs
+        updatePartialTransferColumns();
     });
 
 
@@ -457,19 +862,125 @@
         $('#creationDateField').val(currentDate);
     });
 
-    // Get the shareholder info
-    document.addEventListener("DOMContentLoaded", function (e) {
-        var options = {
-            searchable: true
-        };
-        NiceSelect.bind(document.getElementById("TransferrorShID"), options);
+    // Update hidden input value based on radio button selection
+    document.querySelectorAll('input[name="transferType"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            document.getElementById('transferType').value = this.value;
+        });
     });
 
-    // Get the shareholder info
-    document.addEventListener("DOMContentLoaded", function (e) {
-        var options = {
-            searchable: true
-        };
-        NiceSelect.bind(document.getElementById("searchable-select_2"), options);
+
+
+
+
+
+    //Validation for Fields
+    $(document).ready(function () {
+        $('form').on('submit', function (event) {
+            let isValid = true;
+
+            // Validate Transfer From dropdown
+            if ($('#TransferrorShID').val() === "") {
+                isValid = false;
+                $('#TransferrorShID').siblings('.text-danger').text('Please select a shareholder for Transfer From.');
+            } else {
+                $('#TransferrorShID').siblings('.text-danger').text('');
+            }
+
+            // Validate Transfer To dropdown
+            if ($('#TransfereeShID').val() === "") {
+                isValid = false;
+                $('#TransfereeShID').siblings('.text-danger').text('Please select a shareholder for Transfer To.');
+            } else {
+                $('#TransfereeShID').siblings('.text-danger').text('');
+            }
+
+            // Validate Transfer Category dropdown
+            if ($('#transferCategoryDropdown').val() === "") {
+                isValid = false;
+                $('#transferCategoryDropdown').siblings('.text-danger').text('Please select a Transfer Category.');
+            } else {
+                $('#transferCategoryDropdown').siblings('.text-danger').text('');
+            }
+
+            // Validate Transfer Type radio buttons
+            if (!$('input[name="transferType"]:checked').val()) {
+                isValid = false;
+                $('#transferTypeDiv').siblings('.text-danger').text('Please select a Transfer Type.');
+            } else {
+                $('#transferTypeDiv').siblings('.text-danger').text('');
+            }
+            // Validate Dividend For dropdown
+            if ($('#dividendFor').val() === "") {
+                isValid = false;
+                $('#dividendFor').siblings('.text-danger').text('Please select dividend for.');
+            } else {
+                $('#dividendFor').siblings('.text-danger').text('');
+            }
+
+            // Validate Transfer Reason dropdown
+            if ($('#transferReason').val() === "") {
+                isValid = false;
+                $('#transferReason').siblings('.text-danger').text('Please select transfer reason.');
+            } else {
+                $('#transferReason').siblings('.text-danger').text('');
+            }
+
+            // Validate Transfer Date
+            const transferDateValue = $('#transferDate').val();
+            const transferDate = new Date(transferDateValue);
+
+            if (transferDateValue === "") {
+                isValid = false;
+                $('#transferDate').siblings('.text-danger').text('Please select transfer date.');
+            } else if (transferDate > new Date()) {
+                isValid = false;
+                $('#transferDate').siblings('.text-danger').text('Transfer Date cannot be in the future.');
+            } else {
+                $('#transferDate').siblings('.text-danger').text('');
+            }
+
+            // Validate Remark
+            if ($('#remark').val() === "") {
+                isValid = false;
+                $('#remark').siblings('.text-danger').text('Please put your remark here.');
+            } else {
+                $('#remark').siblings('.text-danger').text('');
+            }
+            // Prevent form submission if not valid
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
+
+</script>
+<script>
+    $('#TransferrorShID').change(function () {
+        var transferrorId = $(this).val();
+        // AJAX request to update "Transfer To" options based on "Transfer From" selection
+        $.ajax({
+            url: '@Url.Action("UpdateTransferToDropdown", "ShareTransfers")',
+            type: 'GET',
+            data: { transferrorId: transferrorId },
+            success: function (data) {
+                // Update the "Transfer To" dropdown options
+                $('#TransfereeShID').empty().append($('<option>', { value: "", text: "Select Shareholder" }));
+                $.each(data, function (i, item) {
+                    $('#TransfereeShID').append($('<option>', { value: item.Value, text: item.Text }));
+                });
+
+                // Refresh NiceSelect to apply changes visually
+                $('#TransfereeShID').niceSelect("update");
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#TransferrorShID, #TransfereeShID').select2({
+            placeholder: "Select Shareholder",
+            allowClear: true
+        });
     });
 </script>

@@ -17,106 +17,106 @@
     @Html.ActionLink("Create New", "Create")
 </p>
 @*<div class="table-responsive ml-3 mr-3 mt-3">*@
-    @*<table class="table-auto w-full border-collapse border border-gray-300">
-            <thead>
+@*<table class="table-auto w-full border-collapse border border-gray-300">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CertNum)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Shareholder.FullNameEng)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Shareholder.FullNameAfanOromo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Shareholder.SHCategory)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.BeginingSerial)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EndingSerial)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PaymentIDs)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.DeliveryStatus)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DeliveredBy)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DeliveryDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CertGenerationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Remark)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+
+        @foreach (var item in Model)
+        {
+            <tbody>
                 <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.CertNum)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Shareholder.FullNameEng)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Shareholder.FullNameAfanOromo)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Shareholder.SHCategory)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.BeginingSerial)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.EndingSerial)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.PaymentIDs)
-                    </th>
-
-                    <th>
-                        @Html.DisplayNameFor(model => model.DeliveryStatus)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DeliveredBy)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.DeliveryDate)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.CertGenerationDate)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Remark)
-                    </th>
-                    <th></th>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CertNum)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Shareholder.FullNameAfanOromo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Shareholder.SHCategory)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.BeginingSerial)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndingSerial)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PaymentIDs)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DeliveryStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DeliveredBy)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DeliveryDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CertGenerationDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Remark)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.CertID }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.CertID }) |
+                        @Html.ActionLink("Delete", "Delete", new { id = item.CertID })
+                    </td>
                 </tr>
-            </thead>
+                </tbody>
+        }
 
-            @foreach (var item in Model)
-            {
-                <tbody>
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CertNum)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Shareholder.FullNameAfanOromo)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Shareholder.SHCategory)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.BeginingSerial)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EndingSerial)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.PaymentIDs)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DeliveryStatus)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DeliveredBy)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DeliveryDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CertGenerationDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Remark)
-                        </td>
-                        <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.CertID }) |
-                            @Html.ActionLink("Details", "Details", new { id = item.CertID }) |
-                            @Html.ActionLink("Delete", "Delete", new { id = item.CertID })
-                        </td>
-                    </tr>
-                    </tbody>
-            }
-
-        </table>*@
+    </table>*@
 @*</div>*@
 <div class="animate__animated p-4" :@class="[$store.app.animation]">
     <!-- start main content section -->
@@ -209,7 +209,7 @@
         </text>
     }
 ]
- 
+
                     },
                     searchable: true,
                     perPage: 10,

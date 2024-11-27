@@ -1,0 +1,199 @@
+﻿﻿@model IEnumerable<Shareholder_Management_System.Models.Dividend>
+
+@{
+    ViewBag.Title = "Index";
+
+    var dividend = ViewBag.CurrentDividend as Shareholder_Management_System.Models.Dividend;
+
+}
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/CSS/select2.min.css">
+<script src="~/Scripts/JS/select2.min.js"></script>
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/additional-methods.min.js"></script>
+
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <div class="flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+        <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Dividend Form</h5>
+    </div>
+    <div class="pt-5">
+        <div class="panel lg:col-span-2 pb-0 xl:col-span-1 pb-5">
+            @using (Html.BeginForm("Create", "Dividends", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <!-- Scrollable container with fixed height -->
+                <div class="relative overflow-y-auto max-h-[360px] pr-3">
+                    <div class="!mt-2">
+                        @Html.LabelFor(model => dividend.Profit, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => dividend.Profit, new { htmlAttributes = new { @class = "form-input", @placeholder = "Please enter dividend profit to be distributed*" } })
+                        @Html.ValidationMessageFor(model => dividend.Profit, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="flex justify-end items-center mt-8">
+                    <button type="button" class="btn btn-outline-danger">Clear</button>
+                    <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Submit</button>
+                </div>
+            }
+        </div>
+
+        <!-- Main Part -->
+        <div class="panel lg:col-span-2 xl:col-span-3 !mt-6">
+            <div class="mb-5" X-data="dividend">
+                <div class="space-y-6">
+                    <div class="panel sticky-column ">
+
+                        <table id="myTable1" class="whitespace-nowrap">
+                            <thead>
+                                <tr>
+
+                                <tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be populated by Alpine.js and SimpleDatatables -->
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    // main section
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('dividend', () => ({
+            columns: [
+                { name: 'Div ID', hidden: true },
+                { name: 'Profit', hidden: true },
+                { name: 'Total WASA', hidden: true },
+                { name: 'Fiscal Year', hidden: true },
+                { name: 'Div Per Share', hidden: true },
+                { name: 'Taxable Amount', hidden: true },
+                { name: 'Tax Rate', hidden: true },
+                { name: 'Running Date', hidden: true },
+                { name: 'Num Outstanding Days', hidden: true },
+                { name: 'Creation Date', hidden: true },
+                { name: 'User Full Name', hidden: true },
+                { name: 'Action', hidden: true }
+            ],
+
+            hideCols: [],
+            showCols: [0, 1, 2, 3, 4, 5],
+
+            showHideColumns(col, value) {
+                if (value) {
+                    this.showCols.push(col);
+                    this.hideCols = this.hideCols.filter((d) => d != col);
+                } else {
+                    this.hideCols.push(col);
+                    this.showCols = this.showCols.filter((d) => d != col);
+                }
+                let headers = this.datatable1.columns();
+                headers.hide(this.hideCols);
+                headers.show(this.showCols);
+            },
+
+            datatable1: null,
+
+
+            init() {
+                let headers = this.columns.map((col) => {
+                    return col.name;
+                });
+                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+                    data: {
+                        headings: headers,
+                        data: [
+                            @foreach (var item in Model)
+                            {
+                                <text>
+                                [
+                                    "@item.DivID",
+                                    "@item.Profit",
+                                    "@item.TotalWASA",
+                                    "@item.FiscalYear",
+                                    "@item.DivPerShare",
+                                    "@item.TaxableAmount",
+                                    "@item.TaxRate",
+                                    "@item.RunningDate",
+                                    "@item.NumOutstandingDays",
+                                    "@item.CreationDate",
+                                    "@item.User.FullName",
+                                    "@item.DivID"
+
+                                ],
+                                </text>
+                            }
+                         ]
+                    },
+                    perPage: 15,
+                    perPageSelect: [10, 20, 30, 50, 100],
+                    columns: [
+                        {
+                            select: 11,
+                            sortable: false,
+                            render: function (data, cell, row) {
+                                let computeWASA = '@Url.Action("ComputeWASA", "SimulationDivideneds", new { id = "__DivID__" })'.replace("__DivID__", data);
+                                return `<a href="${computeWASA}", class="btn btn-primary  gap-2" new { id = "__DivID__" })'.replace('__DivID__', data)" >
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+
+                                                <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                            </svg>
+                                            Compute
+                                        </a>`;
+                            },
+                        },
+
+                    ],
+                    firstLast: true,
+                    firstText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    lastText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    prevText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    nextText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    },
+                });
+                let cols = this.datatable1.columns();
+                cols.hide(this.hideCols);
+                cols.show(this.showCols);
+            },
+
+        }));
+    });
+
+    // Success message function (Toast)
+    async function showMessage(msg = '', type = 'success') {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    }
+
+</script>
