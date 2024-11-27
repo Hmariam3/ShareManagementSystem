@@ -11,65 +11,56 @@ namespace Shareholder_Management_System.Models
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
+    
     public partial class Payment
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Payment()
         {
             this.Blockeds = new HashSet<Blocked>();
             this.DividenedDetails = new HashSet<DividenedDetail>();
-            this.ShareTransfers = new HashSet<ShareTransfer>();
+            this.Payment1 = new HashSet<Payment>();
+            this.SimulationDivideneds = new HashSet<SimulationDividened>();
         }
-
+    
         public int PayID { get; set; }
-
-        [Required]
-        public int? ShID { get; set; }
-
-        [Required]
-        public int? SubID { get; set; }
-
-        [Required]
+        public Nullable<int> ShID { get; set; }
+        public Nullable<int> SubID { get; set; }
         public string PaymentMode { get; set; }
-
-        [Required]
-        public int? Branch { get; set; }
-
-        [Required]
-        public decimal? PaidAmount { get; set; }
-
-        [Required]
+        public Nullable<int> Branch { get; set; }
+        public Nullable<decimal> PaidAmount { get; set; }
         public string ReferenceNum { get; set; }
-
-        [Required]
-        public DateTime? PaymentDate { get; set; }
-
-        [Required]
-        public string PaymentAuthorizationStatus { get; set; }
-
-        [Required]
-        public int? PaymentSlip { get; set; }
-        public int? PaymentTransferFrom { get; set; }
-        public int? CreatedBy { get; set; }
-        public DateTime? CreationDate { get; set; }
-        public int? PaymentAuthorizer { get; set; }
-        public DateTime? AuthorizationDate { get; set; }
-        public string Remark { get; set; }
-        public decimal? BlockedAmount { get; set; }
-        [Required]
         public string SourceOfFunds { get; set; }
-
+        public Nullable<int> PaymentSlip { get; set; }
+        public Nullable<System.DateTime> PaymentDate { get; set; }
+        public Nullable<int> PaymentTransferFrom { get; set; }
+        public Nullable<int> CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreationDate { get; set; }
+        public string PaymentAuthorizationStatus { get; set; }
+        public Nullable<int> PaymentAuthorizer { get; set; }
+        public Nullable<System.DateTime> AuthorizationDate { get; set; }
+        public string Remark { get; set; }
+        public Nullable<decimal> BlockedAmount { get; set; }
+        public Nullable<int> TransferedPayID { get; set; }
+        public Nullable<int> TransferID { get; set; }
+        public Nullable<decimal> TransferAmount { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Blocked> Blockeds { get; set; }
         public virtual Branch Branch1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }
         public virtual Document Document { get; set; }
         public virtual Shareholder Shareholder { get; set; }
         public virtual Shareholder Shareholder1 { get; set; }
+        public virtual ShareTransfer ShareTransfer { get; set; }
         public virtual Subscribtion Subscribtion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Payment> Payment1 { get; set; }
+        public virtual Payment Payment2 { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
-        public virtual ICollection<ShareTransfer> ShareTransfers { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SimulationDividened> SimulationDivideneds { get; set; }
     }
 }
-

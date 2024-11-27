@@ -222,6 +222,7 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", payment.CreatedBy);
             ViewBag.PaymentAuthorizer = new SelectList(db.Users, "UID", "FullName", payment.PaymentAuthorizer);
 
+
             return View(payment);
         }
         // GET: Payments/Edit/5 
