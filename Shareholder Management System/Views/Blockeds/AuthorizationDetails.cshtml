@@ -1,0 +1,191 @@
+﻿@model Shareholder_Management_System.Models.Blocked
+
+@{
+    ViewBag.Title = "Authorization Details";
+}
+
+<div class="container flex justify-center" style="padding: 20px;">
+    <div class="form-container" style="width: 100%; max-width: 800px; margin-top: 20px; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+        <div class="panel">
+            <div class="flex items-center justify-between"
+                 style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color: white; border-radius: 8px 8px 0 0; padding: 15px;">
+                <h5 class="text-lg font-semibold" style="margin: 0;">Payment to be blocked approval</h5>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" style="padding: 20px;">
+                <!-- Left Column -->
+                <div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Shareholder.ShareID)</dt>
+                        <dd>@Html.DisplayFor(model => model.Shareholder.ShareID)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Shareholder.FullNameEng)</dt>
+                        <dd>@Html.DisplayFor(model => model.Shareholder.FullNameEng)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.BlockedAmount)</dt>
+                        <dd>@Html.DisplayFor(model => model.BlockedAmount)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.BlockingOrgan)</dt>
+                        <dd>@Html.DisplayFor(model => model.BlockingOrgan)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.DateBlocked)</dt>
+                        <dd>@Html.DisplayFor(model => model.DateBlocked)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.RefNum)</dt>
+                        <dd>@Html.DisplayFor(model => model.RefNum)</dd>
+                    </div>
+
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Reason)</dt>
+                        <dd>@Html.DisplayFor(model => model.Reason)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.BlockedAuthorizationStatus)</dt>
+                        <dd>@Html.DisplayFor(model => model.BlockedAuthorizationStatus)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.AuthorizationDate)</dt>
+                        <dd>@Html.DisplayFor(model => model.AuthorizationDate)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Remark)</dt>
+                        <dd>@Html.DisplayFor(model => model.Remark)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Document.DocName)</dt>
+                        <dd>@Html.DisplayFor(model => model.Document.DocName)</dd>
+                    </div>
+                    <div class="form-group">
+                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Payment.PaymentMode)</dt>
+                        <dd>@Html.DisplayFor(model => model.Payment.PaymentMode)</dd>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="text-center" style="padding: 20px; border-top: 1px solid #f0f0f0;">
+                <button type="button"
+                        onclick="approveRecord(@Model.BlockID, @Model.PayID, @Model.BlockedAmount)"
+                        style="padding: 12px 25px; background-color: #00bcd4; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); transition: 0.3s;">
+                    Approve
+                </button>
+
+                <button type="button"
+                        onclick="rejectRecord(@Model.BlockID)"
+                        style="display: inline-block; padding: 12px 25px; background-color: #f44336; color: white; border: none; border-radius: 5px; text-decoration: none; cursor: pointer; margin: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); transition: 0.3s;">
+                    Reject
+                </button>
+
+                <a href="@Url.Action("FilterPending")"
+                   style="display: inline-block; padding: 12px 25px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; text-decoration: none; cursor: pointer; margin: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); transition: 0.3s;">
+                    Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function approveRecord(blockId, payId, blockedAmount) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to approve this record!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#00bcd4',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, approve it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("ConfirmBlockApproval", "Blockeds")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        BlockID: blockId,
+                        PayID: payId,
+                        BlockedAmount: blockedAmount
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Approved!',
+                                text: 'Your record has been approved.',
+                                icon: 'success'
+                            }).then(() => {
+                            window.location.href = '@Url.Action("Index", "Blockeds")'; // Redirect to Index page
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error!', 'An unexpected error occurred.', 'error');
+                    }
+                });
+            }
+        });
+    }
+
+
+    function rejectRecord(blockId) {
+    Swal.fire({
+        title: 'Reject Record',
+        text: "Please provide the reason for rejection:",
+        input: 'textarea',
+        inputPlaceholder: 'Enter reason here...',
+        inputAttributes: {
+            'aria-label': 'Reason for rejection'
+        },
+        showCancelButton: true,
+        confirmButtonColor: '#f44336',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Reject',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed && result.value) {
+            const rejectionReason = result.value; // Get the input value
+            $.ajax({
+                url: '@Url.Action("ConfirmBlockReject", "Blockeds")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    BlockID: blockId,
+                    Reason: rejectionReason
+                }),
+                success: function (response) {
+    if (response.success) {
+        Swal.fire({
+            title: 'Rejected!',
+            text: 'The record has been rejected.',
+            icon: 'success'
+        }).then(() => {
+            window.location.href = '@Url.Action("Index", "Blockeds")'; // Redirect to Index page
+        });
+    } else {
+        Swal.fire('Error!', response.message, 'error');
+    }
+},
+
+                error: function () {
+                    Swal.fire('Error!', 'An unexpected error occurred.', 'error');
+                }
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire('Cancelled', 'The rejection was cancelled.', 'info');
+        }
+    });
+}
+
+</script>

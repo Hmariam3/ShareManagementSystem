@@ -1,103 +1,4 @@
-﻿@*<table class="table">
-        <tr>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(model => model.BlockedAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BlockingOrgan)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateBlocked)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RefNum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Reason)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BlockedAuthorizationStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AuthorizationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Remark)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Document.DocName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Payment.PaymentMode)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User1.FullName)
-            </th>
-            <th></th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.ActionLink("Release", "Details", new { id = item.BlockID })
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BlockedAmount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BlockingOrgan)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateBlocked)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RefNum)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Reason)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BlockedAuthorizationStatus)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AuthorizationDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Remark)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Document.DocName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Payment.PaymentMode)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.User1.FullName)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.BlockID })
-                </td>
-            </tr>
-        }
-
-    </table>*@
-
-
-@model IEnumerable<Shareholder_Management_System.Models.Blocked>
+﻿@model IEnumerable<Shareholder_Management_System.Models.Blocked>
 
 
 <script defer="" src="~/Script/JS/sweetalert.min.js"></script>
@@ -116,108 +17,6 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-
-@*<table class="table-auto w-full border-collapse border border-gray-300">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.CertNum)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Shareholder.FullNameEng)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Shareholder.FullNameAfanOromo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Shareholder.SHCategory)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BeginingSerial)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.EndingSerial)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PaymentIDs)
-                </th>
-
-                <th>
-                    @Html.DisplayNameFor(model => model.DeliveryStatus)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DeliveredBy)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DeliveryDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CertGenerationDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Remark)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-
-        @foreach (var item in Model)
-        {
-            <tbody>
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CertNum)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.FullNameAfanOromo)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.SHCategory)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BeginingSerial)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EndingSerial)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PaymentIDs)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DeliveryStatus)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DeliveredBy)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DeliveryDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CertGenerationDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Remark)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.CertID }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.CertID }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.CertID })
-                    </td>
-                </tr>
-                </tbody>
-        }
-
-    </table>*@
-
 <div class="animate__animated p-6" :@class="[$store.app.animation]">
     <!-- start main content section -->
     <div x-data="multipleTable">
@@ -227,20 +26,21 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>BlockedAmount</th>
-                        <th>BlockingOrgan</th>
-                        <th>DateBlocked</th>
-                        <th>RefNum</th>
+                        <th></th>
+                        <th>Block Id</th>
+                        <th>Shareholder Id</th>
+                        <th>Shareholder Name</th>
+                        <th>Payment Id</th>
+                        <th>Blocked Amount</th>
+                        <th>Blocking Organ</th>
+                        <th>Reference Number</th>
                         <th>Reason</th>
                         <th>BlockedAuthorizationStatus</th>
-                        <th>AuthorizationDate</th>
                         <th>Remark</th>
-                        <th>DocName</th>
-                        <th>PaymentMode</th>
-                        <th>ShareID</th>
                         <th>FullName</th>
                         <th>FullName</th>
-                        <th></th>
+                        <th>Date</th>
+
                     </tr>
                 </thead>
             </table>
@@ -250,96 +50,6 @@
     </div>
 </div>
 
-@*<script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('multipleTable', () => ({
-                init() {
-                    // Ensure SimpleDatatables is initialized after the DOM is ready
-                    const dataTable1 = new simpleDatatables.DataTable('#myTable1');
-                    const dataTable2 = new simpleDatatables.DataTable('#myTable2');
-                }
-            }))
-        })
-    </script>*@
-
-@*<script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('multipleTable', () => ({
-                datatable1: null,
-                init() {
-                    this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
-                        data: {
-                            headings: [
-                                'BlockedAmount',
-                                'BlockingOrgan',
-                                'DateBlocked',
-                                'RefNum',
-                                'Reason',
-                                'BlockedAuthorizationStatus',
-                                'AuthorizationDate',
-                                'Remark',
-                                'DocName',
-                                'PaymentMode',
-                                'ShareID',
-                                'FullName',
-                                'FullName',
-                                'Action'
-                            ],
-                           data: [
-        @foreach (var item in Model)
-        {
-            <text>
-            [
-                "@item.BlockedAmount", // CertNum
-                "@item.BlockingOrgan", // Shareholder.ShareID
-                "@item.DateBlocked", // FullNameEng
-                "@item.RefNum", // FullNameAfanOromo
-                "@item.Reason", // SHCategory
-                "@item.BlockedAuthorizationStatus", // BeginingSerial
-                "@item.AuthorizationDate", // EndingSerial
-                "@item.Remark", // PaymentIDs
-                "@item.Document.DocName", // DeliveryStatus
-                "@item.Payment.PaymentMode", // DeliveredBy
-                "@item.Shareholder.ShareID", // DeliveredBy
-                "@item.User.FullName", // DeliveredBy
-                "@item.User1.FullName", // DeliveredBy
-                `<a href="@Url.Action("Edit", new { id = item.BlockID })">Edit</a> |
-                 <a href="@Url.Action("Release", new { id = item.BlockID })">Details</a> |
-
-            ],
-            </text>
-        }
-    ]
-
-                        },
-                        searchable: true,
-                        perPage: 10,
-                        columns: [
-                            { select: 10, render: (data) => this.formatDate(data) }, // DeliveryDate column
-                            { select: 11, render: (data) => this.formatDate(data) }, // CertGenerationDate column
-                        ],
-                        firstLast: true,
-                        labels: {
-                            perPage: '{select}',
-                        },
-                        layout: {
-                            top: '{search}',
-                            bottom: '{info}{select}{pager}',
-                        },
-                    });
-                },
-                formatDate(date) {
-                    if (date) {
-                        const dt = new Date(date);
-                        const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
-                        const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-                        return day + '/' + month + '/' + dt.getFullYear();
-                    }
-                    return '';
-                }
-            }));
-        });
-    </script>*@
 
 <script>
     document.addEventListener('alpine:init', () => {
@@ -349,6 +59,7 @@
                 this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
                     data: {
                         headings: [
+                            '',
                             '',
                             'BlockID',
                             'ShareID',
@@ -360,36 +71,61 @@
                             'Reason',
                             'BlockedAuthorizationStatus',
                             'Remark',
-                      
-                            'PaymentMode',
                             'UFullName',
-                        
-                            ''
+                            'U1FullName',
+                            'Date Blocked'
+
                         ],
                        data: [
     @foreach (var item in Model)
     {
         <text>
         [
-            `<a href="@Url.Action("Details", new { id = item.BlockID })" 
-            style="display: inline-block; padding: 10px 20px; color: black; background-color: #1698de; border: none; border-radius: 5px; text-decoration: none;">
-            Release
-            </a>`,
-            "@item.BlockID", // CertNum
-            "@item.Shareholder.ShareID", // Shareholder.ShareID
-            "@item.Shareholder.FullNameEng", // Shareholder.ShareID
-            "@item.Payment.PayID", // FullNameEng
-            "@item.BlockedAmount", // SHCategory
-            "@item.BlockingOrgan", // BeginingSerial
-            "@item.RefNum", // EndingSerial
-            "@item.Reason", // PaymentIDs
-            "@item.BlockedAuthorizationStatus", // DeliveryStatus
-            "@item.Remark", // DeliveredBy
-            @*"@item.Document.DocName", // CertNum*@
-            "@item.Payment.PaymentMode", // Shareholder.ShareID
-            "@item.User.FullName", // FullNameEng
+            `@if (item.BlockedAuthorizationStatus == "Pending"|| item.BlockedAuthorizationStatus == "Rejected")
+            {
+    <span style="display: inline-block; padding: 10px 20px; color: gray; background-color: #d3d3d3; border: none; border-radius: 5px; text-decoration: none; cursor: not-allowed;"
+          title="Action not allowed for pending status">
+        Release
+    </span>
+}
+else
+{
+    <a href="@Url.Action("Details", new { id = item.BlockID })"
+       style="display: inline-block; padding: 10px 20px; color: black; background-color: #1698de; border: none; border-radius: 5px; text-decoration: none;">
+        Release
+    </a>
+}
 
-            `<a href="@Url.Action("Edit", new { id = item.BlockID })">Edit</a> `
+`, `@if (item.BlockedAuthorizationStatus == "Approved")
+{
+    <span style="display: inline-block; padding: 10px 20px; color: gray; background-color: #d3d3d3; border: none; border-radius: 5px; text-decoration: none; cursor: not-allowed;"
+          title="Action not allowed for Approved status">
+        Edit
+    </span>
+}
+else
+{
+    <a href="@Url.Action("Edit", new { id = item.BlockID })"
+       style="display: inline-block; padding: 10px 20px; color: black; background-color: #1698de; border: none; border-radius: 5px; text-decoration: none;">
+        Edit
+    </a>
+}
+
+`,
+            "@item.BlockID",
+            "@item.Shareholder.ShareID",
+            "@item.Shareholder.FullNameEng",
+            "@item.Payment.PayID",
+            "@item.BlockedAmount",
+            "@item.BlockingOrgan",
+            "@item.RefNum",
+            "@item.Reason",
+            "@item.BlockedAuthorizationStatus",
+            "@item.Remark",
+            "@item.User.FullName",
+            "@item.User1.FullName",
+            "@item.DateBlocked"
+
         ],
         </text>
     }
@@ -399,8 +135,7 @@
                     searchable: true,
                     perPage: 10,
                     columns: [
-                        { select: 10, render: (data) => this.formatDate(data) }, // DeliveryDate column
-                        { select: 11, render: (data) => this.formatDate(data) }, // CertGenerationDate column
+                        { select: 14, render: (data) => this.formatDate(data) }, // CertGenerationDate column
                     ],
                     firstLast: true,
                     labels: {
