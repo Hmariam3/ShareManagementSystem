@@ -38,6 +38,39 @@ namespace Shareholder_Management_System.Controllers
             return View(dividend);
         }
 
+        // Approval Status
+        [HttpPost]
+        public ActionResult Approve(int id)
+        {
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    int AuthorizerId = Convert.ToInt32(Session["ID"]);
+                    var dividend = db.Dividends.Find(id);
+                    if (dividend == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    // Change status to Approved
+                    dividend.Authorizer = AuthorizerId;
+                    dividend.AuthorizationStatus = "Approved";
+                    dividend.AuthorizedDate = DateTime.Now;
+                    db.Entry(dividend).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    transaction.Commit();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    ModelState.AddModelError("", "Error approving the dividend: " + ex.Message);
+                }
+            }
+            return View();
+        }
         // GET: Dividends/Create
         public ActionResult Create()
         {

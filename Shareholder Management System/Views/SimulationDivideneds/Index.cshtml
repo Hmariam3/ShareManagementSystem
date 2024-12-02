@@ -94,12 +94,22 @@
                     <div class="mb-5 sm:absolute sm:top-0 sm:mb-0 sm:ltr:right-56 sm:rtl:left-56">
                         <div class="flex items-center">
                             <a :href="'@Url.Action("ComputeDividend", "SimulationDivideneds")'" class="hover:text-dark btn btn-primary mr-2">
-                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
-                                    <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
-                                    <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-white">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.59L6.42 13l1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"
+                                          fill="currentColor"></path>
                                 </svg>
                                 Approve
                             </a>
+                            <a :href="'@Url.Action("Reject", "SimulationDivideneds")'" class="hover:text-dark btn btn-danger gap-2 mr-2">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                                    <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+                                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                                </svg>
+                                Reject
+                            </a>
+
+
+
 
                             <div class="theme-dropdown relative" x-data="{ columnDropdown: false }"
                                  @@click.outside="columnDropdown = false">

@@ -14,31 +14,84 @@
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 <script src="~/Scripts/additional-methods.min.js"></script>
+<style>
+    .button-container {
+        display: flex;
+        gap: 12px; /* Spacing between buttons */
+        align-items: center;
+    }
 
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px; /* Space between icon and text */
+        padding: 8px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        color: white;
+    }
+
+    .svg {
+        display: inline-block;
+        vertical-align: middle;
+    }
+</style>
 
 <div class="animate__animated p-6" :class="[$store.app.animation]">
     <div class="flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
         <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Dividend Form</h5>
     </div>
     <div class="pt-5">
+
+        @{
+            bool isCurrentYearPresent = Model.Any(item => item.CreationDate.HasValue && item.CreationDate.Value.Year == DateTime.Now.Year);
+        }
+
+
         <div class="panel lg:col-span-2 pb-0 xl:col-span-1 pb-5">
-            @using (Html.BeginForm("Create", "Dividends", FormMethod.Post))
+            @if (!isCurrentYearPresent)
             {
-                @Html.AntiForgeryToken()
-                <!-- Scrollable container with fixed height -->
-                <div class="relative overflow-y-auto max-h-[360px] pr-3">
-                    <div class="!mt-2">
-                        @Html.LabelFor(model => dividend.Profit, htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => dividend.Profit, new { htmlAttributes = new { @class = "form-input", @placeholder = "Please enter dividend profit to be distributed*" } })
-                        @Html.ValidationMessageFor(model => dividend.Profit, "", new { @class = "text-danger" })
+                using (Html.BeginForm("Create", "Dividends", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <!-- Scrollable container with fixed height -->
+                    <div class="relative overflow-y-auto max-h-[360px] pr-3">
+                        <div class="!mt-2">
+                            @Html.LabelFor(model => dividend.Profit, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => dividend.Profit, new { htmlAttributes = new { @class = "form-input", @placeholder = "Profit to be Distributed" } })
+                            @Html.ValidationMessageFor(model => dividend.Profit, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
-                <div class="flex justify-end items-center mt-8">
-                    <button type="button" class="btn btn-outline-danger">Clear</button>
-                    <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Submit</button>
+                    <div class="flex justify-end items-center mt-8">
+                        <button type="button" class="btn btn-outline-danger">Clear</button>
+                        <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Submit</button>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    The dividend for the current year has already been created.
                 </div>
             }
         </div>
+
 
         <!-- Main Part -->
         <div class="panel lg:col-span-2 xl:col-span-3 !mt-6">
@@ -128,7 +181,66 @@
                                     "@item.NumOutstandingDays",
                                     "@item.CreationDate",
                                     "@item.User.FullName",
-                                    "@item.DivID"
+                                `
+                                 @if (item.AuthorizationStatus == "Pending") {
+                                    <div class="button-container">
+
+                                        @*<form id="approveForm" action="@Url.Action("Approve", "Dividends", new { id = item.DivID })" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="button" class="btn btn-success gap-2" >
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-white">
+                                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.59L6.42 13l1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"
+                                                          fill="currentColor"></path>
+                                                </svg>
+                                                Approve
+                                            </button>
+                                        </form>*@
+                                        <a href="@Url.Action("Approve", "Dividends", new { id = item.DivID })" class="btn btn-success gap-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-white">
+                                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.59L6.42 13l1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"
+                                                          fill="currentColor"></path>
+                                                </svg>
+                                                Approve
+                                        </a>
+ @*<a id="computeWASA" href="@Url.Action("Approve", "SimulationDivideneds", new { id = item.DivID })" class="btn btn-primary gap-2" title="compute">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-primary">
+                                                <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                            </svg>
+                                                Compute
+                                        </a>*@
+                                       
+                                        <a href="@Url.Action("Edit", new { id = item.DivID })" class="btn btn-warning gap-2" title="Edit">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-white">
+                                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm14.71-9.04c.39-.39.39-1.02 0-1.41l-2.54-2.54a1 1 0 0 0-1.41 0L12.47 5.59l3.75 3.75 1.49-1.13z"
+                                                      fill="currentColor"></path>
+                                            </svg>
+                                            <span>Edit</span>
+                                        </a>
+                                    </div>
+                                 }
+                                 else if (item.AuthorizationStatus == "Approved")
+                                 {
+
+                                        <a id="computeWASA" href="@Url.Action("ComputeWASA", "SimulationDivideneds", new { id = item.DivID })" class="btn btn-primary gap-2" title="compute">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-primary">
+                                                <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                            </svg>
+                                                Compute
+                                        </a>
+
+
+                                 }
+                                 else
+                                 {
+                                         <div class="button-container">
+                                            <span class="text-muted">No actions available</span>
+                                        </div>
+                                 }
+                                      `
 
                                 ],
                                 </text>
@@ -138,7 +250,7 @@
                     perPage: 15,
                     perPageSelect: [10, 20, 30, 50, 100],
                     columns: [
-                        {
+                                                @*{
                             select: 11,
                             sortable: false,
                             render: function (data, cell, row) {
@@ -153,9 +265,9 @@
                                             Compute
                                         </a>`;
                             },
-                        },
-
+                        },*@
                     ],
+
                     firstLast: true,
                     firstText:
                         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
@@ -197,3 +309,65 @@
     }
 
 </script>
+<script>
+    async function showAlert(action, event) {
+        // Prevent the default form submission if action is delete
+        if (action === 'approve') {
+            event.preventDefault();
+        }
+
+        // Set alert text and button text based on action type
+        let actionText = action === 'approve' ? 'Approve this Transfer' : '';
+        let confirmText = action === 'approve' ? 'Approve' : '';
+
+        // Display confirmation dialog
+        new window.Swal({
+            icon: 'success',
+            //title: 'Are you sure?',
+            text: `You are about to ${actionText}. This action cannot be undone!`,
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#dc3545',
+            padding: '2em',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form if confirmed
+                if (action === 'approve') {
+                    document.getElementById('approveForm').submit();
+                }
+            }
+        });
+    }
+</script>
+<script>
+    async function showAlert(action, event) {
+        // Prevent the default link navigation if action is delete
+        if (action === 'compute') {
+            event.preventDefault();
+        }
+
+        // Set alert text based on action type
+        let actionText = action === 'compute' ? 'compute this transfer' : '';
+        let confirmText = action === 'compute' ? 'Compute' : '';
+
+        // Display confirmation dialog
+        new window.Swal({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: `You are about to ${actionText}. This action cannot be undone!`,
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancel',
+            padding: '2em',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Navigate to the delete link if confirmed
+                if (action === 'compute') {
+                    window.location.href = document.getElementById('computeWASA').href;
+                }
+            }
+        });
+    }
+</script>
+
