@@ -37,12 +37,19 @@ namespace Shareholder_Management_System.Controllers
             return View(shareTransfer);
         }
 
-        // GET: ShareTransfers  Authorize 
+        // GET: ShareTransfers/Authorize
         public ActionResult Authorize(int? id)
         {
-            var shareTransfers = db.ShareTransfers.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1);
+            var shareTransfers = db.ShareTransfers
+                .Include(s => s.Shareholder)
+                .Include(s => s.Shareholder1)
+                .Include(s => s.User)
+                .Include(s => s.User1)
+                .Where(s => s.TransferAuthorizationStatus == "Pending"); // Filter for pending status
+
             return View(shareTransfers.ToList());
         }
+
 
 
         // GET: ShareTransfers Authorize Details
@@ -114,7 +121,7 @@ namespace Shareholder_Management_System.Controllers
 
             // Fetch subscriptions where SubNumShares is not 0 for the selected shareholder
             var subscriptions = db.Subscribtions
-                .Where(s => s.ShID == shareholderId && s.SubNumShares != 0)
+                .Where(s => s.ShID == shareholderId && s.SubNumShares != 0 && s.SubAuthorizationStatus == "Approved")
                 .Select(s => new
                 {
                     s.SubID,
@@ -133,7 +140,7 @@ namespace Shareholder_Management_System.Controllers
 
             // Fetch payments where PaidAmount is not 0 and BlockedAmount is null
             var payments = db.Payments
-                .Where(p => p.SubID == subscriptionId && p.PaidAmount != 0 )
+                .Where(p => p.SubID == subscriptionId && p.PaidAmount != 0 && p.PaymentAuthorizationStatus == "Approved")
                 .Select(p => new
                 {
                     p.PayID,
@@ -331,7 +338,6 @@ namespace Shareholder_Management_System.Controllers
                                     CreationDate = shareTransfer.CreationDate,
                                     Branch = shareTransfer.Branch,
                                     Remark = shareTransfer.Remark
-
 
                                 };
                                 db.Payments.Add(newPayments);

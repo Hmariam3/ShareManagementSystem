@@ -61,7 +61,7 @@
                 <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Share Transfer Form</h5>
             </div>
             <div class="grid grid-cols-1 gap-6 pt-5 ">
-                <div>
+                <div class="hidden">
                     <!-- Hidden input to hold selected subscription and payment IDs  type="hidden" -->
                     <input class="form-input" id="selectedSubscriptionIds" name="selectedSubscriptionIds" style="width: 200px" placeholder="Sub ID Populate here" readonly />
                     <input class="form-input" id="selectedPaymentIds" name="selectedPaymentIds" style="width: 500px" placeholder="Pay ID Populate here" readonly />
@@ -76,18 +76,23 @@
                     </div>
 
                     <div class="mb-5">
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div>
-                                <label for="shid">Transfer From</label>
-                                @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input" })
-                                <span class="text-danger"></span>
-                            </div>
-                            <div>
-                                <label for="shid">Transfer To</label>
-                                @Html.DropDownList("TransfareeShID", (SelectList)ViewBag.ShareholdersTo, new { @id = "TransfereeShID", @class = "form-input" })
-                                <span class="text-danger"></span>
-                            </div>
+                        <div class="panel">
+                          
+                                <div class="mx-auto flex max-w-full flex-col gap-4 md:flex-row">
+                                    <div>
+                                        <label for="shid">Transfer From</label>
+                                        @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input" })
+                                        <span class="text-danger"></span>
+                                    </div>
+                                    <div>
+                                        <label for="shid">Transfer To</label>
+                                        @Html.DropDownList("TransfareeShID", (SelectList)ViewBag.ShareholdersTo, new { @id = "TransfereeShID", @class = "form-input" })
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+
                         </div>
+                        
                         <br />
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <!-- Transfer Category Dropdown -->
@@ -134,134 +139,138 @@
                             </div>
 
                         </div>
-                        <div class="panel">
-                            <div class="mb-5">
-                                <div class="flex grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <!-- Subscriptions Table -->
-                                    <div>
+                       
+                            <div>
+                                <div class="grid grid-cols-1 gap-6 xl:grid-cols-2 mt-4">
+
+                                    <div class="panel">
                                         <div class="mb-5 flex items-center justify-between">
                                             <h5 class="text-lg font-semibold dark:text-white-light">Subscription Status</h5>
                                         </div>
-                                        <div style="max-height: 400px; overflow-y: auto;  border-radius: 4px; width: 700px">
-                                            <table id="subscriptionsTable" style="width: 100%;">
-                                                <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
-                                                    <tr>
-                                                        <th style="width: 20px;"></th>
-                                                        <th>Sub ID</th>
-                                                        <th>Share Amount</th>
-                                                        <th>Paid Shares</th>
-                                                        <th>Unpaid Shares</th>
-                                                        <th class="partial-transfer-col">Right Transfer</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!-- Rows will be added dynamically -->
-                                                </tbody>
-                                            </table>
+                                        <div class="mb-5">
+                                            <div class="table-responsive" style= "max-height: 400px; overflow-y: auto; " >
+                                                <table id="subscriptionsTable">
+                                                    <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
+                                                        <tr>
+                                                            <th style="width: 20px;"></th>
+                                                            <th>Sub ID</th>
+                                                            <th>Share Amount</th>
+                                                            <th>Paid Shares</th>
+                                                            <th>Unpaid Shares</th>
+                                                            <th class="partial-transfer-col">Right Transfer</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Rows will be added dynamically -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
                                         </div>
                                     </div>
 
-                                    <!-- Payments Table -->
-                                    <div>
+                                    <div class="panel">
                                         <div class="mb-5 flex items-center justify-between">
                                             <h5 class="text-lg font-semibold dark:text-white-light">Payment Status</h5>
                                         </div>
-                                        <div style="max-height: 400px; overflow-y: auto;  border-radius: 4px; width: 400px">
-                                            <table id="paymentsTable" style="width: 100%;">
-                                                <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
-                                                    <tr>
-                                                        <th style="width: 20px;"></th>
-                                                        <th>Pay ID</th>
-                                                        <th>Paid Amount</th>
-                                                        <th class="partial-transfer-col">Partial Transfer</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!-- Rows will be added dynamically -->
-                                                </tbody>
-                                            </table>
+                                        <div class="mb-5">
+                                            <div class="table-responsive" style= "max-height: 400px; overflow-y: auto; ">
+                                                <table id="paymentsTable">
+                                                    <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
+                                                        <tr>
+                                                            <th style="width: 20px;"></th>
+                                                            <th>Pay ID</th>
+                                                            <th>Paid Amount</th>
+                                                            <th class="partial-transfer-col">Partial Transfer</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Rows will be added dynamically -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                      
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mt-4">
+                                <div class="col-md-10">
+                                    <label>No of Shares Transferred</label>
+                                    @Html.TextBoxFor(model => model.NumSharesTransferred, new { @class = "form-input", @readonly = "readonly", @id = "numSharesTransferred" })
+                                    @Html.ValidationMessageFor(model => model.NumSharesTransferred, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-10">
+                                    <label>Amount Per Share</label>
+                                    @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "100", @readonly = "readonly", @id = "amountPerShare" })
+                                    @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-10">
+                                    <label>Paid Amount for Share</label>
+
+                                    <div class="flex">
+                                        <div class="bg-[#eee] flex justify-center items-center ltr:rounded-l-md rtl:rounded-r-md px-3 font-semibold border ltr:border-r-0 rtl:border-l-0 border-[#e0e6ed] dark:border-[#17263c] dark:bg-[#1b2e4b]">ETB</div>
+                                        @Html.TextBoxFor(model => model.PaidAmountForTransfer, new { @class = "form-input rounded-none", @readonly = "readonly", @id = "paidAmountForTransfer" })
+                                        @Html.ValidationMessageFor(model => model.PaidAmountForTransfer, "", new { @class = "text-danger" })
+
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                                <div class="col-md-10">
+                                    <label>Dividend For</label>
+                                    @Html.DropDownListFor(model => model.DividenedFor,
+                                        new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "Transferor", Value = "Transferor" },
+                                            new SelectListItem { Text = "Transferee", Value = "Transferee" },
+                                            new SelectListItem { Text = "Both", Value = "Both" }
+                                        }, "Select Dividend For", new { @class = "form-input", @id = "dividendFor" })
+                                    @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-10">
+                                    <label>Reason for Transfer</label>
+                                    @Html.DropDownListFor(model => model.TransferReason,
+                                        new List<SelectListItem>
+                                        {
+                                            new SelectListItem { Text = "Sale", Value = "Sale" },
+                                            new SelectListItem { Text = "Gift", Value = "Gift" },
+                                            new SelectListItem { Text = "Heir", Value = "Heir" },
+                                            new SelectListItem { Text = "Court Decision", Value = "Court Decision" },
+                                        }, "Select Transfer Reason", new { @class = "form-input", @id = "transferReason" })
+                                    @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-md-10">
+                                    <label>Transfer Date</label>
+                                    @Html.TextBoxFor(model => model.TransferDate, new { @class = "form-input", @type = "date", @id = "transferDate" })
+                                    @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div class="mb-5">
+                                    @Html.Label("Upload Document", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                                    <div class="custom-file-container" data-upload-id="myFirstImage">
+                                        <div class="custom-file-container__image-preview">
+                                            <input type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" accept="*" name="uploadedFile" required>
+                                            <span class="custom-file-container__custom-file__custom-file-control"></span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                        </div>
-
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                            <div class="col-md-10">
-                                <label>No of Shares Transferred</label>
-                                @Html.TextBoxFor(model => model.NumSharesTransferred, new { @class = "form-input", @readonly = "readonly", @id = "numSharesTransferred" })
-                                @Html.ValidationMessageFor(model => model.NumSharesTransferred, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10">
-                                <label>Amount Per Share</label>
-                                @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "100", @readonly = "readonly", @id = "amountPerShare" })
-                                @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10">
-                                <label>Paid Amount for Share</label>
-
-                                <div class="flex">
-                                    <div class="bg-[#eee] flex justify-center items-center ltr:rounded-l-md rtl:rounded-r-md px-3 font-semibold border ltr:border-r-0 rtl:border-l-0 border-[#e0e6ed] dark:border-[#17263c] dark:bg-[#1b2e4b]">ETB</div>
-                                    @Html.TextBoxFor(model => model.PaidAmountForTransfer, new { @class = "form-input rounded-none", @readonly = "readonly", @id = "paidAmountForTransfer" })
-                                    @Html.ValidationMessageFor(model => model.PaidAmountForTransfer, "", new { @class = "text-danger" })
-
+                                <div class="col-md-10">
+                                    <label>Remark</label>
+                                    @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input", @id = "remark" } })
+                                    @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                            <div class="col-md-10">
-                                <label>Dividend For</label>
-                                @Html.DropDownListFor(model => model.DividenedFor,
-                                    new List<SelectListItem>
-                                    {
-                                        new SelectListItem { Text = "Transferor", Value = "Transferor" },
-                                        new SelectListItem { Text = "Transferee", Value = "Transferee" },
-                                        new SelectListItem { Text = "Both", Value = "Both" }
-                                    }, "Select Dividend For", new { @class = "form-input", @id = "dividendFor" })
-                                @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10">
-                                <label>Reason for Transfer</label>
-                                @Html.DropDownListFor(model => model.TransferReason,
-                                    new List<SelectListItem>
-                                    {
-                                        new SelectListItem { Text = "Sale", Value = "Sale" },
-                                        new SelectListItem { Text = "Gift", Value = "Gift" },
-                                        new SelectListItem { Text = "Heir", Value = "Heir" },
-                                        new SelectListItem { Text = "Court Decision", Value = "Court Decision" },
-                                    }, "Select Transfer Reason", new { @class = "form-input", @id = "transferReason" })
-                                @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="col-md-10">
-                                <label>Transfer Date</label>
-                                @Html.TextBoxFor(model => model.TransferDate, new { @class = "form-input", @type = "date", @id = "transferDate" })
-                                @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                        <br />
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div class="mb-5">
-                                @Html.Label("Upload Document", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
-                                <div class="custom-file-container" data-upload-id="myFirstImage">
-                                    <div class="custom-file-container__image-preview">
-                                        <input type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" accept="*" name="uploadedFile" required>
-                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <label>Remark</label>
-                                @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input", @id = "remark" } })
-                                @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
                             </div>
                         </div>
                     </div>
-                </div>
 
 
-            </div>
+                    </div>
 
             <!-- Submit the form  -->
             <button type="submit" class="btn btn-primary !mt-6">Submit Transfer</button>

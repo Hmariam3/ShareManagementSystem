@@ -6,6 +6,13 @@
 
 <script src="~/Scripts/JS/simple-datatables.js"></script>
 <script src="~/Scripts/JS/xlsx.full.min.js"></script>
+<style>
+    a.disabled {
+        pointer-events: none;
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
 
 <div class="animate__animated p-6" :class="[$store.app.animation]">
     @{
@@ -93,23 +100,25 @@
 
                     <div class="mb-5 sm:absolute sm:top-0 sm:mb-0 sm:ltr:right-56 sm:rtl:left-56">
                         <div class="flex items-center">
-                            <a :href="'@Url.Action("ComputeDividend", "SimulationDivideneds")'" class="hover:text-dark btn btn-primary mr-2">
+                            <a href="@Url.Action("ComputeDividend", "SimulationDivideneds")"
+                               class="hover:text-dark btn btn-success mr-2 @(Model != null && Model.Any() ? "" : "disabled")"
+                               onclick="showConfirmationPopup(event, 'approve', this)">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-white">
                                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.59L6.42 13l1.41-1.41L10 13.17l6.59-6.59L18 8l-8 8z"
                                           fill="currentColor"></path>
                                 </svg>
                                 Approve
                             </a>
-                            <a :href="'@Url.Action("Reject", "SimulationDivideneds")'" class="hover:text-dark btn btn-danger gap-2 mr-2">
+
+                            <a href="@Url.Action("Reject", "SimulationDivideneds")"
+                               class="hover:text-dark btn btn-danger gap-2 mr-2 @(Model != null && Model.Any() ? "" : "disabled")"
+                               onclick="showConfirmationPopup(event, 'reject', this)">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
                                     <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
                                     <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
                                 </svg>
                                 Reject
                             </a>
-
-
-
 
                             <div class="theme-dropdown relative" x-data="{ columnDropdown: false }"
                                  @@click.outside="columnDropdown = false">
@@ -312,4 +321,45 @@
         });
     }
 
+</script>
+
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const links = document.querySelectorAll('a.disabled');
+        links.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Prevent the link's default action
+            });
+        });
+    });
+
+    function showConfirmationPopup(event, action, link) {
+        // Prevent default link navigation
+        event.preventDefault();
+
+        // Determine confirmation text based on action
+        let actionText = action === 'approve' ? 'Approve the Dividend' : 'Reject the Dividend';
+        let confirmText = action === 'approve' ? 'Approve' : 'Reject';
+        let icon = action === 'approve' ? 'success' : 'warning';
+        let confirmButtonColor = action === 'approve' ? '#28a745' : '#dc3545'; 
+
+        // Display confirmation dialog using SweetAlert
+        Swal.fire({
+            icon: icon,
+            //title: 'Are you sure?',
+            text: `You are about to ${actionText}. Proceed?`,
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            confirmButtonColor: confirmButtonColor,
+            cancelButtonText: 'Cancel',
+            padding: '2em',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Navigate to the link if confirmed
+                window.location.href = link.href;
+            }
+        });
+    }
 </script>
