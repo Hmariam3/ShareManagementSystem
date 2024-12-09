@@ -1,0 +1,16 @@
+﻿@model Shareholder_Management_System.Models.Blocked
+
+<div>
+
+    <p>Block ID: @Model.BlockID</p>
+    <p>Shareholder Id: @Model.ShID</p>
+    <p>Shareholder Name: @Model.Shareholder.FullNameEng</p>
+    <p>Payment Id: @Model.PayID</p>
+    <p>Blocked Amount: @Model.BlockedAmount</p>
+    <p>Blocking Organization: @Model.BlockingOrgan</p>
+    <p>Date Blocked: @Model.DateBlocked.ToString()</p>
+    <p>Reason: @Model.Reason</p>
+    <p>Authorization Status: @Model.BlockedAuthorizationStatus</p>
+    <p>Paid Amount: @Model.Payment.PaidAmount</p>
+    <p>Blocked By: @Model.User.FullName</p>
+</div>

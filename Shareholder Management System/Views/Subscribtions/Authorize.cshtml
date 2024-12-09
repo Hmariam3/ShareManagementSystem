@@ -9,7 +9,7 @@
 <div class="flex items-center justify-center mt-20">
     <div class="panel bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
         <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-            <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Authorize Subscription</h5>
+            <h5 class="text-lg font-semibold dark:text-white-light uppercase" style="padding:7px;">Authorize Subscriptions</h5>
         </div>
 
         <div class="mb-5">
@@ -73,6 +73,42 @@
                 </div>
             </form>
 
+            @*@using (Html.BeginForm("Authorize", "Subscribtions", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="flex justify-center mt-5">
+                        <div>
+                            <div class="flex justify-between">
+                                @if (Model.SubAuthorizationStatus == "Approved")
+                                {
+                                    <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
+                                }
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between" style="margin-left:5px">
+                                @if (Model.SubAuthorizationStatus == "Rejected")
+                                {
+                                    <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="@Url.Action("PendingSubscription")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
+                        Back To List
+                    </a>
+                }*@
+
             @using (Html.BeginForm("Authorize", "Subscribtions", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
@@ -89,7 +125,6 @@
                             }
                         </div>
                     </div>
-
                     <div>
                         <div class="flex justify-between" style="margin-left:5px">
                             @if (Model.SubAuthorizationStatus == "Rejected")
@@ -98,16 +133,25 @@
                             }
                             else
                             {
-                                <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
+                                <button type="button" class="btn btn-danger mt-6" onclick="showRemarkField()">Reject</button>
                             }
                         </div>
                     </div>
                 </div>
 
-                <a href="@Url.Action("PendingSubscription")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
-                    Back To List
-                </a>
+                <div id="remarkSection" style="display:none; margin-top: 20px;">
+                    <label for="remark">Please provide a remark:</label>
+                    <textarea id="remark" name="remark" rows="4" class="form-input border border-gray-300 rounded-md p-2" placeholder="Enter your remark..."></textarea>
+                </div>
+
+                <input type="hidden" name="action" id="hiddenAction" value="" />
+
+                <button type="submit" name="action" value="reject" class="btn btn-danger mt-6" id="submitReject" style="display:none;" onclick="return validateRemark()">Submit Reject</button>
             }
+
+            <a href="@Url.Action("PendingSubscription")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
+                Back To List
+            </a>
 
         </div>
     </div>
@@ -115,6 +159,19 @@
 
 
 
+<script>
+    function showRemarkField() {
+        document.getElementById('remarkSection').style.display = 'block';
+        document.getElementById('submitReject').style.display = 'inline-block';
+    }
 
-
-
+    function validateRemark() {
+        var remark = document.getElementById('remark').value;
+        if (!remark) {
+            alert('Please Fill in the Remark Before Rejecting.');
+            return false; // Prevent form submission
+        }
+        document.getElementById('hiddenAction').value = 'reject'; // Set hidden action for form submission
+        return true; // Allow form submission
+    }
+</script>

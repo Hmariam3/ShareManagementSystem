@@ -66,19 +66,19 @@
                 <div class="form-group text-center">
                     @using (Html.BeginForm("ReleaseAmount", "Blockeds", FormMethod.Post))
                     {
-                        @Html.AntiForgeryToken()
-                        @Html.Hidden("id", Model.BlockID)
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("id", Model.BlockID)
 
-                        <div class="release-amount-container">
-                            <label for="releaseAmount">Release Amount</label>
-                            <input type="text" id="releaseAmount" name="releaseAmount" placeholder="Enter amount to release" class="form-input" />
+                    <div class="release-amount-container">
+                        <label for="releaseAmount">Release Amount</label>
+                        <input type="text" id="releaseAmount" name="releaseAmount" placeholder="Enter amount to release" class="form-input" />
 
-                            <!-- Span for displaying error message -->
-                            <span id="releaseAmountError" class="text-danger" style="display: none;"></span>
+                        <!-- Span for displaying error message -->
+                        <span id="releaseAmountError" class="text-danger" style="display: none;"></span>
 
-                            <!-- Disabled initially -->
-                            <input type="submit" value="Release" class="btn btn-primary" id="releaseBtn" disabled />
-                        </div>
+                        <!-- Disabled initially -->
+                        <input type="submit" value="Release" class="btn btn-primary" id="releaseBtn" disabled />
+                    </div>
                     }
                 </div>
 

@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Blocked>
+
+<!-- Importing necessary scripts -->
+<script defer src="~/Script/JS/sweetalert.min.js"></script>
+<script src="~/Scripts/JS/alpine-collaspe.min.js"></script>
+<script src="~/Scripts/JS/alpine-persist.min.js"></script>
+<script defer src="~/Scripts/JS/alpine-ui.min.js"></script>
+<script defer src="~/Scripts/JS/alpine-focus.min.js"></script>
+<script defer src="~/Scripts/JS/alpine.min.js"></script>
+<script src="~/Scripts/JS/custom.js"></script>
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
+<script defer src="~/Scripts/JS/popper.min.js"></script>
+<script defer src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
+<script defer src="~/Scripts/JS/sweetalert.min.js"></script>
+
+@{
+    ViewBag.Title = "FilterPending";
+}
+
+<h2>FilterPending</h2>
+
+<p>@Html.ActionLink("Create New", "Create")</p>
+
+<div class="animate__animated p-6" :@class="[$store.app.animation]">
+    <div x-data="multipleTable">
+        <div class="panel mt-6">
+            <table id="myTable1" class="table-auto w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr>
+                        <th>BlockedAmount</th>
+                        <th>BlockingOrgan</th>
+                        <th>DateBlocked</th>
+                        <th>RefNum</th>
+                        <th>Reason</th>
+                        <th>BlockedAuthorizationStatus</th>
+                        <th>AuthorizationDate</th>
+                        <th>Remark</th>
+                        <th>DocName</th>
+                        <th>PaymentMode</th>
+                        <th>ShareID</th>
+                        <th>FullName</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('multipleTable', () => ({
+            datatable1: null,
+            init() {
+                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+                    data: {
+                        headings: [
+                            'BlockID', 'ShareID', 'FullNameEng', 'PayID', 'BlockedAmount',
+                            'BlockingOrgan', 'RefNum', 'Reason', 'BlockedAuthorizationStatus',
+                            'Remark', 'PaymentMode', 'UFullName', ''
+                        ],
+                        data: [
+                            @foreach (var item in Model)
+                            {
+                                <text>
+                                [
+                                    "@item.BlockID", "@item.Shareholder.ShareID", "@item.Shareholder.FullNameEng",
+                                    "@item.Payment.PayID", "@item.BlockedAmount", "@item.BlockingOrgan", "@item.RefNum",
+                                    "@item.Reason", "@item.BlockedAuthorizationStatus", "@item.Remark",
+                                    "@item.Payment.PaymentMode", "@item.User.FullName",
+                                `<a href="@Url.Action("AuthorizationDetails", new { id = item.BlockID })" style = "display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; text-decoration: none;" >Authorization</a>`
+                                ],
+                                </text>
+                            }
+                        ]
+                    },
+                    searchable: true,
+                    perPage: 10,
+                    firstLast: true,
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    }
+                });
+            },
+            formatDate(date) {
+                if (date) {
+                    const dt = new Date(date);
+                    const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
+                    const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+                    return day + '/' + month + '/' + dt.getFullYear();
+                }
+                return '';
+            }
+        }));
+    });
+</script>

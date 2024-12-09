@@ -4,6 +4,14 @@
     ViewBag.Title = "Create";
 }
 
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+
 @using (Html.BeginForm("Create", "Blockeds", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -29,11 +37,20 @@
                             <div class="col-md-6">
                                 <div class="form-horizontal">
                                     <!-- Shareholder Dropdown -->
-                                    @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "control-label" })
                                     <div class="form-group">
-                                        @Html.DropDownList("ShID", (SelectList)ViewBag.ShID, "Select Shareholder", new { @class = "form-input", id = "ShID" })
-                                        @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "block text-gray-700 text-sm font-bold mb-2" })
+                                        @Html.DropDownList(
+                                            "ShID",
+                                            (SelectList)ViewBag.ShID,
+                                            "Select a Share Holder",
+                                            new {
+                                                @class = "form-select mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50",
+                                                id = "ShID"
+                                            }
+                                        )
+                                        @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-sm" })
                                     </div>
+
 
                                     <!-- Payments Table -->
                                     <div>
@@ -106,6 +123,9 @@
                                         <input type="file" class="custom-file-container__custom-file__custom-file-input" accept="*" name="uploadedFile">
                                         <span class="custom-file-container__custom-file__custom-file-control"></span>
                                     </label>
+                                    <div>
+                                        @Html.ValidationMessage("uploadedFile", null, new { @class = "text-danger" })
+                                    </div>
                                     <div class="custom-file-container__image-preview"></div>
                                 </div>
                                 <div class="me-3">
@@ -116,6 +136,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -126,8 +147,27 @@
     <input type="hidden" id="SelectedPayID" name="PayID" />
 }
 
+
+
+
 <!-- Scripts for handling the payment table and form validation -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Ensure jQuery is loaded before Select2 -->
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+
+<!-- Initialize Select2 -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Initialize Select2 on #ShID
+        $('#ShID').select2({
+            placeholder: 'Select a Share Holder',
+            allowClear: true
+        });
+    });
+</script>
+
+
 <script type="text/javascript">
     $(document).ready(function () {
         // Load payments based on selected Shareholder
@@ -175,6 +215,9 @@
                 var blockedAmount = parseFloat($(this).val());
                 var authStatus = selectedPayment.data('auth-status');
 
+                //Check if the payment is null
+               
+
                 // Check if payment is pending
                 if (authStatus === "Pending") {
                     blockedAmountError.text("The payment is in the pending status.");
@@ -214,4 +257,6 @@
     });
 </script>
 
-@Scripts.Render("~/bundles/jqueryval")
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

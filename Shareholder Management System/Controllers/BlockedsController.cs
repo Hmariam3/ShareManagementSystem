@@ -36,7 +36,20 @@ namespace Share_Management_System.Controllers
             }
             return View(blocked);
         }
-
+        // GET: Blockeds/Details/5
+        public ActionResult AuthorizationDetails(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Blocked blocked = db.Blockeds.Find(id);
+            if (blocked == null)
+            {
+                return HttpNotFound();
+            }
+            return View(blocked);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ReleaseAmount(int id, decimal releaseAmount)
@@ -76,7 +89,7 @@ namespace Share_Management_System.Controllers
                 db.SaveChanges();
             }
             // Redirect to the details page or another page
-            return RedirectToAction("Details", new { id = blocked.BlockID });
+            return RedirectToAction("Index", new { id = blocked.BlockID });
         }
 
 
@@ -104,36 +117,14 @@ namespace Share_Management_System.Controllers
                     ModelState.AddModelError("Payment", "Payment not found.");
                     return View(blocked);
                 }
-
-                if (payment.PaymentAuthorizationStatus == "Pending")
-                {
-                    ModelState.AddModelError("PaymentAuthorizationStatus", "The payment is in the pending status.");
-                    return View(blocked);
-                }
-
-                if (payment.PaidAmount <= 0)
-                {
-                    ModelState.AddModelError("PaidAmount", "The paid amount should be greater than zero.");
-                    return View(blocked);
-                }
-
-                if (payment.PaidAmount < blocked.BlockedAmount)
-                {
-                    ModelState.AddModelError("BlockedAmount", "The blocking amount should be less than the paid amount.");
-                    return View(blocked);
-                }
-                int userId = Convert.ToInt32(Session["ID"]);
-                int branchId = Convert.ToInt32(Session["Branch"]);
                 if (uploadedFile != null && uploadedFile.ContentLength > 0)
                 {
-
                     Document document = new Document
                     {
-
                         DocOwner = "Shareholder",
                         DocType = "Blocking Document",
                         ShID = payment.ShID,
-                        CreatedBy = userId,
+                        CreatedBy = 2,
                         DocAuthorizationStatus = "Pending",
                         CreatedDate = DateTime.Now,
                     };
@@ -146,25 +137,25 @@ namespace Share_Management_System.Controllers
 
                     if (documentId > 0)
                     {
-                        // Update blocked amount and save
                         decimal currentBlockedAmount = payment.BlockedAmount ?? 0;
-                        decimal? newBlockedAmount = currentBlockedAmount + blocked.BlockedAmount;
+                        decimal newBlockedAmount = currentBlockedAmount + (blocked.BlockedAmount ?? 0);
 
-                        blocked.BlockedBy = userId; // Placeholder for BlockedBy
-                        //blocked.BlockedAuthorizer = 3; // Placeholder for BlockedAuthorizer
+                        blocked.BlockedBy = 2; // Placeholder for BlockedBy
+                        blocked.BlockedAuthorizer = 2; // Placeholder for BlockedAuthorizer
                         blocked.BlockingDoc = documentId; // Placeholder for BlockingDoc
+                        blocked.DateBlocked = DateTime.Now;
                         blocked.BlockedAuthorizationStatus = "Pending";
-                        blocked.AuthorizationDate = DateTime.Now;
 
                         db.Blockeds.Add(blocked);
                         db.SaveChanges();
 
-                        payment.BlockedAmount = newBlockedAmount;
-                        payment.PaidAmount -= blocked.BlockedAmount;
-                        db.Entry(payment).State = EntityState.Modified;
-                        db.SaveChanges();
                         return RedirectToAction("Index");
                     }
+                }
+                else
+                {
+                    ModelState.AddModelError("uploadedFile", "You should upload a file.");
+                    return View(blocked); // Return the view with the validation error
                 }
 
 
@@ -180,7 +171,10 @@ namespace Share_Management_System.Controllers
         {
             ViewBag.BlockingDoc = new SelectList(db.Documents, "DocID", "DocName", blocked?.BlockingDoc);
             ViewBag.PayID = new SelectList(db.Payments, "PayID", "PaymentMode", blocked?.PayID);
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", blocked?.ShID);
+            ViewBag.ShID = new SelectList(db.Shareholders.Select(s => new {
+                s.ShID,
+                FullNameWithID = s.FullNameEng + " (" + s.ShID + ")"
+            }), "ShID", "FullNameWithID", blocked?.ShID);
             ViewBag.BlockedBy = new SelectList(db.Users, "UID", "FullName", blocked?.BlockedBy);
             ViewBag.BlockedAuthorizer = new SelectList(db.Users, "UID", "FullName", blocked?.BlockedAuthorizer);
         }
@@ -228,24 +222,151 @@ namespace Share_Management_System.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BlockID,ShID,PayID,BlockedAmount,BlockingOrgan,BlockedBy,DateBlocked,BlockingDoc,RefNum,Reason,BlockedAuthorizationStatus,BlockedAuthorizer,AuthorizationDate,Remark")] Blocked blocked)
+        public ActionResult Edit(Blocked blocked)
         {
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(blocked).State = EntityState.Modified;
-                db.Entry(blocked).Property(x => x.BlockedAuthorizer).IsModified = false;
-                db.Entry(blocked).Property(x => x.BlockedAuthorizationStatus).IsModified = false;
+                var existingBlocked = db.Blockeds.Find(blocked.BlockID);
+                if (existingBlocked == null)
+                    return HttpNotFound();
+
+                // Update editable fields
+                existingBlocked.BlockedAmount = blocked.BlockedAmount;
+                existingBlocked.BlockingOrgan = blocked.BlockingOrgan;
+                existingBlocked.RefNum = blocked.RefNum;
+                existingBlocked.Reason = blocked.Reason;
+                existingBlocked.Remark = blocked.Remark;
+
+                // Set BlockedAuthorizationStatus to "Pending"
+                existingBlocked.BlockedAuthorizationStatus = "Pending";
+
+                // Save changes to the database
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            ViewBag.BlockingDoc = new SelectList(db.Documents, "DocID", "DocName", blocked.BlockingDoc);
-            ViewBag.PayID = new SelectList(db.Payments, "PayID", "PaymentMode", blocked.PayID);
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", blocked.ShID);
-            ViewBag.BlockedBy = new SelectList(db.Users, "UID", "FullName", blocked.BlockedBy);
-            ViewBag.BlockedAuthorizer = new SelectList(db.Users, "UID", "FullName", blocked.BlockedAuthorizer);
-            return View(blocked);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error saving changes: {ex.Message}");
+                return View(blocked);
+            }
         }
+
+
+        // GET: FilterPending
+        public ActionResult FilterPending()
+        {
+            // Fetch all blocked records and filter those with 'Pending' status
+            var pendingRecords = db.Blockeds.Where(b => b.BlockedAuthorizationStatus == "Pending").ToList();
+            return View(pendingRecords);
+        }
+
+        [HttpGet]
+        public ActionResult GetBlockDetails(int blockId)
+        {
+            try
+            {
+                var blocked = db.Blockeds.Find(blockId);
+
+                if (blocked == null)
+                {
+                    return Json(new { success = false, message = "Blocked entry not found." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        BlockID = blocked.BlockID,
+                        BlockedAmount = blocked.BlockedAmount,
+                        PayID = blocked.PayID,
+                        // Add any additional fields needed
+                    }
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                // LogError(ex); // Implement logging as needed
+
+                return Json(new { success = false, message = "An error occurred while retrieving the block details." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult ConfirmBlockApproval(int BlockID, int PayID, decimal BlockedAmount)
+        {
+            try
+            {
+                // Find the blocked record by BlockID
+                var blocked = db.Blockeds.Find(BlockID);
+                if (blocked == null)
+                    return Json(new { success = false, message = "Blocked entry not found." });
+
+                // Update BlockedAuthorizationStatus to "Approved"
+                blocked.BlockedAuthorizationStatus = "Approved";
+                blocked.AuthorizationDate = DateTime.Now;
+
+                // Find the payment record by PayID
+                var payment = db.Payments.Find(PayID);
+                if (payment == null)
+                    return Json(new { success = false, message = "Payment entry not found." });
+
+                // Update PaidAmount and BlockedAmount in the Payment table
+
+                if (payment.BlockedAmount == null)
+                {
+                    payment.BlockedAmount = BlockedAmount;
+                }
+                else
+                {
+                    payment.BlockedAmount += BlockedAmount;
+                }
+                payment.PaidAmount -= BlockedAmount;
+                // Save changes to the database
+                db.SaveChanges();
+
+                // Return success response
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // Return error message if exception occurs
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmBlockReject(int BlockID, string Reason)
+        {
+            try
+            {
+                // Find the blocked record by BlockID
+                var blocked = db.Blockeds.Find(BlockID);
+                if (blocked == null)
+                    return Json(new { success = false, message = "Blocked entry not found." });
+                //blocked.BlockedAmount = 0;
+                // Update BlockedAuthorizationStatus to "Approved"
+                blocked.BlockedAuthorizationStatus = "Rejected";
+                blocked.Remark = Reason;
+                blocked.AuthorizationDate = DateTime.Now;
+
+                // Save changes to the database
+                db.SaveChanges();
+
+                // Return success response
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // Return error message if exception occurs
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
 
         // GET: Blockeds/Delete/5
         public ActionResult Delete(int? id)

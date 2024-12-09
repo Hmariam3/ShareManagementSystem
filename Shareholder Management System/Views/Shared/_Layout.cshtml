@@ -371,7 +371,7 @@
                                             <a href="~/Subscribtions/Index">View Subscription</a>
                                         </li>
                                         <li>
-                                            <a href="~/Subscribtions/Filter">Subscription Payment</a>
+                                            <a href="~/Subscribtions/PendingSubscription">Manage Subscription</a>
                                         </li>
                                         <li>
                                             <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
@@ -505,6 +505,9 @@
                                         </li>
                                         <li>
                                             @Html.ActionLink("View Block", "Index", "Blockeds")
+                                        </li>
+                                        <li>
+                                            @Html.ActionLink("Manage Block", "FilterPending", "Blockeds")
                                         </li>
                                     </ul>
                                 </li>

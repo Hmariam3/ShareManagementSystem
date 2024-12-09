@@ -12,12 +12,15 @@
     html, body {
         height: 100%;
         margin: 0;
+        overflow: auto; /* Enables scrolling */
     }
+
 
     .container {
         display: flex;
         justify-content: center;
         padding: 10px;
+        overflow: visible; /* Ensures no clipping of content */
     }
 
     .panel {
@@ -31,20 +34,20 @@
 
     .resultsub {
         display: flex;
-        justify-content: center; /* Centers content horizontally */
-        align-items: center; /* Centers content vertically */
+        justify-content: center;
+        align-items: center;
         padding: 10px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         background-color: white;
-        margin-top: 20px; /* Adds space between the panel and resultsub */
-        max-height: 400px; /* Set a max height */
-        overflow: auto; /* Enable scrolling */
-        max-width: 1000px;
-        margin-left: auto; /* Centers the container within its parent */
-        margin-right: auto; /* Centers the container within its parent */
-        overflow: auto; /* Enable scrolling */
+        margin-top: 20px;
+        max-height: 400px; /* Constrain height */
+        overflow-y: auto; /* Enable vertical scrolling */
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
     }
+
 
 
     .grid {
@@ -67,7 +70,7 @@
             }
 
             <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-                <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Addon Subscription</h5>
+                <h5 class="text-lg font-semibold dark:text-white-light uppercase" style="padding:7px;">Addon Subscription</h5>
             </div>
 
             @Html.ValidationSummary(true, "", new { @class = "text-danger w-full" })
@@ -90,6 +93,7 @@
                         @Html.ValidationMessageFor(model => model.SubID, "", new { @class = "text-danger" })
                     </div>
                 </div>
+
 
                 <!-- Additional Input Fields -->
                 <div class="mb-5">
@@ -138,31 +142,25 @@
 <div id="resultsub" class="resultsub"></div>
 <script>
     $(document).ready(function () {
-        // Initialize Select2 for the dropdown
+        // Initialize Select2 for Shareholder Dropdown
         $('#shareholderDropdown').select2({
             placeholder: "Select Shareholder",
             allowClear: true,
-            width: '100%' // Ensures the dropdown is responsive
+            width: '100%' // Ensures dropdown is responsive
         });
 
-        // On Shareholder Dropdown change, update the subscriptions
+        // Initialize Select2 for SubID Dropdown
+        $('#subIDDropdown').select2({
+            placeholder: "Select SubID",
+            allowClear: true,
+            width: '100%'
+        });
+
+        // On Shareholder Dropdown change
         $('#shareholderDropdown').on('change', function () {
             var selectedShareId = $(this).val();
 
-            // AJAX request to fetch filtered data based on selected shareholder
-            $.ajax({
-                url: '@Url.Action("Addonsubscriptions", "Subscribtions")',
-                type: 'POST',
-                data: { ShareId: selectedShareId },
-                success: function (data) {
-                    $('#resultsub').html(data); // Load the partial view into the result div
-                },
-                error: function () {
-                    $('#resultsub').html('<p>An error occurred while fetching data.</p>');
-                }
-            });
-
-            // AJAX request to update the SubID dropdown based on Shareholder selection
+            // Update SubID Dropdown
             if (selectedShareId) {
                 $.ajax({
                     url: '@Url.Action("GetSubIDs", "Subscribtions")',
@@ -173,15 +171,48 @@
                         $.each(data, function (i, item) {
                             $('#subIDDropdown').append($('<option>').text(item.SubID).attr('value', item.SubID));
                         });
+                    },
+                    error: function () {
+                        alert('Failed to fetch SubIDs. Please try again.');
                     }
                 });
             } else {
                 $('#subIDDropdown').empty();
                 $('#subIDDropdown').append($('<option>').text('Select SubID').attr('value', ''));
             }
+
+            // Clear subscription list if no Shareholder is selected
+            if (!selectedShareId) {
+                $('#resultsub').html('');
+            }
+        });
+
+        // On SubID Dropdown change
+        $('#subIDDropdown').on('change', function () {
+            var selectedShareId = $('#shareholderDropdown').val();
+            var selectedSubId = $(this).val();
+
+            // Filter subscriptions by SubID
+            if (selectedSubId) {
+                $.ajax({
+                    url: '@Url.Action("Addonsubscriptions", "Subscribtions")',
+                    type: 'POST',
+                    data: { ShareId: selectedShareId, SubId: selectedSubId },
+                    success: function (data) {
+                        $('#resultsub').html(data); // Load the partial view into the result div
+                    },
+                    error: function () {
+                        $('#resultsub').html('<p>An error occurred while fetching data.</p>');
+                    }
+                });
+            } else {
+                // Clear the result if no SubID is selected
+                $('#resultsub').html('');
+            }
         });
     });
 </script>
+
 
 <style>
     /* Ensure the Select2 dropdown uses the full width */
