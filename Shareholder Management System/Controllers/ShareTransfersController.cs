@@ -745,9 +745,9 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.ShareholdersTo = new SelectList(shareholders, "Value", "Text");
 
             // Other ViewBag items
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
-            ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName");
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName");
+            //ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+            //ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName");
+            //ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName");
 
             // Extract checked SubID and PayID values from ShareTransfer
             ViewBag.CheckedSubscriptions = shareTransfer.SubID.Split(',').ToList();
@@ -762,22 +762,96 @@ namespace Shareholder_Management_System.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TransferID,TransferrorShID,TransfareeShID,TransferCategory,TransferType,SubID,PayID,NumSharesTransferred,AmountPerShare,PaidAmountForTransfer,TransferReason,DividenedFor,TransferDoc,TransferDate,CreatedBy,CreationDate,TransferAuthorizationStatus,TransferAuthorizer,TransferAuthorizationDate,Remark")] ShareTransfer shareTransfer)
+        public ActionResult Edit(
+            ShareTransfer shareTransfer,
+            string selectedSubscriptionIds,
+            string selectedPaymentIds,
+            string TransferType,
+            HttpPostedFileBase uploadedFile)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(shareTransfer).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        int UserID = Convert.ToInt32(Session["ID"]);
+                        int BranchId = Convert.ToInt32(Session["Branch"]);
+
+                        // Handle document update if a new file is uploaded
+                        if (uploadedFile != null && uploadedFile.ContentLength > 0)
+                        {
+                            Document document = new Document
+                            {
+                                DocOwner = "Shareholder",
+                                DocType = "Transfer Document",
+                                ShID = shareTransfer.TransfareeShID,
+                                CreatedBy = UserID,
+                                DocAuthorizationStatus = "Pending",
+                                CreatedDate = DateTime.Now,
+                            };
+
+                            // Instantiate the DocumentsController to save the document
+                            DocumentsController documentsController = new DocumentsController();
+                            documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+
+                            int documentId = documentsController.Create(document, uploadedFile);
+                            if (documentId > 0)
+                            {
+                                shareTransfer.TransferDoc = documentId; // Update document ID
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", "Document could not be updated. Please try again.");
+                                return View(shareTransfer);
+                            }
+                        }
+
+                        // Update fields related to the transfer
+                        shareTransfer.SubID = selectedSubscriptionIds; // Update subscription IDs
+                        shareTransfer.PayID = selectedPaymentIds; // Update payment IDs
+                        shareTransfer.TransferType = TransferType; // Update transfer type
+                        shareTransfer.CreatedBy = UserID; // Track modification
+                  
+
+                        db.Entry(shareTransfer).State = EntityState.Modified;
+                        db.Entry(shareTransfer).Property(x => x.TransferrorShID).IsModified = false;
+                        db.Entry(shareTransfer).Property(x => x.TransferDoc).IsModified = false;
+                        db.Entry(shareTransfer).Property(x => x.CreationDate).IsModified = false;
+                        db.Entry(shareTransfer).Property(x => x.Branch).IsModified = false;
+                        db.Entry(shareTransfer).Property(x => x.TransferAuthorizationStatus).IsModified = false;
+                        db.SaveChanges();
+
+                        // Record the audit log
+                        AuditLogsController auditLogsController = new AuditLogsController();
+                        auditLogsController.RecordLog("Modification", shareTransfer.TransferID, "Transfer", UserID, Session["BranchName"].ToString());
+
+                        // Commit the transaction
+                        transaction.Commit();
+
+                        TempData["SuccessMessage"] = "Transfer updated successfully!";
+                        return RedirectToAction("Index");
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError("", "Error updating the share transfer: " + ex.Message);
+                    }
+                }
             }
+
+            // Repopulate ViewBags in case of failure
             ViewBag.PayID = new SelectList(db.Payments, "PayID", "PaymentMode", shareTransfer.PayID);
-            ViewBag.TransferrorShID = new SelectList(db.Shareholders, "ShID", "ShareID", shareTransfer.TransferrorShID);
-            ViewBag.TransfareeShID = new SelectList(db.Shareholders, "ShID", "ShareID", shareTransfer.TransfareeShID);
+            ViewBag.TransferrorShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", shareTransfer.TransferrorShID);
+            ViewBag.TransfareeShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", shareTransfer.TransfareeShID);
             ViewBag.SubID = new SelectList(db.Subscribtions, "SubID", "SubStatus", shareTransfer.SubID);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareTransfer.CreatedBy);
             ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName", shareTransfer.TransferAuthorizer);
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", shareTransfer.Branch);
+
             return View(shareTransfer);
         }
+
 
         // GET: ShareTransfers/Delete/5
         public ActionResult Delete(int? id)
