@@ -4,7 +4,11 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+      <Schema Namespace="ShareManagementDB_ORGModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+========
       <Schema Namespace="ShareManagementDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -107,7 +111,11 @@
           <Property Name="Branch" Type="int" />
           <Property Name="DateApplication" Type="date" />
           <Property Name="SettlementDate" Type="date" />
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+          <Property Name="DividenedYear" Type="date" />
+========
           <Property Name="DividenedYear" Type="nvarchar" MaxLength="50" />
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
         </EntityType>
         <EntityType Name="Document">
           <Key>
@@ -151,6 +159,10 @@
           <Property Name="TransferedPayID" Type="int" />
           <Property Name="TransferID" Type="int" />
           <Property Name="TransferAmount" Type="decimal" Precision="18" Scale="2" />
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+          <Property Name="SourceOfFunds" Type="nvarchar(max)" />
+========
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
         </EntityType>
         <EntityType Name="Proxy">
           <Key>
@@ -278,7 +290,11 @@
           <Property Name="Branch" Type="int" />
           <Property Name="DateApplication" Type="date" />
           <Property Name="SettlementDate" Type="date" />
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+          <Property Name="DividenedYear" Type="date" />
+========
           <Property Name="DividenedYear" Type="nvarchar" MaxLength="50" />
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
         </EntityType>
         <EntityType Name="Subscribtion">
           <Key>
@@ -1050,7 +1066,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+        <EntityContainer Name="ShareManagementDB_ORGModelStoreContainer">
+========
         <EntityContainer Name="ShareManagementDatabaseModelStoreContainer">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
           <EntitySet Name="AuditLog" EntityType="Self.AuditLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Blocked" EntityType="Self.Blocked" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Branch" EntityType="Self.Branch" Schema="dbo" store:Type="Tables" />
@@ -1315,7 +1335,11 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+      <Schema Namespace="ShareManagementDB_ORGModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+========
       <Schema Namespace="ShareManagementDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -1441,7 +1465,11 @@
           <Property Name="Branch" Type="Int32" />
           <Property Name="DateApplication" Type="DateTime" Precision="0" />
           <Property Name="SettlementDate" Type="DateTime" Precision="0" />
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+          <Property Name="DividenedYear" Type="DateTime" Precision="0" />
+========
           <Property Name="DividenedYear" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
           <NavigationProperty Name="Branch1" Relationship="Self.FK_DividenedDetail_Branch" FromRole="DividenedDetail" ToRole="Branch" />
           <NavigationProperty Name="Dividend" Relationship="Self.FK_Dividened_Detail_Dividend" FromRole="DividenedDetail" ToRole="Dividend" />
           <NavigationProperty Name="Payment1" Relationship="Self.FK_Dividened_Detail_Payment" FromRole="DividenedDetail" ToRole="Payment" />
@@ -1503,6 +1531,10 @@
           <Property Name="TransferedPayID" Type="Int32" />
           <Property Name="TransferID" Type="Int32" />
           <Property Name="TransferAmount" Type="Decimal" Precision="18" Scale="2" />
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+          <Property Name="SourceOfFunds" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+========
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
           <NavigationProperty Name="Blockeds" Relationship="Self.FK_Blocked_Payment" FromRole="Payment" ToRole="Blocked" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_Payment_Branch" FromRole="Payment" ToRole="Branch" />
           <NavigationProperty Name="DividenedDetails" Relationship="Self.FK_Dividened_Detail_Payment" FromRole="Payment" ToRole="DividenedDetail" />
@@ -1675,7 +1707,11 @@
           <Property Name="Branch" Type="Int32" />
           <Property Name="DateApplication" Type="DateTime" Precision="0" />
           <Property Name="SettlementDate" Type="DateTime" Precision="0" />
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+          <Property Name="DividenedYear" Type="DateTime" Precision="0" />
+========
           <Property Name="DividenedYear" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
           <NavigationProperty Name="Branch1" Relationship="Self.FK_SimulationDividened_Branch" FromRole="SimulationDividened" ToRole="Branch" />
           <NavigationProperty Name="Dividend" Relationship="Self.FK_SimulationDividened_Dividend" FromRole="SimulationDividened" ToRole="Dividend" />
           <NavigationProperty Name="Payment1" Relationship="Self.FK_SimulationDividened_Payment" FromRole="SimulationDividened" ToRole="Payment" />
@@ -2483,7 +2519,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+        <EntityContainer Name="Shareholder_Management_SystemEntities1" annotation:LazyLoadingEnabled="true">
+========
         <EntityContainer Name="ShareManagementDatabaseEntities" annotation:LazyLoadingEnabled="true">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
           <EntitySet Name="AuditLogs" EntityType="Self.AuditLog" />
           <EntitySet Name="Blockeds" EntityType="Self.Blocked" />
           <EntitySet Name="Branches" EntityType="Self.Branch" />
@@ -2749,9 +2789,15 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+        <EntityContainerMapping StorageEntityContainer="ShareManagementDB_ORGModelStoreContainer" CdmEntityContainer="Shareholder_Management_SystemEntities1">
+          <EntitySetMapping Name="AuditLogs">
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.AuditLog">
+========
         <EntityContainerMapping StorageEntityContainer="ShareManagementDatabaseModelStoreContainer" CdmEntityContainer="ShareManagementDatabaseEntities">
           <EntitySetMapping Name="AuditLogs">
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.AuditLog">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="AuditLog">
                 <ScalarProperty Name="LogID" ColumnName="LogID" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
@@ -2765,7 +2811,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Blockeds">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Blocked">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Blocked">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Blocked">
                 <ScalarProperty Name="BlockID" ColumnName="BlockID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -2786,7 +2836,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Branches">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Branch">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Branch">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Branch">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="BranchCode" ColumnName="BranchCode" />
@@ -2797,7 +2851,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Certificates">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Certificate">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Certificate">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Certificate">
                 <ScalarProperty Name="CertID" ColumnName="CertID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -2818,7 +2876,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Dividends">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Dividend">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Dividend">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Dividend">
                 <ScalarProperty Name="DivID" ColumnName="DivID" />
                 <ScalarProperty Name="Profit" ColumnName="Profit" />
@@ -2838,7 +2900,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DividenedDetails">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.DividenedDetail">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.DividenedDetail">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="DividenedDetail">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="DivID" ColumnName="DivID" />
@@ -2861,7 +2927,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Documents">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Document">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Document">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Document">
                 <ScalarProperty Name="DocID" ColumnName="DocID" />
                 <ScalarProperty Name="DocName" ColumnName="DocName" />
@@ -2879,7 +2949,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Payments">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Payment">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Payment">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Payment">
                 <ScalarProperty Name="PayID" ColumnName="PayID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -2902,11 +2976,19 @@
                 <ScalarProperty Name="TransferedPayID" ColumnName="TransferedPayID" />
                 <ScalarProperty Name="TransferID" ColumnName="TransferID" />
                 <ScalarProperty Name="TransferAmount" ColumnName="TransferAmount" />
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+                <ScalarProperty Name="SourceOfFunds" ColumnName="SourceOfFunds" />
+========
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Proxies">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Proxy">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Proxy">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Proxy">
                 <ScalarProperty Name="ProxyID" ColumnName="ProxyID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -2939,7 +3021,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Shareholders">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Shareholder">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Shareholder">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Shareholder">
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
                 <ScalarProperty Name="ShareID" ColumnName="ShareID" />
@@ -2981,7 +3067,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ShareTransfers">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.ShareTransfer">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.ShareTransfer">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="ShareTransfer">
                 <ScalarProperty Name="TransferID" ColumnName="TransferID" />
                 <ScalarProperty Name="TransferrorShID" ColumnName="TransferrorShID" />
@@ -3008,7 +3098,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="ShCategories">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.ShCategory">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.ShCategory">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="ShCategories">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="ShCategories" ColumnName="ShCategories" />
@@ -3016,7 +3110,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SimulationDivideneds">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.SimulationDividened">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.SimulationDividened">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="SimulationDividened">
                 <ScalarProperty Name="SimID" ColumnName="SimID" />
                 <ScalarProperty Name="DivID" ColumnName="DivID" />
@@ -3039,7 +3137,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Subscribtions">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.Subscribtion">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.Subscribtion">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="Subscribtion">
                 <ScalarProperty Name="SubID" ColumnName="SubID" />
                 <ScalarProperty Name="ShID" ColumnName="ShID" />
@@ -3062,7 +3164,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Users">
+<<<<<<<< HEAD:Shareholder Management System/Models/ShareModel.edmx
+            <EntityTypeMapping TypeName="ShareManagementDB_ORGModel.User">
+========
             <EntityTypeMapping TypeName="ShareManagementDatabaseModel.User">
+>>>>>>>> b282fa948f9fd6e05b7427a89d500c84130c2961:Shareholder Management System/Models/ShareManagementModel.edmx
               <MappingFragment StoreEntitySet="User">
                 <ScalarProperty Name="UID" ColumnName="UID" />
                 <ScalarProperty Name="FullName" ColumnName="FullName" />

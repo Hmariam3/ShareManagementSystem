@@ -121,7 +121,7 @@
                  class="sidebar fixed bottom-0 top-0 z-50 h-full min-h-screen w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] transition-all duration-300">
                 <div class="h-full" style="background-color: #0e1726; color: white;">
                     <div class="flex items-center justify-between px-4 py-3">
-                        <a href="index.html" class="main-logo flex shri.nk-0 items-center">
+                        <a href="@Url.Action("Index", "Home")" class="main-logo flex shri.nk-0 items-center">
                             <img class="ml-[5px] w-20 flex-none"
                                  src="~/assets/images/cooplogo.gif"
                                  alt="image" />
@@ -371,7 +371,7 @@
                                             <a href="~/Subscribtions/Index">View Subscription</a>
                                         </li>
                                         <li>
-                                            <a href="~/Subscribtions/Filter">Subscription Payment</a>
+                                            <a href="~/Subscribtions/PendingSubscription">Manage Subscription</a>
                                         </li>
                                         <li>
                                             <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
@@ -506,6 +506,9 @@
                                         <li>
                                             @Html.ActionLink("View Block", "Index", "Blockeds")
                                         </li>
+                                        <li>
+                                            @Html.ActionLink("Manage Block", "FilterPending", "Blockeds")
+                                        </li>
                                     </ul>
                                 </li>
 
@@ -600,7 +603,7 @@
                                             @Html.ActionLink("Dividend Simulation", "Index", "SimulationDivideneds")
                                         </li>
                                         <li>
-                                            @Html.ActionLink("Dividend History", "Index", "DividenedDetails")
+                                            @Html.ActionLink("Dividend Details", "Index", "DividenedDetails")
                                         </li>
                                     </ul>
                                 </li>
@@ -655,7 +658,7 @@
                     <div class="relative flex w-full items-center px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-400"
                          style="color: white;">
                         <div class="horizontal-logo flex items-center justify-between ltr:mr-0 rtl:ml-0 lg:hidden">
-                            <a href="index.html"
+                            <a href="@Url.Action("Index", "Home")"
                                class="main-logo flex shrink-0 items-center">
                                 <img class="inline w-20 ltr:-ml-1 rtl:-mr-1"
                                      src="~/assets/images/cooplogo.gif"

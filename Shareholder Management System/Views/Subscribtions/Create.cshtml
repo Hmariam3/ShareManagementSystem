@@ -22,20 +22,20 @@
     }
 
     .panel {
-        width: 600px;
-        max-width: 600px;
+        width: 900px;
+        max-width: 900px;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         background-color: white;
     }
 </style>
-
-<!-- Pop-up Modal -->
 @{
     var successMessage = TempData["SuccessMessage"] as string;
     var errorMessage = TempData["ErrorMessage"] as string;
 }
+
+<!-- Pop-up Modal -->
 @if (!string.IsNullOrEmpty(successMessage) || !string.IsNullOrEmpty(errorMessage))
 {
     <div id="popup-message" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -72,7 +72,7 @@
         // Automatically hide the pop-up after 5 seconds
         setTimeout(function () {
             document.getElementById("popup-message").style.display = "none";
-        }, 5000);
+        }, 1000);
     </script>
 }
 
@@ -92,40 +92,46 @@
                 }
 
                 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-                    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Create Subscription</h5>
+                    <h5 class="text-lg font-semibold dark:text-white-light uppercase" style="padding:7px;">Create Subscription</h5>
                 </div>
 
                 <!-- Searchable Dropdown for Shareholder -->
-                <div class="mb-5">
-                    <label>Shareholder Name<span style="color:red">*</span> </label>
-                    <div class="relative">
-                        @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "shareholderDropdown" })
-                        @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-xs mt-1" })
+                <div class="mb-5 flex flex-wrap">
+                    <!-- Searchable Dropdown for Shareholder -->
+                    <div class="flex-1 mr-2">
+                        <label>Shareholder Name<span style="color:red">*</span></label>
+                        <div class="relative">
+                            @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "shareholderDropdown" })
+                            @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-xs mt-1" })
+                        </div>
+                    </div>
 
-
+                    <!-- Other Form Fields -->
+                    <div class="flex-1 ml-2">
+                        <label>Number of Share Sub <span style="color:red">*</span></label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.SubNumShares, new { htmlAttributes = new { @class = "form-input", @required = "required", @placeholder = "Enter Number of Shares", min = "1" } })
+                            @Html.ValidationMessageFor(model => model.SubNumShares, "", new { @class = "text-danger" })
+                        </div>
                     </div>
                 </div>
+                <div class="flex flex-wrap mb-5">
+                    <!-- Subscription Due Date -->
+                    <div class="flex-1 mr-2">
+                        <label>Subscription Due Date <span style="color:red">*</span></label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
 
-                <!-- Other Form Fields -->
-                <div class="mb-5">
-                    <label>Number of Share Sub <span style="color:red">*</span> </label>
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.SubNumShares, new { htmlAttributes = new { @class = "form-input", @required = "required", @placeholder = "Enter Number of Shares", min = "1" } })
-                        @Html.ValidationMessageFor(model => model.SubNumShares, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="mb-5">
-                    <label>Subscription Due Date <span style="color:red">*</span> </label>
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @required = "required" } })
-                        @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="mb-5">
-                    <label>Premium  </label>
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Premium, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Premium Amount" } })
-                        @Html.ValidationMessageFor(model => model.Premium, "", new { @class = "text-danger" })
+                    <!-- Premium -->
+                    <div class="flex-1 ml-2">
+                        <label>Premium</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Premium, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Premium Amount" } })
+                            @Html.ValidationMessageFor(model => model.Premium, "", new { @class = "text-danger" })
+                        </div>
                     </div>
                 </div>
 
@@ -145,32 +151,6 @@
     }
 </div>
 
-
-@*@using (Html.BeginForm("FiltereData", "Subscribtions", FormMethod.Post, new { id = "filterForm" }))
-    {
-
-
-        <div class="mb-5">
-
-            <div class="flex justify-center">
-
-
-                <div class="w-full max-w-md">
-                    @Html.TextBox("ShareId", null, new { @class = "hidden", @placeholder = "Enter Share ID", id = "shareidd" })
-                </div>
-
-            </div>
-            <div class="flex justify-center mt-2">
-                <input type="submit" value="Filter" class="btn btn-primary w-full max-w-md" />
-            </div>
-        </div>
-    }*@
-
-@*<div id="results">
-         Results will be loaded here
-    </div>*@
-
-
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -181,20 +161,7 @@
                 width: '100%' // Ensures the dropdown is responsive
             });
 
-            // Sync Shareholder Dropdown with another field
-            //$('#shareholderDropdown').on('input', function () {
-            //    $('#shareidd').val($(this).val());
-            //});
 
-            // Filter form submission
-            //$('#filterForm').submit(function (event) {
-            //    event.preventDefault(); // Prevent default form submission
-            //    $.post($(this).attr('action'), $(this).serialize(), function (data) {
-            //        $('#results').html(data); // Load partial view into results div
-            //    }).fail(function () {
-            //        $('#results').html('<p>An error occurred while fetching data.</p>');
-            //    });
-            //});
         });
     </script>
 

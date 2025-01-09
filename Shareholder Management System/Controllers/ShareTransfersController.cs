@@ -37,12 +37,19 @@ namespace Shareholder_Management_System.Controllers
             return View(shareTransfer);
         }
 
-        // GET: ShareTransfers  Authorize 
+        // GET: ShareTransfers/Authorize
         public ActionResult Authorize(int? id)
         {
-            var shareTransfers = db.ShareTransfers.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1);
+            var shareTransfers = db.ShareTransfers
+                .Include(s => s.Shareholder)
+                .Include(s => s.Shareholder1)
+                .Include(s => s.User)
+                .Include(s => s.User1)
+                .Where(s => s.TransferAuthorizationStatus == "Pending"); // Filter for pending status
+
             return View(shareTransfers.ToList());
         }
+
 
 
         // GET: ShareTransfers Authorize Details
@@ -114,7 +121,7 @@ namespace Shareholder_Management_System.Controllers
 
             // Fetch subscriptions where SubNumShares is not 0 for the selected shareholder
             var subscriptions = db.Subscribtions
-                .Where(s => s.ShID == shareholderId && s.SubNumShares != 0)
+                .Where(s => s.ShID == shareholderId && s.SubNumShares != 0 && s.SubAuthorizationStatus == "Approved")
                 .Select(s => new
                 {
                     s.SubID,
@@ -133,7 +140,7 @@ namespace Shareholder_Management_System.Controllers
 
             // Fetch payments where PaidAmount is not 0 and BlockedAmount is null
             var payments = db.Payments
-                .Where(p => p.SubID == subscriptionId && p.PaidAmount != 0 )
+                .Where(p => p.SubID == subscriptionId && p.PaidAmount != 0 && p.PaymentAuthorizationStatus == "Approved")
                 .Select(p => new
                 {
                     p.PayID,
@@ -270,7 +277,15 @@ namespace Shareholder_Management_System.Controllers
                             {
                                 transferrorSubscription.SubNumShares -= (int)(transferrorSubscription.PaidSubscription / 100);
                                 transferrorSubscription.SubAmount -= transferrorSubscription.SubAmount;
-                                transferrorSubscription.PaidSubscription -= transferrorSubscription.PaidSubscription;                               
+                                transferrorSubscription.PaidSubscription -= transferrorSubscription.PaidSubscription; 
+                                if (transferrorSubscription.PaidSubscription == 0)
+                                {
+                                    transferrorSubscription.SubStatus = "UnPaid";
+                                }
+                                if (transferrorSubscription.SubNumShares == 0)
+                                {
+                                    transferrorSubscription.SubAuthorizationStatus = "Transfered";
+                                }
                                 db.Entry(transferrorSubscription).State = EntityState.Modified;
                             }
                         }
@@ -282,6 +297,7 @@ namespace Shareholder_Management_System.Controllers
                             SubNumShares = shareTransfer.NumSharesTransferred,
                             SubAmount = shareTransfer.PaidAmountForTransfer,
                             PaidSubscription = shareTransfer.PaidAmountForTransfer,
+                            UnpaidSubscription = 0.00M, // Explicitly set UnpaidSubscription to 0.00
                             SubTransferFrom = shareTransfer.TransferrorShID,
                             PaymentDueDate = shareTransfer.TransferDate,
                             AuthorizedDate = DateTime.Now,
@@ -289,7 +305,9 @@ namespace Shareholder_Management_System.Controllers
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
-                            SubAuthorizationStatus = "Approved"
+                            SubAuthorizationStatus = "Approved",
+                            Branch = shareTransfer.Branch,
+                            Remark = shareTransfer.Remark
                         };
                         db.Subscribtions.Add(newSubscription);
                         db.SaveChanges();
@@ -321,7 +339,6 @@ namespace Shareholder_Management_System.Controllers
                                     Branch = shareTransfer.Branch,
                                     Remark = shareTransfer.Remark
 
-
                                 };
                                 db.Payments.Add(newPayments);
                                 payment.PaidAmount -= payment.PaidAmount;                               
@@ -341,6 +358,14 @@ namespace Shareholder_Management_System.Controllers
                             transferrorSubscription.SubNumShares -= shareTransfer.NumSharesTransferred;
                             transferrorSubscription.SubAmount -= shareTransfer.PaidAmountForTransfer;
                             transferrorSubscription.UnpaidSubscription -= shareTransfer.PaidAmountForTransfer;
+                            if (transferrorSubscription.PaidSubscription == 0)
+                            {
+                                transferrorSubscription.SubStatus = "UnPaid";
+                            }
+                            if (transferrorSubscription.SubNumShares == 0)
+                            {
+                                transferrorSubscription.SubAuthorizationStatus = "Transfered";
+                            }
                             db.Entry(transferrorSubscription).State = EntityState.Modified;
                         }
 
@@ -359,7 +384,9 @@ namespace Shareholder_Management_System.Controllers
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
-                            SubAuthorizationStatus = "Approved"
+                            SubAuthorizationStatus = "Approved",
+                            Branch = shareTransfer.Branch,
+                            Remark = shareTransfer.Remark
                         };
                         db.Subscribtions.Add(newSubscription);
                         db.SaveChanges();
@@ -402,6 +429,14 @@ namespace Shareholder_Management_System.Controllers
                             transferrorSubscription.SubNumShares -= shareTransfer.NumSharesTransferred;
                             transferrorSubscription.SubAmount -= shareTransfer.PaidAmountForTransfer;
                             transferrorSubscription.PaidSubscription -= shareTransfer.PaidAmountForTransfer;
+                            if (transferrorSubscription.PaidSubscription == 0)
+                            {
+                                transferrorSubscription.SubStatus = "UnPaid";
+                            }
+                            if (transferrorSubscription.SubNumShares == 0)
+                            {
+                                transferrorSubscription.SubAuthorizationStatus = "Transfered";
+                            }
                             db.Entry(transferrorSubscription).State = EntityState.Modified;
                         }
 
@@ -420,7 +455,9 @@ namespace Shareholder_Management_System.Controllers
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
-                            SubAuthorizationStatus = "Approved"
+                            SubAuthorizationStatus = "Approved",
+                            Branch = shareTransfer.Branch,
+                            Remark = shareTransfer.Remark
                         };
                         db.Subscribtions.Add(newSubscription);
                         db.SaveChanges();
@@ -476,6 +513,14 @@ namespace Shareholder_Management_System.Controllers
                             transferrorSubscription.SubNumShares -= shareTransfer.NumSharesTransferred;
                             transferrorSubscription.SubAmount -= shareTransfer.PaidAmountForTransfer;
                             transferrorSubscription.PaidSubscription -= shareTransfer.PaidAmountForTransfer;
+                            if (transferrorSubscription.PaidSubscription == 0)
+                            {
+                                transferrorSubscription.SubStatus = "UnPaid";
+                            }
+                            if (transferrorSubscription.SubNumShares == 0)
+                            {
+                                transferrorSubscription.SubAuthorizationStatus = "Transfered";
+                            }
                             db.Entry(transferrorSubscription).State = EntityState.Modified;
                         }
 
@@ -494,7 +539,10 @@ namespace Shareholder_Management_System.Controllers
                             SubStatus = "Fully Paid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
-                            SubAuthorizationStatus = "Approved"
+                            SubAuthorizationStatus = "Approved",
+                            Branch = shareTransfer.Branch,
+                            Remark = shareTransfer.Remark
+
                         };
                         db.Subscribtions.Add(newSubscription);
                         db.SaveChanges();
@@ -548,6 +596,14 @@ namespace Shareholder_Management_System.Controllers
                                 transferrorSubscription.SubNumShares -= (int)(transferrorSubscription.PaidSubscription / 100);
                                 transferrorSubscription.SubAmount -= transferrorSubscription.SubAmount;
                                 transferrorSubscription.PaidSubscription -= transferrorSubscription.PaidSubscription;
+                                if (transferrorSubscription.PaidSubscription == 0)
+                                {
+                                    transferrorSubscription.SubStatus = "UnPaid";
+                                }
+                                if (transferrorSubscription.SubNumShares == 0)
+                                {
+                                    transferrorSubscription.SubAuthorizationStatus = "Transfered";
+                                }
                                 db.Entry(transferrorSubscription).State = EntityState.Modified;
                             }
                         }
@@ -559,6 +615,7 @@ namespace Shareholder_Management_System.Controllers
                             SubNumShares = shareTransfer.NumSharesTransferred,
                             SubAmount = shareTransfer.PaidAmountForTransfer,
                             PaidSubscription = shareTransfer.PaidAmountForTransfer,
+                            UnpaidSubscription = 0.00M, // Explicitly set UnpaidSubscription to 0.00
                             SubTransferFrom = shareTransfer.TransferrorShID,
                             PaymentDueDate = shareTransfer.TransferDate,
                             AuthorizedDate = DateTime.Now,
@@ -567,6 +624,8 @@ namespace Shareholder_Management_System.Controllers
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
                             SubAuthorizationStatus = "Approved",
+                            Branch = shareTransfer.Branch,
+                            Remark = shareTransfer.Remark
 
                         };
                         db.Subscribtions.Add(newSubscription);
@@ -630,6 +689,7 @@ namespace Shareholder_Management_System.Controllers
             {
                 try
                 {
+                    int AuthorizerId = Convert.ToInt32(Session["ID"]);
                     var shareTransfer = db.ShareTransfers.Find(id);
                     if (shareTransfer == null)
                     {
@@ -639,7 +699,7 @@ namespace Shareholder_Management_System.Controllers
                     // Change status to Approved
                     shareTransfer.TransferAuthorizationStatus = "Rejected";
                     shareTransfer.TransferAuthorizationDate = DateTime.Now;
-                    shareTransfer.TransferAuthorizer = shareTransfer.CreatedBy;
+                    shareTransfer.TransferAuthorizer = AuthorizerId; ;
                     db.Entry(shareTransfer).State = EntityState.Modified;
 
                     db.SaveChanges();
@@ -685,9 +745,9 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.ShareholdersTo = new SelectList(shareholders, "Value", "Text");
 
             // Other ViewBag items
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
-            ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName");
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName");
+            //ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+            //ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName");
+            //ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName");
 
             // Extract checked SubID and PayID values from ShareTransfer
             ViewBag.CheckedSubscriptions = shareTransfer.SubID.Split(',').ToList();
@@ -702,22 +762,96 @@ namespace Shareholder_Management_System.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TransferID,TransferrorShID,TransfareeShID,TransferCategory,TransferType,SubID,PayID,NumSharesTransferred,AmountPerShare,PaidAmountForTransfer,TransferReason,DividenedFor,TransferDoc,TransferDate,CreatedBy,CreationDate,TransferAuthorizationStatus,TransferAuthorizer,TransferAuthorizationDate,Remark")] ShareTransfer shareTransfer)
+        public ActionResult Edit(
+            ShareTransfer shareTransfer,
+            string selectedSubscriptionIds,
+            string selectedPaymentIds,
+            string TransferType,
+            HttpPostedFileBase uploadedFile)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(shareTransfer).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                using (var transaction = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        int UserID = Convert.ToInt32(Session["ID"]);
+                        int BranchId = Convert.ToInt32(Session["Branch"]);
+
+                        // Handle document update if a new file is uploaded
+                        if (uploadedFile != null && uploadedFile.ContentLength > 0)
+                        {
+                            Document document = new Document
+                            {
+                                DocOwner = "Shareholder",
+                                DocType = "Transfer Document",
+                                ShID = shareTransfer.TransfareeShID,
+                                CreatedBy = UserID,
+                                DocAuthorizationStatus = "Pending",
+                                CreatedDate = DateTime.Now,
+                            };
+
+                            // Instantiate the DocumentsController to save the document
+                            DocumentsController documentsController = new DocumentsController();
+                            documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+
+                            int documentId = documentsController.Create(document, uploadedFile);
+                            if (documentId > 0)
+                            {
+                                shareTransfer.TransferDoc = documentId; // Update document ID
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", "Document could not be updated. Please try again.");
+                                return View(shareTransfer);
+                            }
+                        }
+
+                        // Update fields related to the transfer
+                        shareTransfer.SubID = selectedSubscriptionIds; // Update subscription IDs
+                        shareTransfer.PayID = selectedPaymentIds; // Update payment IDs
+                        shareTransfer.TransferType = TransferType; // Update transfer type
+                        shareTransfer.CreatedBy = UserID; // Track modification
+                  
+
+                        db.Entry(shareTransfer).State = EntityState.Modified;
+                        db.Entry(shareTransfer).Property(x => x.TransferrorShID).IsModified = false;
+                        db.Entry(shareTransfer).Property(x => x.TransferDoc).IsModified = false;
+                        db.Entry(shareTransfer).Property(x => x.CreationDate).IsModified = false;
+                        db.Entry(shareTransfer).Property(x => x.Branch).IsModified = false;
+                        db.Entry(shareTransfer).Property(x => x.TransferAuthorizationStatus).IsModified = false;
+                        db.SaveChanges();
+
+                        // Record the audit log
+                        AuditLogsController auditLogsController = new AuditLogsController();
+                        auditLogsController.RecordLog("Modification", shareTransfer.TransferID, "Transfer", UserID, Session["BranchName"].ToString());
+
+                        // Commit the transaction
+                        transaction.Commit();
+
+                        TempData["SuccessMessage"] = "Transfer updated successfully!";
+                        return RedirectToAction("Index");
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError("", "Error updating the share transfer: " + ex.Message);
+                    }
+                }
             }
+
+            // Repopulate ViewBags in case of failure
             ViewBag.PayID = new SelectList(db.Payments, "PayID", "PaymentMode", shareTransfer.PayID);
-            ViewBag.TransferrorShID = new SelectList(db.Shareholders, "ShID", "ShareID", shareTransfer.TransferrorShID);
-            ViewBag.TransfareeShID = new SelectList(db.Shareholders, "ShID", "ShareID", shareTransfer.TransfareeShID);
+            ViewBag.TransferrorShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", shareTransfer.TransferrorShID);
+            ViewBag.TransfareeShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", shareTransfer.TransfareeShID);
             ViewBag.SubID = new SelectList(db.Subscribtions, "SubID", "SubStatus", shareTransfer.SubID);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareTransfer.CreatedBy);
             ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName", shareTransfer.TransferAuthorizer);
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", shareTransfer.Branch);
+
             return View(shareTransfer);
         }
+
 
         // GET: ShareTransfers/Delete/5
         public ActionResult Delete(int? id)

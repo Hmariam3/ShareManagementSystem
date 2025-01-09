@@ -38,6 +38,75 @@ namespace Shareholder_Management_System.Controllers
             return View(dividend);
         }
 
+
+        [HttpPost]
+        public ActionResult Approve(int id)
+        {
+            try
+            {
+                int AuthorizerId = Convert.ToInt32(Session["ID"]);
+                // Retrieve the dividend record by its ID
+                var dividend = db.Dividends.SingleOrDefault(d => d.DivID == id);
+                if (dividend == null)
+                {
+                    return HttpNotFound(); // Return 404 if the record is not found
+                }
+
+                // Update the AuthorizationStatus field
+                // Change status to Approved
+                dividend.Authorizer = AuthorizerId;
+                dividend.AuthorizationStatus = "Approved";
+                dividend.AuthorizedDate = DateTime.Now;
+                db.Entry(dividend).State = EntityState.Modified;
+                db.SaveChanges();
+
+                // Optionally, add a success message
+                TempData["SuccessMessage"] = "Authorization status updated successfully.";
+
+                // Redirect to an appropriate page
+                return RedirectToAction("Index"); // Replace 'Index' with your desired view
+            }
+            catch (Exception ex)
+            {
+                // Log the error if necessary
+                TempData["ErrorMessage"] = "An error occurred while updating the status.";
+                return RedirectToAction("Index"); // Replace 'Index' with your desired view
+            }
+        }
+    
+    //// Approval Status
+    //[HttpPost]
+    //    public ActionResult Approve(int id)
+    //    {
+    //        using (var transaction = db.Database.BeginTransaction())
+    //        {
+    //            try
+    //            {
+    //                int AuthorizerId = Convert.ToInt32(Session["ID"]);
+    //                var dividend = db.Dividends.Find(id);
+    //                if (dividend == null)
+    //                {
+    //                    return HttpNotFound();
+    //                }
+
+    //                // Change status to Approved
+    //                dividend.Authorizer = AuthorizerId;
+    //                dividend.AuthorizationStatus = "Approved";
+    //                dividend.AuthorizedDate = DateTime.Now;
+    //                db.Entry(dividend).State = EntityState.Modified;
+    //                db.SaveChanges();
+
+    //                transaction.Commit();
+    //                return RedirectToAction("Index");
+    //            }
+    //            catch (Exception ex)
+    //            {
+    //                transaction.Rollback();
+    //                ModelState.AddModelError("", "Error approving the dividend: " + ex.Message);
+    //            }
+    //        }
+    //        return View();
+    //    }
         // GET: Dividends/Create
         public ActionResult Create()
         {
@@ -106,17 +175,27 @@ namespace Shareholder_Management_System.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "DivID,Profit,TotalWASA,FiscalYear,DivPerShare,TaxableAmount,TaxRate,RunningDate,NumOutstandingDays,CreatedBy,CreationDate")] Dividend dividend)
+        public ActionResult Edit(int id, [Bind(Include = "Profit, CreatedBy")] Dividend dividend)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(dividend).State = EntityState.Modified;
+                var existingDividend = db.Dividends.Find(id);
+                int AuthorizerId = Convert.ToInt32(Session["ID"]);
+                if (existingDividend == null)
+                {
+                    return HttpNotFound();
+                }
+
+                // Update only the Profit field
+                existingDividend.Profit = dividend.Profit;
+                existingDividend.CreatedBy = AuthorizerId;
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", dividend.CreatedBy);
             return View(dividend);
         }
+
 
         // GET: Dividends/Delete/5
         public ActionResult Delete(int? id)

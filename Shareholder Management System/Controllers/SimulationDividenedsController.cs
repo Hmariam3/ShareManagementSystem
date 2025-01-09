@@ -146,6 +146,7 @@ namespace Shareholder_Management_System.Controllers
             return RedirectToAction("Index");
         }
 
+
         public ActionResult ComputeWASA(int? id)
         {
             if (id == null)
@@ -204,6 +205,7 @@ namespace Shareholder_Management_System.Controllers
             currentDividened.TotalWASA = totalWASA;
             currentDividened.DivPerShare = perShare;
             currentDividened.RunningDate = DateTime.Now;
+            currentDividened.AuthorizationStatus = "Computed";
             db.Entry(currentDividened).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -466,6 +468,67 @@ namespace Shareholder_Management_System.Controllers
                 return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
             }
         }
+
+        // Reject Status
+        public ActionResult Reject()
+        {
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Fetch all SimulationDivideneds records
+                    var simulationDividends = db.SimulationDivideneds.ToList();
+
+                    // Check if there are records to reject
+                    if (!simulationDividends.Any())
+                    {
+                        TempData["Message"] = "No simulation dividends found to reject.";
+                        return RedirectToAction("Index");
+                    }
+
+                    // Get all unique DivIDs from SimulationDivideneds
+                    var divIds = simulationDividends.Select(s => s.DivID).Distinct().ToList();
+
+                    // Clear the SimulationDivideneds table
+                    db.SimulationDivideneds.RemoveRange(simulationDividends);
+                    db.SaveChanges();
+
+                    // Update related Dividends AuthorizationStatus to Pending
+                    var dividendsToUpdate = db.Dividends.Where(d => divIds.Contains(d.DivID)).ToList();
+                    foreach (var dividend in dividendsToUpdate)
+                    {
+                        dividend.AuthorizationStatus = "Pending";
+                        dividend.Authorizer = null;
+                        dividend.AuthorizedDate = null;
+                        dividend.TotalWASA = null;
+                        dividend.DivPerShare = null;
+                        dividend.RunningDate = null;
+                        db.Entry(dividend).State = EntityState.Modified;
+                    }
+
+                    // Save changes to Dividends
+                    db.SaveChanges();
+
+                    // Commit transaction
+                    transaction.Commit();
+
+                    // Set success message
+                    TempData["Message"] = "Simulation dividends have been successfully cleared, and related dividends have been updated to pending.";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaction on error
+                    transaction.Rollback();
+
+                    // Log error (optional)
+                    TempData["Error"] = "An error occurred while rejecting simulation dividends: " + ex.Message;
+                    return RedirectToAction("Index");
+                }
+            }
+        }
+
+
 
         public ActionResult ComputeDividend()
         {

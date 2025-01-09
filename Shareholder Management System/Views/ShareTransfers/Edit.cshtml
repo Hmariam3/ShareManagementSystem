@@ -21,7 +21,7 @@
                     text: successMessage,
                     toast: true,
                     position: 'top',
-                    showConfirmButton: false,
+                    showConfirmButton: true,
                     timer: 6000,
                     timerProgressBar: true,
                     customClass: {
@@ -49,71 +49,45 @@
         });
     </script>
 }
-
-@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="animate__animated p-3" :class="[$store.app.animation]">
         <!-- start main content section -->
         <div x-data="form">
+            @Html.HiddenFor(model => model.TransferID)
             <div class="flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-                <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Share Transfer Form</h5>
+                <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Share Transfer Edit Form</h5>
             </div>
             <div class="grid grid-cols-1 gap-6 pt-5 ">
                 <div>
-                    <!-- Hidden input to hold selected subscription and payment IDs -->
-                    <input class="form-input"
-                           id="selectedSubscriptionIds"
-                           name="selectedSubscriptionIds"
-                           style="width: 200px"
-                           placeholder="Sub ID Populate here"
-                           readonly
-                           value="@string.Join(", ", ViewBag.CheckedSubscriptions)" />
-
-                    <input class="form-input"
-                           id="selectedPaymentIds"
-                           name="selectedPaymentIds"
-                           style="width: 500px"
-                           placeholder="Pay ID Populate here"
-                           readonly
-                           value="@string.Join(", ", ViewBag.CheckedPayments)" />
-
-                    <!-- Hidden input for TransferType -->
-                    <input class="form-input"
-                           id="transferType"
-                           name="TransferType"
-                           style="width: 500px"
-                           placeholder="Transfer Type is here"
-                           value="@Model.TransferType"
-                           readonly
-                           required />
+                    <input class="form-input" id="selectedSubscriptionIds" name="selectedSubscriptionIds" style="width: 200px" placeholder="Sub ID Populate here" readonly value="@string.Join(", ", ViewBag.CheckedSubscriptions)" />
+                    <input class="form-input" id="selectedPaymentIds" name="selectedPaymentIds" style="width: 500px" placeholder="Pay ID Populate here" readonly value="@string.Join(", ", ViewBag.CheckedPayments)" />
+                    <input class="form-input" id="transferType" name="TransferType" style="width: 500px" placeholder="Transfer Type is here" value="@Model.TransferType" readonly required />
                 </div>
-
 
                 <!-- Column One -->
                 <div class="panel">
-                    <div class="mb-5 flex items-center justify-between">
-                        @*<h5 class="text-lg font-semibold dark:text-white-light">Untitled Input</h5>*@
-                    </div>
-
                     <div class="mb-5">
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div>
-                                <label for="shid">Transfer From</label>
-                                @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input", @disabled = "disabled" })
-                                <span class="text-danger"></span>
+                        <div class="panel">
+                            <div class="mx-auto flex max-w-full flex-col gap-4 md:flex-row">
+                                <div>
+                                    <label for="shid">Transfer From</label>
+                                    @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input", @disabled = "disabled" })
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div>
+                                    <label for="shid">Transfer To</label>
+                                    @Html.DropDownList("TransfareeShID", (SelectList)ViewBag.ShareholdersTo, new { @id = "TransfereeShID", @class = "form-input" })
+                                    <span class="text-danger"></span>
+                                </div>
                             </div>
-                            <div>
-                                <label for="shid">Transfer To</label>
-                                @Html.DropDownList("TransfareeShID", (SelectList)ViewBag.ShareholdersTo, new { @id = "TransfereeShID", @class = "form-input" })
-                                <span class="text-danger"></span>
-                            </div>
+
                         </div>
                         <br />
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <!-- Transfer Category Dropdown -->
+
                             <div class="col-md-10">
                                 <label>Transfer Category</label>
                                 @Html.DropDownListFor(model => model.TransferCategory,
@@ -123,9 +97,9 @@
                                         new SelectListItem { Text = "Payment", Value = "Payment" },
                                         new SelectListItem { Text = "Full Transfer", Value = "Full Transfer" }
                                     }, "Select Transfer Category", new { @class = "form-input", id = "transferCategoryDropdown" })
-                                <span class="text-danger"></span> <!-- Placeholder for error message -->
+                                <span class="text-danger"></span>
                             </div>
-                            <!-- Transfer Type Radio Buttons -->
+
                             <div class="flex flex-col sm:flex-row mt-6" id="transferTypeDiv" style="display: none">
                                 <label class="rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Transfer Type</label>
                                 <div class="flex-1">
@@ -157,16 +131,16 @@
                             </div>
 
                         </div>
-                        <div class="panel">
-                            <div class="mb-5">
-                                <div class="flex grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <!-- Subscriptions Table -->
-                                    <div>
-                                        <div class="mb-5 flex items-center justify-between">
-                                            <h5 class="text-lg font-semibold dark:text-white-light">Subscription Status</h5>
-                                        </div>
-                                        <div style="max-height: 400px; overflow-y: auto;  border-radius: 4px; width: 700px">
-                                            <table id="subscriptionsTable" style="width: 100%;">
+                        <div>
+                            <div class="grid grid-cols-1 gap-6 xl:grid-cols-2 mt-4">
+
+                                <div class="panel">
+                                    <div class="mb-5 flex items-center justify-between">
+                                        <h5 class="text-lg font-semibold dark:text-white-light">Subscription Status</h5>
+                                    </div>
+                                    <div class="mb-5">
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto; ">
+                                            <table id="subscriptionsTable">
                                                 <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
                                                     <tr>
                                                         <th style="width: 20px;"></th>
@@ -182,15 +156,17 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </div>
 
-                                    <!-- Payments Table -->
-                                    <div>
-                                        <div class="mb-5 flex items-center justify-between">
-                                            <h5 class="text-lg font-semibold dark:text-white-light">Payment Status</h5>
-                                        </div>
-                                        <div style="max-height: 400px; overflow-y: auto;  border-radius: 4px; width: 400px">
-                                            <table id="paymentsTable" style="width: 100%;">
+                                    </div>
+                                </div>
+
+                                <div class="panel">
+                                    <div class="mb-5 flex items-center justify-between">
+                                        <h5 class="text-lg font-semibold dark:text-white-light">Payment Status</h5>
+                                    </div>
+                                    <div class="mb-5">
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto; ">
+                                            <table id="paymentsTable">
                                                 <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
                                                     <tr>
                                                         <th style="width: 20px;"></th>
@@ -206,8 +182,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
+
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -218,7 +195,7 @@
                             </div>
                             <div class="col-md-10">
                                 <label>Amount Per Share</label>
-                                @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "1000", @readonly = "readonly", @id = "amountPerShare" })
+                                @Html.TextBoxFor(model => model.AmountPerShare, new { @class = "form-input", @Value = "100", @readonly = "readonly", @id = "amountPerShare" })
                                 @Html.ValidationMessageFor(model => model.AmountPerShare, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
@@ -269,14 +246,14 @@
                                 @Html.Label("Upload Document", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
                                 <div class="custom-file-container" data-upload-id="myFirstImage">
                                     <div class="custom-file-container__image-preview">
-                                        <!-- Show the current document link if TransferDoc has a value -->
+
                                         @if (Model.TransferDoc.HasValue)
                                         {
                                             <div class="mb-2">
-                                                <a href="@Url.Content("~/UploadedFiles/" + "Hailemariam kebede Resume_3c1504a8-79a4-4a8e-9d31-45e9ff4213be" + ".pdf")" target="_blank" class="text-primary">View Current Document</a>
+                                                <a href="@Url.Content("~/UploadedFiles/receiptFT242419MJ0Z_58e1dcdb-739e-4ec9-9434-c3f86119eac5.pdf")" target="_blank" class="text-primary">View Current Document</a>
                                             </div>
                                         }
-                                        <!-- Input for uploading a new document -->
+
                                         <input type="file"
                                                class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
                                                accept="*"
@@ -298,8 +275,7 @@
 
             </div>
 
-            <!-- Submit the form  -->
-            <button type="submit" class="btn btn-primary !mt-6">Submit Transfer</button>
+            <button type="submit" class="btn btn-primary !mt-6">Update Transfer</button>
 
 
         </div>
@@ -401,7 +377,7 @@
                 if ($(`#${rowId}`).length === 0) {
                     var isChecked = selectedPaymentIds.includes(payment.PayID.toString());
                     var row = `<tr id="${rowId}" data-subscription-id="${subscriptionId}">
-                        <td><input type="checkbox" class="form-checkbox payment-checkbox" ${isChecked ? 'checked' : ''}></td>
+                        <td><input type="checkbox" class="form-checkbox payment-checkbox" ${isChecked ? 'checked disabled' : ''}></td>
                         <td><input type="textbox" class="form-input" value="${payment.PayID}" readonly /></td>
                         <td><input type="textbox" class="form-input" value="${payment.PaidAmount}" readonly /></td>
                         <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input1" readonly /></td>
@@ -424,11 +400,11 @@
                         <tr>
                             <td><input type="checkbox" class="form-checkbox subscription-checkbox"
                                 data-subscription-id="${subscription.SubID}"
-                                ${isChecked ? 'checked' : ''}></td>
+                                ${isChecked ? 'checked disabled' : 'disabled'}></td>
                             <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
                             <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
-                            <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 1000)}" readonly /></td>
-                            <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 1000)}" readonly /></td>
+                            <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 100)}" readonly /></td>
+                            <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 100)}" readonly /></td>
                             <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" readonly /></td>
                         </tr>
                     `);
@@ -489,8 +465,8 @@
                                     <td><input type="checkbox" class="form-checkbox subscription-checkbox" name="SubID2" data-subscription-id="${subscription.SubID}" ${isFullTransfer ? 'checked disabled' : ''}></td>
                                     <td><input type="textbox" class="form-input" value="${subscription.SubID}" readonly /></td>
                                     <td><input type="textbox" class="form-input" value="${subscription.SubNumShares}" readonly /></td>
-                                    <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 1000)}" readonly /></td>
-                                    <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 1000)}" readonly /></td>
+                                    <td><input type="textbox" class="form-input" value="${(subscription.PaidSubscription / 100)}" readonly /></td>
+                                    <td><input type="textbox" class="form-input" value="${(subscription.UnpaidSubscription / 100)}" readonly /></td>
                                     <td class="partial-transfer-col"><input type="textbox" class="form-input partial-transfer-input" placeholder="" readonly /></td>
                                 </tr>
                             `);
@@ -683,7 +659,7 @@
                         setTimeout(function () {
                             $('#paymentsTable tbody tr').each(function () {
                                 var PayID = $(this).find('td:eq(1) input').val();
-                                var paidAmount = parseFloat($(this).find('td:eq(2) input').val() / 1000);
+                                var paidAmount = parseFloat($(this).find('td:eq(2) input').val() / 100);
                                 var isChecked = $(this).find('.payment-checkbox').is(':checked');
                                 if (isChecked && !selectedPaymentIds.includes(PayID)) {
                                     selectedPaymentIds.push(PayID);
@@ -711,7 +687,7 @@
 
                         $(`#paymentsTable tbody tr[data-subscription-id="${SubID}"]`).each(function () {
                             var PayID = $(this).find('td:eq(1) input').val();
-                            var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000) || 0;
+                            var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100) || 0;
                             var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
                             var newTotal = currentTotal - paidAmount;
                             $('#numSharesTransferred').val(newTotal).trigger('change');
@@ -807,7 +783,7 @@
                 if (transferCategory === 'Payment') {
                     if ($(this).is(':checked')) {
 
-                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000);
+                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100);
                         var PayID = $(this).closest('tr').find('td:eq(1) input').val();
                         if (!selectedPaymentIds.includes(PayID)) {
                             selectedPaymentIds.push(PayID);
@@ -823,7 +799,7 @@
 
                         selectedPaymentIds = selectedPaymentIds.filter(id => id !== PayID);
 
-                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 1000) || 0;
+                        var paidAmount = parseFloat($(this).closest('tr').find('td:eq(2) input').val() / 100) || 0;
                         var currentTotal = parseFloat($('#numSharesTransferred').val()) || 0;
                         var newTotal = currentTotal - paidAmount;
                         $('#numSharesTransferred').val(newTotal).trigger('change');
@@ -845,7 +821,7 @@
 
                         $(this).closest('tr').find('.partial-transfer-input1').prop('readonly', false);
                         $(document).on('input', '.partial-transfer-input1', function () {
-                            var partialTransferValue = $(this).val() / 1000;
+                            var partialTransferValue = $(this).val() / 100;
                             $('#numSharesTransferred').val(partialTransferValue).trigger('change');
                         });
                     } else {
