@@ -78,7 +78,7 @@
                     <div class="mb-5">
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label for="shid">Transfer From</label>
+                                <label for="shid" class="block dark:text-white-light text-sm font-semibold mb-2">Transfer From</label>
                                 @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input" })
                                 <span class="text-danger"></span>
                             </div>

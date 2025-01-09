@@ -4,22 +4,22 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="6d96065578db451eb28410161ac47934" Name="Diagram1">
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.AuditLog" Width="1.5" PointX="5.25" PointY="51.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Blocked" Width="1.5" PointX="5.25" PointY="39.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Branch" Width="1.5" PointX="0.75" PointY="24.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Certificate" Width="1.5" PointX="17" PointY="45.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Dividend" Width="1.5" PointX="5.25" PointY="54.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.DividenedDetail" Width="1.5" PointX="7.5" PointY="39.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Document" Width="1.5" PointX="7.5" PointY="45.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Payment" Width="1.5" PointX="10.25" PointY="38.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Proxy" Width="1.5" PointX="5.25" PointY="30" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Shareholder" Width="1.5" PointX="14.75" PointY="36.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.ShareTransfer" Width="1.5" PointX="17" PointY="37.75" IsExpanded="true" />
+      <Diagram DiagramId="549c4307cb1049a5af6354d5957e73b4" Name="Diagram1">
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.AuditLog" Width="1.5" PointX="5.25" PointY="51.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Blocked" Width="1.5" PointX="5.25" PointY="39.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Branch" Width="1.5" PointX="0.75" PointY="24.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Certificate" Width="1.5" PointX="17" PointY="46" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Dividend" Width="1.5" PointX="5.25" PointY="55" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.DividenedDetail" Width="1.5" PointX="7.5" PointY="39.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Document" Width="1.5" PointX="7.5" PointY="45.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Payment" Width="1.5" PointX="10.25" PointY="38.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Proxy" Width="1.5" PointX="5.25" PointY="30.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Shareholder" Width="1.5" PointX="14.75" PointY="37.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.ShareTransfer" Width="1.5" PointX="17" PointY="38.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ShareManagementDatabaseModel.ShCategory" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.SimulationDividened" Width="1.5" PointX="12.5" PointY="39.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Subscribtion" Width="1.5" PointX="20" PointY="38.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ShareManagementDatabaseModel.User" Width="1.5" PointX="3" PointY="51.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.SimulationDividened" Width="1.5" PointX="12.5" PointY="39.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.Subscribtion" Width="1.5" PointX="20" PointY="39.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShareManagementDatabaseModel.User" Width="1.5" PointX="3" PointY="51.875" IsExpanded="true" />
         <AssociationConnector Association="ShareManagementDatabaseModel.FK_AuditLog_User" ManuallyRouted="false" />
         <AssociationConnector Association="ShareManagementDatabaseModel.FK_Blocked_Branch" ManuallyRouted="false" />
         <AssociationConnector Association="ShareManagementDatabaseModel.FK_Blocked_Document" ManuallyRouted="false" />

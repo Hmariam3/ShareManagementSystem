@@ -34,26 +34,40 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
-                        <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
-                        <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
-                        <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Remark)</td>
-                        <td>
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
+                            <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Remark)</td>
+                            <td>
 
-                            @Html.ActionLink("Authorization", "Authorize", new { id = item.PayID }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("Authorization", "Authorize", new { id = item.PayID }, new { @class = "btn btn-primary" })
 
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+@if (TempData["Message"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'success', // You can use 'success', 'error', 'warning', 'info', or 'question'
+                title: 'Success!',
+                text: '@TempData["Message"]',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}

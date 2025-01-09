@@ -137,6 +137,7 @@
           <Property Name="Branch" Type="int" />
           <Property Name="PaidAmount" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ReferenceNum" Type="nvarchar(max)" />
+          <Property Name="SourceOfFunds" Type="nvarchar(max)" />
           <Property Name="PaymentSlip" Type="int" />
           <Property Name="PaymentDate" Type="date" />
           <Property Name="PaymentTransferFrom" Type="int" />
@@ -1488,6 +1489,7 @@
           <Property Name="Branch" Type="Int32" />
           <Property Name="PaidAmount" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ReferenceNum" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SourceOfFunds" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PaymentSlip" Type="Int32" />
           <Property Name="PaymentDate" Type="DateTime" Precision="0" />
           <Property Name="PaymentTransferFrom" Type="Int32" />
@@ -2886,6 +2888,7 @@
                 <ScalarProperty Name="Branch" ColumnName="Branch" />
                 <ScalarProperty Name="PaidAmount" ColumnName="PaidAmount" />
                 <ScalarProperty Name="ReferenceNum" ColumnName="ReferenceNum" />
+                <ScalarProperty Name="SourceOfFunds" ColumnName="SourceOfFunds" />
                 <ScalarProperty Name="PaymentSlip" ColumnName="PaymentSlip" />
                 <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
                 <ScalarProperty Name="PaymentTransferFrom" ColumnName="PaymentTransferFrom" />
