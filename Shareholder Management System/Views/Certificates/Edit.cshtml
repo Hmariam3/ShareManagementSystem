@@ -65,28 +65,30 @@
                 <!-- Hidden field for PaymentIDs -->
                 @Html.HiddenFor(model => model.PaymentIDs, new { id = "PaymentIDs" })
 
-                <!-- Certificate Details -->
-                <div class="mb-5">
-                    @Html.LabelFor(model => model.CertNum, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.CertNum, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.CertNum, "", new { @class = "text-danger" })
+                <!-- Certificate Details (Hidden by default) -->
+                <div id="certificateDetails" style="display: none;">
+                    <div class="mb-5">
+                        @Html.LabelFor(model => model.CertNum, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.CertNum, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.CertNum, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
 
-                <div class="mb-5">
-                    @Html.LabelFor(model => model.BeginingSerial, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.BeginingSerial, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.BeginingSerial, "", new { @class = "text-danger" })
+                    <div class="mb-5">
+                        @Html.LabelFor(model => model.BeginingSerial, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.BeginingSerial, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.BeginingSerial, "", new { @class = "text-danger" })
+                        </div>
                     </div>
-                </div>
 
-                <div class="mb-5">
-                    @Html.LabelFor(model => model.EndingSerial, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.EndingSerial, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.EndingSerial, "", new { @class = "text-danger" })
+                    <div class="mb-5">
+                        @Html.LabelFor(model => model.EndingSerial, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.EndingSerial, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.EndingSerial, "", new { @class = "text-danger" })
+                        </div>
                     </div>
                 </div>
 

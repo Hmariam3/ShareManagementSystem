@@ -109,10 +109,11 @@ namespace Shareholder_Management_System.Controllers
         {
             if (ModelState.IsValid)
             {
+                int userId = Convert.ToInt32(Session["ID"]);
                 // Set the CreatedBy and CreatedDate fields
                 certificate.CertGenerationDate = DateTime.Now;
-                certificate.DeliveredBy = 2;
-                certificate.CreatedBy = 2;
+                certificate.DeliveredBy = userId;
+                certificate.CreatedBy = userId;
                 certificate.CreatedDate = System.DateTime.Now;
                 certificate.CertAuthorizationStatus = "Pending";
 
@@ -323,12 +324,12 @@ namespace Shareholder_Management_System.Controllers
                     var userExists = db.Users.Any(u => u.UID == certificate.CreatedBy);
                     var authorizerExists = db.Users.Any(u => u.UID == certificate.CertAuthorizer);
 
-                  
-                        // Update the certificate
-                        db.Entry(certificate).State = EntityState.Modified;
-                        db.SaveChanges();
-                        
-                    
+
+                    // Update the certificate
+                    db.Entry(certificate).State = EntityState.Modified;
+                    db.SaveChanges();
+
+
                 }
                 catch (DbUpdateException ex)
                 {
@@ -358,7 +359,7 @@ namespace Shareholder_Management_System.Controllers
                     int numberOfShares = (int)(totalPaymentAmount / 1000); // Assuming each share is worth 1000
                     certificate.EndingSerial = certificate.BeginingSerial + numberOfShares - 1;
 
-                    
+
                 }
                 return RedirectToAction("Index");
             }
