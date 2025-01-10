@@ -1,4 +1,4 @@
-﻿﻿@model Shareholder_Management_System.Models.Shareholder
+﻿@model Shareholder_Management_System.Models.Shareholder
 
 @{
     ViewBag.Title = "Details";
@@ -6,9 +6,62 @@
 <script src="~/Scripts/JS/simple-datatables.js"></script>
 
 <div class="animate__animated p-6" :class="[$store.app.animation]">
+
+    @if (Model.AuthorizationStatus == "Pending")
+    {
+        <div x-data="approvalrequest" class="panel mb-6 ">
+            <div class="flex items-center justify-between">
+                <h5 class="text-lg font-semibold dark:text-white-light">There are some changes Needs Approval</h5>
+                <div class="">
+                    <div class="flex flex-wrap items-center justify-center gap-2">
+                        <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.ShDocument)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <path opacity="0.5"
+                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                            </svg> Document
+                        </button>
+                        <button type="button" class="hover:text-secondary btn btn-primary" @@click="approveRequest(@Model.ShID)">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            Approve
+                        </button>
+                        <button type="button" class="hover:text-secondary  btn btn-danger" @@click="openRejectModal(@Model.ShID)">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5 ">
+                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Reject
+                        </button>
+                    </div>
+                </div>
+                <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60"
+                     :class="rejectModalOpen ? '!block' : 'hidden'">
+                    <div class="flex min-h-screen items-center justify-center px-4" @@click.self="closeRejectModal">
+                        <div class="panel w-full max-w-md my-8 overflow-hidden rounded-lg border-0 p-6">
+                            <h2 class="text-xl font-semibold mb-4">Reason for Rejection</h2>
+                            <textarea x-model="rejectionReason" class="form-input w-full h-28"></textarea>
+                            <div class="flex justify-end gap-4 mt-4">
+                                <button type="button" class="btn btn-outline-secondary" @@click="closeRejectModal">
+                                    Cancel
+                                </button>
+                                <button type="button" class="btn btn-danger" @@click="submitRejection(selectedShareholderId)">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
     <!-- start main content section -->
     <div x-data="shDetials">
-        <div class="relative flex h-full gap-5 sm:h-[calc(100vh_-_150px)]">
+        <div class="relative flex h-full gap-5 sm:h-[calc(100vh_-_150px)] ">
             <div class="panel absolute z-10 hidden h-full w-[240px] max-w-full flex-none space-y-4 p-4 ltr:rounded-r-none rtl:rounded-l-none xl:relative xl:block xl:h-auto ltr:xl:rounded-r-md rtl:xl:rounded-l-md"
                  :class="{'!block':isShowTaskMenu}">
                 <div class="flex h-full flex-col pb-16">
@@ -184,6 +237,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="absolute bottom-0 w-full p-4 ltr:left-0 rtl:right-0">
+                    <a href="@Url.Action("Index")" class=" btn inline-flex items-center rounded-md bg-success/30 px-1.5 py-1 text-xs text-success hover:shadow-[0_10px_20px_-10px] hover:shadow-success">
+                        Back to List
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ltr:ml-1.5 rtl:mr-1.5 rtl:rotate-180">
+                            <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
             <div class="overlay absolute z-[5] hidden h-full w-full rounded-md bg-black/60"
                  :class="{ '!block xl:!hidden': isShowTaskMenu }" @@click="isShowTaskMenu = !isShowTaskMenu">
@@ -233,6 +295,46 @@
                                                 / @Html.DisplayFor(model => model.FullNameAmharic)
                                             </span>
                                         </span>
+                                        <div class="btn shadow-md dark:group-hover:bg-transparent flex px-2 py-1">
+                                            @{
+                                                var styleClass = "";
+                                                var statusText = "";
+                                                var data = Model.Status;
+
+                                                if (data == "Active")
+                                                {
+                                                    styleClass = "badge-outline-success";
+                                                    statusText = "Active";
+                                                }
+                                                else if (data == "New")
+                                                {
+                                                    styleClass = "badge-outline-primary";
+                                                    statusText = "New";
+                                                }
+                                                else if (data == "Updated")
+                                                {
+                                                    styleClass = "badge-outline-secondary";
+                                                    statusText = "Updated";
+                                                }
+                                                else if (data == "Document-Updated")
+                                                {
+                                                    styleClass = "badge-outline-secondary";
+                                                    statusText = "Document-Updated";
+                                                }
+                                                else if (data == "Blocked")
+                                                {
+                                                    styleClass = "badge-outline-danger";
+                                                    statusText = "Blocked";
+                                                }
+                                                else if (data == "UnBlocked")
+                                                {
+                                                    styleClass = "badge-outline-danger";
+                                                    statusText = "UnBlocked";
+                                                }
+
+                                            }
+                                            <span class="badge @styleClass">@statusText</span>
+                                        </div>
 
                                         <div class="btn bg-success shadow-md dark:group-hover:bg-transparent flex px-2 py-1">
                                             <span class="ltr:ml-2 rtl:mr-2 text-white">
@@ -978,6 +1080,81 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 
+    Alpine.data('approvalrequest', () => ({
+
+        rejectModalOpen: false, // Controls the rejection modal visibility
+        rejectionReason: '',
+        selectedShareholderId: null, // Stores the selected shareholder ID
+
+        approveRequest(id) {
+                fetch('@Url.Action("Approve", "Shareholders")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder document successfully unblocked.', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to unblock shareholder.');
+                    }
+                })
+                .catch(error => {
+                    showMessage(data.message || 'An error occurred while unblocking the shareholder document.', 'error');
+                });
+
+            },
+
+            openRejectModal(shareholderId) {
+                this.selectedShareholderId = shareholderId;
+                this.rejectionReason = ''; // Clear any previous reason
+                this.rejectModalOpen = true;
+             },
+
+            // Close Rejection Modal
+            closeRejectModal() {
+                this.rejectionReason = '';
+                this.rejectModalOpen = false;
+            },
+
+            // Submit Rejection with Reason
+            submitRejection(id) {
+                console.log(this.rejectionReason);
+                fetch('@Url.Action("Reject", "Shareholders")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id,
+                        remark: this.rejectionReason
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder rejected successfully.', 'success');
+
+                        this.closeRejectModal();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to reject shareholder.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('An unexpected error occurred.', 'error');
+                });
+            },
+
+    }));
     Alpine.data('miscellaneous', () => ({
         columns: [
             { name: 'Full Name', hidden: true },
@@ -1459,7 +1636,7 @@ document.addEventListener('alpine:init', () => {
                                 "@item.Reason", // ProxyAuthorizationStatus
                                 "@item.BlockingOrgan", // ProxyAuthorizationStatus
                                 "@item.BlockedAuthorizationStatus",
-                                "@item.DateBlocked.ToString("yyyy-MM-dd")", // AuthorizedDate
+                                @((item.DateBlocked.HasValue) ? item.DateBlocked.Value.ToString("yyyy-MM-dd") : "") // AuthorizedDate
                                 "@(item.User != null ? item.User.FullName : "N/A")", // User.FullName
                             ],
                             </text>
@@ -1634,4 +1811,19 @@ document.addEventListener('alpine:init', () => {
 
     }));
 });
+
+    // Success message function (Toast)
+    async function showMessage(msg = '', type = 'success') {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    }
 </script>

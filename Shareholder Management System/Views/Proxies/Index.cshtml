@@ -9,9 +9,13 @@
 
 }
 
-<link rel="stylesheet" type="text/css" href="~/Content/CSS/nice-select2.css">
-<script src="~/Scripts/JS/nice-select2.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/CSS/select2.min.css">
+<script src="~/Scripts/JS/select2.min.js"></script>
 <script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/additional-methods.min.js"></script>
+
 
 <div class="animate__animated p-6" :class="[$store.app.animation]">
     <!-- start main content section -->
@@ -23,11 +27,12 @@
                 <div class="flex sm:flex-row flex-col text-center">
                     <label for="horizontalEmail" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Search For Shareholder using one option</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
                         <div>
-                            <label for="shid">Via FullName(Eng) OR </label>
+                            <label for="shid">Via FullName (Eng) OR</label>
                             @Html.DropDownList("ShID",
                                 new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                htmlAttributes: new { id = "seachable-select" }
+                                htmlAttributes: new { id = "searchable-select"}
                             )
                         </div>
                         <div>
@@ -56,7 +61,7 @@
                                 <div class="flex-1">Share ID:</div>
                                 <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@(ViewBag.Shareholder?.ShareID ?? "N/A")</div>
                             </div>
-                           
+
                             <div class="group relative flex items-center py-1">
                                 <div class="flex-1">Full Name Afan Oromo:</div>
                                 <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@(ViewBag.Shareholder?.FullNameAfanOromo ?? "N/A")</div>
@@ -141,12 +146,12 @@
                                 <div class="flex-1">Authorizer:</div>
                                 <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@(ViewBag.Shareholder?.Authorizer ?? "N/A")</div>
                             </div>
-                            <div class="group relative flex items-center py-1 border-b border-[#ebedf2] dark:border-[#1b2e4b]">
-                                <div class="flex-1">Authorized Date:</div>
-                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
-                                    @(ViewBag.Shareholder?.AuthorizedDate != null ? ViewBag.Shareholder.AuthorizedDate.Value.ToString("yyyy-MM-dd") : "N/A")
-                                </div>
-                            </div>
+                            @*<div class="group relative flex items-center py-1 border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                    <div class="flex-1">Authorized Date:</div>
+                                    <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                                        @(ViewBag.Shareholder?.AuthorizedDate != null ? ViewBag.Shareholder.AuthorizedDate.Value.ToString("yyyy-MM-dd") : "N/A")
+                                    </div>
+                                </div>*@
                         }
                         else
                         {
@@ -210,73 +215,75 @@
                                                 </div>
 
                                                 <div>
-                                                    @using (Html.BeginForm("Create", "Proxies", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                                    @using (Html.BeginForm("Create", "Proxies", FormMethod.Post, new { id = "createProxyForm", enctype = "multipart/form-data" }))
                                                     {
                                                         @Html.AntiForgeryToken()
-                                                    <div class="form-section">
-                                                        <h2>
-                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
-                                                                <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                            </svg>
-                                                            <span class="list-text">Basic Information</span>
-                                                        </h2>
+                                                        <div class="form-section">
+                                                            <h2>
+                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
+                                                                    <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                </svg>
+                                                                <span class="list-text">Basic Information</span>
+                                                            </h2>
 
-                                                        @if (shareholder != null)
-                                                        {
-                                                            @*@Html.Hidden("ShID", new { Name = "proxy.ShID" })*@
-                                                            @Html.HiddenFor(model => proxy.ShID, new { Value = proxy.ShID ??  shareholder.ShID })
-                                                        }
-                                                        <div class="!mt-2">
-                                                            @Html.LabelFor(model => proxy.FullName, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => proxy.FullName, new { htmlAttributes = new { @class = "form-input", @placeholder = "Full Name In English *" } })
-                                                            @Html.ValidationMessageFor(model => proxy.FullName, "", new { @class = "text-danger" })
-                                                        </div>
-
-                                                        <div class="!mt-2">
-                                                            @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => proxy.Nationality, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Nationality *" } })
-                                                            @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
-                                                        </div>
-
-                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
-                                                            <div>
-                                                                @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Primary Mobile Number" } })
-                                                                @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
+                                                            @if (shareholder != null)
+                                                            {
+                                                                @*@Html.Hidden("ShID", new { Name = "proxy.ShID" })*@
+                                                                @Html.HiddenFor(model => proxy.ShID, new { Value = proxy.ShID ?? shareholder.ShID })
+                                                            }
+                                                            <div class="!mt-2">
+                                                                @Html.LabelFor(model => proxy.FullName, htmlAttributes: new { @class = "control-label" })
+                                                                @Html.EditorFor(model => proxy.FullName, new { htmlAttributes = new { @class = "form-input", @placeholder = "Full Name In English *" } })
+                                                                @Html.ValidationMessageFor(model => proxy.FullName, "", new { @class = "text-danger" })
                                                             </div>
-                                                            <div>
-                                                                @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Additional Mobile Number" } })
-                                                                @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
+
+                                                            <div class="!mt-2">
+                                                                @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
+                                                                @Html.EditorFor(model => proxy.Nationality, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Nationality *" } })
+                                                                @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
                                                             </div>
-                                                        </div>
-                                                        <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            <div>
-                                                                <label for="startDate" class="text-white-dark">Start Date </label>
-                                                                @Html.EditorFor(model => proxy.StartDate, new
-                                                                {
-                                                                    htmlAttributes = new
+
+                                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                                <div>
+                                                                    @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
+                                                                    @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Primary Mobile Number *" } })
+                                                                    @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div>
+                                                                    @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
+                                                                    @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Additional Mobile Number" } })
+                                                                    @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                <div>
+                                                                    <label for="startDate" class="text-white-dark">Start Date * </label>
+                                                                    @Html.EditorFor(model => proxy.StartDate, new
                                                                     {
-                                                                        id = "startDate",
-                                                                        @class = "form-input",
-                                                                        @type = "date", // Ensuring the input is of type "date"
-                                                                    }
-                                                                })
-                                                            </div>
-                                                            <div>
-                                                                <label for="endDate" class="text-white-dark">End Date </label>
-                                                                @Html.EditorFor(model => proxy.EndDate, new
-                                                                {
-                                                                    htmlAttributes = new
+                                                                        htmlAttributes = new
+                                                                        {
+                                                                            id = "startDate",
+                                                                            @class = "form-input",
+                                                                            @type = "date", // Ensuring the input is of type "date"
+                                                                        }
+                                                                    })
+                                                                    @Html.ValidationMessageFor(model => proxy.StartDate, "", new { @class = "text-danger" })
+                                                                </div>
+
+                                                                <div>
+                                                                    <label for="endDate" class="text-white-dark">End Date </label>
+                                                                    @Html.EditorFor(model => proxy.EndDate, new
                                                                     {
-                                                                        id = "endDate",
-                                                                        @class = "form-input",
-                                                                        @type = "date", // Ensuring the input is of type "date"
-                                                                    }
-                                                                })
-                                                            </div>
-                                                        </fieldset>
-                                                    </div>
+                                                                        htmlAttributes = new
+                                                                        {
+                                                                            id = "endDate",
+                                                                            @class = "form-input",
+                                                                            @type = "date", // Ensuring the input is of type "date"
+                                                                        }
+                                                                    })
+                                                                </div>
+                                                            </fieldset>
+                                                        </div>
 
                                                         <div class="!mt-2">
                                                             <div class="form-section">
@@ -327,18 +334,29 @@
 
                                                         </div>
 
-                                                        <div class="!mt-2">
-                                                            <label for="shFile">Attach Delegation Letter</label>
-                                                            <input id="shFile" type="file" name="proxyFile" accept="application/pdf"
-                                                                   class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                                                                   required />
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 sm:grid-cols-2  gap-4 !mt-2 ">
+                                                            <div>
+                                                                <label for="shFile">Attach Delegation Letter *</label>
+                                                                <input id="shFile" type="file" name="proxyFile" accept="application/pdf"
+                                                                       class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
+                                                                       required />
+                                                                <span class="text-danger" id="fileError"></span>
+                                                            </div>
+                                                            <div>
+                                                                <label for="kebele">Identification Document</label>
+                                                                <input id="kebele" type="file" name="kebeleID" accept="application/pdf"
+                                                                       class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
+                                                                       required />
+                                                                <span class="text-danger" id="fileError"></span>
+                                                            </div>
                                                         </div>
+
                                                         <div class="!mt-2">
-                                                            <span class="text-danger text-[11px] inline-block">* Required Fields</span>
+                                                            <span class="text-danger text-[11px] inline-block">* Required Fields so please fill all required fields</span>
                                                         </div>
                                                         <div class="flex justify-end items-center mt-8">
                                                             <button type="button" class="btn btn-outline-danger" @@click="toggle">Discard</button>
-                                                            <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4" @@click="toggle">Save</button>
+                                                            <button type="submit" id="submitProxyForm" class="btn btn-primary ltr:ml-4 rtl:mr-4">Save</button>
                                                         </div>
                                                     }
                                                 </div>
@@ -355,7 +373,7 @@
                     <div class="mb-5">
                         <div x-data="miscellaneous">
                             <div class="space-y-6">
-                                <div class="panel">
+                                <div class="panel sticky-column">
                                     <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">
                                         Shareholders List
                                     </h5>
@@ -412,8 +430,8 @@
                                 </div>
                             </div>
 
-                            <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60" :class="activateProxyModal ? '!block' : 'hidden'">
-                                <div class="flex min-h-screen items-center justify-center px-4" @@click.self="activateProxyModal = false">
+                            <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60" :class="editProxyDocumentModal ? '!block' : 'hidden'">
+                                <div class="flex min-h-screen items-center justify-center px-4" @@click.self="editProxyDocumentModal = false">
                                     <div class="panel my-8 w-[90%] max-w-lg overflow-hidden rounded-lg border-0 p-0 md:w-full">
                                         <div class="p-5">
                                             <form id="proxyForm" enctype="multipart/form-data" @@submit.prevent="submitProxyDocument">
@@ -422,11 +440,17 @@
                                                     <input id="ctnFile" name="proxyFile" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" required />
                                                 </div>
                                                 <input type="hidden" x-model="proxyID" name="proxyID" /> <!-- Hidden input for proxyID -->
+                                                <div class="mb-5">
+                                                    <label for="ctnFile">Reason For Changing The Document</label>
+                                                    <div class="flex">
+                                                        <textarea rows="4" id="reason" name="reason" class="form-textarea ltr:rounded-l-none rtl:rounded-r-none"></textarea>
+                                                    </div>
+                                                </div>
                                                 <div class="mt-8 flex items-center justify-end">
-                                                    <button type="button" class="btn btn-outline-danger" @@click="activateProxyModal = false">
+                                                    <button type="button" class="btn btn-outline-danger" @@click="editProxyDocumentModal = false">
                                                         Cancel
                                                     </button>
-                                                    <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Activate</button>
+                                                    <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Update</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -485,12 +509,12 @@
                                                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
                                                         <div>
                                                             @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", id = "PhoneNo", } })
+                                                            @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", id = "PhoneNo", type = "number" } })
                                                             @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
                                                         </div>
                                                         <div>
                                                             @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", id = "PhoneNo2", } })
+                                                            @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", id = "PhoneNo2", type = "number" } })
                                                             @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
                                                         </div>
                                                     </div>
@@ -578,417 +602,717 @@
                                 </div>
                             </div>
 
+
+                            <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60" :class="activateProxyModal ? '!block' : 'hidden'">
+                                <div class="flex min-h-screen items-center justify-center px-4" @@click.self="activateProxyModal = false">
+                                    <div class="panel my-8 w-[90%] max-w-lg overflow-hidden rounded-lg border-0 p-0 md:w-full">
+                                        <div class="p-5">
+                                            <form id="proxyActivateForm" enctype="multipart/form-data" @@submit.prevent="submitActivateProxy">
+                                                <div class="mb-5">
+                                                    <label for="ctnFile">Attach Delegation Letter</label>
+                                                    <input id="ctnFile" name="proxyFile" type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" required />
+                                                </div>
+                                                <input type="hidden" x-model="proxyID" name="proxyID" /> <!-- Hidden input for proxyID -->
+                                                <div class="mb-5">
+                                                    <label for="ctnFile">Reason For ReActivating proxy</label>
+                                                    <div class="flex">
+                                                        <textarea rows="4" id="reason" name="reason" class="form-textarea ltr:rounded-l-none rtl:rounded-r-none"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-8 flex items-center justify-end">
+                                                    <button type="button" class="btn btn-outline-danger" @@click="activateProxyModal = false">
+                                                        Cancel
+                                                    </button>
+                                                    <button type="submit" class="btn btn-primary ltr:ml-4 rtl:mr-4">Activate</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
+
 <script>
-    document.addEventListener("DOMContentLoaded", function (e) {
-        var options = {
-            searchable: true
-        };
-        NiceSelect.bind(document.getElementById("seachable-select"), options);
+    $(document).ready(function () {
+        // Initialize Select2 with custom search handling
+        $('#searchable-select').select2({
+            placeholder: "Select a Shareholder",
+            allowClear: true,
+            width: '100%',
+            // Customize search behavior to support spaces and partial matches
+            matcher: function (params, data) {
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+
+                // Match against each part of the search term
+                const terms = params.term.toLowerCase().split(' ');
+                const text = data.text.toLowerCase();
+
+                return terms.every(term => text.includes(term)) ? data : null;
+            }
+        });
+
+        $("#createProxyForm").validate({
+            rules: {
+                FullName: {
+                    required: true,
+                    maxlength: 100
+                },
+                Nationality: {
+                    required: true
+                },
+                PhoneNo: {
+                    required: true,
+                    phoneUS: true
+                },
+                PhoneNo2: {
+                    phoneUS: true
+                },
+                PhoneNo3: {
+                    phoneUS: true
+                },
+                StartDate: {
+                    required: true,
+                    date: true
+                },
+                EndDate: {
+                    date: true
+                },
+                Region: {
+                    required: true
+                },
+                Zone: {
+                    required: true
+                },
+                City: {
+                    required: true
+                },
+                Subcity: {
+                    required: true
+                },
+                Woreda: {
+                    required: true
+                },
+                Kebele: {
+                    required: true
+                },
+                TINNum: {
+                    digits: true
+                },
+                AccountNumber: {
+                    digits: true,
+                    maxlength: 50
+                },
+                Email: {
+                    email: true
+                },
+                Email2: {
+                    email: true
+                },
+                Email3: {
+                    email: true
+                },
+                Remark: {
+                    maxlength: 250
+                },
+                proxyFile: {
+                    required: true,
+                    extension: "pdf"
+                }
+            },
+            messages: {
+                FullName: {
+                    required: "Full name is required.",
+                    maxlength: "Full name cannot exceed 100 characters."
+                },
+                Nationality: {
+                    required: "Nationality is required."
+                },
+                PhoneNo: {
+                    required: "Primary phone number is required.",
+                    phoneUS: "Please enter a valid phone number."
+                },
+                PhoneNo2: {
+                    phoneUS: "Please enter a valid additional phone number."
+                },
+                PhoneNo3: {
+                    phoneUS: "Please enter a valid additional phone number."
+                },
+                StartDate: {
+                    required: "Start date is required.",
+                    date: "Please enter a valid date."
+                },
+                EndDate: {
+                    date: "Please enter a valid date."
+                },
+                Region: {
+                    required: "Region is required."
+                },
+                Zone: {
+                    required: "Zone is required."
+                },
+                City: {
+                    required: "City is required."
+                },
+                Subcity: {
+                    required: "Subcity is required."
+                },
+                Woreda: {
+                    required: "Woreda is required."
+                },
+                Kebele: {
+                    required: "Kebele is required."
+                },
+                TINNum: {
+                    digits: "TIN number must be numeric."
+                },
+                AccountNumber: {
+                    digits: "Account number must be numeric.",
+                    maxlength: "Account number cannot exceed 50 characters."
+                },
+                Email: {
+                    email: "Please enter a valid email address."
+                },
+                Email2: {
+                    email: "Please enter a valid email address."
+                },
+                Email3: {
+                    email: "Please enter a valid email address."
+                },
+                Remark: {
+                    maxlength: "Remark cannot exceed 250 characters."
+                },
+                proxyFile: {
+                    required: "Please attach a delegation letter.",
+                    extension: "Only PDF files are allowed."
+                }
+            },
+            errorPlacement: function (error, element) {
+                if (element.attr("name") === "proxyFile") {
+                    $("#fileError").html(error); // Display error message for file input
+                } else {
+                    error.insertAfter(element); // Default placement for other inputs
+                }
+            },
+            errorClass: "text-danger",
+            submitHandler: function (form) {
+                // Optional: Display a success message or perform additional actions before submission
+                form.submit();
+            }
+        });
+
+        $('#submitProxyForm').on('click', function (e) {
+            e.preventDefault();
+            let fileInput = $('#shFile')[0];
+            let fileErrorContainer = $("#fileError");
+
+            // Clear any previous file error message
+            fileErrorContainer.html('');
+
+            // Check if file is selected and is under 2MB
+            if (fileInput.files.length === 0) {
+                fileErrorContainer.text("File is required.");
+            } else {
+                let file = fileInput.files[0];
+                let maxSizeInBytes = 2 * 1024 * 1024;
+
+                if (file.size > maxSizeInBytes) {
+                    fileErrorContainer.text("File size must be less than 2MB.");
+                } else if (!$("#createProxyForm").valid()) {
+                    return;
+                } else {
+                    $("#createProxyForm").submit();
+                }
+            }
+        });
+
     });
 </script>
 
 
-@{
-    var settings = new JsonSerializerSettings
-    {
-        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        PreserveReferencesHandling = PreserveReferencesHandling.Objects
-    };
+<script>
 
-    var jsonData = JsonConvert.SerializeObject(Model, settings);
+// main section
+document.addEventListener('alpine:init', () => {
 
+    Alpine.data('miscellaneous', () => ({
+        columns: [
+            { name: 'ID', hidden: false },
+            { name: 'Full Name', hidden: true },
+            { name: 'Proxy Status', hidden: true },
+            { name: 'Authorization Status', hidden: false },
+            { name: 'Nationality', hidden: true },
+            { name: 'Region', hidden: true },
+            { name: 'Zone', hidden: true },
+            { name: 'City', hidden: true },
+            { name: 'Subcity', hidden: true },
+            { name: 'Woreda', hidden: true },
+            { name: 'Kebele', hidden: true },
+            { name: 'Phone No', hidden: false },
+            { name: 'Phone No 2', hidden: false },
+            { name: 'Start Date', hidden: false },
+            { name: 'End Date', hidden: false },
+            { name: 'Created By', hidden: false },
+            { name: 'Created Date', hidden: false },
+            { name: 'Authorized BY', hidden: false },
+            { name: 'Authorized Date', hidden: false },
+            { name: 'Remark', hidden: false },
+            { name: 'Edit Proxty', hidden: false },
+            { name: 'Ident. Doc', hidden: false },
+            { name: 'Delg Letter', hidden: false },
+        ],
+
+        hideCols: [],
+        showCols: [0, 1, 2, 3, 4, 5, 6,7,8,9,10],
+
+        showHideColumns(col, value) {
+            if (value) {
+                this.showCols.push(col);
+                this.hideCols = this.hideCols.filter((d) => d != col);
+            } else {
+                this.hideCols.push(col);
+                this.showCols = this.showCols.filter((d) => d != col);
+            }
+            let headers = this.datatable1.columns();
+            headers.hide(this.hideCols);
+            headers.show(this.showCols);
+        },
+
+        datatable1: null,
+        proxyID: null,
+        type: null,
+        editModalOpen: false,
+        activateProxyModal: false,
+        editProxyDocumentModal: false,
+
+        init() {
+            let headers = this.columns.map((col) => {
+                return col.name;
+            });
+            this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+                data: {
+                    headings: headers,
+                    data: [
+                        @foreach (var item in Model)
+                        {
+                            <text>
+                            [
+                                "@item.ProxyID", // FullName
+                                "@item.FullName", // FullName
+                                "@item.ProxyStatus",  // Pass ProxyID for use in JavaScript
+                                "@item.ProxyAuthorizationStatus", // ProxyAuthorizationStatus
+                                "@item.Nationality", // Nationality
+                                "@item.Region", // Region
+                                "@item.Zone", // Zone
+                                "@item.City", // City
+                                "@item.Subcity", // Subcity
+                                "@item.Woreda", // Woreda
+                                "@item.Kebele", // Kebele
+                                "@item.PhoneNo", // PhoneNo
+                                "@item.PhoneNo2", // PhoneNo2
+                                "@(item.StartDate.HasValue ? item.StartDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
+                                "@(item.EndDate.HasValue ? item.EndDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
+                                "@(item.User != null ? item.User.FullName : "")", // User.FullName
+                                "@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
+                                "@(item.User1 != null ? item.User1.FullName : "")", // User1.FullName
+                                "@(item.AuthorizedDate.HasValue ? item.AuthorizedDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
+                                "@item.Remark", // Remark
+                                "@item.ProxyID", // Pass ProxyID again for later use
+                                "@item.KebeleID", // Pass ProxyID again for later use
+                                "@item.ProxyDocument", // Pass ProxyID again for later use
+                            ],
+                            </text>
+                        }
+                    ],
+                },
+                perPage: 15,
+                perPageSelect: [10, 20, 30, 50, 100],
+                columns: [
+                    { select: 2, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
+                    {
+                        select: 3, // Selecting the 3rd column (as index starts from 0)
+                        render: function (data, cell, row) {
+                            let styleClass = '';
+                            if (data == 'Approved') {
+                                styleClass = 'bg-success ';
+                            } else if (data == 'Pending') {
+                                styleClass = 'bg-warning';
+                                data = 'Waiting-Approval';
+                            } else if (data == 'Rejected') { // This should be else if instead of else
+                                styleClass = 'bg-danger';
+                            } else {
+                                styleClass = ''; // Default class if none of the conditions are met
+                            }
+                            return '<span class="badge ' + styleClass + '">' + data + '</span>';
+                        },
+                    },
+                    {
+                        select: 20,
+                        sortable: false,
+                        render: function (data, cell, row) {
+                            const status = row.cells[1].data.toLowerCase();
+                            let detailsUrl = '@Url.Action("Details", "Proxies", new { id = "__ID__" })'.replace("__ID__", data);
+                            return `<div class="flex gap-4 items-center">
+                                <a href="${detailsUrl}" class="hover:text-primary" x-tooltip="Details">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                        <path d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z" stroke="currentColor" stroke-width="1.5"></path>
+                                        <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                    </svg>
+                                </a>
+                                <button type="button" class="hover:text-secondary" @@click="openEditModal(${data})" x-tooltip="Edit Proxy">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                        <path
+                                            opacity="0.5"
+                                            d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                        ></path>
+                                        <path
+                                            d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        ></path>
+                                    </svg>
+                                </button>
+
+                                ${status === 'inactive'
+                                ? `<button type="button" class="hover:text-success" @@click="activateProxy(${data})" x-tooltip="Activate Proxy">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                            <path fill="currentColor" fill-rule="evenodd" d="M6.75 8a5.25 5.25 0 0 1 10.335-1.313a.75.75 0 0 0 1.452-.374A6.75 6.75 0 0 0 5.25 8v1.303q-.34.023-.642.064c-.9.12-1.658.38-2.26.981c-.602.602-.86 1.36-.981 2.26c-.117.867-.117 1.97-.117 3.337v.11c0 1.367 0 2.47.117 3.337c.12.9.38 1.658.981 2.26c.602.602 1.36.86 2.26.982c.867.116 1.97.116 3.337.116h8.11c1.367 0 2.47 0 3.337-.116c.9-.122 1.658-.38 2.26-.982s.86-1.36.982-2.26c.116-.867.116-1.97.116-3.337v-.11c0-1.367 0-2.47-.116-3.337c-.122-.9-.38-1.658-.982-2.26s-1.36-.86-2.26-.981c-.867-.117-1.97-.117-3.337-.117h-8.11q-.634 0-1.195.003zm-3.341 3.409c.277-.277.665-.457 1.4-.556c.754-.101 1.756-.103 3.191-.103h8c1.435 0 2.436.002 3.192.103c.734.099 1.122.28 1.399.556c.277.277.457.665.556 1.4c.101.755.103 1.756.103 3.191s-.002 2.436-.103 3.192c-.099.734-.28 1.122-.556 1.399c-.277.277-.665.457-1.4.556c-.755.101-1.756.103-3.191.103H8c-1.435 0-2.437-.002-3.192-.103c-.734-.099-1.122-.28-1.399-.556c-.277-.277-.457-.665-.556-1.4c-.101-.755-.103-1.756-.103-3.191s.002-2.437.103-3.192c.099-.734.28-1.122.556-1.399" clip-rule="evenodd"/></svg>
+                                    </button>`
+                                : `<button type="button" class="hover:text-danger" @@click="deActivateProxy(${data})" x-tooltip="Deactivate Proxy">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="currentColor"><path stroke-width="1.5" d="M2 16c0-2.828 0-4.243.879-5.121C3.757 10 5.172 10 8 10h8c2.828 0 4.243 0 5.121.879C22 11.757 22 13.172 22 16s0 4.243-.879 5.121C20.243 22 18.828 22 16 22H8c-2.828 0-4.243 0-5.121-.879C2 20.243 2 18.828 2 16Z"/><path stroke-linecap="round" stroke-width="1.5" d="M6 10V8a6 6 0 1 1 12 0v2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h.009m3.982 0H12m3.991 0H16"/></g></svg>
+                                    </button>`}
+                                <div x-data="dropdown" @@click.outside="open = false" class="dropdown" x-tooltip="Change Document">
+                                    <button class="btn dropdown-toggle rounded-none border-0 p-0 text-black shadow-none hover:text-primary dark:text-white-dark dark:hover:text-primary" @@click="toggle">
+                                        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-70">
+                                            <circle cx="5" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
+                                            <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
+                                            <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
+                                        </svg>
+                                    </button>
+                                    <ul x-cloak="" x-show="open" x-transition="" x-transition.duration.300ms="" class="bottom-full !mt-0 mb-1 whitespace-nowrap ltr:left-0 rtl:right-0">
+                                        <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'ProxyID')">Change ID</a></li>
+                                        <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'DelegationLetter')">Change Delg Letter</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+`;
+                        },
+                    },
+                    {
+                        select: 21,
+                        sortable: false,
+                        render: function (data, cell, row) {
+                            return `<div class="flex gap-4 items-center">
+                                <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(${data})" x-tooltip="ID Document">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                        <path
+                                            opacity="0.5"
+                                            d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        ></path>
+                                        <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                    </svg>
+                                </button>
+
+                            </div>`;
+                        },
+                    },
+                    {
+                        select: 22,
+                        sortable: false,
+                        render: function (data, cell, row) {
+
+                            return `<div class="flex gap-4 items-center">
+                                <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(${data})" x-tooltip="Deligation Letter">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                        <path
+                                            opacity="0.5"
+                                            d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        ></path>
+                                        <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                    </svg>
+                                </button>
+
+                            </div>`;
+                        },
+                    },
+                ],
+
+                firstLast: true,
+                firstText:
+                    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                lastText:
+                    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                prevText:
+                    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                nextText:
+                    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                labels: {
+                    perPage: "<span class='ml-2'>{select}</span>",
+                    noRows: 'There is no any Proxies for this shareholder',
+                },
+                layout: {
+                    top: '{search}',
+                    bottom: '{info}{select}{pager}',
+                },
+
+            });
+            let cols = this.datatable1.columns();
+            cols.hide(this.hideCols);
+            cols.show(this.showCols);
+        },
+
+        activateProxy(proxyID) {
+            this.proxyID = proxyID;
+            this.activateProxyModal = true;
+        },
+        editProxyDocument(proxyID, type) {
+            this.type = type;
+            this.proxyID = proxyID;
+            this.editProxyDocumentModal = true;
+        },
+        formatStatus(data) {
+            let styleClass = '';
+            let statusText = '';
+
+            if (data == 'Active') {
+                styleClass = 'badge-outline-success';
+                statusText = 'Active'; // Display 'Active' if true
+            } else if (data == 'New') {
+                styleClass = 'badge-outline-primary';
+                statusText = 'New'; // Display 'Active' if true
+            } else if (data == 'Updated') {
+                styleClass = 'badge-outline-secondary';
+                statusText = 'Updated'; // Display 'Active' if true
+            } else if (data == 'Document-Updated') {
+                styleClass = 'badge-outline-secondary';
+                statusText = 'Document-Updated'; // Display 'Active' if true
+            } else if (data == 'Blocked') {
+                styleClass = 'badge-outline-danger';
+                statusText = 'Blocked'; // Display 'Inactive' if false
+            } else if (data == 'InActive') {
+                styleClass = 'badge-outline-danger';
+                statusText = 'InActive'; // Display 'Inactive' if false
+            } else if (data == 'Proxy-ReActivated') {
+                styleClass = 'badge-outline-warning';
+                statusText = 'Proxy-ReActivated'; // Display 'Inactive' if false
+            }
+
+            return '<span class="badge ' + styleClass + '">' + statusText + '</span>';
+        },
+
+
+        createDownloadButton(documentId) {
+            // Generate the download URL using Razor's Url.Action
+
+            if (documentId) {
+                let downloadUrl = '@Url.Action("DownloadDocument", "Documents", new { id = "__documentId__" })';
+                downloadUrl = downloadUrl.replace("__documentId__", documentId);
+                // Trigger the file download by navigating to the generated URL
+                window.location.href = downloadUrl;
+            } else {
+                alert("Document ID is missing!");
+            }
+        },
+        openDocumentInNewTab(documentId) {
+            console.log(documentId);
+            if (documentId) {
+                // Make an AJAX request to fetch the document path
+                    fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Open the document in a new tab using the retrieved file path
+                            const documentUrl = window.location.origin + data.filePath; // Make sure it's a full URL
+                            window.open(documentUrl, '_blank', 'width=800,height=600');
+                        } else {
+                            alert(data.message || "Failed to retrieve document path.");
+                        }
+                    })
+                    .catch(error => {
+                        console.log("Error fetching document path:", error);
+                        alert("An error occurred while trying to fetch the document.");
+                    });
+            } else {
+                alert("Document ID is missing!");
+            }
+        },
+        createProxyStatusButton(proxyID) {
+            this.proxy = this.data.find((p) => p[1] === proxyID);
+            if (this.proxy[19] === 'Active') {
+                return `
+                    <button type="button" class="btn btn-primary" @@click="deActivateProxy(${proxyID})">
+                        Active Proxy
+                    </button>
+                `;
+            } else {
+                return `<span class="btn btn-secondary btn-sm " @@click="activateProxy(${proxyID})">InActive</span>`;
+            }
+        },
+
+        formatDate(date) {
+            if (date) {
+                const dt = new Date(date);
+                const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
+                const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+                return day + '/' + month + '/' + dt.getFullYear();
+            }
+            return '';
+        },
+        submitProxyDocument() {
+            const form = document.getElementById('proxyForm');
+            const formData = new FormData(form);
+            formData.append('type', this.type);
+
+            fetch('@Url.Action("UpdateProxyDocument", "Proxies")', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('Proxy activated successfully.', 'success');
+                    this.editProxyDocumentModal = false;
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    showMessage('Failed to update proxy document.');
+                }
+            })
+            .catch(error => {
+                showMessage(data.message || 'An error occurred while updating the proxy.', 'error');
+            });
+        },
+        submitActivateProxy() {
+            const form = document.getElementById('proxyActivateForm');
+            const formData = new FormData(form);
+
+            fetch('@Url.Action("ActivateProxy", "Proxies")', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('Proxy activated successfully.', 'success');
+                    this.editProxyDocumentModal = false;
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    showMessage('Failed to update proxy document.');
+                }
+            })
+            .catch(error => {
+                showMessage(data.message || 'An error occurred while updating the proxy.', 'error');
+            });
+        },
+        openEditModal(proxyID) {
+            this.proxyID = proxyID;
+            this.editModalOpen = true;
+
+            // Fetch proxy data using Ajax
+            $.ajax({
+                type: 'GET', // Use GET method to fetch data
+                url: '@Url.Action("GetProxyData", "Proxies")/' + proxyID, // Generate the URL dynamically
+                dataType: 'json', // Expecting JSON response
+                success: (data) => {
+                    // Check if data is returned successfully
+                    if (data) {
+                        // Populate form fields with proxy data
+                        $('#proxyId').val(data.ProxyID);
+                        $('#shId').val(data.ShID);
+                        $('#FullName').val(data.FullName);
+                        $('#Nationality').val(data.Nationality);
+                        $('#PhoneNo').val(data.PhoneNo);
+                        $('#PhoneNo2').val(data.PhoneNo2);
+                        $('#StartDate').val(data.StartDate);
+                        $('#EndDate').val(data.EndDate);
+                        $('#Region').val(data.Region);
+                        $('#Zone').val(data.Zone);
+                        $('#City').val(data.City);
+                        $('#Subcity').val(data.Subcity);
+                        $('#Woreda').val(data.Woreda);
+                        $('#Kebele').val(data.Kebele);
+                        // Populate more fields as necessary
+                    } else {
+                        console.error("No data found for the given Proxy ID.");
+                    }
+                },
+                error: (jqxhr, textStatus, error) => {
+                    // Handle errors
+                    console.error("Request Failed: " + textStatus + ", " + error);
+                }
+            });
+        },
+        closeEditModal() {
+            this.editModalOpen = false;
+        },
+
+
+    }));
+});
+
+async function deActivateProxy(proxyID) {
+    new window.Swal({
+        icon: 'warning',
+        title: `Are you sure you want to deactivate proxy ${proxyID}?`,
+        showCancelButton: true,
+        confirmButtonText: 'Deactivate',
+        cancelButtonText: 'Cancel',
+        padding: '2em',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Use Fetch API instead of jQuery for AJAX call
+            fetch('@Url.Action("DeactivateProxy", "Proxies")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ proxyID: proxyID }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    showMessage('Proxy deactivated successfully.', 'success');
+                    // Optionally reload the page after the message
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    // Show error message
+                    showMessage(data.message || 'An error occurred while deactivating the proxy.', 'error');
+                }
+            })
+            .catch(error => {
+                showMessage('An error occurred while processing your request.', 'error');
+                console.error('Error:', error);
+            });
+        }
+    });
 }
 
-<script>
- 
-    // main section
-    document.addEventListener('alpine:init', () => {
-
-        Alpine.data('miscellaneous', () => ({
-            columns: [
-                { name: 'Full Name', hidden: true },
-                { name: 'Proxy Status', hidden: true },
-                { name: 'Authorization Status', hidden: false },
-                { name: 'Nationality', hidden: true },
-                { name: 'Region', hidden: true },
-                { name: 'Zone', hidden: true },
-                { name: 'City', hidden: true },
-                { name: 'Subcity', hidden: true },
-                { name: 'Woreda', hidden: true },
-                { name: 'Kebele', hidden: true },
-                { name: 'Phone No', hidden: false },
-                { name: 'Phone No 2', hidden: false },
-                { name: 'Created Date', hidden: false },
-                { name: 'Authorized Date', hidden: false },
-                { name: 'Remark', hidden: false },
-                { name: 'User (Created By)', hidden: false },
-                { name: 'User1 (Modified By)', hidden: false },
-                { name: 'Edit Proxty', hidden: false },
-                { name: 'Document', hidden: false },
-            ],
-
-            hideCols: [],
-            showCols: [0, 1, 2, 3, 4, 5, 6,7,8,9,10],
-
-            showHideColumns(col, value) {
-                if (value) {
-                    this.showCols.push(col);
-                    this.hideCols = this.hideCols.filter((d) => d != col);
-                } else {
-                    this.hideCols.push(col);
-                    this.showCols = this.showCols.filter((d) => d != col);
-                }
-                let headers = this.datatable1.columns();
-                headers.hide(this.hideCols);
-                headers.show(this.showCols);
-            },
-
-            datatable1: null,
-            proxyID: null,
-            editModalOpen: false,
-            activateProxyModal: false,
-
-            init() {
-                let headers = this.columns.map((col) => {
-                    return col.name;
-                });
-                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
-                    data: {
-                        headings: headers,
-                        data: [
-                            @foreach (var item in Model)
-                            {
-                                <text>
-                                [
-                                    "@item.FullName", // FullName
-                                    "@item.ProxyStatus",  // Pass ProxyID for use in JavaScript
-                                    "@item.ProxyAuthorizationStatus", // ProxyAuthorizationStatus
-                                    "@item.Nationality", // Nationality
-                                    "@item.Region", // Region
-                                    "@item.Zone", // Zone
-                                    "@item.City", // City
-                                    "@item.Subcity", // Subcity
-                                    "@item.Woreda", // Woreda
-                                    "@item.Kebele", // Kebele
-                                    "@item.PhoneNo", // PhoneNo
-                                    "@item.PhoneNo2", // PhoneNo2
-                                    "@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
-                                    "@(item.AuthorizedDate.HasValue ? item.AuthorizedDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
-                                    "@item.Remark", // Remark
-                                    "@(item.User != null ? item.User.FullName : "")", // User.FullName
-                                    "@(item.User1 != null ? item.User1.FullName : "")", // User1.FullName
-                                    "@item.ProxyID", // Pass ProxyID again for later use
-                                    "@item.ProxyDocument", // Pass ProxyID again for later use
-                
-                                ],
-                                </text>
-                            }
-                        ],
-                    },
-                    perPage: 5,
-                    perPageSelect: [5, 20, 30, 50, 100],
-                    columns: [
-                        { select: 1, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
-                        {
-                            select: 2, // Selecting the 3rd column (as index starts from 0)
-                            render: function (data, cell, row) {
-                                let styleClass = '';
-                                if (data == 'Approved') {
-                                    styleClass = 'badge-outline-success';
-                                } else if (data == 'Pending') {
-                                    styleClass = 'badge-outline-warning';
-                                } else if (data == 'Rejected') { // This should be else if instead of else
-                                    styleClass = 'badge-outline-danger';
-                                } else {
-                                    styleClass = ''; // Default class if none of the conditions are met
-                                }
-                                return '<span class="badge ' + styleClass + '">' + data + '</span>';
-                            },
-                        },
-                        {
-                            select: 17,
-                            sortable: false,
-                            render: function (data, cell, row) {
-                                const status = row.cells[1].data.toLowerCase(); 
-
-                                return `<div class="flex gap-4 items-center">
-                                    <button type="button" class="hover:text-secondary" @@click="openEditModal(${data})">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
-                                            <path
-                                                opacity="0.5"
-                                                d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                                stroke-linecap="round"
-                                            ></path> 
-                                            <path
-                                                d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                            ></path>
-                                        </svg>
-                                    </button>
-                                    <button type="button" class=" hover:text-secondary" @@click="activateProxy(${data})">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 2048 2048"><path fill="currentColor" d="M1848 896q42 0 78 15t64 41t42 63t16 79q0 39-15 76t-43 65l-717 717l-377 94l94-377l717-716q29-29 65-43t76-14m72 198q0-32-20-51t-52-19q-14 0-27 4t-23 15l-692 692l-34 135l135-34l692-691q21-21 21-51M256 128v1792h506l-31 128H128V0h1115l549 549v192q-37 5-66 15t-62 31V640h-512V128zm1024 91v293h293zm128 677v128H512V896zm-896 640v-128h513l-128 128zm769-384l-128 128H512v-128z"/></svg>
-                                    </button>
-                                    ${status === 'inactive'
-                                    ? `<button type="button" class="hover:text-success" @@click="activateProxy(${data})">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                                                <path fill="currentColor" fill-rule="evenodd" d="M6.75 8a5.25 5.25 0 0 1 10.335-1.313a.75.75 0 0 0 1.452-.374A6.75 6.75 0 0 0 5.25 8v1.303q-.34.023-.642.064c-.9.12-1.658.38-2.26.981c-.602.602-.86 1.36-.981 2.26c-.117.867-.117 1.97-.117 3.337v.11c0 1.367 0 2.47.117 3.337c.12.9.38 1.658.981 2.26c.602.602 1.36.86 2.26.982c.867.116 1.97.116 3.337.116h8.11c1.367 0 2.47 0 3.337-.116c.9-.122 1.658-.38 2.26-.982s.86-1.36.982-2.26c.116-.867.116-1.97.116-3.337v-.11c0-1.367 0-2.47-.116-3.337c-.122-.9-.38-1.658-.982-2.26s-1.36-.86-2.26-.981c-.867-.117-1.97-.117-3.337-.117h-8.11q-.634 0-1.195.003zm-3.341 3.409c.277-.277.665-.457 1.4-.556c.754-.101 1.756-.103 3.191-.103h8c1.435 0 2.436.002 3.192.103c.734.099 1.122.28 1.399.556c.277.277.457.665.556 1.4c.101.755.103 1.756.103 3.191s-.002 2.436-.103 3.192c-.099.734-.28 1.122-.556 1.399c-.277.277-.665.457-1.4.556c-.755.101-1.756.103-3.191.103H8c-1.435 0-2.437-.002-3.192-.103c-.734-.099-1.122-.28-1.399-.556c-.277-.277-.457-.665-.556-1.4c-.101-.755-.103-1.756-.103-3.191s.002-2.437.103-3.192c.099-.734.28-1.122.556-1.399" clip-rule="evenodd"/></svg>
-                                        </button>`
-                                    : `<button type="button" class="hover:text-danger" @@click="deActivateProxy(${data})">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="currentColor"><path stroke-width="1.5" d="M2 16c0-2.828 0-4.243.879-5.121C3.757 10 5.172 10 8 10h8c2.828 0 4.243 0 5.121.879C22 11.757 22 13.172 22 16s0 4.243-.879 5.121C20.243 22 18.828 22 16 22H8c-2.828 0-4.243 0-5.121-.879C2 20.243 2 18.828 2 16Z"/><path stroke-linecap="round" stroke-width="1.5" d="M6 10V8a6 6 0 1 1 12 0v2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h.009m3.982 0H12m3.991 0H16"/></g></svg>
-                                        </button>`}
-                                </div>`;
-                            },
-                        },
-                        {
-                            select: 18,
-                            sortable: false,
-                            render: function (data, cell, row) {
-                                return `<div class="flex gap-4 items-center">
-                                  
-                                    <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(${data})">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
-                                            <path
-                                                opacity="0.5"
-                                                d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                            ></path>
-                                            <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
-                                        </svg>
-                                    </button>
-                                    <button type="button" class="btn btn-danger hover:text-secondary" @@click="createDownloadButton(${data})">
-                                        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
-                                            <path opacity="0.5" d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                    </button>
-                                </div>`;
-                            },
-                        },
-                    ],
-
-                    firstLast: true,
-                    firstText:
-                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
-                    lastText:
-                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
-                    prevText:
-                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
-                    nextText:
-                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
-                    labels: {
-                        perPage: "<span class='ml-2'>{select}</span>",
-                        noRows: 'There is no any Proxies for this shareholder',
-                    },
-                    layout: {
-                        top: '{search}',
-                        bottom: '{info}{select}{pager}',
-                    },
-
-                });
-                let cols = this.datatable1.columns();
-                cols.hide(this.hideCols);
-                cols.show(this.showCols);
-            },
-
-            activateProxy(proxyID) {
-                this.proxyID = proxyID;
-                this.activateProxyModal = true;
-            },
-            formatStatus(data) {
-                let styleClass = '';
-                let statusText = '';
-
-                if (data.toLowerCase() == 'active') {
-                    styleClass = 'badge-outline-success';
-                    statusText = 'Active'; // Display 'Active' if true
-                } else if (data.toLowerCase() == 'inactive') {
-                    styleClass = 'badge-outline-secondary';
-                    statusText = 'InActive'; // Display 'Active' if true
-                } else if (data == 'Blocked') {
-                    styleClass = 'badge-outline-danger';
-                    statusText = 'Blocked'; // Display 'Inactive' if false
-                } else if (data == 'UnBlocked') {
-                    styleClass = 'badge-outline-warning';
-                    statusText = 'UnBlocked'; // Display 'Inactive' if false
-                }
-
-                return '<span class="badge ' + styleClass + '">' + statusText + '</span>';
-            },
-
-           
-           createDownloadButton(documentId) {
-                // Generate the download URL using Razor's Url.Action
-               
-                if (documentId) {
-                    let downloadUrl = '@Url.Action("DownloadDocument", "Documents", new { id = "__documentId__" })';
-                    downloadUrl = downloadUrl.replace("__documentId__", documentId);
-                    // Trigger the file download by navigating to the generated URL
-                    window.location.href = downloadUrl;
-                } else {
-                    alert("Document ID is missing!");
-                }
-            },
-            openDocumentInNewTab(documentId) {
-                if (documentId) {
-                    // Generate the download URL using Razor's Url.Action
-                    let documentUrl = '@Url.Action("DownloadDocument", "Documents", new { id = "__documentId__" })';
-                    // Replace the placeholder with the actual document ID
-                    documentUrl = documentUrl.replace("__documentId__", documentId);
-        
-                    // Open the document in a new tab
-                    window.open(documentUrl, '_blank');
-                } else {
-                    alert("Document ID is missing!");
-                }
-            },
-            createProxyStatusButton(proxyID) {
-                this.proxy = this.data.find((p) => p[1] === proxyID);
-                if (this.proxy[19] === 'Active') {
-                    return `
-                        <button type="button" class="btn btn-primary" @@click="deActivateProxy(${proxyID})">
-                            Active Proxy
-                        </button>
-                    `;
-                } else {
-                    return `<span class="btn btn-secondary btn-sm " @@click="activateProxy(${proxyID})">InActive</span>`;
-                }
-            },
-
-            formatDate(date) {
-                if (date) {
-                    const dt = new Date(date);
-                    const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
-                    const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-                    return day + '/' + month + '/' + dt.getFullYear();
-                }
-                return '';
-            },
-            submitProxyDocument() {
-                const form = document.getElementById('proxyForm');
-                const formData = new FormData(form);
-
-                fetch('@Url.Action("UpdateProxyDocument", "Proxies")', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showMessage('Proxy activated successfully.', 'success');
-                        this.activateProxyModal = false;
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
-                    } else {
-                        showMessage('Failed to update proxy document.');
-                    }
-                })
-                .catch(error => {
-                    showMessage(data.message || 'An error occurred while updating the proxy.', 'error');
-                });
-            },
-           
-            openEditModal(proxyID) {
-                this.proxyID = proxyID;
-                this.editModalOpen = true;
-
-                // Fetch proxy data using Ajax
-                $.ajax({
-                    type: 'GET', // Use GET method to fetch data
-                    url: '@Url.Action("GetProxyData", "Proxies")/' + proxyID, // Generate the URL dynamically
-                    dataType: 'json', // Expecting JSON response
-                    success: (data) => {
-                        // Check if data is returned successfully
-                        if (data) {
-                            // Populate form fields with proxy data
-                            $('#proxyId').val(data.ProxyID);
-                            $('#shId').val(data.ShID);
-                            $('#FullName').val(data.FullName);
-                            $('#Nationality').val(data.Nationality);
-                            $('#PhoneNo').val(data.PhoneNo);
-                            $('#PhoneNo2').val(data.PhoneNo2);
-                            $('#StartDate').val(data.StartDate);
-                            $('#EndDate').val(data.EndDate);
-                            $('#Region').val(data.Region);
-                            $('#Zone').val(data.Zone);
-                            $('#City').val(data.City);
-                            $('#Subcity').val(data.Subcity);
-                            $('#Woreda').val(data.Woreda);
-                            $('#Kebele').val(data.Kebele);
-                            // Populate more fields as necessary
-                        } else {
-                            console.error("No data found for the given Proxy ID.");
-                        }
-                    },
-                    error: (jqxhr, textStatus, error) => {
-                        // Handle errors
-                        console.error("Request Failed: " + textStatus + ", " + error);
-                    }
-                });
-            },
-            closeEditModal() {
-                this.editModalOpen = false;
-            },
-
-            
-
-        }));
-    });
-
-    async function deActivateProxy(proxyID) {
-        new window.Swal({
-            icon: 'warning',
-            title: `Are you sure you want to deactivate proxy ${proxyID}?`,
-            showCancelButton: true,
-            confirmButtonText: 'Deactivate',
-            cancelButtonText: 'Cancel',
-            padding: '2em',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Use Fetch API instead of jQuery for AJAX call
-                fetch('@Url.Action("DeactivateProxy", "Proxies")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ proxyID: proxyID }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Show success message
-                        showMessage('Proxy deactivated successfully.', 'success');
-                        // Optionally reload the page after the message
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
-                    } else {
-                        // Show error message
-                        showMessage(data.message || 'An error occurred while deactivating the proxy.', 'error');
-                    }
-                })
-                .catch(error => {
-                    showMessage('An error occurred while processing your request.', 'error');
-                    console.error('Error:', error);
-                });
-            }
-        });
-    }
-
     // Success message function (Toast)
-    async function showMessage(msg = '', type = 'success') {
+async function showMessage(msg = '', type = 'success') {
     const toast = window.Swal.mixin({
         toast: true,
         position: 'top',
@@ -1004,4 +1328,3 @@
 
 
 </script>
-

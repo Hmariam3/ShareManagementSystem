@@ -4,175 +4,407 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
 
-<div>
-    <h4>Proxy</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    @if (Model.ProxyAuthorizationStatus == "Pending")
+    {
+        <div x-data="approvalrequest" class="panel mb-6 ">
+            <div class="flex items-center justify-between">
+                <h5 class="text-lg font-semibold dark:text-white-light">There are some changes Needs Approval</h5>
+                <div class="">
+                    <div class="flex flex-wrap items-center justify-center gap-2">
+                        <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.KebeleID)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <path opacity="0.5"
+                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                            </svg> Identification Doc.
+                        </button>
+                        <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.ProxyDocument)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <path opacity="0.5"
+                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                            </svg> Agreement Doc.
+                        </button>
 
-        <dd>
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
+                        <button type="button" class="hover:text-secondary btn btn-primary" @@click="approveRequest(@Model.ProxyID)">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            Approve
+                        </button>
+                        <button type="button" class="hover:text-secondary  btn btn-danger" @@click="openRejectModal(@Model.ProxyID)">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5 ">
+                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Reject
+                        </button>
+                    </div>
+                </div>
+                <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60"
+                     :class="rejectModalOpen ? '!block' : 'hidden'">
+                    <div class="flex min-h-screen items-center justify-center px-4" @@click.self="closeRejectModal">
+                        <div class="panel w-full max-w-md my-8 overflow-hidden rounded-lg border-0 p-6">
+                            <h2 class="text-xl font-semibold mb-4">Reason for Rejection</h2>
+                            <textarea x-model="rejectionReason" class="form-input w-full h-28"></textarea>
+                            <div class="flex justify-end gap-4 mt-4">
+                                <button type="button" class="btn btn-outline-secondary" @@click="closeRejectModal">
+                                    Cancel
+                                </button>
+                                <button type="button" class="btn btn-danger" @@click="submitRejection(selectedShareholderId)">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Nationality)
-        </dt>
+            </div>
+        </div>
+    }
 
-        <dd>
-            @Html.DisplayFor(model => model.Nationality)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Region)
-        </dt>
+    <div x-data="">
+        <div class="pt-5">
+            <div class="mb-5 grid grid-cols-1 gap-5 lg:grid-cols-4 xl:grid-cols-4">
+                <div class="panel lg:col-span-2 pb-0 xl:col-span-2">
 
-        <dd>
-            @Html.DisplayFor(model => model.Region)
-        </dd>
+                    <div class="group relative flex items-center py-1 border-[#ebedf2] dark:border-[#1b2e4b] ">
+                        <h5 class="mb-5 text-lg font-semibold dark:text-white-light">Proxy Details</h5>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Zone)
-        </dt>
+                        <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                            <span class="badge badge-outline-primary">@Html.DisplayFor(model => model.ProxyStatus)</span>
+                        </div>
+                    </div>
+                    <div class="relative overflow-y-auto max-h-[360px] pr-3">
 
-        <dd>
-            @Html.DisplayFor(model => model.Zone)
-        </dd>
+                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Basic Information ---</h6>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
+                        <!-- Basic Information -->
+                        <div class="group relative flex items-center py-1 border-t border-[#ebedf2] dark:border-[#1b2e4b] ">
+                            <div class="flex-1">Proxy ID:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.ProxyID)</div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.City)
-        </dd>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Proxy Full Name:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.FullName)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Nationality:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Nationality)</div>
+                        </div>
+                        <!-- Address Information -->
+                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Validity Information ---</h6>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Start Date:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                                <div class="group relative flex items-center py-1">
+                                    <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.StartDate)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">End Date:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                                <div class="group relative flex items-center py-1">
+                                    <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.EndDate)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Address Information ---</h6>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Subcity)
-        </dt>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Region:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Region)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Zone:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Zone)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">City:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.City)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Subcity:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Subcity)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Woreda:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Woreda)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Kebele:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Kebele)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Phone Number:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.PhoneNo)</div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Subcity)
-        </dd>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Phone Number2:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.PhoneNo2)</div>
+                        </div>
+                        <!-- Status Information -->
+                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Status Information ---</h6>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Woreda)
-        </dt>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Created Branch:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Branch1.BranchName)</div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Woreda)
-        </dd>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Created Date:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                                <div class="group relative flex items-center py-1">
+                                    <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.CreatedDate)</div>
+                                </div>
+                            </div>
+                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Kebele)
-        </dt>
+                    </div>
+                </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Kebele)
-        </dd>
+                <div class="panel lg:col-span-2 pb-0 xl:col-span-2">
+                    <h5 class="mb-5 text-lg font-semibold dark:text-white-light">Shareholder Details</h5>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNo)
-        </dt>
+                    <!-- Scrollable container with fixed height -->
+                    <div class="relative overflow-y-auto max-h-[360px] pr-3">
 
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNo)
-        </dd>
+                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Basic Information ---</h6>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNo2)
-        </dt>
+                        <!-- Basic Information -->
+                        <div class="group relative flex items-center py-1 border-t border-[#ebedf2] dark:border-[#1b2e4b] ">
+                            <div class="flex-1">Share ID:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.ShareID)</div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNo2)
-        </dd>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Full Name Afan Oromo:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.FullNameAfanOromo)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Shareholder Category:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.SHCategory)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">TIN Number:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TINNum)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1 border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                            <div class="flex-1">Account Number:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.AccountNumber)</div>
+                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
+                        <!-- Address Information -->
+                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Address Information ---</h6>
 
-        <dd>
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Region:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Region)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Zone:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Zone)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">City:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.City)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Subcity:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Subcity)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Woreda:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Woreda)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Kebele:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Kebele)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Phone Number:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.PhoneNo)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Home Telephone:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TeleHome)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Work Telephone:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TeleWork)</div>
+                        </div>
+                        <div class="group relative flex items-center py-1 border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                            <div class="flex-1">Email:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Email)</div>
+                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
+                        <!-- Status Information -->
+                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Status Information ---</h6>
 
-        <dd>
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Created Branch:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Branch1.BranchName)</div>
+                        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ProxyStatus)
-        </dt>
+                        <div class="group relative flex items-center py-1">
+                            <div class="flex-1">Created Date:</div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                                <div class="group relative flex items-center py-1">
+                                    <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.CreatedDate)</div>
+                                </div>
+                            </div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.ProxyStatus)
-        </dd>
+                    </div>
+                </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
+            </div>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ProxyAuthorizationStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ProxyAuthorizationStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorizedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AuthorizedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Remark)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Remark)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.FullName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User1.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User1.FullName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder.ShareID)
-        </dd>
-
-    </dl>
+    </div>
+    <div class="!mt-6">
+        <a href="@Url.Action("Index")" class="inline-flex items-center rounded-md bg-success/30 px-1.5 py-1 text-xs text-success hover:shadow-[0_10px_20px_-10px] hover:shadow-success">
+            Back to List
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ltr:ml-1.5 rtl:mr-1.5 rtl:rotate-180">
+                <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </a>
+        <a href="@Url.Action("Index")" class="inline-flex items-center rounded-md bg-primary px-1.5 py-1 text-xs text-success hover:shadow-[0_10px_20px_-10px] hover:shadow-success">
+            Edit
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ltr:ml-1.5 rtl:mr-1.5 rtl:rotate-180">
+                <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </a>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ProxyID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+<script>
+document.addEventListener('alpine:init', () => {
+
+    Alpine.data('approvalrequest', () => ({
+
+        rejectModalOpen: false, // Controls the rejection modal visibility
+        rejectionReason: '',
+        selectedProxyId: null, // Stores the selected shareholder ID
+
+        approveRequest(id) {
+            fetch('@Url.Action("Approve", "Proxies")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('Shareholder document successfully unblocked.', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showMessage('Failed to unblock shareholder.');
+                }
+            })
+            .catch(error => {
+                showMessage(data.message || 'An error occurred while unblocking the shareholder document.', 'error');
+            });
+
+        },
+
+        openRejectModal(poxyId) {
+            this.selectedProxyId = poxyId;
+            this.rejectionReason = ''; // Clear any previous reason
+            this.rejectModalOpen = true;
+            },
+
+        // Close Rejection Modal
+        closeRejectModal() {
+            this.rejectionReason = '';
+            this.rejectModalOpen = false;
+        },
+
+        // Submit Rejection with Reason
+        submitRejection(id) {
+            console.log(this.rejectionReason);
+            fetch('@Url.Action("Reject", "Proxies")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id,
+                    remark: this.rejectionReason
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('Shareholder rejected successfully.', 'success');
+
+                    this.closeRejectModal();
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showMessage('Failed to reject shareholder.', 'error');
+                }
+            })
+            .catch(error => {
+                showMessage('An unexpected error occurred.', 'error');
+            });
+        },
+        openDocumentInNewTab(documentId) {
+            console.log(documentId);
+            if (documentId) {
+                // Make an AJAX request to fetch the document path
+                    fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Open the document in a new tab using the retrieved file path
+                            const documentUrl = window.location.origin + data.filePath; // Make sure it's a full URL
+                            console.log(documentUrl);
+                            console.log("abel");
+                            window.open(documentUrl, '_blank', 'width=800,height=600');
+                        } else {
+                            alert(data.message || "Failed to retrieve document path.");
+                        }
+                    })
+                    .catch(error => {
+                        console.log("Error fetching document path:", error);
+                        alert("An error occurred while trying to fetch the document.");
+                    });
+            } else {
+                alert("Document ID is missing!");
+            }
+        },
+    }));
+});
+
+    // Success message function (Toast)
+    async function showMessage(msg = '', type = 'success') {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    }
+</script>

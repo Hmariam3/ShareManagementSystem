@@ -1,0 +1,485 @@
+﻿@model Shareholder_Management_System.Models.Shareholder
+
+@{
+    ViewBag.Title = "Authorization";
+}
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+
+    @if (Model.AuthorizationStatus == "Pending")
+    {
+        <div x-data="approvalrequest" class="panel mb-6 ">
+            <div class="flex items-center justify-between">
+                <h5 class="text-lg font-semibold dark:text-white-light">There are some changes Needs Approval</h5>
+                <div class="">
+                    <div class="flex flex-wrap items-center justify-center gap-2">
+                        <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.KebeleID)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <path opacity="0.5"
+                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                            </svg> Identification Doc.
+                        </button>
+                        @{
+                            if (Model.Status.Equals("New"))
+                            {
+
+                                <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.ShDocument)">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                        <path opacity="0.5"
+                                              d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                              stroke="currentColor" stroke-width="1.5"></path>
+                                        <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                    </svg> Agreement Doc.
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.PendingDoc)">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                        <path opacity="0.5"
+                                              d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                              stroke="currentColor" stroke-width="1.5"></path>
+                                        <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                    </svg> Agreement Doc.
+                                </button>
+                            }
+                        }
+
+                        <button type="button" class="hover:text-secondary btn btn-primary" @@click="approveRequest(@Model.ShID)">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            Approve
+                        </button>
+                        <button type="button" class="hover:text-secondary  btn btn-danger" @@click="openRejectModal(@Model.ShID)">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5 ">
+                                <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Reject
+                        </button>
+                    </div>
+                </div>
+                <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60"
+                     :class="rejectModalOpen ? '!block' : 'hidden'">
+                    <div class="flex min-h-screen items-center justify-center px-4" @@click.self="closeRejectModal">
+                        <div class="panel w-full max-w-md my-8 overflow-hidden rounded-lg border-0 p-6">
+                            <h2 class="text-xl font-semibold mb-4">Reason for Rejection</h2>
+                            <textarea x-model="rejectionReason" class="form-input w-full h-28"></textarea>
+                            <div class="flex justify-end gap-4 mt-4">
+                                <button type="button" class="btn btn-outline-secondary" @@click="closeRejectModal">
+                                    Cancel
+                                </button>
+                                <button type="button" class="btn btn-danger" @@click="submitRejection(selectedShareholderId)">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+
+    <div class="panel">
+        <div class="flex flex-col  justify-between gap-4 px-4 sm:flex-row md:flex-row w-full">
+            <div class="flex flex-wrap justify-between gap-4 px-4">
+                <div class="text-2xl font-semibold uppercase"></div>
+                <div class="px-4 ltr:text-right rtl:text-left">
+                    <div class="space-y-1 text-white-dark">
+                        <div>
+                            <span class="text-lg font-semibold uppercase">
+                                ID: @Html.DisplayFor(model => model.ShareID)
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-lg font-semibold uppercase">
+                                Name(Eng): @Html.DisplayFor(model => model.FullNameEng)
+                            </span>
+
+                        </div>
+
+                        <div>
+                            <span class="text-lg font-semibold uppercase">
+                                Name(Oro): @Html.DisplayFor(model => model.FullNameAfanOromo)
+                            </span>
+
+                        </div>
+                        <div>
+                            <span class="text-lg font-semibold uppercase">
+                                Name(Amh): @Html.DisplayFor(model => model.FullNameAmharic)
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    <span class="text-bold font-semibold uppercase ">
+                        Status:
+                    </span>
+
+                    @{
+                        var styleClass = "";
+                        var statusText = "";
+                        var data = Model.Status;
+
+                        if (data == "Active")
+                        {
+                            styleClass = "bg-success";
+                            statusText = "Active";
+                        }
+                        else if (data == "New")
+                        {
+                            styleClass = "bg-primary";
+                            statusText = "New Shareholder";
+                        }
+                        else if (data == "Updated")
+                        {
+                            styleClass = "bg-secondary";
+                            statusText = "Updated shareholder";
+                        }
+                        else if (data == "Document-Updated")
+                        {
+                            styleClass = "bg-secondary";
+                            statusText = "Shareholder Document-Updated";
+                        }
+                        else if (data == "Blocked")
+                        {
+                            styleClass = "bg-danger";
+                            statusText = "Shareholder Blocked";
+                        }
+                        else if (data == "UnBlocked")
+                        {
+                            styleClass = "bg-danger";
+                            statusText = "Shareholder UnBlocked";
+                        }
+
+                    }
+                    <span class="badge @styleClass ">@statusText</span>
+                </div>
+
+                <div class="mt-6">
+                    <span class="text-bold font-semibold uppercase ">
+                        Auth. Status :
+                    </span>
+
+                    @{
+                        var styleClass1 = "";
+                        var data1 = Model.AuthorizationStatus;
+
+                        if (data1 == "Approved")
+                        {
+                            styleClass1 = "bg-success";
+                        }
+                        else if (data1 == "Pending")
+                        {
+                            styleClass1 = "bg-warning";
+                            data1 = "Waiting-Approval";
+                        }
+                        else if (data1 == "Rejected")
+                        { // This should be else if instead of else
+                            styleClass1 = "bg-danger";
+                        }
+                        else
+                        {
+                            styleClass1 = ""; // Default class if none of the conditions are met
+                        }
+                    }
+                    <span class="badge @styleClass1 ">@data1</span>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class=" my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+        <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+        <div class="flex flex-col  justify-between gap-4 px-4 sm:flex-row md:flex-row w-full">
+            <div class="text-2xl font-semibold uppercase">
+                Basics
+            </div>
+            <div class="flex flex-col justify-between gap-6 sm:flex-row lg:w-2/3 sm:w-full md: w-full">
+
+                <div class="w-full">
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark ">Shareholder Category :</div>
+                        <div class="font-semibold ">
+                            @Html.DisplayFor(model => model.SHCategory)
+                        </div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">TIN No:</div>
+                        <div class="font-semibold">
+                            @Html.DisplayFor(model => model.TINNum)
+                        </div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Account No:</div>
+                        <div class="font-semibold">
+                            @Html.DisplayFor(model => model.AccountNumber)
+                        </div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Branch: </div>
+                        <div class="font-semibold">
+                            @Html.DisplayFor(model => model.Branch1.BranchName)
+                        </div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Maker: </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.User.FullName)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Cheker: </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.User1.FullName)</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <hr class=" my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+        <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+        <div class="flex flex-col  justify-between gap-4 px-4 sm:flex-row md:flex-row w-full ">
+            <div class="text-2xl font-semibold uppercase">
+                Address
+            </div>
+            <div class="flex flex-col justify-between gap-6 sm:flex-row lg:w-2/3 sm:w-full md: w-full">
+
+                <div class="xl:1/3 sm:w-1/2 lg:w-2/5">
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">
+                            Nationality :
+                        </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.Nationality)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Region :</div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.Region)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">City :</div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.City)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Subcity:</div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.Subcity)</div>
+                    </div>
+
+                </div>
+                <div class="xl:1/3 sm:w-1/2 lg:w-2/5">
+                    <div class="flex w-full items-center justify-between">
+                        <div class="text-white-dark">Woreda :</div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.Woreda)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Kebele</div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.Kebele)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">
+                            House Number
+                        </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.HouseNo)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">PO BOX</div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.PoBox)</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+        <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+        <div class="flex flex-col  justify-between gap-4 px-4 sm:flex-row md:flex-row w-full">
+            <div class="text-2xl font-semibold uppercase">
+                Contact
+            </div>
+            <div class="flex flex-col justify-between gap-6 sm:flex-row lg:w-2/3 sm:w-full md: w-full">
+                <div class="xl:1/3 sm:w-1/2 lg:w-2/5">
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">
+                            Primary Phone
+                            No :
+                        </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.PhoneNo)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">
+                            Phone No2 :
+                        </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.PhoneNo2)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">
+                            Phone No 3 :
+                        </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.PhoneNo3)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">
+                            Tele Home:
+                        </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.TeleHome)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">
+                            Tele Work:
+                        </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.TeleWork)</div>
+                    </div>
+                </div>
+                <div class="xl:1/3 sm:w-1/2 lg:w-2/5">
+                    <div class="flex w-full items-center justify-between">
+                        <div class="text-white-dark">
+                            Primary Email :
+                        </div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.Email)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Email 2</div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.Email2)</div>
+                    </div>
+                    <div class="mb-2 flex w-full items-center justify-between">
+                        <div class="text-white-dark">Email 3</div>
+                        <div class="font-semibold">@Html.DisplayFor(model => model.Email3)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('alpine:init', () => {
+
+    Alpine.data('approvalrequest', () => ({
+
+        rejectModalOpen: false, // Controls the rejection modal visibility
+        rejectionReason: '',
+        selectedShareholderId: null, // Stores the selected shareholder ID
+
+        openDocumentInNewTab(documentId) {
+            console.log(documentId);
+            if (documentId) {
+                // Make an AJAX request to fetch the document path
+                    fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Open the document in a new tab using the retrieved file path
+                            const documentUrl = window.location.origin + data.filePath; // Make sure it's a full URL
+                            console.log(documentUrl);
+                            console.log("abel");
+                            window.open(documentUrl, '_blank', 'width=800,height=600');
+                        } else {
+                            alert(data.message || "Failed to retrieve document path.");
+                        }
+                    })
+                    .catch(error => {
+                        console.log("Error fetching document path:", error);
+                        alert("An error occurred while trying to fetch the document.");
+                    });
+            } else {
+                alert("Document ID is missing!");
+            }
+        },
+
+        approveRequest(id) {
+                fetch('@Url.Action("Approve", "Shareholders")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder document successfully unblocked.', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to unblock shareholder.');
+                    }
+                })
+                .catch(error => {
+                    showMessage(data.message || 'An error occurred while unblocking the shareholder document.', 'error');
+                });
+
+            },
+
+            openRejectModal(shareholderId) {
+                this.selectedShareholderId = shareholderId;
+                this.rejectionReason = ''; // Clear any previous reason
+                this.rejectModalOpen = true;
+             },
+
+            // Close Rejection Modal
+            closeRejectModal() {
+                this.rejectionReason = '';
+                this.rejectModalOpen = false;
+            },
+
+            // Submit Rejection with Reason
+            submitRejection(id) {
+                console.log(this.rejectionReason);
+                fetch('@Url.Action("Reject", "Shareholders")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id,
+                        remark: this.rejectionReason
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder rejected successfully.', 'success');
+
+                        this.closeRejectModal();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to reject shareholder.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('An unexpected error occurred.', 'error');
+                });
+            },
+
+    }));
+
+});
+
+// Success message function (Toast)
+async function showMessage(msg = '', type = 'success') {
+    const toast = window.Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+    });
+    toast.fire({
+        icon: type,
+        title: msg,
+        padding: '10px 20px',
+    });
+}
+
+</script>

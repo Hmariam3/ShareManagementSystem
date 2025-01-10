@@ -1,0 +1,1912 @@
+﻿﻿@model Shareholder_Management_System.Models.ApprovalsViewModel
+
+
+@{
+    ViewBag.Title = "PendingRequests";
+}
+
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+
+<style>
+
+    /* Hover effect */
+    button[title="Approve"]:hover svg {
+        transform: scale(1.5);
+        cursor: pointer;
+    }
+
+    button[title="Reject"]:hover svg {
+        transform: scale(1.5);
+        cursor: pointer;
+    }
+
+    .swal2-popup.colored-toast {
+        padding: 15px 20px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+        .swal2-popup.colored-toast.success {
+            background-color: #1abc9c !important; /* Success color */
+            color: white;
+        }
+
+        .swal2-popup.colored-toast.error {
+            background-color: #e74c3c !important; /* Error color */
+            color: white;
+        }
+</style>
+
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <div class="panel">
+        <div class="mb-5 flex items-center justify-between">
+            <h5 class="text-lg font-semibold dark:text-white-light">
+                Needs Your Immideate
+                Approvals/Attentions
+            </h5>
+        </div>
+        <div class="mb-5" x-data="{tab: 'shareholder'}">
+            <div>
+                <ul class="mt-3 flex flex-wrap border-b border-white-light dark:border-[#191e3a]">
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger dark:border-[#191e3a]"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='shareholder' }"
+                           @@click="tab = 'shareholder'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path opacity="0.5"
+                                      d="M2 12.2039C2 9.91549 2 8.77128 2.5192 7.82274C3.0384 6.87421 3.98695 6.28551 5.88403 5.10813L7.88403 3.86687C9.88939 2.62229 10.8921 2 12 2C13.1079 2 14.1106 2.62229 16.116 3.86687L18.116 5.10812C20.0131 6.28551 20.9616 6.87421 21.4808 7.82274C22 8.77128 22 9.91549 22 12.2039V13.725C22 17.6258 22 19.5763 20.8284 20.7881C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.7881C2 19.5763 2 17.6258 2 13.725V12.2039Z"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path d="M12 15L12 18" stroke="currentColor" stroke-width="1.5"
+                                      stroke-linecap="round">
+                                </path>
+                            </svg>
+
+                            Sharholder <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Shareholders.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='proxies' }"
+                           @@click="tab = 'proxies'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <circle cx="12" cy="6" r="4" stroke="currentColor" stroke-width="1.5">
+                                </circle>
+                                <ellipse opacity="0.5" cx="12" cy="17" rx="7" ry="4" stroke="currentColor"
+                                         stroke-width="1.5"></ellipse>
+                            </svg>
+                            Proxies <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Proxies.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='subscription' }"
+                           @@click="tab = 'subscription'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Subscription <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Subscribtions.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='payment' }"
+                           @@click="tab = 'payment'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Payments <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Payments.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='transfer' }"
+                           @@click="tab = 'transfer'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Transfers <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.ShareTransfers.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='block' }"
+                           @@click="tab = 'block'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Blocks <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Blockeds.Count()</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='certificate' }"
+                           @@click="tab = 'certificate'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            Certificates <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.Certificates.Count()</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="flex-1 border border-t-0 border-white-light p-4 text-sm dark:border-[#191e3a]">
+                <template x-if="tab === 'shareholder'">
+                    <div class="active">
+                        <div x-data="shareholder">
+                            <div class="flex flex-wrap items-center justify-between gap-4">
+                                <h2 class="text-xl"></h2>
+                                <div class="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+                                    <div class="flex gap-3">
+                                        <div>
+                                            <button type="button" class="btn btn-outline-primary p-2"
+                                                    :class="{ 'bg-primary text-white': displayType === 'list' }"
+                                                    @@click="setDisplayType('list')">
+                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                                                    <path d="M2 5.5L3.21429 7L7.5 3" stroke="currentColor"
+                                                          stroke-width="1.5" stroke-linecap="round"
+                                                          stroke-linejoin="round"></path>
+                                                    <path opacity="0.5" d="M2 12.5L3.21429 14L7.5 10"
+                                                          stroke="currentColor" stroke-width="1.5"
+                                                          stroke-linecap="round" stroke-linejoin="round">
+                                                    </path>
+                                                    <path d="M2 19.5L3.21429 21L7.5 17"
+                                                          stroke="currentColor" stroke-width="1.5"
+                                                          stroke-linecap="round" stroke-linejoin="round">
+                                                    </path>
+                                                    <path d="M22 19L12 19" stroke="currentColor"
+                                                          stroke-width="1.5" stroke-linecap="round">
+                                                    </path>
+                                                    <path opacity="0.5" d="M22 12L12 12"
+                                                          stroke="currentColor" stroke-width="1.5"
+                                                          stroke-linecap="round"></path>
+                                                    <path d="M22 5L12 5" stroke="currentColor"
+                                                          stroke-width="1.5" stroke-linecap="round"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <div>
+                                            <button type="button" class="btn btn-outline-primary p-2"
+                                                    :class="{ 'bg-primary text-white': displayType === 'grid' }"
+                                                    @@click="setDisplayType('grid')">
+                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                                                    <path opacity="0.5"
+                                                          d="M2.5 6.5C2.5 4.61438 2.5 3.67157 3.08579 3.08579C3.67157 2.5 4.61438 2.5 6.5 2.5C8.38562 2.5 9.32843 2.5 9.91421 3.08579C10.5 3.67157 10.5 4.61438 10.5 6.5C10.5 8.38562 10.5 9.32843 9.91421 9.91421C9.32843 10.5 8.38562 10.5 6.5 10.5C4.61438 10.5 3.67157 10.5 3.08579 9.91421C2.5 9.32843 2.5 8.38562 2.5 6.5Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                    <path opacity="0.5"
+                                                          d="M13.5 17.5C13.5 15.6144 13.5 14.6716 14.0858 14.0858C14.6716 13.5 15.6144 13.5 17.5 13.5C19.3856 13.5 20.3284 13.5 20.9142 14.0858C21.5 14.6716 21.5 15.6144 21.5 17.5C21.5 19.3856 21.5 20.3284 20.9142 20.9142C20.3284 21.5 19.3856 21.5 17.5 21.5C15.6144 21.5 14.6716 21.5 14.0858 20.9142C13.5 20.3284 13.5 19.3856 13.5 17.5Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                    <path d="M2.5 17.5C2.5 15.6144 2.5 14.6716 3.08579 14.0858C3.67157 13.5 4.61438 13.5 6.5 13.5C8.38562 13.5 9.32843 13.5 9.91421 14.0858C10.5 14.6716 10.5 15.6144 10.5 17.5C10.5 19.3856 10.5 20.3284 9.91421 20.9142C9.32843 21.5 8.38562 21.5 6.5 21.5C4.61438 21.5 3.67157 21.5 3.08579 20.9142C2.5 20.3284 2.5 19.3856 2.5 17.5Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                    <path d="M13.5 6.5C13.5 4.61438 13.5 3.67157 14.0858 3.08579C14.6716 2.5 15.6144 2.5 17.5 2.5C19.3856 2.5 20.3284 2.5 20.9142 3.08579C21.5 3.67157 21.5 4.61438 21.5 6.5C21.5 8.38562 21.5 9.32843 20.9142 9.91421C20.3284 10.5 19.3856 10.5 17.5 10.5C15.6144 10.5 14.6716 10.5 14.0858 9.91421C13.5 9.32843 13.5 8.38562 13.5 6.5Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="relative">
+                                        <input type="text" placeholder="Search Shareholders"
+                                               class="peer form-input py-2 ltr:pr-11 rtl:pl-11"
+                                               x-model="searchUser" @@keyup="searchShareholders">
+                                        <div class="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
+                                            <svg class="mx-auto" width="16" height="16" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5"></circle>
+                                                <path d="M18.5 18.5L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel mt-5 overflow-hidden border-0 p-0">
+                                <template x-if="displayType === 'list'">
+                                    <div>
+                                        <div class="table-responsive sticky-column sticky-header">
+
+                                            <table id="shareholderTable" class="whitespace-nowrap table-striped table-hover table-bordered table-compact">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>Share ID</th>
+                                                        <th>Full Name (Eng)</th>
+                                                        <th>Full Name (Afan Oromo)</th>
+                                                        <th>Full Name (Amharic)</th>
+                                                        <th>Status</th>
+                                                        <th>Nationality</th>
+                                                        <th>SH Category</th>
+                                                        <th>TIN Number</th>
+                                                        <th>Account Number</th>
+                                                        <th>Region</th>
+                                                        <th>Zone</th>
+                                                        <th>City</th>
+                                                        <th>Subcity</th>
+                                                        <th>Woreda</th>
+                                                        <th>Kebele</th>
+                                                        <th>House No</th>
+                                                        <th>PoBox</th>
+                                                        <th>Phone No</th>
+                                                        <th>Phone No2</th>
+                                                        <th>Phone No3</th>
+                                                        <th>TeleHome</th>
+                                                        <th>TeleWork</th>
+                                                        <th>Email</th>
+                                                        <th>Email2</th>
+                                                        <th>Email3</th>
+                                                        <th>Created Date</th>
+                                                        <th>Remark</th>
+                                                        <th>Branch Name</th>
+                                                        <th>Created By</th>
+                                                        <th class="!text-center">Action</th>
+                                                        <th class="!text-center">Documents</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Loop through filteredShareholders -->
+                                                    <template x-for="shareholder in filteredShareholders" :key="shareholder.id">
+                                                        <tr>
+
+                                                            <td x-text="shareholder.shareid"></td>
+                                                            <td x-text="shareholder.fullNameEng"></td>
+                                                            <td x-text="shareholder.fullNameAfanOromo"></td>
+                                                            <td x-text="shareholder.fullNameAmharic"></td>
+                                                            <td>
+                                                                <span x-text="shareholder.status === 'Active' ? 'Active' :
+                                                                        shareholder.status === 'New' ? 'New' :
+                                                                        shareholder.status === 'Updated' ? 'Updated' :
+                                                                        shareholder.status === 'Document-Updated' ? 'Document Updated' :
+                                                                        shareholder.status === 'Blocked' ? 'Blocked' :
+                                                                        shareholder.status === 'Rejected' ? 'Rejected' :
+                                                                        shareholder.status === 'UnBlocked' ? 'Unblocked' : 'Unknown Status'"
+                                                                      :class="
+                                                                        shareholder.status === 'Active' ? 'badge badge-outline-success' :
+                                                                        shareholder.status === 'New' ? 'badge badge-outline-primary' :
+                                                                        shareholder.status === 'Updated' || shareholder.status === 'Document-Updated' ? 'badge badge-outline-secondary' :
+                                                                        shareholder.status === 'Blocked' || shareholder.status === 'Rejected' ? 'badge badge-outline-danger' :
+                                                                        shareholder.status === 'UnBlocked' ? 'badge badge-outline-warning' : 'badge badge-outline-default'">
+
+                                                                </span>
+                                                            </td>
+                                                            <td x-text="shareholder.nationality"></td>
+                                                            <td x-text="shareholder.shCategory"></td>
+                                                            <td x-text="shareholder.tinNum"></td>
+                                                            <td x-text="shareholder.accountNumber"></td>
+                                                            <td x-text="shareholder.region"></td>
+                                                            <td x-text="shareholder.zone"></td>
+                                                            <td x-text="shareholder.city"></td>
+                                                            <td x-text="shareholder.subcity"></td>
+                                                            <td x-text="shareholder.woreda"></td>
+                                                            <td x-text="shareholder.kebele"></td>
+                                                            <td x-text="shareholder.houseNo"></td>
+                                                            <td x-text="shareholder.poBox"></td>
+                                                            <td x-text="shareholder.phoneNo"></td>
+                                                            <td x-text="shareholder.phoneNo2"></td>
+                                                            <td x-text="shareholder.phoneNo3"></td>
+                                                            <td x-text="shareholder.teleHome"></td>
+                                                            <td x-text="shareholder.teleWork"></td>
+                                                            <td x-text="shareholder.email"></td>
+                                                            <td x-text="shareholder.email2"></td>
+                                                            <td x-text="shareholder.email3"></td>
+                                                            <td x-text="shareholder.createdDate"></td>
+                                                            <td x-text="shareholder.remark"></td>
+                                                            <td x-text="shareholder.branchName"></td>
+                                                            <td x-text="shareholder.createdBy"></td>
+                                                            <td class="text-center">
+                                                                @*<ul class="flex items-center justify-center gap-2">
+                                                                        <li>
+                                                                            <a :href="'@Url.Action("Details", "Shareholders", new { id = "__ShID__" })'.replace('__ShID__', shareholder.id)"
+                                                                               class="hover:text-primary" x-tooltip="Details">
+                                                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                                                                     xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                                                                    <path d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                                                    <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
+                                                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                        </li>
+
+                                                                        <li>
+                                                                            <a href="javascript:;" @@click="approveRequest(shareholder.id)" x-tooltip="Approve">
+                                                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary">
+                                                                                    <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                                                                    <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="javascript:;" @@click="openRejectModal(shareholder.id)" x-tooltip="Reject">
+                                                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
+                                                                                    <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                                                                    <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>*@
+                                                                <a :href="'@Url.Action("Authorization", "Shareholders", new { id = "__ShID__" })'.replace('__ShID__', shareholder.id)" class="btn btn-primary  gap-2">
+                                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+
+                                                                        <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                                        <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                                        <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                                                    </svg>
+                                                                    Authorize
+                                                                </a>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <ul class="flex items-center justify-center gap-2">
+                                                                    <li>
+                                                                        <a href="javascript:;" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(shareholder.shDocument)" x-tooltip="Open Document">
+                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                                                                <path opacity="0.5"
+                                                                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                                                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                                            </svg>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:;" class="btn btn-danger hover:text-secondary" @@click="createDownloadButton(shareholder.shDocument)" x-tooltip="Download Document">
+                                                                            <svg width="24" height="24"
+                                                                                 viewbox="0 0 24 24" fill="none"
+                                                                                 xmlns="http://www.w3.org/2000/svg"
+                                                                                 class="h-5 w-5 ">
+                                                                                <path opacity="0.5"
+                                                                                      d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
+                                                                                      stroke="currentColor"
+                                                                                      stroke-width="1.5"
+                                                                                      stroke-linecap="round"
+                                                                                      stroke-linejoin="round">
+                                                                                </path>
+                                                                                <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625"
+                                                                                      stroke="currentColor"
+                                                                                      stroke-width="1.5"
+                                                                                      stroke-linecap="round"
+                                                                                      stroke-linejoin="round"></path>
+                                                                            </svg>
+                                                                        </a>
+                                                                    </li>
+
+
+                                                                </ul>
+                                                            </td>
+                                                        </tr>
+                                                    </template>
+                                                    <template x-if="filteredShareholders.length === 0">
+                                                        <tr>
+                                                            <td colspan="31" class="text-center">No Requests found</td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+                                </template>
+                            </div>
+                            <template x-if="displayType === 'grid'">
+                                <div class="my-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3">
+                                    <template x-for="shareholder in filteredShareholders" :key="shareholder.id">
+                                        <div class="relative overflow-hidden rounded-md bg-white text-center shadow-[4px_6px_10px_-3px_#bfc9d4] dark:bg-[#1c232f] dark:shadow-none rounded border border-[#e0e6ed] dark:border-[#1b2e4b] ">
+                                            <div class="px-2 py-4 ">
+                                                <div class="flex flex-wrap justify-between ">
+                                                    <div class="flex">
+                                                        <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                            Share ID :
+                                                        </div>
+                                                        <div class="font-bold" x-text="shareholder.shareid">
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <div>
+                                                            <span class="badge badge-outline-primary" x-text="shareholder.status"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="border-[#e0e6ed] dark:border-[#1b2e4b]">
+
+                                            <div class="relative mt-3 px-6 pb-24">
+                                                <div class="rounded-md bg-white px-2 py-4 shadow-md dark:bg-gray-900">
+                                                    <div class="flex flex-wrap justify-between  ">
+                                                        <div class="w-2/3 ">
+                                                            <div class=" text-left block mb-3 font-extrabold" x-text="shareholder.fullNameEng">
+                                                            </div>
+                                                            <div class="text-white-dark text-left block flex-wrap mb-3"
+                                                                 x-text="shareholder.shCategory">
+                                                            </div>
+                                                            <div class="flex flex-wrap items-center gap-3 ">
+                                                                <button type="button" class="hover:text-secondary btn btn-success btn-sm" @@click="openDocumentInNewTab(shareholder.shDocument)" x-tooltip="Open Document">
+                                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                                                        <path opacity="0.5"
+                                                                              d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                                              stroke="currentColor" stroke-width="1.5"></path>
+                                                                        <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                                    </svg>
+                                                                </button>
+
+                                                                <button type="button"
+                                                                        class=" hover:text-secondary btn btn-danger btn-sm" @@click="createDownloadButton(shareholder.shDocument)" x-tooltip="Download Document">
+                                                                    <svg width="24" height="24"
+                                                                         viewbox="0 0 24 24" fill="none"
+                                                                         xmlns="http://www.w3.org/2000/svg"
+                                                                         class="h-5 w-5 ">
+                                                                        <path opacity="0.5"
+                                                                              d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
+                                                                              stroke="currentColor"
+                                                                              stroke-width="1.5"
+                                                                              stroke-linecap="round"
+                                                                              stroke-linejoin="round">
+                                                                        </path>
+                                                                        <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625"
+                                                                              stroke="currentColor"
+                                                                              stroke-width="1.5"
+                                                                              stroke-linecap="round"
+                                                                              stroke-linejoin="round"></path>
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="w-1/3">
+                                                            <div class="text-muted font-bold rtl:text-right" x-text="shareholder.createdDate">
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <hr class="my-3 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                                                <div class="flex items-center">
+                                                    <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                        Remark :
+                                                    </div>
+                                                    <div class="text-white-dark flex-wrap" x-text="shareholder.remark">
+                                                        Updating the
+                                                        users list to implement the correcta information
+                                                        i want to update the text as long as i can
+                                                    </div>
+                                                </div>
+                                                <hr class=" border-[#e0e6ed] dark:border-[#1b2e4b]">
+                                                <div class="mt-6 grid grid-cols-1 gap-4 ltr:text-left rtl:text-right">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                            Email :
+                                                        </div>
+                                                        <div class="truncate text-white-dark"
+                                                             x-text="shareholder.email"></div>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                            Phone :
+                                                        </div>
+                                                        <div class="text-white-dark" x-text="shareholder.phoneNo">
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                            Address
+                                                            :
+                                                        </div>
+                                                        <div class="text-white-dark truncate" x-text="[shareholder.region, shareholder.zone, shareholder.city, shareholder.subcity, shareholder.woreda, shareholder.kebele].filter(value => value).join(' / ') || 'No address information available'"></div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="absolute bottom-0 mt-6 flex w-full gap-4 p-6 ltr:left-0 rtl:right-0">
+                                                <a :href="'@Url.Action("Details", "Shareholders", new { id = "__ShID__" })'.replace('__ShID__', shareholder.id)"
+                                                   class="btn btn-outline-info w-1/3" x-tooltip="Details">
+                                                    <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                                                        <path d="M17.4975 18.4851L20.6281 9.09373C21.8764 5.34874 22.5006 3.47624 21.5122 2.48782C20.5237 1.49939 18.6511 2.12356 14.906 3.37189L5.57477 6.48218C3.49295 7.1761 2.45203 7.52305 2.13608 8.28637C2.06182 8.46577 2.01692 8.65596 2.00311 8.84963C1.94433 9.67365 2.72018 10.4495 4.27188 12.0011L4.55451 12.2837C4.80921 12.5384 4.93655 12.6658 5.03282 12.8075C5.22269 13.0871 5.33046 13.4143 5.34393 13.7519C5.35076 13.9232 5.32403 14.1013 5.27057 14.4574C5.07488 15.7612 4.97703 16.4131 5.0923 16.9147C5.32205 17.9146 6.09599 18.6995 7.09257 18.9433C7.59255 19.0656 8.24576 18.977 9.5522 18.7997L9.62363 18.79C9.99191 18.74 10.1761 18.715 10.3529 18.7257C10.6738 18.745 10.9838 18.8496 11.251 19.0285C11.3981 19.1271 11.5295 19.2585 11.7923 19.5213L12.0436 19.7725C13.5539 21.2828 14.309 22.0379 15.1101 21.9985C15.3309 21.9877 15.5479 21.9365 15.7503 21.8474C16.4844 21.5244 16.8221 20.5113 17.4975 18.4851Z"
+                                                              stroke="currentColor" stroke-width="1.5"></path>
+                                                        <path opacity="0.5" d="M6 18L21 3" stroke="currentColor"
+                                                              stroke-width="1.5" stroke-linecap="round"></path>
+                                                    </svg>
+                                                    <span>Details</span>
+                                                </a>
+                                                <button type="button" class="btn btn-outline-success w-1/3"
+                                                        @@click="approveRequest(shareholder.id)" x-tooltip="Approve">
+                                                    Approve
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger w-1/3"
+                                                        @@click="openRejectModal(shareholder.id)" x-tooltip="Reject">
+                                                    Reject
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60"
+                                 :class="rejectModalOpen ? '!block' : 'hidden'">
+                                <div class="flex min-h-screen items-center justify-center px-4" @@click.self="closeRejectModal">
+                                    <div class="panel w-full max-w-md my-8 overflow-hidden rounded-lg border-0 p-6">
+                                        <h2 class="text-xl font-semibold mb-4">Reason for Rejection</h2>
+                                        <textarea x-model="rejectionReason" class="form-input w-full h-28"></textarea>
+                                        <div class="flex justify-end gap-4 mt-4">
+                                            <button type="button" class="btn btn-outline-secondary" @@click="closeRejectModal">
+                                                Cancel
+                                            </button>
+                                            <button type="button" class="btn btn-danger" @@click="submitRejection(selectedShareholderId)">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="tab === 'proxies'">
+                    <div x-data="proxies">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <h2 class="text-xl"></h2>
+                            <div class="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
+                                <div class="flex gap-3">
+                                    <div>
+                                        <button type="button" class="btn btn-outline-primary p-2"
+                                                :class="{ 'bg-primary text-white': displayType === 'list' }"
+                                                @@click="setDisplayType('list')">
+                                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                                                <path d="M2 5.5L3.21429 7L7.5 3" stroke="currentColor"
+                                                      stroke-width="1.5" stroke-linecap="round"
+                                                      stroke-linejoin="round"></path>
+                                                <path opacity="0.5" d="M2 12.5L3.21429 14L7.5 10"
+                                                      stroke="currentColor" stroke-width="1.5"
+                                                      stroke-linecap="round" stroke-linejoin="round">
+                                                </path>
+                                                <path d="M2 19.5L3.21429 21L7.5 17"
+                                                      stroke="currentColor" stroke-width="1.5"
+                                                      stroke-linecap="round" stroke-linejoin="round">
+                                                </path>
+                                                <path d="M22 19L12 19" stroke="currentColor"
+                                                      stroke-width="1.5" stroke-linecap="round">
+                                                </path>
+                                                <path opacity="0.5" d="M22 12L12 12"
+                                                      stroke="currentColor" stroke-width="1.5"
+                                                      stroke-linecap="round"></path>
+                                                <path d="M22 5L12 5" stroke="currentColor"
+                                                      stroke-width="1.5" stroke-linecap="round"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div>
+                                        <button type="button" class="btn btn-outline-primary p-2"
+                                                :class="{ 'bg-primary text-white': displayType === 'grid' }"
+                                                @@click="setDisplayType('grid')">
+                                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                                                <path opacity="0.5"
+                                                      d="M2.5 6.5C2.5 4.61438 2.5 3.67157 3.08579 3.08579C3.67157 2.5 4.61438 2.5 6.5 2.5C8.38562 2.5 9.32843 2.5 9.91421 3.08579C10.5 3.67157 10.5 4.61438 10.5 6.5C10.5 8.38562 10.5 9.32843 9.91421 9.91421C9.32843 10.5 8.38562 10.5 6.5 10.5C4.61438 10.5 3.67157 10.5 3.08579 9.91421C2.5 9.32843 2.5 8.38562 2.5 6.5Z"
+                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                                <path opacity="0.5"
+                                                      d="M13.5 17.5C13.5 15.6144 13.5 14.6716 14.0858 14.0858C14.6716 13.5 15.6144 13.5 17.5 13.5C19.3856 13.5 20.3284 13.5 20.9142 14.0858C21.5 14.6716 21.5 15.6144 21.5 17.5C21.5 19.3856 21.5 20.3284 20.9142 20.9142C20.3284 21.5 19.3856 21.5 17.5 21.5C15.6144 21.5 14.6716 21.5 14.0858 20.9142C13.5 20.3284 13.5 19.3856 13.5 17.5Z"
+                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                                <path d="M2.5 17.5C2.5 15.6144 2.5 14.6716 3.08579 14.0858C3.67157 13.5 4.61438 13.5 6.5 13.5C8.38562 13.5 9.32843 13.5 9.91421 14.0858C10.5 14.6716 10.5 15.6144 10.5 17.5C10.5 19.3856 10.5 20.3284 9.91421 20.9142C9.32843 21.5 8.38562 21.5 6.5 21.5C4.61438 21.5 3.67157 21.5 3.08579 20.9142C2.5 20.3284 2.5 19.3856 2.5 17.5Z"
+                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                                <path d="M13.5 6.5C13.5 4.61438 13.5 3.67157 14.0858 3.08579C14.6716 2.5 15.6144 2.5 17.5 2.5C19.3856 2.5 20.3284 2.5 20.9142 3.08579C21.5 3.67157 21.5 4.61438 21.5 6.5C21.5 8.38562 21.5 9.32843 20.9142 9.91421C20.3284 10.5 19.3856 10.5 17.5 10.5C15.6144 10.5 14.6716 10.5 14.0858 9.91421C13.5 9.32843 13.5 8.38562 13.5 6.5Z"
+                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <div class="relative">
+                                    <input type="text" placeholder="Search Shareholders"
+                                           class="peer form-input py-2 ltr:pr-11 rtl:pl-11"
+                                           x-model="searchUser" @@keyup="searchProxies">
+                                    <div class="absolute top-1/2 -translate-y-1/2 peer-focus:text-primary ltr:right-[11px] rtl:left-[11px]">
+                                        <svg class="mx-auto" width="16" height="16" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="11.5" cy="11.5" r="9.5" stroke="currentColor" stroke-width="1.5" opacity="0.5"></circle>
+                                            <path d="M18.5 18.5L22 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel mt-5 overflow-hidden border-0 p-0">
+                            <template x-if="displayType === 'list'">
+                                <div>
+                                    <div class="table-responsive sticky-column sticky-header">
+                                        <table id="shareholderTable" class="whitespace-nowrap table-striped table-hover table-bordered table-compact">
+                                            <thead>
+                                                <tr>
+                                                    <th>ProxyID</th>
+                                                    <th>ProxyName</th>
+                                                    <th>Shareholder ID</th>
+                                                    <th>Shareholder Name</th>
+                                                    <th>Shareholder Category</th>
+                                                    <th>Status</th>
+                                                    <th>Nationality</th>
+                                                    <th>Region</th>
+                                                    <th>Zone</th>
+                                                    <th>City</th>
+                                                    <th>Subcity</th>
+                                                    <th>Woreda</th>
+                                                    <th>Kebele</th>
+                                                    <th>Phone No</th>
+                                                    <th>Phone No2</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Remark</th>
+                                                    <th>Created By</th>
+                                                    <th>Created Date</th>
+                                                    <th class="!text-center">Action</th>
+                                                    <th class="!text-center">Documents</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Loop through filteredShareholders -->
+                                                <template x-for="proxy in filteredProxies" :key="proxy.id">
+                                                    <tr>
+
+                                                        <td x-text="proxy.id"></td>
+                                                        <td x-text="proxy.fullName"></td>
+                                                        <td x-text="proxy.shareid"></td>
+                                                        <td x-text="proxy.shareName"></td>
+                                                        <td x-text="proxy.shCategory"></td>
+                                                        <td>
+                                                            <span x-text="proxy.status === 'Active' ? 'Active' :
+                                                                        proxy.status === 'New' ? 'New' :
+                                                                        proxy.status === 'Updated' ? 'Updated' :
+                                                                        proxy.status === 'Document-Updated' ? 'Document Updated' :
+                                                                        proxy.status === 'Blocked' ? 'Blocked' :
+                                                                        proxy.status === 'Rejected' ? 'Rejected' :
+                                                                        proxy.status === 'UnBlocked' ? 'Unblocked' : 'Unknown Status'"
+                                                                  :class="
+                                                                        proxy.status === 'Active' ? 'badge badge-outline-success' :
+                                                                        proxy.status === 'New' ? 'badge badge-outline-primary' :
+                                                                        proxy.status === 'Updated' || proxy.status === 'Document-Updated' ? 'badge badge-outline-secondary' :
+                                                                        proxy.status === 'Blocked' || proxy.status === 'Rejected' ? 'badge badge-outline-danger' :
+                                                                        proxy.status === 'UnBlocked' ? 'badge badge-outline-warning' : 'badge badge-outline-default'">
+
+                                                            </span>
+                                                        </td>
+                                                        <td x-text="proxy.nationality"></td>
+                                                        <td x-text="proxy.region"></td>
+                                                        <td x-text="proxy.zone"></td>
+                                                        <td x-text="proxy.city"></td>
+                                                        <td x-text="proxy.subcity"></td>
+                                                        <td x-text="proxy.woreda"></td>
+                                                        <td x-text="proxy.kebele"></td>
+                                                        <td x-text="proxy.phoneNo"></td>
+                                                        <td x-text="proxy.phoneNo2"></td>
+                                                        <td x-text="proxy.startDate"></td>
+                                                        <td x-text="proxy.endDate"></td>
+                                                        <td x-text="proxy.remark"></td>
+                                                        <td x-text="proxy.createdBy"></td>
+                                                        <td x-text="proxy.createdDate"></td>
+                                                        <td class="text-center">
+                                                            <a :href="'@Url.Action("Details", "Proxies", new { id = "__ShID__" })'.replace('__ShID__', proxy.id)" class="btn btn-primary  gap-2">
+                                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+
+                                                                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                                    <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                                    <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                                                </svg>
+                                                                Authorize
+                                                            </a>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <ul class="flex items-center justify-center gap-2">
+                                                                <li>
+                                                                    <a href="javascript:;" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(proxy.shDocument)" x-tooltip="Open Document">
+                                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                                                            <path opacity="0.5"
+                                                                                  d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                                                  stroke="currentColor" stroke-width="1.5"></path>
+                                                                            <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                                        </svg>
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:;" class="btn btn-danger hover:text-secondary" @@click="createDownloadButton(proxy.shDocument)" x-tooltip="Downlaod Document">
+                                                                        <svg width="24" height="24"
+                                                                             viewbox="0 0 24 24" fill="none"
+                                                                             xmlns="http://www.w3.org/2000/svg"
+                                                                             class="h-5 w-5 ">
+                                                                            <path opacity="0.5"
+                                                                                  d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
+                                                                                  stroke="currentColor"
+                                                                                  stroke-width="1.5"
+                                                                                  stroke-linecap="round"
+                                                                                  stroke-linejoin="round">
+                                                                            </path>
+                                                                            <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625"
+                                                                                  stroke="currentColor"
+                                                                                  stroke-width="1.5"
+                                                                                  stroke-linecap="round"
+                                                                                  stroke-linejoin="round"></path>
+                                                                        </svg>
+                                                                    </a>
+                                                                </li>
+
+
+                                                            </ul>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                                <template x-if="filteredProxies.length === 0">
+                                                    <tr>
+                                                        <td colspan="31" class="text-center">No Requests found</td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+                            </template>
+                        </div>
+                        <template x-if="displayType === 'grid'">
+                            <div class="my-5 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3">
+                                <template x-for="proxy in filteredProxies" :key="proxy.id">
+                                    <div class="relative overflow-hidden rounded-md bg-white text-center shadow-[4px_6px_10px_-3px_#bfc9d4] dark:bg-[#1c232f] dark:shadow-none rounded border border-[#e0e6ed] dark:border-[#1b2e4b] ">
+                                        <div class="px-2 py-4 ">
+                                            <div class="flex flex-wrap justify-between ">
+                                                <div class="flex">
+                                                    <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                        Share ID :
+                                                    </div>
+                                                    <div class="font-bold" x-text="proxy.shareid">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div>
+                                                        <span class="badge badge-outline-primary" x-text="proxy.status"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr class="border-[#e0e6ed] dark:border-[#1b2e4b]">
+
+                                        <div class="relative mt-3 px-6 pb-24">
+                                            <div class="rounded-md bg-white px-2 py-4 shadow-md dark:bg-gray-900">
+                                                <div class="flex flex-wrap justify-between  ">
+                                                    <div class="w-2/3 ">
+                                                        <div class=" text-left block mb-3">
+                                                            <span>ProxyName:</span>
+                                                            <span class="font-extrabold" x-text="proxy.fullName"></span>
+                                                        </div>
+                                                        <div class=" text-left block mb-3">
+                                                            <span>ShareholderName:</span>
+                                                            <span class="font-extrabold" x-text="proxy.shareName"></span>
+                                                        </div>
+                                                        <div class=" text-left block mb-3 ">
+                                                            <span>SHCategory:</span>
+                                                            <span class="font-extrabold" x-text="proxy.shCategory"></span>
+                                                        </div>
+                                                        <div class=" text-left block mb-3 ">
+                                                            <span>Start Date:</span>
+                                                            <span class="font-extrabold" x-text="proxy.startDate"></span>
+                                                        </div>
+                                                        <div class=" text-left block mb-3 ">
+                                                            <span>End Date:</span>
+                                                            <span class="font-extrabold" x-text="proxy.endDate"></span>
+                                                        </div>
+                                                        <div class="flex flex-wrap items-center gap-3 ">
+                                                            <button type="button" class="hover:text-secondary btn btn-success btn-sm" @@click="openDocumentInNewTab(proxy.shDocument)" x-tooltip="Open Document">
+                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                                                    <path opacity="0.5"
+                                                                          d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                                    <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                                </svg>
+                                                            </button>
+
+                                                            <button type="button"
+                                                                    class=" hover:text-secondary btn btn-danger btn-sm" @@click="createDownloadButton(proxy.shDocument)" x-tooltip="Download Document">
+                                                                <svg width="24" height="24"
+                                                                     viewbox="0 0 24 24" fill="none"
+                                                                     xmlns="http://www.w3.org/2000/svg"
+                                                                     class="h-5 w-5 ">
+                                                                    <path opacity="0.5"
+                                                                          d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15"
+                                                                          stroke="currentColor"
+                                                                          stroke-width="1.5"
+                                                                          stroke-linecap="round"
+                                                                          stroke-linejoin="round">
+                                                                    </path>
+                                                                    <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625"
+                                                                          stroke="currentColor"
+                                                                          stroke-width="1.5"
+                                                                          stroke-linecap="round"
+                                                                          stroke-linejoin="round"></path>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="w-1/3">
+                                                        <div class="text-muted font-bold rtl:text-right" x-text="proxy.createdDate">
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <hr class="my-3 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                                            <div class="flex items-center">
+                                                <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                    Remark :
+                                                </div>
+                                                <div class="text-white-dark flex-wrap" x-text="proxy.remark">
+                                                    Updating the
+                                                    users list to implement the correcta information
+                                                    i want to update the text as long as i can
+                                                </div>
+                                            </div>
+                                            <hr class=" border-[#e0e6ed] dark:border-[#1b2e4b]">
+                                            <div class="mt-6 grid grid-cols-1 gap-4 ltr:text-left rtl:text-right">
+
+                                                <div class="flex items-center">
+                                                    <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                        Phone :
+                                                    </div>
+                                                    <div class="text-white-dark" x-text="proxy.phoneNo">
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <div class="flex-none ltr:mr-2 rtl:ml-2">
+                                                        Address
+                                                        :
+                                                    </div>
+                                                    <div class="text-white-dark truncate" x-text="[proxy.region, proxy.zone, proxy.city, proxy.subcity, proxy.woreda, proxy.kebele].filter(value => value).join(' / ') || 'No address information available'"></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="absolute bottom-0 mt-6 flex w-full gap-4 p-6 ltr:left-0 rtl:right-0">
+                                            <a :href="'@Url.Action("Details", "Proxies", new { id = "__ShID__" })'.replace('__ShID__', proxy.id)"
+                                               class="btn btn-outline-info w-1/3" x-tooltip="Details">
+                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                                                    <path d="M17.4975 18.4851L20.6281 9.09373C21.8764 5.34874 22.5006 3.47624 21.5122 2.48782C20.5237 1.49939 18.6511 2.12356 14.906 3.37189L5.57477 6.48218C3.49295 7.1761 2.45203 7.52305 2.13608 8.28637C2.06182 8.46577 2.01692 8.65596 2.00311 8.84963C1.94433 9.67365 2.72018 10.4495 4.27188 12.0011L4.55451 12.2837C4.80921 12.5384 4.93655 12.6658 5.03282 12.8075C5.22269 13.0871 5.33046 13.4143 5.34393 13.7519C5.35076 13.9232 5.32403 14.1013 5.27057 14.4574C5.07488 15.7612 4.97703 16.4131 5.0923 16.9147C5.32205 17.9146 6.09599 18.6995 7.09257 18.9433C7.59255 19.0656 8.24576 18.977 9.5522 18.7997L9.62363 18.79C9.99191 18.74 10.1761 18.715 10.3529 18.7257C10.6738 18.745 10.9838 18.8496 11.251 19.0285C11.3981 19.1271 11.5295 19.2585 11.7923 19.5213L12.0436 19.7725C13.5539 21.2828 14.309 22.0379 15.1101 21.9985C15.3309 21.9877 15.5479 21.9365 15.7503 21.8474C16.4844 21.5244 16.8221 20.5113 17.4975 18.4851Z"
+                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                    <path opacity="0.5" d="M6 18L21 3" stroke="currentColor"
+                                                          stroke-width="1.5" stroke-linecap="round"></path>
+                                                </svg>
+                                                <span>Details</span>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-success w-1/3"
+                                                    @@click="approveRequest(proxy.id)" x-tooltip="Approve">
+                                                Approve
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger w-1/3"
+                                                    @@click="openRejectModal(proxy.id)" x-tooltip="Reject">
+                                                Reject
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </template>
+                            </div>
+
+                        </template>
+                        <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60"
+                             :class="rejectModalOpen ? '!block' : 'hidden'">
+                            <div class="flex min-h-screen items-center justify-center px-4" @@click.self="closeRejectModal">
+                                <div class="panel w-full max-w-md my-8 overflow-hidden rounded-lg border-0 p-6">
+                                    <h2 class="text-xl font-semibold mb-4">Reason for Rejection</h2>
+                                    <textarea x-model="rejectionReason" class="form-input w-full h-28"></textarea>
+                                    <div class="flex justify-end gap-4 mt-4">
+                                        <button type="button" class="btn btn-outline-secondary" @@click="closeRejectModal">
+                                            Cancel
+                                        </button>
+                                        <button type="button" class="btn btn-danger" @@click="submitRejection(selectedProxyId)">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template x-if="tab === 'subscription'">
+                    <div>
+                        <p>
+                            Subscription
+                        </p>
+                    </div>
+                </template>
+
+                <template x-if="tab === 'payment'">
+
+                    <div class="panel">
+                        <div class="mb-5 flex items-center justify-between">
+                            <h5 class="text-lg font-semibold dark:text-white-light">Payment Table</h5>
+                        </div>
+
+                        <div class="mb-5">
+                            <div class="table-responsive">
+                                <table class="table-striped">
+                                    <thead>
+
+                                        <tr>
+                                            <th>@Html.DisplayNameFor(model => model.Payments.First().PaymentDate)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Payments.First().Shareholder.ShareID)</th>
+                                            <th>Shareholder's Name</th>
+                                            <th>District</th>
+                                            <th>@Html.DisplayNameFor(model => model.Payments.First().Branch1.BranchName)</th>
+                                            <th>Creation Date</th>
+                                            <th>@Html.DisplayNameFor(model => model.Payments.First().PaidAmount)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Payments.First().ReferenceNum)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Payments.First().PaymentMode)</th>
+                                            <th>@Html.DisplayNameFor(model => model.Payments.First().Remark)</th>
+
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Payments)
+                                        {
+                                            <tr>
+                                                <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.PaidAmount)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Remark)</td>
+                                                <td>
+                                                    <a href="@Url.Action("Authorize","Payments", new { id = item.PayID }) " class="btn btn-primary  gap-2">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+
+                                                            <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                            <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                            <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                                        </svg>
+                                                        Authorize
+                                                    </a>
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </template>
+
+                <template x-if="tab === 'transfer'">
+                    <div class="animate__animated " :class="[$store.app.animation]">
+                        <!-- start main content section -->
+                        <div x-data="basic">
+                            <div class="panel mt-2 sticky-column">
+                                <h5 class="text-lg font-semibold dark:text-white-light">ShareTransfer Table</h5>
+                                <table id="myTable" class="table-hover whitespace-nowrap"></table>
+                            </div>
+                        </div>
+                        <!-- end main content section -->
+                    </div>
+
+                </template>
+
+                <template x-if="tab === 'block'">
+
+                    <div class="animate__animated" :@class="[$store.app.animation]">
+                        <div x-data="blocked">
+                            <div class="panel mt-2">
+                                <table id="myTable1" class="table-auto w-full border-collapse border border-gray-300">
+                                    <thead>
+                                        <tr>
+                                            <th>BlockedAmount</th>
+                                            <th>BlockingOrgan</th>
+                                            <th>DateBlocked</th>
+                                            <th>RefNum</th>
+                                            <th>Reason</th>
+                                            <th>BlockedAuthorizationStatus</th>
+                                            <th>AuthorizationDate</th>
+                                            <th>Remark</th>
+                                            <th>DocName</th>
+                                            <th>PaymentMode</th>
+                                            <th>ShareID</th>
+                                            <th>FullName</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </template>
+
+                <template x-if="tab === 'certificate'">
+                    <div class="animate__animated p-4" :@class="[$store.app.animation]">
+                        <!-- start main content section -->
+                        <div x-data="multipleTable">
+                            <div class="panel mt-1">
+                                <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">Certificates for Authorization</h5>
+                                <table id="myTable1" class="table-auto w-full border-collapse border border-gray-300">
+                                    <thead>
+                                        <tr>
+                                            <th>CertNum</th>
+                                            <th>ShareID</th>
+                                            <th>FullNameEng</th>
+                                            <th>FullNameAfanOromo</th>
+                                            <th>SHCategory</th>
+                                            <th>BeginingSerial</th>
+                                            <th>EndingSerial</th>
+                                            <th>PaymentIDs</th>
+
+                                            <th>DeliveredBy</th>
+
+                                            <th>CertGenerationDate</th>
+                                            <th>Remark</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </template>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/Scripts/JS/sweetalert.min.js"></script>
+
+<!-- Scripts of **Shareholder** Pending Requests -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('shareholder', () => ({
+            displayType: 'list',
+            searchUser: '',
+            filteredShareholders: [], // Holds the filtered data for display
+            selectAll: false, // Keeps track of the "Select All" checkbox
+            selectedShareholders: [], // Array to hold the IDs of selected shareholders
+            rejectModalOpen: false, // Controls the rejection modal visibility
+            rejectionReason: '',
+            selectedShareholderId: null, // Stores the selected shareholder ID
+
+            shareholderList: [
+                @foreach (var item in Model.Shareholders)
+                {
+                    <text>
+                    {
+                        id: @item.ShID,
+                        shareid: "@item.ShareID",
+                        shDocument: @item.ShDocument,
+                        fullNameEng: "@item.FullNameEng",
+                        fullNameAfanOromo: "@item.FullNameAfanOromo",
+                        fullNameAmharic: "@item.FullNameAmharic",
+                        status: "@item.Status",
+                        nationality: "@item.Nationality",
+                        shCategory: "@item.SHCategory",
+                        tinNum: "@item.TINNum",
+                        accountNumber: "@item.AccountNumber",
+                        region: "@item.Region",
+                        zone: "@item.Zone",
+                        city: "@item.City",
+                        subcity: "@item.Subcity",
+                        woreda: "@item.Woreda",
+                        kebele: "@item.Kebele",
+                        houseNo: "@item.HouseNo",
+                        poBox: "@item.PoBox",
+                        phoneNo: "@item.PhoneNo",
+                        phoneNo2: "@item.PhoneNo2",
+                        phoneNo3: "@item.PhoneNo3",
+                        teleHome: "@item.TeleHome",
+                        teleWork: "@item.TeleWork",
+                        email: "@item.Email",
+                        email2: "@item.Email2",
+                        email3: "@item.Email3",
+                        createdDate: "@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("yyyy-MM-dd") : "")",
+                        remark: "@item.Remark",
+                        branchName: "@(item.Branch1 != null ? item.Branch1.BranchName : "N/A")", // Handle null for Branch1
+                        createdBy: "@(item.User != null ? item.User.FullName : "N/A")", // Handle null for User
+                    },
+                    </text>
+                }
+            ],
+
+            init() {
+                this.filteredShareholders = this.shareholderList;
+
+                this.$watch('selectedShareholders', (newVal) => {
+                    this.selectAll = newVal.length === this.filteredShareholders.length;
+                });
+
+            },
+            toggleAll() {
+                this.selectAll = !this.selectAll; // Correct inversion of the selectAll state
+                if (this.selectAll) {
+                    // Check all checkboxes
+                    this.selectedShareholders = this.filteredShareholders.map((shareholder) => shareholder.id);
+                } else {
+                    // Uncheck all checkboxes
+                    this.selectedShareholders = [];
+                }
+            },
+            searchShareholders() {
+                // Perform case-insensitive filtering based on FullNameEng, Status, or PhoneNo
+                this.filteredShareholders = this.shareholderList.filter(shareholder =>
+                    shareholder.shareid.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    shareholder.fullNameEng.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    shareholder.phoneNo.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    shareholder.status.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    shareholder.email.toLowerCase().includes(this.searchUser.toLowerCase())
+                );
+            },
+            setDisplayType(type) {
+                this.displayType = type;
+            },
+
+            createDownloadButton(documentId) {
+               // Generate the download URL using Razor's Url.Action
+               console.log(documentId);
+                if (documentId) {
+                    let downloadUrl = '@Url.Action("DownloadDocument", "Documents", new { id = "__documentId__" })';
+                    downloadUrl = downloadUrl.replace("__documentId__", documentId);
+                    // Trigger the file download by navigating to the generated URL
+                    window.location.href = downloadUrl;
+                } else {
+                    alert("Document ID is missing!");
+                }
+            },
+            openDocumentInNewTab(documentId) {
+                console.log(documentId);
+                if (documentId) {
+                    // Make an AJAX request to fetch the document path
+                        fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Open the document in a new tab using the retrieved file path
+                                const documentUrl = window.location.origin + data.filePath; // Make sure it's a full URL
+                                console.log(documentUrl);
+                                console.log("abel");
+                                window.open(documentUrl, '_blank', 'width=800,height=600');
+                            } else {
+                                alert(data.message || "Failed to retrieve document path.");
+                            }
+                        })
+                        .catch(error => {
+                            console.log("Error fetching document path:", error);
+                            alert("An error occurred while trying to fetch the document.");
+                        });
+                } else {
+                    alert("Document ID is missing!");
+                }
+            },
+
+            approveRequest(id) {
+                fetch('@Url.Action("Approve", "Shareholders")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder document successfully unblocked.', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to unblock shareholder.');
+                    }
+                })
+                .catch(error => {
+                    showMessage(data.message || 'An error occurred while unblocking the shareholder document.', 'error');
+                });
+
+            },
+
+            openRejectModal(shareholderId) {
+                this.selectedShareholderId = shareholderId;
+                this.rejectionReason = ''; // Clear any previous reason
+                this.rejectModalOpen = true;
+             },
+
+            // Close Rejection Modal
+            closeRejectModal() {
+                this.rejectionReason = '';
+                this.rejectModalOpen = false;
+            },
+
+            // Submit Rejection with Reason
+            submitRejection(id) {
+                console.log(this.rejectionReason);
+                fetch('@Url.Action("Reject", "Shareholders")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id,
+                        remark: this.rejectionReason
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder rejected successfully.', 'success');
+
+                        this.closeRejectModal();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to reject shareholder.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('An unexpected error occurred.', 'error');
+                });
+            },
+
+        }));
+
+    });
+
+    // Success message function (Toast)
+    async function showMessage(msg = '', type = 'success') {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 3000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    }
+</script>
+
+<!-- Scripts of **Proxy** Pending Requests -->
+<script>
+    document.addEventListener('alpine:init', () => {
+       Alpine.data('proxies', () => ({
+            displayType: 'list',
+            searchUser: '',
+            filteredProxies: [], // Holds the filtered data for display
+            selectAll: false, // Keeps track of the "Select All" checkbox
+            selectedProxies: [], // Array to hold the IDs of selected shareholders
+            rejectModalOpen: false, // Controls the rejection modal visibility
+            rejectionReason: '',
+            selectedProxyId: null, // Stores the selected shareholder ID
+
+            proxyList: [
+                @foreach (var item in Model.Proxies)
+                {
+                    <text>
+                    {
+                        id: @item.ProxyID,
+                        shid: @item.ShID,
+                        shareid: "@item.Shareholder.ShareID",
+                        shareName: "@item.Shareholder.FullNameEng",
+                        shCategory: "@item.Shareholder.SHCategory",
+                        shDocument: @item.ProxyDocument,
+                        fullName: "@item.FullName",
+                        status: "@item.ProxyStatus",
+                        nationality: "@item.Nationality",
+                        region: "@item.Region",
+                        zone: "@item.Zone",
+                        city: "@item.City",
+                        subcity: "@item.Subcity",
+                        woreda: "@item.Woreda",
+                        kebele: "@item.Kebele",
+                        phoneNo: "@item.PhoneNo",
+                        phoneNo2: "@item.PhoneNo2",
+                        startDate: "@(item.StartDate.HasValue ? item.CreatedDate.Value.ToString("yyyy-MM-dd") : "")",
+                        endDate: "@(item.EndDate.HasValue ? item.CreatedDate.Value.ToString("yyyy-MM-dd") : "")",
+                        remark: "@item.Remark",
+                        createdBy: "@(item.User != null ? item.User.FullName : "N/A")",
+                        createdDate: "@(item.CreatedDate.HasValue ? item.CreatedDate.Value.ToString("yyyy-MM-dd") : "")",
+                    },
+                    </text>
+                }
+            ],
+
+            init() {
+                this.filteredProxies = this.proxyList;
+
+                this.$watch('selectedProxies', (newVal) => {
+                    this.selectAll = newVal.length === this.filteredProxies.length;
+                });
+
+            },
+
+            searchProxies() {
+                // Perform case-insensitive filtering based on FullNameEng, Status, or PhoneNo
+                this.filteredProxies = this.proxyList.filter(proxy =>
+                    proxy.fullName.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    proxy.phoneNo.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    proxy.status.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    proxy.shareName.toLowerCase().includes(this.searchUser.toLowerCase()) ||
+                    proxy.shareid.toLowerCase().includes(this.searchUser.toLowerCase())
+                );
+            },
+            setDisplayType(type) {
+                this.displayType = type;
+            },
+
+            createDownloadButton(documentId) {
+               // Generate the download URL using Razor's Url.Action
+               console.log(documentId);
+                if (documentId) {
+                    let downloadUrl = '@Url.Action("DownloadDocument", "Documents", new { id = "__documentId__" })';
+                    downloadUrl = downloadUrl.replace("__documentId__", documentId);
+                    // Trigger the file download by navigating to the generated URL
+                    window.location.href = downloadUrl;
+                } else {
+                    alert("Document ID is missing!");
+                }
+            },
+            openDocumentInNewTab(documentId) {
+                console.log(documentId);
+                if (documentId) {
+                    // Make an AJAX request to fetch the document path
+                        fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Open the document in a new tab using the retrieved file path
+                                const documentUrl = window.location.origin + data.filePath; // Make sure it's a full URL
+                                console.log(documentUrl);
+                                console.log("abel");
+                                window.open(documentUrl, '_blank', 'width=800,height=600');
+                            } else {
+                                alert(data.message || "Failed to retrieve document path.");
+                            }
+                        })
+                        .catch(error => {
+                            console.log("Error fetching document path:", error);
+                            alert("An error occurred while trying to fetch the document.");
+                        });
+                } else {
+                    alert("Document ID is missing!");
+                }
+            },
+
+            approveRequest(id) {
+                fetch('@Url.Action("Approve", "Proxies")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder document successfully unblocked.', 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to unblock shareholder.');
+                    }
+                })
+                .catch(error => {
+                    showMessage(data.message || 'An error occurred while unblocking the shareholder document.', 'error');
+                });
+
+            },
+
+            openRejectModal(proxyID) {
+                this.selectedProxyId = proxyID;
+                this.rejectionReason = '';
+                this.rejectModalOpen = true;
+             },
+
+            // Close Rejection Modal
+            closeRejectModal() {
+                this.rejectionReason = '';
+                this.rejectModalOpen = false;
+            },
+
+            // Submit Rejection with Reason
+            submitRejection(id) {
+                console.log(this.rejectionReason);
+                fetch('@Url.Action("Reject", "Proxies")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id,
+                        remark: this.rejectionReason
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Shareholder rejected successfully.', 'success');
+
+                        this.closeRejectModal();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        showMessage('Failed to reject shareholder.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('An unexpected error occurred.', 'error');
+                });
+            },
+
+        }));
+
+    });
+</script>
+
+<!-- Scripts of **Payments** Pending Requests -->
+@if (TempData["Message"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'success', // You can use 'success', 'error', 'warning', 'info', or 'question'
+                title: 'Success!',
+                text: '@TempData["Message"]',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+    </script>
+}
+
+<!-- Scripts of **Transfer** Pending Requests -->
+@section Scripts {
+    <script>
+        // Store TempData message in a JavaScript variable
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Display success message if it exists
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Approved!',
+                    text: successMessage,
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'colored-toast success' // Added 'success' class
+                    }
+                });
+            }
+
+            // Display error message if it exists
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Rejected!',
+                    text: errorMessage,
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    timerProgressBar: true,
+                    customClass: {
+                        popup: 'colored-toast error' // Added 'error' class
+                    }
+                });
+            }
+        });
+    </script>
+}
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        // main section
+        Alpine.data('scrollToTop', () => ({
+            showTopButton: false,
+            init() {
+                window.onscroll = () => {
+                    this.scrollFunction();
+                };
+            },
+
+            scrollFunction() {
+                if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                    this.showTopButton = true;
+                } else {
+                    this.showTopButton = false;
+                }
+            },
+
+            goToTop() {
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            },
+        }));
+
+        // theme customization
+        Alpine.data('customizer', () => ({
+            showCustomizer: false,
+        }));
+
+        // sidebar section
+        Alpine.data('sidebar', () => ({
+            init() {
+                const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
+                if (selector) {
+                    selector.classList.add('active');
+                    const ul = selector.closest('ul.sub-menu');
+                    if (ul) {
+                        let ele = ul.closest('li.menu').querySelectorAll('.nav-link');
+                        if (ele) {
+                            ele = ele[0];
+                            setTimeout(() => {
+                                ele.click();
+                            });
+                        }
+                    }
+                }
+            },
+        }));
+
+        // header section
+        Alpine.data('header', () => ({
+            init() {
+                const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
+                if (selector) {
+                    selector.classList.add('active');
+                    const ul = selector.closest('ul.sub-menu');
+                    if (ul) {
+                        let ele = ul.closest('li.menu').querySelectorAll('.nav-link');
+                        if (ele) {
+                            ele = ele[0];
+                            setTimeout(() => {
+                                ele.classList.add('active');
+                            });
+                        }
+                    }
+                }
+            },
+        }));
+
+        Alpine.data('basic', () => ({
+            datatable: null,
+            init() {
+                this.datatable = new simpleDatatables.DataTable('#myTable', {
+                    data: {
+                        headings: ['Transfer From', 'Transfer To', 'TID', 'Transfer Category', 'Transfer Type', 'Shares Transferred', 'Paid Amount', 'Transfer Reason','Dividened For','Authorization Status','Take Action'],
+                        data: [
+                        @foreach (var item in Model.ShareTransfers)
+                        {
+
+                                <text>
+                                [
+
+                                    "@item.Shareholder.FullNameEng",
+                                    "@item.Shareholder1.FullNameEng",
+                                    "@item.TransferID",
+                                    "@item.TransferCategory",
+                                    "@item.TransferType",
+                                    "@item.NumSharesTransferred",
+                                    "@item.PaidAmountForTransfer",
+                                    "@item.TransferReason",
+                                    "@item.DividenedFor",
+                                    `@if (item.TransferAuthorizationStatus == "Pending")
+                                        {
+                                            <span class="badge badge-outline-primary" style="font-size: 0.9em; padding: 0.5em 1em; align-items: center;">Pending</span>
+                                        }
+                                        else if (item.TransferAuthorizationStatus == "Approved")
+                                        {
+                                            <span class="badge badge-outline-success" style="font-size: 0.9em; padding: 0.5em 1em;">Approved</span>
+                                        }
+                                        else if (item.TransferAuthorizationStatus == "Rejected")
+                                        {
+                                            <span class="badge badge-outline-danger" style="font-size: 0.9em; padding: 0.5em 1em;">Rejected</span>
+                                        }
+                                        `,
+                                    `@if (item.TransferAuthorizationStatus == "Pending")
+                                        {
+                                            <a href="@Url.Action("Authorize_Details","ShareTransfers", new { id = item.TransferID }) " class="btn btn-primary  gap-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+
+                                                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                    <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                    <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                                </svg>
+                                                Authorize
+                                            </a>
+                                    }
+                                    else
+                                    {
+
+                                        <a href="@Url.Action("Details", "ShareTransfers", new { id = item.TransferID }) " class="btn btn-secondary  gap-2">
+                                            <svg width="5" height="5" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" fill="none" />
+                                                <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                                            </svg>
+                                            Authorized
+                                        </a>
+
+                                    }
+                                        `,
+                                ],
+                                </text>
+                            }
+                        ],
+                    },
+                    searchable: true,
+                    perPage: 5,
+                    perPageSelect: [5, 10, 20,],
+                    columns: [
+
+                    ],
+                    firstLast: true,
+                    firstText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    lastText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    prevText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    nextText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    },
+                });
+
+            },
+        }));
+    });
+</script>
+
+<script>
+    async function showAlert(action, event) {
+        // Prevent the default link navigation if action is delete
+        if (action === 'delete') {
+            event.preventDefault();
+        }
+
+        // Set alert text based on action type
+        let actionText = action === 'delete' ? 'delete this transfer' : '';
+        let confirmText = action === 'delete' ? 'Delete' : '';
+
+        // Display confirmation dialog
+        new window.Swal({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: `You are about to ${actionText}. This action cannot be undone!`,
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancel',
+            padding: '2em',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Navigate to the delete link if confirmed
+                if (action === 'delete') {
+                    window.location.href = document.getElementById('deleteTransfer').href;
+                }
+            }
+        });
+    }
+</script>
+
+<!-- Scripts of **Block** Pending Requests -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('blocked', () => ({
+            datatable1: null,
+            init() {
+                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+                    data: {
+                        headings: [
+                            'BlockID', 'ShareID', 'FullNameEng', 'PayID', 'BlockedAmount',
+                            'BlockingOrgan', 'RefNum', 'Reason', 'BlockedAuthorizationStatus',
+                            'Remark', 'PaymentMode', 'UFullName', ''
+                        ],
+                        data: [
+                            @foreach (var item in Model.Blockeds)
+                            {
+                                <text>
+                                [
+                                    "@item.BlockID", "@item.Shareholder.ShareID", "@item.Shareholder.FullNameEng",
+                                    "@item.Payment.PayID", "@item.BlockedAmount", "@item.BlockingOrgan", "@item.RefNum",
+                                    "@item.Reason", "@item.BlockedAuthorizationStatus", "@item.Remark",
+                                    "@item.Payment.PaymentMode", "@item.User.FullName",
+                                `<a href="@Url.Action("AuthorizationDetails", "Blockeds", new { id = item.BlockID })" style = "display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; border: none; border-radius: 5px; text-decoration: none;" >Authorization</a>`
+                                ],
+                                </text>
+                            }
+                        ]
+                    },
+                    searchable: true,
+                    perPage: 10,
+                    firstLast: true,
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    }
+                });
+            },
+            formatDate(date) {
+                if (date) {
+                    const dt = new Date(date);
+                    const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
+                    const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+                    return day + '/' + month + '/' + dt.getFullYear();
+                }
+                return '';
+            }
+        }));
+    });
+</script>
+
+<!-- Scripts of **certificate** Pending Requests -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('multipleTable', () => ({
+            datatable1: null,
+            init() {
+                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+                    data: {
+                        headings: [
+                            'CertNum',
+                            'ShareID',
+                            'FullNameEng',
+                            'FullNameAfanOromo',
+                            'SHCategory',
+                            'BeginingSerial',
+                            'EndingSerial',
+                            'PaymentIDs',
+
+                            'DeliveredBy',
+
+                            'CertGenerationDate',
+                            'Remark',
+                            'Action'
+                        ],
+                       data: [
+    @foreach (var item in Model.Certificates)
+    {
+
+<text>
+    [
+        "@item.CertNum", // CertNum
+        "@item.Shareholder.ShareID", // Shareholder.ShareID
+        "@item.Shareholder.FullNameEng", // FullNameEng
+        "@item.Shareholder.FullNameAfanOromo", // FullNameAfanOromo
+        "@item.Shareholder.SHCategory", // SHCategory
+        "@item.BeginingSerial", // BeginingSerial
+        "@item.EndingSerial", // EndingSerial
+        "@item.PaymentIDs", // PaymentIDs
+
+        "@item.Shareholder.FullNameEng", // DeliveredBy
+
+        "@(item.CertGenerationDate.HasValue ? item.CertGenerationDate.Value.ToString("yyyy-MM-dd") : "")", // CertGenerationDate
+        "@item.Remark", // Remark
+        `<a href="@Url.Action("Authorize", "Certificates", new { id = item.CertID })"
+   class="btn btn-primary"
+   style="padding: 8px 12px; border-radius: 4px; font-weight: bold;">
+   Authorization
+</a>`
+
+
+
+],
+</text>
+
+    }
+]
+
+   },
+   searchable: true,
+   perPage: 10,
+   columns: [
+                        //{ select: 10, render: (data) => this.formatDate(data) }, // DeliveryDate column
+                        //{ select: 11, render: (data) => this.formatDate(data) }, // CertGenerationDate column
+                    ],
+                    firstLast: true,
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    },
+                });
+            },
+            formatDate(date) {
+                if (date) {
+                    const dt = new Date(date);
+                    const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
+                    const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+                    return day + '/' + month + '/' + dt.getFullYear();
+                }
+                return '';
+            }
+        }));
+    });
+</script>

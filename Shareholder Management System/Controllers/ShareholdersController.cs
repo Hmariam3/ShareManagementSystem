@@ -37,6 +37,7 @@ namespace Shareholder_Management_System.Controllers
             return View(shareholder);
         }
 
+
         // GET: Shareholders/Create
         public ActionResult Create()
         {
@@ -53,56 +54,99 @@ namespace Shareholder_Management_System.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Shareholder shareholder, HttpPostedFileBase shFile)
+        public ActionResult Create(Shareholder shareholder, HttpPostedFileBase shFile1, HttpPostedFileBase shFile)
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
 
+            //Ensure both files are provided
+            if (shFile == null || shFile1 == null)
+            {
+                ModelState.AddModelError("", "Both Identification and Agreement documents are required.");
+                return View(shareholder);
+            }
+
             if (ModelState.IsValid)
             {
+                // Basic shareholder setup
                 shareholder.Branch = branchId;
                 shareholder.CreatedBy = userId;
-                shareholder.Status = "InActive";
+                shareholder.Status = "New";
                 shareholder.CreatedDate = DateTime.Now;
                 shareholder.AuthorizationStatus = "Pending";
 
-                if (shFile == null)
+                // Document handling
+                if (shFile.ContentLength > 0 && shFile1.ContentLength > 0)
                 {
-                    throw new ArgumentNullException(nameof(shFile));
-                }
-
-                // Handle document creation
-                if (shFile != null && shFile.ContentLength > 0)
-                {
-                    db.Shareholders.Add(shareholder);
-                    db.SaveChanges();
-
-                    Document document = new Document
+                    try
                     {
-                        DocOwner = "Shareholder",
-                        DocType = "ShareholderInfo",
-                        ShID = shareholder.ShID,
-                        CreatedBy = userId,
-                        DocAuthorizationStatus = "Pending",
-                        CreatedDate = DateTime.Now,
-                    };
+                        db.Shareholders.Add(shareholder);
+                        db.SaveChanges();
 
-                    // Instantiate the DocumentsController to save the document
-                    DocumentsController documentsController = new DocumentsController();
-                    documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+                        // First document setup
+                        Document document = new Document
+                        {
+                            DocOwner = "Shareholder",
+                            DocType = "ShareholderInfo",
+                            ShID = shareholder.ShID,
+                            CreatedBy = userId,
+                            DocAuthorizationStatus = "Pending",
+                            CreatedDate = DateTime.Now,
+                        };
 
-                    int documentId = documentsController.Create(document, shFile);
-                    // Update the ShDocument field of the shareholder with the documentId
-                    shareholder.ShDocument = documentId;
+                        // Second document setup
+                        Document kebele = new Document
+                        {
+                            DocOwner = "Shareholder",
+                            DocType = "ShareholderID",
+                            ShID = shareholder.ShID,
+                            CreatedBy = userId,
+                            DocAuthorizationStatus = "Pending",
+                            CreatedDate = DateTime.Now,
+                        };
 
-                    //// Update the shareholder record in the database
-                    db.Entry(shareholder).State = EntityState.Modified;
-                    db.SaveChanges();
+                        // Instantiate DocumentsController and save files
+                        DocumentsController documentsController = new DocumentsController();
+                        documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+
+                        int documentId = documentsController.Create(document, shFile);
+                        int kebeleId = documentsController.Create(kebele, shFile1);
+
+
+
+                        // Update ShDocument fields
+                        shareholder.ShDocument = documentId;
+                        shareholder.KebeleID = kebeleId;
+
+                        // Update shareholder with related document IDs
+                        db.Entry(shareholder).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        return RedirectToAction("Index");
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "An error occurred while saving the documents. Please try again.");
+                        System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
+                    }
                 }
-
-                return RedirectToAction("Index");
+                else
+                {
+                    ModelState.AddModelError("", "Files cannot be empty.");
+                }
+            }
+            else
+            {
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Property: {state.Key} Error: {error.ErrorMessage}");
+                    }
+                }
             }
 
+            // Re-assign ViewBags if the model state is invalid or error occurs
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
             ViewBag.Authorizer = new SelectList(db.Users, "UID", "FullName", shareholder.Authorizer);
@@ -131,12 +175,46 @@ namespace Shareholder_Management_System.Controllers
             return View(shareholder);
         }
 
-
+        // POST: Shareholders/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult UpdateShDocument(int shID, HttpPostedFileBase shFile)
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Shareholder shareholder)
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
+
+            if (ModelState.IsValid)
+            {
+                shareholder.Branch = branchId;
+                shareholder.CreatedBy = userId;
+                shareholder.Status = "Updated";
+                shareholder.CreatedDate = DateTime.Now;
+                shareholder.AuthorizationStatus = "Pending";
+
+                db.Entry(shareholder).State = EntityState.Modified;
+                db.Entry(shareholder).Property(x => x.ShDocument).IsModified = false;
+                db.Entry(shareholder).Property(x => x.KebeleID).IsModified = false;
+
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
+            ViewBag.Authorizer = new SelectList(db.Users, "UID", "FullName", shareholder.Authorizer);
+            ViewBag.ShCategories = new SelectList(db.ShCategories, "ShCategories", "ShCategories", shareholder.SHCategory);
+
+            return View(shareholder);
+        }
+
+
+        [HttpPost]
+        public ActionResult UpdateShDocument(int shID, string type, string reason, HttpPostedFileBase shFile)
+        {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
 
             if (shFile == null || shFile.ContentLength == 0)
             {
@@ -153,7 +231,7 @@ namespace Shareholder_Management_System.Controllers
             Document document = new Document
             {
                 DocOwner = "Shareholder",
-                DocType = "ShareholderInfo",
+                DocType = "ShBlockLetter",
                 ShID = shareholder.ShID,
                 CreatedBy = userId,
                 DocAuthorizationStatus = "Pending",
@@ -164,12 +242,15 @@ namespace Shareholder_Management_System.Controllers
             documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
 
             int documentId = documentsController.Create(document, shFile);
-            shareholder.ShDocument = documentId;
+            // Update the ShDocument field of the shareholder with the documentId
+            shareholder.PendingDoc = documentId;
+
             shareholder.Branch = branchId;
             shareholder.CreatedBy = userId;
-            shareholder.Status = "InActive";
+            shareholder.Status = "Document-Updated";
             shareholder.CreatedDate = DateTime.Now;
             shareholder.AuthorizationStatus = "Pending";
+            shareholder.Remark = reason;
 
             // Update the proxy record in the database
             db.Entry(shareholder).State = EntityState.Modified;
@@ -177,6 +258,7 @@ namespace Shareholder_Management_System.Controllers
 
             return Json(new { success = true });
         }
+
 
 
         [HttpPost]
@@ -211,6 +293,9 @@ namespace Shareholder_Management_System.Controllers
             DocumentsController documentsController = new DocumentsController();
             documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
 
+            int documentId = documentsController.Create(document, shFile);
+
+            shareholder.PendingDoc = documentId;
             shareholder.Branch = branchId;
             shareholder.CreatedBy = userId;
             shareholder.Status = "Blocked";
@@ -221,6 +306,7 @@ namespace Shareholder_Management_System.Controllers
             // Update the proxy record in the database
             db.Entry(shareholder).State = EntityState.Modified;
             db.Entry(shareholder).Property(x => x.ShDocument).IsModified = false;
+            db.Entry(shareholder).Property(x => x.KebeleID).IsModified = false;
 
             db.SaveChanges();
 
@@ -257,7 +343,9 @@ namespace Shareholder_Management_System.Controllers
 
             DocumentsController documentsController = new DocumentsController();
             documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+            int documentId = documentsController.Create(document, shFile);
 
+            shareholder.PendingDoc = documentId;
             shareholder.Branch = branchId;
             shareholder.CreatedBy = userId;
             shareholder.Status = "UnBlocked";
@@ -275,36 +363,242 @@ namespace Shareholder_Management_System.Controllers
         }
 
 
-        // POST: Shareholders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Shareholder shareholder)
-        {
-            int userId = Convert.ToInt32(Session["ID"]);
-            int branchId = Convert.ToInt32(Session["Branch"]);
 
-            if (ModelState.IsValid)
+
+        // GET: Shareholders
+        public ActionResult PendingRequests()
+        {
+            // Assuming a context named 'db' exists for database operations
+            var shareholders = db.Shareholders.Where(s => s.AuthorizationStatus == "Pending").ToList();
+            var proxies = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Pending").ToList();
+            var subscriptions = db.Subscribtions.Where(sub => sub.SubAuthorizationStatus == "Pending").ToList();
+            var payments = db.Payments.Where(pay => pay.PaymentAuthorizationStatus == "Pending").ToList();
+            var shareTransfers = db.ShareTransfers.Where(st => st.TransferAuthorizationStatus == "Pending").ToList();
+            var blockeds = db.Blockeds.Where(b => b.BlockedAuthorizationStatus == "Pending").ToList();
+            var documents = db.Documents.Where(doc => doc.DocAuthorizationStatus == "Pending").ToList();
+            var certificates = db.Certificates.Where(c => c.CertAuthorizationStatus == "Pending").ToList();
+
+            // Creating a new view model instance and populating it with the pending entities
+            var viewModel = new ApprovalsViewModel
             {
-                shareholder.Branch = branchId;
-                shareholder.CreatedBy = userId;
-                shareholder.Status = "InActive";
-                shareholder.CreatedDate = DateTime.Now;
-                shareholder.AuthorizationStatus = "Pending";
+                Shareholders = shareholders,
+                Proxies = proxies,
+                Subscribtions = subscriptions,
+                Payments = payments,
+                ShareTransfers = shareTransfers,
+                Blockeds = blockeds,
+                Documents = documents,
+                Certificates = certificates
+            };
+
+            return View(viewModel);
+        }
+
+        public ActionResult Authorization(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Shareholder shareholder = db.Shareholders.Find(id);
+            if (shareholder == null)
+            {
+                return HttpNotFound();
+            }
+            return View(shareholder);
+        }
+
+
+        [HttpPost]
+        public ActionResult Approve(int id)
+        {
+            var shareholder = db.Shareholders.Find(id);
+            if (shareholder != null)
+            {
+                int userId = Convert.ToInt32(Session["ID"]);
+
+                // Approve the shareholder if it's in "New" status
+                if (shareholder.Status.Equals("New"))
+                {
+                    int docID = shareholder.ShDocument ?? 0;
+                    int kebeleID = shareholder.KebeleID ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+                    var kebeleDocument = db.Documents.Find(kebeleID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Approved";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+
+                    if (kebeleDocument != null)
+                    {
+                        kebeleDocument.DocAuthorizationStatus = "Approved";
+                        kebeleDocument.DocAuthorizer = userId;
+                        kebeleDocument.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(kebeleDocument).State = EntityState.Modified;
+                    }
+                }
+                else if (shareholder.Status.Equals("Document-Updated"))
+                {
+                    int docID = shareholder.PendingDoc ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Approved";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+                    if (document.DocType.Equals("ShareholderID"))
+                    {
+                        shareholder.KebeleID = docID;
+                    }
+                    else
+                    {
+                        shareholder.ShDocument = docID;
+                    }
+                }
+                else if (shareholder.Status.Equals("Updated"))
+                {
+                    int docID = shareholder.ShDocument ?? 0;
+                    int kebelID = shareholder.KebeleID ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+                    var IDdocument = db.Documents.Find(kebelID);
+
+                    if (document != null && document.DocAuthorizationStatus.Equals("Rejected"))
+                    {
+                        document.DocAuthorizationStatus = "Approved";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+
+                    if (IDdocument != null && IDdocument.DocAuthorizationStatus.Equals("Rejected"))
+                    {
+                        IDdocument.DocAuthorizationStatus = "Approved";
+                        IDdocument.DocAuthorizer = userId;
+                        IDdocument.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+
+                }
+                else
+                {
+                    int docID = shareholder.PendingDoc ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Approved";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+                }
+
+                // Update shareholder status to Active and Approved
+                shareholder.Status = "Active";
+                shareholder.AuthorizationStatus = "Approved";
+                shareholder.Authorizer = userId;
+                shareholder.AuthorizedDate = DateTime.Now;
 
                 db.Entry(shareholder).State = EntityState.Modified;
-                db.Entry(shareholder).Property(x => x.ShDocument).IsModified = false;
-
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
-            ViewBag.Authorizer = new SelectList(db.Users, "UID", "FullName", shareholder.Authorizer);
-            ViewBag.ShCategories = new SelectList(db.ShCategories, "ShCategories", "ShCategories", shareholder.SHCategory);
+                return Json(new { success = true });
 
-            return View(shareholder);
+            }
+            return Json(new { success = false });
+        }
+
+        [HttpPost]
+        public ActionResult Reject(int id, string remark)
+        {
+            var shareholder = db.Shareholders.Find(id);
+            if (shareholder != null)
+            {
+                int userId = Convert.ToInt32(Session["ID"]);
+                int branchId = Convert.ToInt32(Session["Branch"]);
+
+                if (shareholder.Status.Equals("New"))
+                {
+                    int docID = shareholder.ShDocument ?? 0;
+                    int kebeleID = shareholder.KebeleID ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+                    var kebeleDocument = db.Documents.Find(kebeleID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Rejected";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+
+                    if (kebeleDocument != null)
+                    {
+                        kebeleDocument.DocAuthorizationStatus = "Rejected";
+                        kebeleDocument.DocAuthorizer = userId;
+                        kebeleDocument.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(kebeleDocument).State = EntityState.Modified;
+                    }
+                }
+                else
+                {
+                    int docID = shareholder.PendingDoc ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Rejected";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+                }
+
+
+                shareholder.Authorizer = userId;
+                shareholder.AuthorizedDate = DateTime.Now;
+                shareholder.AuthorizationStatus = "Rejected";
+                shareholder.Remark = remark;
+
+                db.Entry(shareholder).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
+        public ActionResult GetPendingRequestsCount()
+        {
+            var pendingShareholders = db.Shareholders.Count(s => s.AuthorizationStatus == "Pending");
+            var pendingProxies = db.Proxies.Count(p => p.ProxyAuthorizationStatus == "Pending");
+            var pendingSubscriptions = db.Subscribtions.Count(sub => sub.SubAuthorizationStatus == "Pending");
+            var pendingPayments = db.Payments.Count(pay => pay.PaymentAuthorizationStatus == "Pending");
+            var pendingShareTransfers = db.ShareTransfers.Count(st => st.TransferAuthorizationStatus == "Pending");
+            var pendingBlockeds = db.Blockeds.Count(b => b.BlockedAuthorizationStatus == "Pending");
+            var pendingCertificates = db.Certificates.Count(c => c.CertAuthorizationStatus == "Pending");
+
+            int totalPendingRequests = pendingShareholders + pendingProxies + pendingSubscriptions + pendingPayments + pendingShareTransfers + pendingBlockeds + pendingCertificates;
+
+            return PartialView("_PendingRequestsCount", totalPendingRequests);
         }
 
         // GET: Shareholders/Delete/5

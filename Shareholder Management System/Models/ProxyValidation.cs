@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Shareholder_Management_System.Models
@@ -19,7 +19,7 @@ namespace Shareholder_Management_System.Models
             [StringLength(100, ErrorMessage = "Proxy Name (English) cannot exceed 100 characters.")]
             [Display(Name = "Proxy Name (English)")]
             public string FullName { get; set; }
-            
+
             [Required(ErrorMessage = "Proxy Start Date is required.")]
             [DataType(DataType.Date, ErrorMessage = "Invalid date format.")]
             [Display(Name = "Proxy Start Date")]

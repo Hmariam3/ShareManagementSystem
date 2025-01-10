@@ -71,7 +71,56 @@ namespace Shareholder_Management_System.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateProxyDocument(int proxyID, HttpPostedFileBase proxyFile)
+        public ActionResult UpdateProxyDocument(int proxyID, string type, string reason, HttpPostedFileBase proxyFile)
+        {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
+            if (proxyFile == null || proxyFile.ContentLength == 0)
+            {
+                return Json(new { success = false, message = "File is required." });
+            }
+            var activeProxy = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Approved" && p.ProxyStatus == "Active").FirstOrDefault();
+            if (activeProxy != null && activeProxy.ProxyID != proxyID)
+            {
+                return Json(new { success = false, message = "There is another active proxy so frist please inactivate that proxyy." });
+            }
+            var proxy = db.Proxies.Find(proxyID);
+            if (proxy == null)
+            {
+                return Json(new { success = false, message = "Proxy not found." });
+            }
+
+            // Handle document creation and file upload logic
+            Document document = new Document
+            {
+                DocOwner = "Proxy",
+                DocType = type,
+                ShID = proxy.ShID,
+                CreatedBy = userId,  // Assuming 1 is the user creating it, update as per your logic
+                DocAuthorizationStatus = "Pending",
+                CreatedDate = DateTime.Now,
+            };
+
+            DocumentsController documentsController = new DocumentsController();
+            documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+
+            int documentId = documentsController.Create(document, proxyFile);
+
+            proxy.PendingDoc = documentId;
+            proxy.CreatedDate = DateTime.Now;
+            proxy.ProxyAuthorizationStatus = "Pending";
+            proxy.ProxyStatus = "Document-Updated";
+            proxy.Remark = reason;
+            // Update the proxy record in the database
+            db.Entry(proxy).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public ActionResult ActivateProxy(int proxyID, string reason, HttpPostedFileBase proxyFile)
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
@@ -87,6 +136,11 @@ namespace Shareholder_Management_System.Controllers
                 return Json(new { success = false, message = "Proxy not found." });
             }
 
+            var activeProxy = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Approved" && p.ProxyStatus == "Active").FirstOrDefault();
+            if (activeProxy != null && activeProxy.ProxyID != proxyID)
+            {
+                return Json(new { success = false, message = "There is another active proxy so frist please inactivate that proxyy." });
+            }
             // Handle document creation and file upload logic
             Document document = new Document
             {
@@ -102,11 +156,12 @@ namespace Shareholder_Management_System.Controllers
             documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
 
             int documentId = documentsController.Create(document, proxyFile);
-            proxy.ProxyDocument = documentId;
+            proxy.PendingDoc = documentId;
+
             proxy.CreatedDate = DateTime.Now;
             proxy.ProxyAuthorizationStatus = "Pending";
-            proxy.ProxyStatus = "Active";
-
+            proxy.ProxyStatus = "Proxy-ReActivated";
+            proxy.Remark = reason;
             // Update the proxy record in the database
             db.Entry(proxy).State = EntityState.Modified;
             db.SaveChanges();
@@ -118,10 +173,17 @@ namespace Shareholder_Management_System.Controllers
         [HttpPost]
         public ActionResult DeactivateProxy(int proxyID)
         {
+            int userId = Convert.ToInt32(Session["ID"]);
+            int branchId = Convert.ToInt32(Session["Branch"]);
+
             var proxy = db.Proxies.Find(proxyID);
             if (proxy != null)
             {
                 proxy.ProxyStatus = "InActive"; // Mark as inactive
+                proxy.CreatedBy = userId;
+                proxy.ProxyAuthorizationStatus = "Pending";
+                db.Entry(proxy).Property(x => x.ProxyDocument).IsModified = false;
+
                 db.SaveChanges();
                 return Json(new { success = true });
             }
@@ -157,58 +219,85 @@ namespace Shareholder_Management_System.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Proxy proxy, HttpPostedFileBase proxyFile)
+        public ActionResult Create(Proxy proxy, HttpPostedFileBase proxyFile, HttpPostedFileBase kebeleID)
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
 
-            if (ModelState.IsValid)
+            if (proxyFile == null || kebeleID == null)
             {
-                proxy.CreatedBy = userId;
-                proxy.ProxyStatus = "Active";
-                proxy.CreatedDate = DateTime.Now;
-                proxy.ProxyAuthorizationStatus = "Pending";
-
-                if (proxyFile == null)
-                {
-                    throw new ArgumentNullException(nameof(proxyFile));
-                }
-
-                // Handle document creation
-                if (proxyFile != null && proxyFile.ContentLength > 0)
-                {
-                    db.Proxies.Add(proxy);
-                    db.SaveChanges();
-
-                    Document document = new Document
-                    {
-                        DocOwner = "Shareholder",
-                        DocType = "ShareholderInfo",
-                        ShID = proxy.ShID,
-                        CreatedBy = userId,
-                        DocAuthorizationStatus = "Pending",
-                        CreatedDate = DateTime.Now,
-                    };
-
-                    // Instantiate the DocumentsController to save the document
-                    DocumentsController documentsController = new DocumentsController();
-                    documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
-
-                    int documentId = documentsController.Create(document, proxyFile);
-                    // Update the ShDocument field of the shareholder with the documentId
-                    proxy.ProxyDocument = documentId;
-
-                    //// Update the shareholder record in the database
-                    db.Entry(proxy).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
+                ModelState.AddModelError("", "Both Identification and Agreement documents are required.");
+                ViewBag.NewProxy = proxy;
                 return RedirectToAction("Index", new { ShID = proxy.ShID });
             }
 
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", proxy.CreatedBy);
-            ViewBag.ProxyAuthorizer = new SelectList(db.Users, "UID", "FullName", proxy.ProxyAuthorizer);
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", proxy.ShID);
-            return View(proxy);
+            if (ModelState.IsValid)
+            {
+                proxy.CreatedBy = userId;
+                proxy.ProxyStatus = "New";
+                proxy.CreatedDate = DateTime.Now;
+                proxy.ProxyAuthorizationStatus = "Pending";
+                proxy.Branch = branchId;
+
+                // Handle document creation
+                if (proxyFile.ContentLength > 0 && kebeleID.ContentLength > 0)
+                {
+                    try
+                    {
+                        db.Proxies.Add(proxy);
+                        db.SaveChanges();
+
+                        Document document = new Document
+                        {
+                            DocOwner = "Proxy",
+                            DocType = "DeligationLetter",
+                            ShID = proxy.ShID,
+                            CreatedBy = userId,
+                            DocAuthorizationStatus = "Pending",
+                            CreatedDate = DateTime.Now,
+                        };
+                        Document kebele = new Document
+                        {
+                            DocOwner = "Proxy",
+                            DocType = "ProxyID",
+                            ShID = proxy.ShID,
+                            CreatedBy = userId,
+                            DocAuthorizationStatus = "Pending",
+                            CreatedDate = DateTime.Now,
+                        };
+
+                        DocumentsController documentsController = new DocumentsController();
+                        documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+
+                        int documentId = documentsController.Create(document, proxyFile);
+                        int proID = documentsController.Create(kebele, kebeleID);
+                        // Update the ShDocument field of the shareholder with the documentId
+                        proxy.ProxyDocument = documentId;
+                        proxy.KebeleID = proID;
+
+                        //// Update the shareholder record in the database
+                        db.Entry(proxy).State = EntityState.Modified;
+                        db.SaveChanges();
+                        return RedirectToAction("Index", new { ShID = proxy.ShID });
+
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "An error occurred while saving the documents. Please try again.");
+                        System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Files cannot be empty.");
+                }
+            }
+
+
+            ViewBag.NewProxy = proxy;
+
+            return RedirectToAction("Index", new { ShID = proxy.ShID });
         }
 
 
@@ -274,7 +363,7 @@ namespace Shareholder_Management_System.Controllers
             if (ModelState.IsValid)
             {
                 proxy.CreatedBy = userId;
-                proxy.ProxyStatus = "Active";
+                proxy.ProxyStatus = "Updated";
                 proxy.CreatedDate = DateTime.Now;
                 proxy.ProxyAuthorizationStatus = "Pending";
 
@@ -282,6 +371,7 @@ namespace Shareholder_Management_System.Controllers
                 //db.Entry(proxy).Property(x => x.ShID).IsModified = false;
                 db.Entry(proxy).Property(x => x.Remark).IsModified = false;
                 db.Entry(proxy).Property(x => x.ProxyDocument).IsModified = false;
+                db.Entry(proxy).Property(x => x.KebeleID).IsModified = false;
 
                 db.SaveChanges();
                 return RedirectToAction("Index", new { ShID = proxy.ShID });
@@ -291,6 +381,192 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", proxy.ShID);
             return View(proxy);
         }
+
+        [HttpPost]
+        public ActionResult Approve(int id)
+        {
+            var proxy = db.Proxies.Find(id);
+            var activeProxy = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Approved" && p.ProxyStatus == "Active").FirstOrDefault();
+            if (activeProxy != null && activeProxy.ProxyID != id)
+            {
+                return Json(new { success = false, message = "There is another active proxy so frist please inactivate that proxyy." });
+            }
+            if (proxy != null)
+            {
+                int userId = Convert.ToInt32(Session["ID"]);
+
+
+                // Approve the shareholder if it's in "New" status
+                if (proxy.ProxyStatus.Equals("New"))
+                {
+                    int docID = proxy.ProxyDocument ?? 0;
+                    int kebeleID = proxy.KebeleID ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+                    var kebeleDocument = db.Documents.Find(kebeleID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Approved";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+
+                    if (kebeleDocument != null)
+                    {
+                        kebeleDocument.DocAuthorizationStatus = "Approved";
+                        kebeleDocument.DocAuthorizer = userId;
+                        kebeleDocument.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(kebeleDocument).State = EntityState.Modified;
+                    }
+                }
+                else if (proxy.ProxyStatus.Equals("Updated"))
+                {
+                    int docID = proxy.ProxyDocument ?? 0;
+                    int kebelID = proxy.KebeleID ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+                    var IDdocument = db.Documents.Find(kebelID);
+
+                    if (document != null && document.DocAuthorizationStatus.Equals("Rejected"))
+                    {
+                        document.DocAuthorizationStatus = "Approved";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+
+                    if (IDdocument != null && IDdocument.DocAuthorizationStatus.Equals("Rejected"))
+                    {
+                        IDdocument.DocAuthorizationStatus = "Approved";
+                        IDdocument.DocAuthorizer = userId;
+                        IDdocument.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+
+                }
+                else if (proxy.ProxyStatus.Equals("Document-Updated"))
+                {
+                    int docID = proxy.PendingDoc ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Approved";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+                    if (document.DocType.Equals("ShareholderID"))
+                    {
+                        proxy.KebeleID = docID;
+                    }
+                    else
+                    {
+                        proxy.ProxyDocument = docID;
+                    }
+                }
+                else
+                {
+                    int docID = proxy.PendingDoc ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Approved";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+                    proxy.ProxyDocument = docID;
+
+                }
+
+
+                proxy.ProxyStatus = "Active";
+                proxy.ProxyAuthorizationStatus = "Approved";
+                proxy.ProxyAuthorizer = userId;
+                proxy.AuthorizedDate = DateTime.Now;
+
+                db.Entry(proxy).State = EntityState.Modified;
+                db.SaveChanges();
+                return Json(new { success = true });
+
+            }
+            return Json(new { success = false });
+        }
+
+        [HttpPost]
+        public ActionResult Reject(int id, string remark)
+        {
+            var proxy = db.Proxies.Find(id);
+            if (proxy != null)
+            {
+                int userId = Convert.ToInt32(Session["ID"]);
+                int branchId = Convert.ToInt32(Session["Branch"]);
+
+                if (proxy.ProxyStatus.Equals("New"))
+                {
+                    int docID = proxy.ProxyDocument ?? 0;
+                    int kebeleID = proxy.KebeleID ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+                    var kebeleDocument = db.Documents.Find(kebeleID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Rejected";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+
+                    if (kebeleDocument != null)
+                    {
+                        kebeleDocument.DocAuthorizationStatus = "Rejected";
+                        kebeleDocument.DocAuthorizer = userId;
+                        kebeleDocument.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(kebeleDocument).State = EntityState.Modified;
+                    }
+                }
+                else
+                {
+                    int docID = proxy.PendingDoc ?? 0;
+
+                    // Find and approve the documents associated with the shareholder
+                    var document = db.Documents.Find(docID);
+
+                    if (document != null)
+                    {
+                        document.DocAuthorizationStatus = "Rejected";
+                        document.DocAuthorizer = userId;
+                        document.DocAuthorizationDate = DateTime.Now;
+                        db.Entry(document).State = EntityState.Modified;
+                    }
+                }
+
+                proxy.ProxyAuthorizer = userId;
+                proxy.AuthorizedDate = DateTime.Now;
+                proxy.ProxyAuthorizationStatus = "Rejected";
+                proxy.Remark = remark;
+
+                db.Entry(proxy).State = EntityState.Modified;
+                db.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
+
 
         // GET: Proxies/Delete/5
         public ActionResult Delete(int? id)

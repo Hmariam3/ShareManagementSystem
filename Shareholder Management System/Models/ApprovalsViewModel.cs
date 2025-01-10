@@ -14,6 +14,7 @@ namespace Shareholder_Management_System.Models
         public IEnumerable<ShareTransfer> ShareTransfers { get; set; }
         public IEnumerable<Blocked> Blockeds { get; set; }
         public IEnumerable<Document> Documents { get; set; }
+        public IEnumerable<Certificate> Certificates { get; set; }
 
     }
 }
