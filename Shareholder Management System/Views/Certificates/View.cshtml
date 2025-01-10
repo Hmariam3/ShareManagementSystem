@@ -1,0 +1,131 @@
+﻿@model Shareholder_Management_System.Models.Certificate
+
+@{
+    ViewBag.Title = "Create Certificate";
+}
+
+<h2>Certificate</h2>
+
+<div x-data="certificateForm">
+    <div>
+        <button onclick="printDiv()" class="btn btn-secondary">Print Profile</button>
+    </div>
+
+    <div class="relative mt-5 flex flex-col gap-5 xl:flex-row">
+        <div class="panel flex-none w-80 border-0 p-0 lg:overflow-y-auto">
+            <div class="flex items-center gap-2 px-4">
+                <img src="~/assets/images/coop_logo.png" alt="Coop Logo" class="w-14 mt-4">
+                <div class="text-2xl font-semibold mt-4">Cooperative Bank of Oromia</div>
+            </div>
+            <div class="flex-1 lg:w-1/2 lg:pr-4">
+                <div class="mb-2 flex w-full items-center">
+                    <span class="text-white-dark">Shareholder Name:</span><div id="SHName" class="ml-3"></div>
+                </div>
+                <div class="mb-2 flex w-full items-center">
+                    <span class="text-white-dark">Shareholder Number:</span><div id="SHNum" class="ml-3"></div>
+                </div>
+                <!-- Additional shareholder details here -->
+            </div>
+        </div>
+
+        <div class="panel flex-1 p-0">
+            <div class="flex-wrap items-center border-b p-4">
+                <div class="flex items-center gap-2 px-4">
+                    <img src="~/assets/images/coop_logo.png" alt="Coop Logo" class="w-14 mt-4">
+                    <div class="text-2xl font-semibold mt-4">Cooperative Bank of Oromia</div>
+                </div>
+            </div>
+            <div class="flex-1 px-4 overflow-hidden">
+                <div x-ref="selectedBitCoin"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script>
+   // Function to fetch payments for the selected shareholder
+function fetchPayments(shID) {
+    $.ajax({
+        url: '@Url.Action("GetPaymentsByShID", "CertificatesPreview")',
+        type: 'GET',
+        data: { shID: shID },
+        success: function (data) {
+            if (data) {
+                // Populate fields only if data is valid
+                $('#SHName').text(data.Shareholder.SHName || 'N/A');
+                $('#SHNum').text(data.Shareholder.ShareNum || 'N/A');
+                $('#SHRegion').text(data.Shareholder.Region || 'N/A');
+                $('#SHZone').text(data.Shareholder.Zone || 'N/A');
+                $('#SHCity').text(data.Shareholder.City || 'N/A');
+                $('#SHSubcity').text(data.Shareholder.Subcity || 'N/A');
+                $('#SHWoreda').text(data.Shareholder.Woreda || 'N/A');
+                $('#SHKebele').text(data.Shareholder.Kebele || 'N/A');
+                $('#SHHouseNo').text(data.Shareholder.HouseNo || 'N/A');
+                $('#SHPhoneNo').text(data.Shareholder.PhoneNo || 'N/A');
+
+                // Clear previous payments data
+                const tbody = $('#paymentsTableBody');
+                tbody.empty();
+
+                // Populate payments table
+                if (data.Payments && data.Payments.length > 0) {
+                    data.Payments.forEach(function (payment) {
+                        const row = `<tr>
+                            <td class="border p-2"><input type="checkbox" name="selectedPayments" value="${payment.PayID}" class="form-checkbox" /></td>
+                            <td class="border p-2">${payment.PayID}</td>
+                            <td class="border p-2">${payment.SHName}</td>
+                            <td class="border p-2">${payment.PaymentMode}</td>
+                            <td class="border p-2">${payment.Branch}</td>
+                            <td class="border p-2">${payment.PaidAmount}</td>
+                            <td class="border p-2">${payment.BlockedAmount}</td>
+                            <td class="border p-2">${payment.ReferenceNum}</td>
+                            <td class="border p-2">${payment.PaymentDate}</td>
+                        </tr>`;
+                        tbody.append(row);
+                    });
+                } else {
+                    tbody.append('<tr><td colspan="9">No payments available.</td></tr>');
+                }
+            } else {
+                console.error('No data received');
+            }
+        },
+        error: function () {
+            console.error('Error fetching payments');
+        }
+    });
+}
+
+// Event listener for dropdown change
+$('#seachable-select').change(function () {
+    const selectedValue = $(this).val();
+    if (selectedValue) {
+        $('#paymentsTableBody').empty();
+        clearDisplayData();  // Clear data before fetching new data
+        fetchPayments(selectedValue);  // Fetch data for the selected ShID
+    }
+});
+
+// Clear display data
+function clearDisplayData() {
+    $('#SHName, #SHNum, #SHRegion, #SHZone, #SHCity, #SHSubcity, #SHWoreda, #SHKebele, #SHHouseNo, #SHPhoneNo').empty();
+}
+
+</script>
+
+<script>
+    function printDiv() {
+        const content = document.querySelector('[x-data="certificateForm"]').outerHTML;
+        const printWindow = window.open('', '', 'height=600,width=800');
+        document.styleSheets.forEach(sheet => {
+            if (sheet.href) printWindow.document.write(`<link rel="stylesheet" href="${sheet.href}">`);
+        });
+        printWindow.document.write('<html><head><title>Print</title></head><body>' + content + '</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    }
+</script>

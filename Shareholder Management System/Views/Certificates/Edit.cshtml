@@ -4,140 +4,120 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+<link rel="stylesheet" href="~/Content/CSS/highlight.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="~/Content/CSS/style.css">
+<link defer="" rel="stylesheet" type="text/css" media="screen" href="~/Content/CSS/animate.css">
+<link rel="stylesheet" type="text/css" href="~/Content/CSS/nice-select2.css">
+<script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
+<script src="~/Scripts/JS/nice-select2.js"></script>
+<script src="~/Scripts/JS/highlight.min.js"></script>
+<script src="~/Scripts/JS/alpine-collaspe.min.js"></script>
+<script src="~/Scripts/JS/alpine-persist.min.js"></script>
+<script defer="" src="~/Scripts/JS/alpine-ui.min.js"></script>
+<script defer="" src="~/Scripts/JS/alpine-focus.min.js"></script>
+<script defer="" src="~/Scripts/JS/alpine.min.js"></script>
+<script src="~/Scripts/JS/custom.js"></script>
 
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>Certificate</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.CertID)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+<div x-data="form">
+    <div class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-2">
+        <!-- Edit Certificate Section -->
+        <div class="panel">
+            <div class="mb-5 flex items-center justify-between">
+                <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Edit Certificate</h5>
             </div>
+            @using (Html.BeginForm("Edit", "Certificates", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.CertID)
+
+                <!-- Shareholder Dropdown -->
+                <div class="mb-5">
+                    <label for="shid">Shareholder</label>
+                    @Html.DropDownList("ShID",
+                        new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text", Model.ShID),
+                        htmlAttributes: new { id = "seachable-select" }
+                    )
+                    @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                </div>
+
+                <!-- Payments Table -->
+                <div class="table-responsive">
+                    <table class="table-auto w-full border-collapse border border-gray-300 mt-8">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="border p-2"><input type="checkbox" class="form-checkbox" id="selectAllPayments" /></th>
+                                <th class="border p-2">Payment ID</th>
+                                <th class="border p-2">Shareholder Name</th>
+                                <th class="border p-2">Payment Mode</th>
+                                <th class="border p-2">Branch</th>
+                                <th class="border p-2">Paid Amount</th>
+                                <th class="border p-2">Blocked Amount</th>
+                                <th class="border p-2">Reference Number</th>
+                                <th class="border p-2">Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody">
+                            <!-- Dynamic content filled by Ajax -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Hidden field for PaymentIDs -->
+                @Html.HiddenFor(model => model.PaymentIDs, new { id = "PaymentIDs" })
+
+                <!-- Certificate Details -->
+                <div class="mb-5">
+                    @Html.LabelFor(model => model.CertNum, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.CertNum, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CertNum, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    @Html.LabelFor(model => model.BeginingSerial, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BeginingSerial, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.BeginingSerial, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    @Html.LabelFor(model => model.EndingSerial, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.EndingSerial, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.EndingSerial, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <!-- Remark -->
+                <div class="mb-5">
+                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Remark, new { @class = "form-input" })
+                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary mt-6" style="background:#00adef;">Save</button>
+            }
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.PaymentIDs, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PaymentIDs, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PaymentIDs, "", new { @class = "text-danger" })
+        @*<!-- Preview Section -->
+        <div>
+            <div class="mb-5 flex items-center justify-between">
+                <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Preview</h5>
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.BeginingSerial, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.BeginingSerial, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BeginingSerial, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.EndingSerial, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.EndingSerial, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EndingSerial, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CertNum, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CertNum, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CertNum, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedBy, "CreatedBy", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CreatedBy", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DeliveryStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.DeliveryStatus)
-                    @Html.ValidationMessageFor(model => model.DeliveryStatus, "", new { @class = "text-danger" })
+            <hr />
+            <div class="mb-5">
+                <div x-data="invoicePreview">
+                    <!-- Preview content here -->
                 </div>
             </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DeliveredBy, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DeliveredBy, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DeliveredBy, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DeliveryDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DeliveryDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DeliveryDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CertAuthorizationStatus, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CertAuthorizationStatus, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CertAuthorizationStatus, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CertGenerationDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.CertGenerationDate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CertGenerationDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CertAuthorizer, "CertAuthorizer", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("CertAuthorizer", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CertAuthorizer, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
+        </div>*@
     </div>
-}
+</div>
 
 <div>
     @Html.ActionLink("Back to List", "Index")
@@ -145,4 +125,116 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (e) {
+            var options = {
+                searchable: true
+            };
+            NiceSelect.bind(document.getElementById("seachable-select"), options);
+        });
+
+        $(document).ready(function () {
+            // Event listener for dropdown change
+            $('#seachable-select').change(function () {
+                var selectedValue = $(this).val();
+                if (selectedValue) {
+                    fetchPaymentsAndUpdateUI(selectedValue);
+                } else {
+                    clearDisplayData();
+                }
+            });
+
+            // Fetch payments and update UI
+            function fetchPaymentsAndUpdateUI(shID) {
+                $.ajax({
+                    url: '@Url.Action("GetPaymentsByShID", "Certificates")',
+                    type: 'GET',
+                    data: { shID: shID },
+                    success: function (data) {
+                        if (data) {
+                            // Update shareholder details
+                            $('#SHName').text(data.Shareholder.SHName);
+                            $('#SHNum').text(data.Shareholder.ShareNum);
+                            $('#SHRegion').text(data.Shareholder.Region);
+                            $('#SHZone').text(data.Shareholder.Zone);
+                            $('#SHCity').text(data.Shareholder.City);
+                            $('#SHSubcity').text(data.Shareholder.Subcity);
+                            $('#SHWoreda').text(data.Shareholder.Woreda);
+                            $('#SHKebele').text(data.Shareholder.Kebele);
+                            $('#SHHouseNo').text(data.Shareholder.HouseNo);
+                            $('#SHPhoneNo').text(data.Shareholder.PhoneNo);
+
+                            // Update payments table
+                            var tbody = $('#paymentsTableBody');
+                            tbody.empty();
+                            $.each(data.Payments, function (index, payment) {
+                                var isChecked = $('#PaymentIDs').val().split(',').includes(payment.PayID.toString());
+                                var row = `<tr>
+                                    <td class="border p-2">
+                                        <input type="checkbox" name="selectedPayments" value="${payment.PayID}" class="form-checkbox" ${isChecked ? 'checked' : ''} />
+                                    </td>
+                                    <td class="border p-2">${payment.PayID}</td>
+                                    <td class="border p-2">${payment.SHName}</td>
+                                    <td class="border p-2">${payment.PaymentMode}</td>
+                                    <td class="border p-2">${payment.Branch}</td>
+                                    <td class="border p-2">${payment.PaidAmount}</td>
+                                    <td class="border p-2">${payment.BlockedAmount}</td>
+                                    <td class="border p-2">${payment.ReferenceNum}</td>
+                                    <td class="border p-2">${payment.PaymentDate}</td>
+                                </tr>`;
+                                tbody.append(row);
+                            });
+
+                            // Update PaymentIDs hidden field
+                            updatePaymentIDs();
+                        }
+                    },
+                    error: function () {
+                        console.error('Error fetching payments');
+                        alert('An error occurred while fetching payments. Please try again.');
+                    }
+                });
+            }
+
+            // Clear the displayed data
+            function clearDisplayData() {
+                $('#ShID').val('');
+                $('#SHName').text('');
+                $('#SHNum').text('');
+                $('#SHRegion').text('');
+                $('#SHZone').text('');
+                $('#SHCity').text('');
+                $('#SHSubcity').text('');
+                $('#SHWoreda').text('');
+                $('#SHKebele').text('');
+                $('#SHHouseNo').text('');
+                $('#SHPhoneNo').text('');
+                $('#paymentsTableBody').empty();
+                $('#paymentsTableBody2').empty();
+                $('#totalNumberOfShares').text('0');
+                $('#totalPaidUpAmount').text('0.00');
+            }
+
+            // Update PaymentIDs hidden field when checkboxes are clicked
+            $(document).on('change', 'input[name="selectedPayments"]', function () {
+                updatePaymentIDs();
+            });
+
+            // Update PaymentIDs hidden field
+            function updatePaymentIDs() {
+                var selectedPayments = [];
+                $('input[name="selectedPayments"]:checked').each(function () {
+                    selectedPayments.push($(this).val());
+                });
+                $('#PaymentIDs').val(selectedPayments.join(','));
+            }
+
+            // Initialize with the current shareholder's payments
+            var initialShID = $('#seachable-select').val();
+            if (initialShID) {
+                fetchPaymentsAndUpdateUI(initialShID);
+            }
+        });
+    </script>
 }

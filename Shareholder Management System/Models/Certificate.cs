@@ -15,15 +15,15 @@ namespace Shareholder_Management_System.Models
     public partial class Certificate
     {
         public int CertID { get; set; }
-        public Nullable<int> ShID { get; set; }
+        public int ShID { get; set; }
         public string PaymentIDs { get; set; }
-        public string BeginingSerial { get; set; }
-        public string EndingSerial { get; set; }
+        public Nullable<int> BeginingSerial { get; set; }
+        public Nullable<int> EndingSerial { get; set; }
         public string CertNum { get; set; }
-        public Nullable<int> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public int CreatedBy { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<bool> DeliveryStatus { get; set; }
-        public string DeliveredBy { get; set; }
+        public Nullable<int> DeliveredBy { get; set; }
         public Nullable<System.DateTime> DeliveryDate { get; set; }
         public string CertAuthorizationStatus { get; set; }
         public Nullable<System.DateTime> CertGenerationDate { get; set; }

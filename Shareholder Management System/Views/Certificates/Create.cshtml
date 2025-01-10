@@ -4,14 +4,12 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
+@*<h2>Create</h2>*@
 
 <link rel="stylesheet" href="~/Content/CSS/highlight.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="~/Content/CSS/style.css">
 <link defer="" rel="stylesheet" type="text/css" media="screen" href="~/Content/CSS/animate.css">
 <link rel="stylesheet" type="text/css" href="~/Content/CSS/nice-select2.css">
-<link rel="stylesheet" type="text/css" href="~/Content/CSS/Print.css">
-<link rel="stylesheet" type="text/css" href="~/Content/CSS/css2.css">
 <script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
 <script src="~/Scripts/JS/nice-select2.js"></script>
 <script src="~/Scripts/JS/highlight.min.js"></script>
@@ -23,14 +21,14 @@
 <script src="~/Scripts/JS/custom.js"></script>
 
 <div x-data="form">
-    <ul class="flex space-x-2 rtl:space-x-reverse">
+    @*<ul class="flex space-x-2 rtl:space-x-reverse">
         <li>
             <a href="javascript:;" class="text-primary hover:underline">Forms</a>
         </li>
         <li class="before:content-['/'] ltr:before:mr-1 rtl:before:ml-1">
             <span>Basic</span>
         </li>
-    </ul>
+    </ul>*@
     <div class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-2">
 
         <!-- Basic -->
@@ -148,7 +146,7 @@
                             )
                         </div>
 
-                        <div class="absolute z-50 left-0 w-full bg-white dark:bg-[#1b2e4b] rounded-lg shadow-lg" :class="{'hidden': searchResults.length === 0}">
+                        @*<div class="absolute z-50 left-0 w-full bg-white dark:bg-[#1b2e4b] rounded-lg shadow-lg" :class="{'hidden': searchResults.length === 0}">
                             <div class="p-3 flex flex-col space-y-2">
                                 <!-- Common container for items -->
                                 <template x-for="item in searchResults" :key="item.Value">
@@ -158,7 +156,7 @@
                                     </div>
                                 </template>
                             </div>
-                        </div>
+                        </div>*@
                     </div>
 
 
@@ -201,24 +199,24 @@
                 }
             </div>
         </div>
-        <div class="panel">
+        <div>
             <div class="mb-5 flex items-center justify-between">
                 <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Preview</h5>
             </div>
-            <hr style="border:1px; solid" />
+            <hr/>
 
             <div class="mb-5">
                 <div x-data="invoicePreview">
                     <div class="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
                         @*<button type="button" class="btn btn-info gap-2">
-                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
-                                    <path d="M17.4975 18.4851L20.6281 9.09373C21.8764 5.34874 22.5006 3.47624 21.5122 2.48782C20.5237 1.49939 18.6511 2.12356 14.906 3.37189L5.57477 6.48218C3.49295 7.1761 2.45203 7.52305 2.13608 8.28637C2.06182 8.46577 2.01692 8.65596 2.00311 8.84963C1.94433 9.67365 2.72018 10.4495 4.27188 12.0011L4.55451 12.2837C4.80921 12.5384 4.93655 12.6658 5.03282 12.8075C5.22269 13.0871 5.33046 13.4143 5.34393 13.7519C5.35076 13.9232 5.32403 14.1013 5.27057 14.4574C5.07488 15.7612 4.97703 16.4131 5.0923 16.9147C5.32205 17.9146 6.09599 18.6995 7.09257 18.9433C7.59255 19.0656 8.24576 18.977 9.5522 18.7997L9.62363 18.79C9.99191 18.74 10.1761 18.715 10.3529 18.7257C10.6738 18.745 10.9838 18.8496 11.251 19.0285C11.3981 19.1271 11.5295 19.2585 11.7923 19.5213L12.0436 19.7725C13.5539 21.2828 14.309 22.0379 15.1101 21.9985C15.3309 21.9877 15.5479 21.9365 15.7503 21.8474C16.4844 21.5244 16.8221 20.5113 17.4975 18.4851Z" stroke="currentColor" stroke-width="1.5"></path>
-                                    <path opacity="0.5" d="M6 18L21 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                </svg>
-                                Send Invoice
-                            </button>*@
+                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                    <path d="M17.4975 18.4851L20.6281 9.09373C21.8764 5.34874 22.5006 3.47624 21.5122 2.48782C20.5237 1.49939 18.6511 2.12356 14.906 3.37189L5.57477 6.48218C3.49295 7.1761 2.45203 7.52305 2.13608 8.28637C2.06182 8.46577 2.01692 8.65596 2.00311 8.84963C1.94433 9.67365 2.72018 10.4495 4.27188 12.0011L4.55451 12.2837C4.80921 12.5384 4.93655 12.6658 5.03282 12.8075C5.22269 13.0871 5.33046 13.4143 5.34393 13.7519C5.35076 13.9232 5.32403 14.1013 5.27057 14.4574C5.07488 15.7612 4.97703 16.4131 5.0923 16.9147C5.32205 17.9146 6.09599 18.6995 7.09257 18.9433C7.59255 19.0656 8.24576 18.977 9.5522 18.7997L9.62363 18.79C9.99191 18.74 10.1761 18.715 10.3529 18.7257C10.6738 18.745 10.9838 18.8496 11.251 19.0285C11.3981 19.1271 11.5295 19.2585 11.7923 19.5213L12.0436 19.7725C13.5539 21.2828 14.309 22.0379 15.1101 21.9985C15.3309 21.9877 15.5479 21.9365 15.7503 21.8474C16.4844 21.5244 16.8221 20.5113 17.4975 18.4851Z" stroke="currentColor" stroke-width="1.5"></path>
+                    <path opacity="0.5" d="M6 18L21 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                </svg>
+                Send Invoice
+            </button>*@
 
-                        <button type="button" class="btn btn-primary gap-2" @@click="print">
+                        @*<button type="button" class="btn btn-primary gap-2" @@click="print">
                             <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
                                 <path d="M6 17.9827C4.44655 17.9359 3.51998 17.7626 2.87868 17.1213C2 16.2426 2 14.8284 2 12C2 9.17157 2 7.75736 2.87868 6.87868C3.75736 6 5.17157 6 8 6H16C18.8284 6 20.2426 6 21.1213 6.87868C22 7.75736 22 9.17157 22 12C22 14.8284 22 16.2426 21.1213 17.1213C20.48 17.7626 19.5535 17.9359 18 17.9827" stroke="currentColor" stroke-width="1.5"></path>
                                 <path opacity="0.5" d="M9 10H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
@@ -230,41 +228,38 @@
                                 <path opacity="0.5" d="M13 19H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
                             </svg>
                             Print
-                        </button>
+                        </button>*@
 
                         @*<button type="button" class="btn btn-success gap-2">
-                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
-                                    <path opacity="0.5" d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 7 9.00195" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                    <path d="M12 2L12 15M12 15L9 11.5M12 15L15 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                                Download
-                            </button>*@
+                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+                    <path opacity="0.5" d="M17 9.00195C19.175 9.01406 20.3529 9.11051 21.1213 9.8789C22 10.7576 22 12.1718 22 15.0002V16.0002C22 18.8286 22 20.2429 21.1213 21.1215C20.2426 22.0002 18.8284 22.0002 16 22.0002H8C5.17157 22.0002 3.75736 22.0002 2.87868 21.1215C2 20.2429 2 18.8286 2 16.0002L2 15.0002C2 12.1718 2 10.7576 2.87868 9.87889C3.64706 9.11051 4.82497 9.01406 7 9.00195" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                    <path d="M12 2L12 15M12 15L9 11.5M12 15L15 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                Download
+            </button>*@
 
 
                     </div>
-                    <div class="certificate">
+                    <div>
                         <!-- Certificate Title and Company Address Section -->
-                        <div class="flex flex-col items-center text-center mb-4">
-                            <!-- Address -->
-                            @*<p>"www.cooperativebankoformia.et"</p>*@
+                        @*<div class="flex flex-col items-center text-center mb-4">
 
-                            <!-- Certificate Title -->
-                            <h2 class="text-3xl font-semibold">Certificate of Share Ownership</h2>
-                        </div>
+            <!-- Certificate Title -->
+            <h2 class="text-3xl font-semibold">Certificate of Share Ownership</h2>
+        </div>*@
 
                         <!-- Logo and Bank Name Section (side-by-side) -->
-                        <div class="flex items-center gap-2 px-4 justify-start">
+                        <div class="flex items-center gap-2 px-4">
                             <!-- Logo Image -->
                             <div class="shrink-0 mt-4">
                                 <img src="~/assets/images/coop_logo.png" alt="image" class="w-14">
                             </div>
 
                             <!-- Bank Name (appears next to image) -->
-                            <div class="text-lg font-semibold mt-4">
+                            <div class="text-2xl font-semibold mt-4">
                                 Cooperative Bank of Oromia
                             </div>
                         </div>
-
                         <div class="flex items-center gap-2 px-4 lg:justify-end">
                             <!-- Certificate Number -->
                             <div class="mt-4 order-first lg:order-1">
@@ -372,8 +367,7 @@
                             </div>
                         </div>
 
-                    </div>
-                </div>
+                    </div></div>
             </div>
 
         </div>
@@ -391,37 +385,7 @@
     @Scripts.Render("~/bundles/jqueryval")
 }
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-document.addEventListener('alpine:init', () => {
-    Alpine.data('invoicePreview', () => ({
-        items: [
-            // Your existing items
-        ],
-        columns: [
-            // Your existing columns
-        ],
 
-        print() {
-            const printContent = document.querySelector('.certificate').innerHTML;
-            const printWindow = window.open('', '', 'height=600,width=800');
-
-            printWindow.document.write('<html><head><title>Print</title>');
-
-            // Use a relative or absolute path to your CSS file
-            printWindow.document.write(`<link href="~/Content/CSS/Print.css" rel="stylesheet" type="text/css" />`);
-
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(printContent);
-            printWindow.document.write('</body></html>');
-
-            printWindow.document.close();
-            printWindow.focus();
-            printWindow.print();
-        },
-
-    }));
-});
-    </script>
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('search', () => ({
@@ -542,9 +506,7 @@ document.addEventListener('alpine:init', () => {
             // Initialization to set up the keyup event
             init() {
                 this.setupSearchListener();
-            },
-      
-
+            }
         }));
     });
 

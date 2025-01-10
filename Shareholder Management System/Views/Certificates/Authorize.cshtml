@@ -5,17 +5,62 @@
 }
 
 <div x-data="form">
-    <div style=" margin-left: 12px;">
-        <button onclick="printDiv()" class="btn btn-primary">Print Certificate</button>
+
+    <div class="flex justify-between items-center mt-5">
+        <!-- Left-aligned Back Icon -->
+        <a href="@Url.Action("FilterPending")" class="text-green-500 hover:text-green-600">
+            <i class="fa fa-arrow-left fa-lg"></i>
+            <button type="reset" name="action" class="btn btn-default mt-6">Back to list</button>
+        </a>
+            <!-- Authorization Buttons -->
+            <div class="flex gap-2">
+                @using (Html.BeginForm("Authorize", "Certificates", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="flex">
+                        <div class="flex justify-between ml-5">
+                            @if (Model.CertAuthorizationStatus == "Approved")
+                            {
+                                <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
+                            }
+                            else
+                            {
+                                <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                                    </svg> Authorize 
+                                </button>
+                            }
+                        </div>
+
+                        <div class="flex justify-between ml-3">
+                            @if (Model.CertAuthorizationStatus == "Rejected")
+                            {
+                                <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
+                            }
+                            else
+                            {
+                                <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                                        <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+                                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                                    </svg> Reject
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
     </div>
+
 
     <div x-data="crypto">
         <div class="relative mt-5 flex flex-col gap-5 xl:flex-row">
             <!-- Certificate Details Panel -->
-            <div class="panel perfect-scrollbar absolute z-10 hidden w-80 flex-none divide-y divide-[#ebedf2] overflow-visible 
+            <div class="panel perfect-scrollbar absolute z-10 hidden w-80 flex-none divide-y divide-[#ebedf2] overflow-visible
                  border-0 p-0 dark:divide-[#191e3a] lg:overflow-y-auto xl:relative xl:block"
-                 :class="{'!block h-full' : isShowCryptoMenu}" style="border: 4px solid #007bff; border-radius: 4px; margin-left: 12px;"
-                 >
+                 :class="{'!block h-full' : isShowCryptoMenu}" style="border: 4px solid #007bff; border-radius: 4px; margin-left: 12px;">
                 <div class="flex items-center gap-2 px-4">
                     <!-- Logo Image -->
                     <div class="shrink-0 mt-4">
@@ -160,7 +205,7 @@
                         </span>
                     </div>
                 </div>
-                
+
 
             </div>
 
@@ -250,7 +295,7 @@
                                 @(Model.Shareholder.Payments.FirstOrDefault().PaidAmount)
                             </span><br>
                         </p>
-                        <p  style="margin-bottom: 20px">
+                        <p style="margin-bottom: 20px">
                             Ragaan kun:
                             Abba qabeenya aksiyoona baay'inni isaa:
                             ta'ee tartiiba lakkoofsa: hanga: ta'uusaanii kan
@@ -263,8 +308,8 @@
                             Pirezidaantii<br>
                             President
                         </p>
-                           
-                        
+
+
                     </div>
 
                     <div style="flex: 1;">
@@ -289,8 +334,8 @@
                             divided into:
                             <span style="color: #007bff; font-weight: bold; text-decoration: underline">
                                 @(Model.Shareholder.Subscribtions.FirstOrDefault() != null ?
-                                              string.Format("{0:F2}", Model.Shareholder.Subscribtions.FirstOrDefault().SubAmount / 100) :
-                                              "N/A")
+                                                                              string.Format("{0:F2}", Model.Shareholder.Subscribtions.FirstOrDefault().SubAmount / 100) :
+                                                                              "N/A")
 
 
                             </span>
@@ -347,17 +392,17 @@
                 </div>
 
             </div>
-          
+
 
         </div>
     </div>
 
-    <!-- Action Links -->
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.CertID }) |
-        @Html.ActionLink("Back to List", "Index")
-    </p>
+    <!-- type=password -->
+
 </div>
+
+
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -392,4 +437,5 @@
         // Optionally, hide it again after printing
         cryptoDiv.classList.add('hidden');
     }
+
 </script>

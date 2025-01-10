@@ -6,7 +6,7 @@
 }
 
 
-<h2>Index</h2>
+
 <script src="~/Scripts/JS/simple-datatables.js"></script>
 <script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
 <script defer="" src="~/Scripts/JS/popper.min.js"></script>
@@ -16,114 +16,14 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-@*<div class="table-responsive ml-3 mr-3 mt-3">*@
-@*<table class="table-auto w-full border-collapse border border-gray-300">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.CertNum)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Shareholder.FullNameEng)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Shareholder.FullNameAfanOromo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Shareholder.SHCategory)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.BeginingSerial)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.EndingSerial)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PaymentIDs)
-                </th>
 
-                <th>
-                    @Html.DisplayNameFor(model => model.DeliveryStatus)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DeliveredBy)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DeliveryDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.CertGenerationDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Remark)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
 
-        @foreach (var item in Model)
-        {
-            <tbody>
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CertNum)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.ShareID)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.FullNameAfanOromo)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Shareholder.SHCategory)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BeginingSerial)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EndingSerial)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PaymentIDs)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DeliveryStatus)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DeliveredBy)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DeliveryDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CertGenerationDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Remark)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.CertID }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.CertID }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.CertID })
-                    </td>
-                </tr>
-                </tbody>
-        }
-
-    </table>*@
-@*</div>*@
 <div class="animate__animated p-4" :@class="[$store.app.animation]">
     <!-- start main content section -->
     <div x-data="multipleTable">
         <div class="panel mt-1">
             <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">Certificates</h5>
-            <table id="myTable1" class="table-auto w-full border-collapse border border-gray-300">
+            <table id="myTable1" class="table-striped table-hover table-bordered table-compact">
                 <thead>
                     <tr>
                         <th>CertNum</th>
@@ -134,9 +34,9 @@
                         <th>BeginingSerial</th>
                         <th>EndingSerial</th>
                         <th>PaymentIDs</th>
-                        <th>DeliveryStatus</th>
+
                         <th>DeliveredBy</th>
-                        <th>DeliveryDate</th>
+
                         <th>CertGenerationDate</th>
                         <th>Remark</th>
                         <th>Action</th>
@@ -177,9 +77,9 @@
                             'BeginingSerial',
                             'EndingSerial',
                             'PaymentIDs',
-                            'DeliveryStatus',
+
                             'DeliveredBy',
-                            'DeliveryDate',
+
                             'CertGenerationDate',
                             'Remark',
                             'Action'
@@ -187,35 +87,63 @@
                        data: [
     @foreach (var item in Model)
     {
-        <text>
-        [
-            "@item.CertNum", // CertNum
-            "@item.Shareholder.ShareID", // Shareholder.ShareID
-            "@item.Shareholder.FullNameEng", // FullNameEng
-            "@item.Shareholder.FullNameAfanOromo", // FullNameAfanOromo
-            "@item.Shareholder.SHCategory", // SHCategory
-            "@item.BeginingSerial", // BeginingSerial
-            "@item.EndingSerial", // EndingSerial
-            "@item.PaymentIDs", // PaymentIDs
-            "@item.DeliveryStatus", // DeliveryStatus
-            "@item.DeliveredBy", // DeliveredBy
-            "@(item.DeliveryDate.HasValue ? item.DeliveryDate.Value.ToString("yyyy-MM-dd") : "")", // DeliveryDate
-            "@(item.CertGenerationDate.HasValue ? item.CertGenerationDate.Value.ToString("yyyy-MM-dd") : "")", // CertGenerationDate
-            "@item.Remark", // Remark
-            `<a href="@Url.Action("Edit", new { id = item.CertID })">Edit</a> |
-             <a href="@Url.Action("Details", new { id = item.CertID })">Details</a> |
-             <a href="@Url.Action("Delete", new { id = item.CertID })">Delete</a>`
-        ],
-        </text>
+
+<text>
+    [
+        "@item.CertNum", // CertNum
+        "@item.Shareholder.ShareID", // Shareholder.ShareID
+        "@item.Shareholder.FullNameEng", // FullNameEng
+        "@item.Shareholder.FullNameAfanOromo", // FullNameAfanOromo
+        "@item.Shareholder.SHCategory", // SHCategory
+        "@item.BeginingSerial", // BeginingSerial
+        "@item.EndingSerial", // EndingSerial
+        "@item.PaymentIDs", // PaymentIDs
+
+        "@item.DeliveredBy", // DeliveredBy
+
+        "@(item.CertGenerationDate.HasValue ? item.CertGenerationDate.Value.ToString("yyyy-MM-dd") : "")", // CertGenerationDate
+        "@item.Remark", // Remark
+        `<div class="flex gap-4 items-center">
+@if ( item.CertAuthorizationStatus == "Approved") {
+<a href="@Url.Action("Details", new { id = item.CertID })"  class="text-success" >
+           
+                <svg width="24" height="24" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                <path d="M17 9C17 9.55229 16.5523 10 16 10C15.4477 10 15 9.55229 15 9C15 8.44772 15.4477 8 16 8C16.5523 8 17 8.44772 17 9Z" fill="#2684FC"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9451 0.250001H11.0549C12.4225 0.24998 13.5248 0.249963 14.3918 0.366524C15.2919 0.48754 16.0497 0.746434 16.6517 1.34835C17.3916 2.08833 17.6205 3.07517 17.7012 4.29943C17.9462 4.31578 18.1763 4.33755 18.3918 4.36652C19.2919 4.48754 20.0497 4.74643 20.6517 5.34835C21.2536 5.95027 21.5125 6.70814 21.6335 7.60825C21.75 8.47522 21.75 9.57754 21.75 10.9451V11.0549C21.75 12.4225 21.75 13.5248 21.6335 14.3918C21.5125 15.2919 21.2536 16.0497 20.6517 16.6517C19.9117 17.3916 18.9248 17.6205 17.7006 17.7012C17.6842 17.9462 17.6625 18.1763 17.6335 18.3918C17.5125 19.2919 17.2536 20.0497 16.6517 20.6517C16.0497 21.2536 15.2919 21.5125 14.3918 21.6335C13.5248 21.75 12.4225 21.75 11.0549 21.75H10.9451C9.57754 21.75 8.47522 21.75 7.60825 21.6335C6.70814 21.5125 5.95027 21.2536 5.34835 20.6517C4.74643 20.0497 4.48754 19.2919 4.36652 18.3918C4.33755 18.1763 4.31578 17.9462 4.29942 17.7012C3.07517 17.6205 2.08833 17.3916 1.34835 16.6517C0.746434 16.0497 0.48754 15.2919 0.366524 14.3918C0.249963 13.5248 0.24998 12.4225 0.250001 11.0549V10.9451C0.24998 9.57754 0.249963 8.47522 0.366524 7.60825C0.48754 6.70814 0.746434 5.95027 1.34835 5.34835C1.95027 4.74643 2.70814 4.48754 3.60825 4.36652C3.82374 4.33755 4.05377 4.31578 4.29879 4.29943C4.37952 3.07517 4.60837 2.08833 5.34835 1.34835C5.95027 0.746434 6.70814 0.48754 7.60825 0.366524C8.47522 0.249963 9.57754 0.24998 10.9451 0.250001ZM5.80714 4.25295C6.16406 4.24999 6.54313 4.24999 6.94512 4.25H15.0549C15.4569 4.24999 15.8359 4.24999 16.1929 4.25295C16.1109 3.23209 15.9265 2.74452 15.591 2.40901C15.3142 2.13225 14.9257 1.9518 14.1919 1.85315C13.4365 1.75159 12.4354 1.75 11 1.75C9.56458 1.75 8.56347 1.75159 7.80812 1.85315C7.07434 1.9518 6.68577 2.13225 6.40901 2.40901C6.0735 2.74452 5.88909 3.23209 5.80714 4.25295ZM4.25294 16.1929C4.24999 15.8359 4.24999 15.4569 4.25 15.0549L4.25 13.75H4C3.58579 13.75 3.25 13.4142 3.25 13C3.25 12.5858 3.58579 12.25 4 12.25H18C18.4142 12.25 18.75 12.5858 18.75 13C18.75 13.4142 18.4142 13.75 18 13.75H17.75V15.0549C17.75 15.4569 17.75 15.8359 17.7471 16.1929C18.7679 16.1109 19.2555 15.9265 19.591 15.591C19.8678 15.3142 20.0482 14.9257 20.1469 14.1919C20.2484 13.4365 20.25 12.4354 20.25 11C20.25 9.56458 20.2484 8.56347 20.1469 7.80812C20.0482 7.07435 19.8678 6.68577 19.591 6.40901C19.3142 6.13225 18.9257 5.9518 18.1919 5.85315C17.4365 5.75159 16.4354 5.75 15 5.75H7C5.56458 5.75 4.56347 5.75159 3.80812 5.85315C3.07435 5.9518 2.68577 6.13225 2.40901 6.40901C2.13225 6.68577 1.9518 7.07435 1.85315 7.80812C1.75159 8.56347 1.75 9.56458 1.75 11C1.75 12.4354 1.75159 13.4365 1.85315 14.1919C1.9518 14.9257 2.13225 15.3142 2.40901 15.591C2.74452 15.9265 3.23209 16.1109 4.25294 16.1929ZM16.25 13.75H5.75V15C5.75 16.4354 5.75159 17.4365 5.85315 18.1919C5.9518 18.9257 6.13225 19.3142 6.40901 19.591C6.68577 19.8678 7.07435 20.0482 7.80812 20.1469C8.56347 20.2484 9.56458 20.25 11 20.25C12.4354 20.25 13.4365 20.2484 14.1919 20.1469C14.9257 20.0482 15.3142 19.8678 15.591 19.591C15.8678 19.3142 16.0482 18.9257 16.1469 18.1919C16.2484 17.4365 16.25 16.4354 16.25 15V13.75ZM4.25 9C4.25 8.58579 4.58579 8.25 5 8.25H8C8.41421 8.25 8.75 8.58579 8.75 9C8.75 9.41421 8.41421 9.75 8 9.75H5C4.58579 9.75 4.25 9.41421 4.25 9ZM7.25 15.8049C7.25 15.3907 7.58579 15.0549 8 15.0549H14C14.4142 15.0549 14.75 15.3907 14.75 15.8049C14.75 16.2191 14.4142 16.5549 14 16.5549H8C7.58579 16.5549 7.25 16.2191 7.25 15.8049ZM7.25 18.3049C7.25 17.8907 7.58579 17.5549 8 17.5549H12C12.4142 17.5549 12.75 17.8907 12.75 18.3049C12.75 18.7191 12.4142 19.0549 12 19.0549H8C7.58579 19.0549 7.25 18.7191 7.25 18.3049Z" fill="#2684FC"/>
+                </svg>
+
+        </a>
+}
+            <a href="@Url.Action("Edit", new { id = item.CertID })" class="hover:text-info">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                                            <!-- SVG content for Edit (pencil icon) -->
+                                                            <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                            <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                            <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                                        </svg>
+                                                    </a>
+               <a href="@Url.Action("Delete", new { id = item.CertID })" class="text-danger">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                                            <!-- SVG content for Delete (trash icon) -->
+                                                            <path d="M3 6H5H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M10 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                            <path d="M14 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                   </a> </div>`
+                               
+],
+</text>
+
     }
 ]
 
-                    },
-                    searchable: true,
-                    perPage: 10,
-                    columns: [
-                        { select: 10, render: (data) => this.formatDate(data) }, // DeliveryDate column
-                        { select: 11, render: (data) => this.formatDate(data) }, // CertGenerationDate column
+   },
+   searchable: true,
+   perPage: 10,
+   columns: [
+                        //{ select: 10, render: (data) => this.formatDate(data) }, // DeliveryDate column
+                       // { select: 11, render: (data) => this.formatDate(data) }, // CertGenerationDate column
                     ],
                     firstLast: true,
                     labels: {

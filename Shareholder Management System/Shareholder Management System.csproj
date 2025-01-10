@@ -305,66 +305,66 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuditLog.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Blocked.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Branch.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Certificate.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Dividend.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DividenedDetail.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Document.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Payment.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Proxy.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\Shareholder.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ShareholderManagementModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderManagementModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ShareholderManagementModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ShareholderManagementModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ShareholderManagementModel.edmx</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShareholderSummaryViewModel.cs" />
+    <Compile Include="Models\Shareholder_Management_SystemEntities1.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Shareholder_Management_SystemEntities1.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Shareholder_Management_SystemEntities1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Shareholder_Management_SystemEntities1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Shareholder_Management_SystemEntities1.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\ShareTransfer.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ShCategory.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SimulationDividened.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Subscribtion.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
-      <DependentUpon>ShareholderManagementModel.tt</DependentUpon>
+      <DependentUpon>Shareholder_Management_SystemEntities1.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\BreadcrumbHelper.cs" />
@@ -485,24 +485,24 @@
     <Content Include="js\jquery.dataTables.min.js" />
     <Content Include="js\jquery.min.js" />
     <Content Include="js\select2.min.js" />
-    <Content Include="Models\ShareholderManagementModel.Context.tt">
+    <Content Include="Models\Shareholder_Management_SystemEntities1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ShareholderManagementModel.edmx</DependentUpon>
-      <LastGenOutput>ShareholderManagementModel.Context.cs</LastGenOutput>
+      <DependentUpon>Shareholder_Management_SystemEntities1.edmx</DependentUpon>
+      <LastGenOutput>Shareholder_Management_SystemEntities1.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\ShareholderManagementModel.tt">
+    <Content Include="Models\Shareholder_Management_SystemEntities1.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>ShareholderManagementModel.edmx</DependentUpon>
-      <LastGenOutput>ShareholderManagementModel.cs</LastGenOutput>
+      <DependentUpon>Shareholder_Management_SystemEntities1.edmx</DependentUpon>
+      <LastGenOutput>Shareholder_Management_SystemEntities1.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\ShareholderManagementModel.edmx">
+    <EntityDeploy Include="Models\Shareholder_Management_SystemEntities1.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>ShareholderManagementModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>Shareholder_Management_SystemEntities1.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\ShareholderManagementModel.edmx.diagram">
-      <DependentUpon>ShareholderManagementModel.edmx</DependentUpon>
+    <Content Include="Models\Shareholder_Management_SystemEntities1.edmx.diagram">
+      <DependentUpon>Shareholder_Management_SystemEntities1.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -641,6 +641,9 @@
     <Content Include="Views\Blockeds\ApproveDetails.cshtml" />
     <Content Include="Views\Blockeds\AuthorizationDetails.cshtml" />
     <Content Include="Views\Blockeds\FilterPending.cshtml" />
+    <Content Include="Views\Certificates\Authorize.cshtml" />
+    <Content Include="Views\Certificates\FilterPending.cshtml" />
+    <Content Include="Views\Certificates\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

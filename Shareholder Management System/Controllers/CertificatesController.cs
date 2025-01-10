@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -14,7 +15,24 @@ namespace Shareholder_Management_System.Controllers
     public class CertificatesController : Controller
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
+        public ActionResult FilterPending()
+        {
+            var certificates = db.Certificates.Include(c => c.Shareholder).ToList().Where(a => a.CertAuthorizationStatus != "Approved");
 
+            //foreach (var certificate in certificates)
+            //{
+            //    // Fetch the payment amount for the given PaymentIDs
+            //    var selectedPayments = certificate.PaymentIDs.Split(',').Select(int.Parse).ToList();
+            //    var totalPaymentAmount = db.Payments
+            //                               .Where(p => selectedPayments.Contains(p.PayID))
+            //                               .Sum(p => p.PaidAmount);
+
+            //    // Assuming you add a new property 'TotalPaidAmount' to your Certificate or Shareholder model
+            //    certificate = totalPaymentAmount;
+            //}
+
+            return View(certificates);
+        }
         // GET: Certificates
         public ActionResult Index()
         {
@@ -92,8 +110,11 @@ namespace Shareholder_Management_System.Controllers
             if (ModelState.IsValid)
             {
                 // Set the CreatedBy and CreatedDate fields
-                certificate.CreatedBy = Convert.ToInt32(Session["ID"]);
+                certificate.CertGenerationDate = DateTime.Now;
+                certificate.DeliveredBy = 2;
+                certificate.CreatedBy = 2;
                 certificate.CreatedDate = System.DateTime.Now;
+                certificate.CertAuthorizationStatus = "Pending";
 
                 // Join the selected payment IDs into a comma-separated string and assign it to the PaymentIDs field
                 if (selectedPayments != null && selectedPayments.Any())
@@ -106,26 +127,13 @@ namespace Shareholder_Management_System.Controllers
                                            .Where(p => selectedPayments.Contains(p.PayID))
                                            .Sum(p => p.PaidAmount);
 
-                //// Get the max EndingSerial from the Certificates table, or start from 0 if no entries exist
-                //int lastEndingSerial = db.Certificates.Any() ? db.Certificates.Max(c => c.EndingSerial).GetValueOrDefault() : 0;
-
-                // Fetch EndingSerial values from the database
-                var endingSerials = db.Certificates
-                    .Select(c => c.EndingSerial)
-                    .ToList(); // Move data to memory
-
-                // Filter valid integers and find the max, or default to 0
-                int lastEndingSerial = endingSerials
-                    .Where(e => int.TryParse(e, out _)) // Ensure valid integers
-                    .Select(e => int.Parse(e)) // Parse valid strings to integers
-                    .DefaultIfEmpty(0) // If no valid integers, default to 0
-                    .Max();
-
+                // Get the max EndingSerial from the Certificates table, or start from 0 if no entries exist
+                int lastEndingSerial = db.Certificates.Any() ? db.Certificates.Max(c => c.EndingSerial).GetValueOrDefault() : 0;
 
                 // Calculate BeginningSerial and EndingSerial
-                certificate.BeginingSerial = (lastEndingSerial + 1).ToString();
+                certificate.BeginingSerial = lastEndingSerial + 1;
                 int numberOfShares = (int)(totalPaymentAmount / 1000); // Assuming each share is worth 1000
-                certificate.EndingSerial = (int.Parse(certificate.BeginingSerial) + numberOfShares - 1).ToString();
+                certificate.EndingSerial = certificate.BeginingSerial + numberOfShares - 1;
 
                 // Fetch the last certificate number and convert it after retrieving it in memory
                 int lastCertNum = db.Certificates
@@ -271,21 +279,32 @@ namespace Shareholder_Management_System.Controllers
 
 
 
-        // GET: Certificates/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Certificate certificate = db.Certificates.Find(id);
             if (certificate == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", certificate.ShID);
+
+            // Populate ViewBag.Shareholders with a list of SelectListItem
+            ViewBag.Shareholders = db.Shareholders
+                .Select(s => new SelectListItem
+                {
+                    Value = s.ShID.ToString(), // ShID as the value
+                    Text = s.FullNameEng      // FullNameEng as the display text
+                })
+                .ToList();
+
+            // Populate other ViewBag properties if needed
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", certificate.CreatedBy);
             ViewBag.CertAuthorizer = new SelectList(db.Users, "UID", "FullName", certificate.CertAuthorizer);
+
             return View(certificate);
         }
 
@@ -294,17 +313,68 @@ namespace Shareholder_Management_System.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CertID,ShID,PaymentIDs,BeginingSerial,EndingSerial,CertNum,CreatedBy,CreatedDate,DeliveryStatus,DeliveredBy,DeliveryDate,CertAuthorizationStatus,CertGenerationDate,CertAuthorizer,Remark")] Certificate certificate)
+        public ActionResult Edit([Bind(Include = "CertID,ShID,PaymentIDs,BeginingSerial,EndingSerial,CertNum,CreatedBy,CreatedDate,DeliveryStatus,DeliveredBy,DeliveryDate,CertAuthorizationStatus,CertGenerationDate,CertAuthorizer,Remark")] Certificate certificate, int[] selectedPayments)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(certificate).State = EntityState.Modified;
-                db.SaveChanges();
+                try
+                {
+                    // Validate foreign key values
+                    var userExists = db.Users.Any(u => u.UID == certificate.CreatedBy);
+                    var authorizerExists = db.Users.Any(u => u.UID == certificate.CertAuthorizer);
+
+                  
+                        // Update the certificate
+                        db.Entry(certificate).State = EntityState.Modified;
+                        db.SaveChanges();
+                        
+                    
+                }
+                catch (DbUpdateException ex)
+                {
+                    // Log the exception
+                    System.Diagnostics.Debug.WriteLine($"DbUpdateException: {ex.Message}");
+                    if (ex.InnerException != null)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                    }
+
+                    ModelState.AddModelError("", "An error occurred while saving the certificate. Please check the data and try again.");
+                    if (selectedPayments != null && selectedPayments.Any())
+                    {
+                        certificate.PaymentIDs = string.Join(",", selectedPayments);
+                    }
+
+                    // Fetch the payment amount for the given PaymentIDs
+                    var totalPaymentAmount = db.Payments
+                                               .Where(p => selectedPayments.Contains(p.PayID))
+                                               .Sum(p => p.PaidAmount);
+
+                    // Get the max EndingSerial from the Certificates table, or start from 0 if no entries exist
+                    int lastEndingSerial = db.Certificates.Any() ? db.Certificates.Max(c => c.EndingSerial).GetValueOrDefault() : 0;
+
+                    // Calculate BeginningSerial and EndingSerial
+                    certificate.BeginingSerial = lastEndingSerial + 1;
+                    int numberOfShares = (int)(totalPaymentAmount / 1000); // Assuming each share is worth 1000
+                    certificate.EndingSerial = certificate.BeginingSerial + numberOfShares - 1;
+
+                    
+                }
                 return RedirectToAction("Index");
             }
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", certificate.ShID);
+
+            // Repopulate ViewBag if ModelState is invalid
+            ViewBag.Shareholders = db.Shareholders
+                .Select(s => new SelectListItem
+                {
+                    Value = s.ShID.ToString(),
+                    Text = s.FullNameEng
+                })
+                .ToList();
+
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", certificate.CreatedBy);
             ViewBag.CertAuthorizer = new SelectList(db.Users, "UID", "FullName", certificate.CertAuthorizer);
+
             return View(certificate);
         }
 
@@ -341,6 +411,55 @@ namespace Shareholder_Management_System.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult Authorize(int? id, string action)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Certificate certificate = db.Certificates.Find(id);
+            if (certificate == null)
+            {
+                return HttpNotFound();
+            }
+            return View(certificate);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Authorize(int id, string action)
+        {
+            Certificate certificate = db.Certificates.Find(id);
+            if (certificate == null)
+            {
+                return HttpNotFound();
+            }
+
+
+            if (action == "approve")
+            {
+                certificate.CertAuthorizationStatus = "Approved";
+
+
+            }
+            else if (action == "reject")
+            {
+                //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
+
+                // Call RecordLog method with null-safe value for CreatedBy
+                //AuditLogsController auditLogsController = new AuditLogsController();
+                //auditLogsController.RecordLog("Rejection", certificate.CertID, "Payment", certificate.CreatedBy, certificate.User.Branch);
+                // certificate.CertAuthorizationStatus = "Rejected";
+            }
+
+
+            db.Entry(certificate).Property(u => u.CertAuthorizationStatus).IsModified = true;
+            db.SaveChanges();
+
+            return RedirectToAction("FilterPending");
         }
     }
 }

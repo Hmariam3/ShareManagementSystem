@@ -546,11 +546,15 @@
                                         x-show="activeDropdown === 'Certficate'"
                                         x-collapse=""
                                         class="sub-menu text-white">
+
                                         <li>
                                             @Html.ActionLink("Order Certificate", "Create", "Certificates")
                                         </li>
                                         <li>
-                                            @Html.ActionLink("Certificate Report", "Index", "Certificates")
+                                            @Html.ActionLink("View Certificate ", "Index", "Certificates")
+                                        </li>
+                                        <li>
+                                            @Html.ActionLink("Manage Certificate", "FilterPending", "Certificates")
                                         </li>
 
                                     </ul>
