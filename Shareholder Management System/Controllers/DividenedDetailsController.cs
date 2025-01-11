@@ -19,10 +19,84 @@ namespace Shareholder_Management_System.Controllers
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
         // GET: DividenedDetails
-        public ActionResult Index()
+        public ActionResult Index(int? DivID)
         {
-            var dividenedDetails = db.DividenedDetails.Include(d => d.Branch1).Include(d => d.Dividend).Include(d => d.Payment1).Include(d => d.Shareholder).Include(d => d.Subscribtion).Include(d => d.User);
-            return View(dividenedDetails.ToList());
+            // Initialize the dataset as null
+            IQueryable<DividenedDetail> dividenedDetails = null;
+
+            var divIDWithFiscalYear = db.DividenedDetails
+                                   .OrderByDescending(d => d.DividenedYear) // Order DividenedDetails by DividenedYear
+                                   .Select(d => d.DivID)          // Select only DivID from DividenedDetails
+                                   .Distinct()                    // Ensure distinct DivID values
+                                   .Join(db.Dividends,           // Join with Dividened table
+                                         dd => dd,                // Use DivID from DividenedDetails
+                                         d => d.DivID,            // Match it with DivID in Dividened
+                                         (dd, d) => new           // Select the desired fields
+                                         {
+                                             DivID = dd,
+                                             FiscalYear = d.FiscalYear
+                                         })
+                                   .OrderByDescending(d => d.FiscalYear)    // Optional: Order by FiscalYear
+                                   .ToList();
+
+
+            if (DivID.HasValue)
+            {
+                // Filter data by DivID
+                dividenedDetails = db.DividenedDetails
+                    .Include(d => d.Branch1)
+                    .Include(d => d.Dividend)
+                    .Include(d => d.Payment1)
+                    .Include(d => d.Shareholder)
+                    .Include(d => d.Subscribtion)
+                    .Include(d => d.User)
+                    .Where(d => d.DivID == DivID.Value);
+
+                ViewBag.DivIDWithFiscalYear = divIDWithFiscalYear
+                                       .Select(d => new SelectListItem
+                                       {
+                                           Value = d.DivID.ToString(),
+                                           Text = d.FiscalYear,
+                                           Selected = d.FiscalYear == dividenedDetails.First().Dividend.FiscalYear // Mark the highest FiscalYear as selected
+                                       })
+                                       .ToList();
+
+            }
+            else
+            {
+                // Get the most recent DividendYear from DividenedDetails
+                var recentDividendYear = db.DividenedDetails
+                    .OrderByDescending(d => d.DividenedYear) // Get the most recent year
+                    .Select(d => d.DivID)                    // Select the DivID associated with it
+                    .FirstOrDefault();                       // Get the first (most recent) DivID
+
+                if (recentDividendYear != 0) // Ensure a valid DivID is retrieved
+                {
+                    // Filter data for the most recent DivID
+                    dividenedDetails = db.DividenedDetails
+                        .Include(d => d.Branch1)
+                        .Include(d => d.Dividend)
+                        .Include(d => d.Payment1)
+                        .Include(d => d.Shareholder)
+                        .Include(d => d.Subscribtion)
+                        .Include(d => d.User)
+                        .Where(d => d.DivID == recentDividendYear);
+                }
+                ViewBag.DivIDWithFiscalYear = divIDWithFiscalYear
+                                       .Select(d => new SelectListItem
+                                       {
+                                           Value = d.DivID.ToString(),
+                                           Text = d.FiscalYear,
+                                           Selected = d.FiscalYear == divIDWithFiscalYear.First().FiscalYear // Mark the highest FiscalYear as selected
+                                       })
+                                       .ToList();
+
+            }
+
+
+            var result = dividenedDetails?.ToList() ?? new List<DividenedDetail>();
+
+            return View(result);
         }
 
         // GET: DividenedDetails/Details/5
@@ -119,10 +193,10 @@ namespace Shareholder_Management_System.Controllers
         }
 
 
-        public ActionResult ExportToExcel()
+        public ActionResult ExportToExcel(int divID)
         {
             // Fetch data from the model (replace this with your actual data fetching logic)
-            IEnumerable<DividenedDetail> data = db.DividenedDetails
+            IEnumerable<DividenedDetail> data = db.DividenedDetails.Where(d => d.DivID == divID)
                 .Include(s => s.Shareholder)
                 .Include(s => s.Payment1)
                 .Include(s => s.Dividend)
