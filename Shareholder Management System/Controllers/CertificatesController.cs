@@ -439,15 +439,28 @@ namespace Shareholder_Management_System.Controllers
                 return HttpNotFound();
             }
 
-
+            int userId = Convert.ToInt32(Session["ID"]);
             if (action == "approve")
             {
                 certificate.CertAuthorizationStatus = "Approved";
-
+                certificate.CertAuthorizer = userId;
+                // Record approval log
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Approval", certificate.CertID, "Certificate", certificate.CreatedBy, Session["BranchName"]?.ToString());
 
             }
             else if (action == "reject")
             {
+                certificate.CertAuthorizationStatus = "Rejected";
+                certificate.CertAuthorizer = userId;
+
+                db.Entry(certificate).State = EntityState.Modified;
+                db.SaveChanges();
+
+                // Record approval log
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Approval", certificate.CertID, "Certificate", certificate.CreatedBy, Session["BranchName"]?.ToString());
+
                 //string branchName = db.Branches.FirstOrDefault(b => b.ID == payment.Branch)?.BranchName ?? "Unknown Branch";
 
                 // Call RecordLog method with null-safe value for CreatedBy
@@ -457,7 +470,6 @@ namespace Shareholder_Management_System.Controllers
             }
 
 
-            db.Entry(certificate).Property(u => u.CertAuthorizationStatus).IsModified = true;
             db.SaveChanges();
 
             return RedirectToAction("FilterPending");
