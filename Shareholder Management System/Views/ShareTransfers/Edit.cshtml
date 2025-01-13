@@ -89,7 +89,7 @@
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                             <div class="col-md-10">
-                                <label>Transfer Category</label>
+                                <label>Transfer Category <span style="color:red">*</span></label>
                                 @Html.DropDownListFor(model => model.TransferCategory,
                                     new List<SelectListItem>
                                     {
@@ -101,7 +101,7 @@
                             </div>
 
                             <div class="flex flex-col sm:flex-row mt-6" id="transferTypeDiv" style="display: none">
-                                <label class="rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Transfer Type</label>
+                                <label class="rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Transfer Type <span style="color:red">*</span></label>
                                 <div class="flex-1">
                                     <div class="mb-2">
                                         <label class="mt-1 inline-flex cursor-pointer">
@@ -212,7 +212,7 @@
                         <br />
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div class="col-md-10">
-                                <label>Dividend For</label>
+                                <label>Dividend For <span style="color:red">*</span></label>
                                 @Html.DropDownListFor(model => model.DividenedFor,
                                     new List<SelectListItem>
                                     {
@@ -223,7 +223,7 @@
                                 @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
-                                <label>Reason for Transfer</label>
+                                <label>Reason for Transfer <span style="color:red">*</span></label>
                                 @Html.DropDownListFor(model => model.TransferReason,
                                     new List<SelectListItem>
                                     {
@@ -235,7 +235,7 @@
                                 @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
-                                <label>Transfer Date</label>
+                                <label>Transfer Date <span style="color:red">*</span></label>
                                 @Html.TextBoxFor(model => model.TransferDate, new { @class = "form-input", @type = "date", @id = "transferDate", @Value = Model.TransferDate?.ToString("yyyy-MM-dd") })
                                 @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
                             </div>
@@ -243,25 +243,36 @@
                         <br />
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div class="mb-5">
-                                @Html.Label("Upload Document", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                                <label>Upload Document <span style="color:red">*</span></label>
                                 <div class="custom-file-container" data-upload-id="myFirstImage">
                                     <div class="custom-file-container__image-preview">
-
-                                        @if (Model.TransferDoc.HasValue)
+                                        @if (ViewBag.DocumentId != null)
                                         {
-                                            <div class="mb-2">
-                                                <a href="@Url.Content("~/UploadedFiles/receiptFT242419MJ0Z_58e1dcdb-739e-4ec9-9434-c3f86119eac5.pdf")" target="_blank" class="text-primary">View Current Document</a>
+                                            <div class="mt-2">
+                                                <span>Current File: </span>
+                                                <a href="@Url.Action("PreviewDocument", "Documents", new { id = ViewBag.DocumentId })" target="_blank" class="text-primary">
+                                                    @ViewBag.ExistingDocumentName
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="mt-2 text-muted">
+                                                No document uploaded yet.
                                             </div>
                                         }
 
+                                        <!-- File input for uploading a new document -->
                                         <input type="file"
                                                class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                                               accept="*"
+                                               accept=".jpg,.jpeg,.png,.pdf"
                                                name="uploadedFile">
                                         <span class="custom-file-container__custom-file__custom-file-control"></span>
                                     </div>
                                 </div>
                             </div>
+
+
 
                             <div class="col-md-10">
                                 <label>Remark</label>

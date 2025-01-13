@@ -191,7 +191,7 @@
 
                                 <text>
                                 [
-                                    
+
                                     "@item.Shareholder.FullNameEng",
                                     "@item.Shareholder1.FullNameEng",
                                     "@item.TransferID",
@@ -260,7 +260,7 @@
                                             </svg>
                                         </a>
                                         <form id="deleteForm" action="@Url.Action("Delete", "ShareTransfers", new { id = item.TransferID })" method="post" style="display:inline;">
-                                            @Html.AntiForgeryToken() 
+                                            @Html.AntiForgeryToken()
                                             <button type="button" onclick="showAlert('delete', event)" >
                                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
                                                     <path d="M3 6h18M10 11v6M14 11v6M5 6h14l-1 14H6L5 6zm4-2h6v1H9V4zm5-2H10a1 1 0 0 0-1 1v1H6V3a1 1 0 0 0-1-1z"
@@ -274,7 +274,7 @@
                                    else
                                    {
                                        <div style="display: flex; align-items: center;">
-                                             
+
                                             <a href="@Url.Action("Details", new { id = item.TransferID })" title="View Details" style="margin-right: 20px;">
                                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
                                                     <path d="M12 4.5C7.26 4.5 3.07 7.28 1 12c2.07 4.72 6.26 7.5 11 7.5s8.93-2.78 11-7.5c-2.07-4.72-6.26-7.5-11-7.5z"
@@ -282,7 +282,7 @@
                                                     <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
                                                 </svg>
                                             </a>
-                                           
+
                                         </div>
                                    }
                                     `,

@@ -79,7 +79,7 @@ namespace Shareholder_Management_System.Controllers
                                  {
                                      Value = s.ShID.ToString(),
                                      Text = $"{s.FullNameEng} ({s.ShareID})" // Concatenate name and ID
-                         }).ToList();
+                                 }).ToList();
 
             // Insert a default "Select Shareholder" option
             shareholders.Insert(0, new SelectListItem { Value = "", Text = "Select Shareholder" });
@@ -102,9 +102,9 @@ namespace Shareholder_Management_System.Controllers
                                  .OrderBy(s => s.FullNameEng) // Sort alphabetically
                                  .ToList() // Convert to list to work with in-memory LINQ
                                  .Select(s => new SelectListItem
-                                    {
-                                        Value = s.ShID.ToString(),
-                                        Text = $"{s.FullNameEng} ({s.ShareID})" // Concatenate name and ID
+                                 {
+                                     Value = s.ShID.ToString(),
+                                     Text = $"{s.FullNameEng} ({s.ShareID})" // Concatenate name and ID
                                  }).ToList();
 
             // Filter out the selected "Transfer From" shareholder from "Transfer To" options
@@ -156,7 +156,7 @@ namespace Shareholder_Management_System.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "TransferID,TransferrorShID,TransfareeShID,TransferCategory,NumSharesTransferred,AmountPerShare,PaidAmountForTransfer,TransferReason,DividenedFor,TransferDoc,TransferDate,CreatedBy,CreationDate,TransferAuthorizationStatus,TransferAuthorizer,TransferAuthorizationDate,Remark,Branch")] ShareTransfer shareTransfer, string selectedSubscriptionIds, string selectedPaymentIds, string TransferType, HttpPostedFileBase uploadedFile)
-        {     
+        {
             if (ModelState.IsValid)
             {
                 using (var transaction = db.Database.BeginTransaction())
@@ -193,7 +193,7 @@ namespace Shareholder_Management_System.Controllers
                                 shareTransfer.SubID = selectedSubscriptionIds; // Store subscription IDs
                                 shareTransfer.PayID = selectedPaymentIds; // Store payment IDs
                                 shareTransfer.TransferType = TransferType; // store transfer type                                                                
-                                shareTransfer.TransferAuthorizationStatus = "Pending"; 
+                                shareTransfer.TransferAuthorizationStatus = "Pending";
                                 shareTransfer.CreatedBy = UserID;
                                 shareTransfer.CreationDate = DateTime.Now;
                                 shareTransfer.Branch = BranchId;
@@ -201,7 +201,7 @@ namespace Shareholder_Management_System.Controllers
                                 db.ShareTransfers.Add(shareTransfer);
                                 db.SaveChanges();
 
-                                
+
                                 // Call RecordLog method with null-safe value for CreatedBy
                                 AuditLogsController auditLogsController = new AuditLogsController();
                                 auditLogsController.RecordLog("Registration", shareTransfer.TransferID, "Transfer", shareTransfer.CreatedBy ?? 0, Session["BranchName"].ToString());
@@ -218,7 +218,7 @@ namespace Shareholder_Management_System.Controllers
                                 // Handle the error case where the document was not created successfully
                                 ModelState.AddModelError("", "Document could not be created. Please try again.");
                             }
-                        }                      
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -277,7 +277,7 @@ namespace Shareholder_Management_System.Controllers
                             {
                                 transferrorSubscription.SubNumShares -= (int)(transferrorSubscription.PaidSubscription / 100);
                                 transferrorSubscription.SubAmount -= transferrorSubscription.SubAmount;
-                                transferrorSubscription.PaidSubscription -= transferrorSubscription.PaidSubscription; 
+                                transferrorSubscription.PaidSubscription -= transferrorSubscription.PaidSubscription;
                                 if (transferrorSubscription.PaidSubscription == 0)
                                 {
                                     transferrorSubscription.SubStatus = "UnPaid";
@@ -324,7 +324,7 @@ namespace Shareholder_Management_System.Controllers
                                     ShID = shareTransfer.TransfareeShID,
                                     SubID = newSubscription.SubID,
                                     PaymentMode = payment.PaymentMode,
-                                    PaidAmount = payment.PaidAmount,                                  
+                                    PaidAmount = payment.PaidAmount,
                                     ReferenceNum = payment.ReferenceNum,
                                     PaymentTransferFrom = shareTransfer.TransferrorShID,
                                     PaymentDate = payment.PaymentDate,
@@ -341,7 +341,7 @@ namespace Shareholder_Management_System.Controllers
 
                                 };
                                 db.Payments.Add(newPayments);
-                                payment.PaidAmount -= payment.PaidAmount;                               
+                                payment.PaidAmount -= payment.PaidAmount;
                                 db.Entry(payment).State = EntityState.Modified;
                             }
                         }
@@ -662,7 +662,7 @@ namespace Shareholder_Management_System.Controllers
                                 payment.PaidAmount -= payment.PaidAmount;
                                 db.Entry(payment).State = EntityState.Modified;
                             }
-                        }                       
+                        }
                         db.SaveChanges();
                         TempData["SuccessMessage"] = "Full Transfer Committed Successfully!";
                     }
@@ -744,10 +744,21 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.ShareholdersFrom = new SelectList(shareholders, "Value", "Text");
             ViewBag.ShareholdersTo = new SelectList(shareholders, "Value", "Text");
 
-            // Other ViewBag items
-            //ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
-            //ViewBag.TransferAuthorizer = new SelectList(db.Users, "UID", "FullName");
-            //ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName");
+            if (shareTransfer.TransferDoc.HasValue)
+            {
+                var document = db.Documents.Find(shareTransfer.TransferDoc);
+                if (document != null)
+                {
+                    ViewBag.ExistingDocumentName = document.DocName;
+                    ViewBag.DocumentId = document.DocID;
+                }
+            }
+            else
+            {
+                ViewBag.ExistingDocumentName = null;
+                ViewBag.DocumentId = null;
+            }
+
 
             // Extract checked SubID and PayID values from ShareTransfer
             ViewBag.CheckedSubscriptions = shareTransfer.SubID.Split(',').ToList();
@@ -777,42 +788,46 @@ namespace Shareholder_Management_System.Controllers
                     {
                         int UserID = Convert.ToInt32(Session["ID"]);
                         int BranchId = Convert.ToInt32(Session["Branch"]);
+                        //var existingShareTransfer = db.ShareTransfers.FirstOrDefault(st => st.TransferID == shareTransfer.TransferID);
 
-                        // Handle document update if a new file is uploaded
-                        if (uploadedFile != null && uploadedFile.ContentLength > 0)
-                        {
-                            Document document = new Document
-                            {
-                                DocOwner = "Shareholder",
-                                DocType = "Transfer Document",
-                                ShID = shareTransfer.TransfareeShID,
-                                CreatedBy = UserID,
-                                DocAuthorizationStatus = "Pending",
-                                CreatedDate = DateTime.Now,
-                            };
+                        //if (existingShareTransfer == null)
+                        //{
+                        //    return HttpNotFound();
+                        //}
 
-                            // Instantiate the DocumentsController to save the document
-                            DocumentsController documentsController = new DocumentsController();
-                            documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+                        //// Handle document creation (if file uploaded)
+                        //if (uploadedFile != null && uploadedFile.ContentLength > 0)
+                        //{
+                        //    Document document = new Document
+                        //    {
+                        //        DocOwner = "Shareholder",
+                        //        DocType = "Transfer Document",
+                        //        ShID = existingShareTransfer.TransfareeShID,
+                        //        CreatedBy = UserID,
+                        //        DocAuthorizationStatus = "Pending",
+                        //        CreatedDate = DateTime.Now
+                        //    };
 
-                            int documentId = documentsController.Create(document, uploadedFile);
-                            if (documentId > 0)
-                            {
-                                shareTransfer.TransferDoc = documentId; // Update document ID
-                            }
-                            else
-                            {
-                                ModelState.AddModelError("", "Document could not be updated. Please try again.");
-                                return View(shareTransfer);
-                            }
-                        }
+                        //    DocumentsController documentsController = new DocumentsController();
+                        //    documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+
+                        //    int documentId = documentsController.Create(document, uploadedFile);
+                        //    if (documentId > 0)
+                        //    {
+                        //        existingShareTransfer.TransferDoc = documentId;
+                        //    }
+                        //    else
+                        //    {
+                        //        ModelState.AddModelError("", "Document could not be created. Please try again.");
+                        //    }
+                        //}
 
                         // Update fields related to the transfer
                         shareTransfer.SubID = selectedSubscriptionIds; // Update subscription IDs
                         shareTransfer.PayID = selectedPaymentIds; // Update payment IDs
                         shareTransfer.TransferType = TransferType; // Update transfer type
                         shareTransfer.CreatedBy = UserID; // Track modification
-                  
+
 
                         db.Entry(shareTransfer).State = EntityState.Modified;
                         db.Entry(shareTransfer).Property(x => x.TransferrorShID).IsModified = false;

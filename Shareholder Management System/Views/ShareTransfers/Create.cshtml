@@ -1,4 +1,4 @@
-﻿﻿@model Shareholder_Management_System.Models.ShareTransfer
+﻿@model Shareholder_Management_System.Models.ShareTransfer
 
 <link rel="stylesheet" type="text/css" href="~/Content/CSS/select2.min.css">
 <script src="~/Scripts/JS/select2.min.js"></script>
@@ -61,7 +61,7 @@
                 <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Share Transfer Form</h5>
             </div>
             <div class="grid grid-cols-1 gap-6 pt-5 ">
-                <div>
+                <div class="hidden">
                     <!-- Hidden input to hold selected subscription and payment IDs  type="hidden" -->
                     <input class="form-input" id="selectedSubscriptionIds" name="selectedSubscriptionIds" style="width: 200px" placeholder="Sub ID Populate here" readonly />
                     <input class="form-input" id="selectedPaymentIds" name="selectedPaymentIds" style="width: 500px" placeholder="Pay ID Populate here" readonly />
@@ -71,28 +71,28 @@
 
                 <!-- Column One -->
                 <div class="panel">
-                    <div class="mb-5 flex items-center justify-between">
-                        @*<h5 class="text-lg font-semibold dark:text-white-light">Untitled Input</h5>*@
-                    </div>
-
                     <div class="mb-5">
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div>
-                                <label for="shid" class="block dark:text-white-light text-sm font-semibold mb-2">Transfer From</label>
-                                @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input" })
-                                <span class="text-danger"></span>
+                        <div class="panel">
+                            <div class="mx-auto flex max-w-full flex-col gap-4 md:flex-row">
+                                <div>
+                                    <label for="shid">Transfer From</label>
+                                    @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input" })
+                                    <span class="text-danger"></span>
+                                </div>
+                                <div>
+                                    <label for="shid">Transfer To</label>
+                                    @Html.DropDownList("TransfareeShID", (SelectList)ViewBag.ShareholdersTo, new { @id = "TransfereeShID", @class = "form-input" })
+                                    <span class="text-danger"></span>
+                                </div>
                             </div>
-                            <div>
-                                <label for="shid">Transfer To</label>
-                                @Html.DropDownList("TransfareeShID", (SelectList)ViewBag.ShareholdersTo, new { @id = "TransfereeShID", @class = "form-input" })
-                                <span class="text-danger"></span>
-                            </div>
+
                         </div>
+
                         <br />
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <!-- Transfer Category Dropdown -->
                             <div class="col-md-10">
-                                <label>Transfer Category</label>
+                                <label>Transfer Category <span style="color:red">*</span></label>
                                 @Html.DropDownListFor(model => model.TransferCategory,
                                     new List<SelectListItem>
                                     {
@@ -104,7 +104,7 @@
                             </div>
                             <!-- Transfer Type Radio Buttons -->
                             <div class="flex flex-col sm:flex-row mt-6" id="transferTypeDiv" style="display: none;">
-                                <label class="rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Transfer Type</label>
+                                <label class="rtl:ml-2 sm:w-1/4 sm:ltr:mr-2">Transfer Type <span style="color:red">*</span></label>
                                 <div class="flex-1">
                                     <div class="mb-2">
                                         <label class="mt-1 inline-flex cursor-pointer">
@@ -134,16 +134,17 @@
                             </div>
 
                         </div>
-                        <div class="panel">
-                            <div class="mb-5">
-                                <div class="flex grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <!-- Subscriptions Table -->
-                                    <div>
-                                        <div class="mb-5 flex items-center justify-between">
-                                            <h5 class="text-lg font-semibold dark:text-white-light">Subscription Status</h5>
-                                        </div>
-                                        <div style="max-height: 400px; overflow-y: auto;  border-radius: 4px; width: 700px">
-                                            <table id="subscriptionsTable" style="width: 100%;">
+
+                        <div>
+                            <div class="grid grid-cols-1 gap-6 xl:grid-cols-2 mt-4">
+
+                                <div class="panel">
+                                    <div class="mb-5 flex items-center justify-between">
+                                        <h5 class="text-lg font-semibold dark:text-white-light">Subscription Status</h5>
+                                    </div>
+                                    <div class="mb-5">
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto; ">
+                                            <table id="subscriptionsTable">
                                                 <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
                                                     <tr>
                                                         <th style="width: 20px;"></th>
@@ -159,15 +160,17 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                    </div>
 
-                                    <!-- Payments Table -->
-                                    <div>
-                                        <div class="mb-5 flex items-center justify-between">
-                                            <h5 class="text-lg font-semibold dark:text-white-light">Payment Status</h5>
-                                        </div>
-                                        <div style="max-height: 400px; overflow-y: auto;  border-radius: 4px; width: 400px">
-                                            <table id="paymentsTable" style="width: 100%;">
+                                    </div>
+                                </div>
+
+                                <div class="panel">
+                                    <div class="mb-5 flex items-center justify-between">
+                                        <h5 class="text-lg font-semibold dark:text-white-light">Payment Status</h5>
+                                    </div>
+                                    <div class="mb-5">
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto; ">
+                                            <table id="paymentsTable">
                                                 <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
                                                     <tr>
                                                         <th style="width: 20px;"></th>
@@ -183,11 +186,12 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
+
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mt-4">
                             <div class="col-md-10">
                                 <label>No of Shares Transferred</label>
                                 @Html.TextBoxFor(model => model.NumSharesTransferred, new { @class = "form-input", @readonly = "readonly", @id = "numSharesTransferred" })
@@ -212,7 +216,7 @@
                         <br />
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div class="col-md-10">
-                                <label>Dividend For</label>
+                                <label>Dividend For <span style="color:red">*</span></label>
                                 @Html.DropDownListFor(model => model.DividenedFor,
                                     new List<SelectListItem>
                                     {
@@ -223,7 +227,7 @@
                                 @Html.ValidationMessageFor(model => model.DividenedFor, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
-                                <label>Reason for Transfer</label>
+                                <label>Reason for Transfer <span style="color:red">*</span></label>
                                 @Html.DropDownListFor(model => model.TransferReason,
                                     new List<SelectListItem>
                                     {
@@ -235,7 +239,7 @@
                                 @Html.ValidationMessageFor(model => model.TransferReason, "", new { @class = "text-danger" })
                             </div>
                             <div class="col-md-10">
-                                <label>Transfer Date</label>
+                                <label>Transfer Date <span style="color:red">*</span></label>
                                 @Html.TextBoxFor(model => model.TransferDate, new { @class = "form-input", @type = "date", @id = "transferDate" })
                                 @Html.ValidationMessageFor(model => model.TransferDate, "", new { @class = "text-danger" })
                             </div>
@@ -243,7 +247,7 @@
                         <br />
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div class="mb-5">
-                                @Html.Label("Upload Document", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                                <label>Upload Document <span style="color:red">*</span></label>
                                 <div class="custom-file-container" data-upload-id="myFirstImage">
                                     <div class="custom-file-container__image-preview">
                                         <input type="file" class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" accept="*" name="uploadedFile" required>
@@ -276,7 +280,7 @@
     $(document).ready(function () {
         let transferCategory = '';
         let transferType = '';
-        
+
 
 
         // Function to reset the form to its default state
@@ -941,12 +945,12 @@
             }
 
             // Validate Remark
-            if ($('#remark').val() === "") {
-                isValid = false;
-                $('#remark').siblings('.text-danger').text('Please put your remark here.');
-            } else {
-                $('#remark').siblings('.text-danger').text('');
-            }
+            //if ($('#remark').val() === "") {
+            //    isValid = false;
+            //    $('#remark').siblings('.text-danger').text('Please put your remark here.');
+            //} else {
+            //    $('#remark').siblings('.text-danger').text('');
+            //}
             // Prevent form submission if not valid
             if (!isValid) {
                 event.preventDefault();
