@@ -966,11 +966,154 @@
                 </template>
 
                 <template x-if="tab === 'subscription'">
-                    <div>
-                        <p>
-                            Subscription
-                        </p>
+
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden panel mx-4 mt-5">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-700 uppercase">Pending Authorization</h2>
+                        </div>
+                        <div class="p-6 overflow-x-auto">
+                            <table id="userTable" class="min-w-full leading-normal">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <!-- Table headers -->
+                                        <th class="border border-gray-300 px-4 py-2">FullName of Shareholders</th>
+                                        <th class="border border-gray-300 px-4 py-2">Sub ID</th>
+                                        <th class="border border-gray-300 px-4 py-2">Shareholder ID</th>
+                                        <th class="border border-gray-300 px-4 py-2">FullName</th>
+                                        <th class="border border-gray-300 px-4 py-2">Category</th>
+                                        <th class="border border-gray-300 px-4 py-2">Premium</th>
+                                        <th class="border border-gray-300 px-4 py-2">SubAmount</th>
+                                        <th class="border border-gray-300 px-4 py-2">PaidSubscription</th>
+                                        <th class="border border-gray-300 px-4 py-2">UnpaidSubscription</th>
+                                        <th class="border border-gray-300 px-4 py-2">PaymentDueDate</th>
+                                        <th class="border border-gray-300 px-4 py-2">SubStatus</th>
+                                        <th class="border border-gray-300 px-4 py-2">SubDate</th>
+                                        <th class="border border-gray-300 px-4 py-2">SubAuthorizationStatus</th>
+                                        <th class="border border-gray-300 px-4 py-2">AuthorizedDate</th>
+                                        <th class="border border-gray-300 px-4 py-2">Remark</th>
+                                        <th class="border border-gray-300 px-4 py-2">Share ID From</th>
+                                        <th class="border border-gray-300 px-4 py-2">CreatedBy</th>
+                                        <th class="border border-gray-300 px-4 py-2">Authorizer</th>
+                                        <th class="border border-gray-300 px-4 py-2">Branch</th>
+                                        <th class="border border-gray-300 px-4 py-2">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Subscribtions)
+                                    {
+                                        <tr>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubID)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubNumShares) Shares</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.SHCategory)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Premium)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAmount)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaidSubscription)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.UnpaidSubscription)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaymentDueDate)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubStatus)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubDate)</td>
+                                            @*<td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAuthorizationStatus)</td>*@
+
+                                            <td class="border border-gray-300 px-4 py-2 text-center">
+                                                @if (item.SubAuthorizationStatus == "Approved")
+                                                {
+                                                    <div class="inline-flex items-center space-x-2">
+
+                                                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
+
+                                                            <svg fill="none"
+                                                                 viewBox="0 0 24 24"
+                                                                 stroke-width="3"
+                                                                 stroke="currentColor"
+                                                                 class="w-4 h-4 text-green-700">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                            </svg>
+                                                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                                        </span>
+
+                                                    </div>
+                                                }
+                                                else if (item.SubAuthorizationStatus == "Pending")
+                                                {
+                                                    <div class="inline-flex items-center space-x-2">
+                                                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                                            <svg fill="none"
+                                                                 viewBox="0 0 24 24"
+                                                                 stroke-width="3"
+                                                                 stroke="currentColor"
+                                                                 class="w-4 h-4 text-red-700">
+                                                                <path stroke-linecap="round"
+                                                                      stroke-linejoin="round"
+                                                                      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+                                                            </svg>
+
+                                                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                                        </span>
+                                                    </div>
+                                                }
+                                                else if (item.SubAuthorizationStatus == "Rejected")
+                                                {
+                                                    <div class="inline-flex items-center space-x-2">
+                                                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
+                                                            <!-- SVG Icon for Red Status -->
+                                                            <svg fill="none"
+                                                                 viewBox="0 0 24 24"
+                                                                 stroke-width="3"
+                                                                 stroke="currentColor"
+                                                                 class="w-4 h-4 text-red-700">
+                                                                <path stroke-linecap="round"
+                                                                      stroke-linejoin="round"
+                                                                      d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                                            </svg>
+                                                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                                        </span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="inline-flex items-center space-x-2">
+                                                        <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                                            <svg fill="none"
+                                                                 viewBox="0 0 24 24"
+                                                                 stroke-width="3"
+                                                                 stroke="currentColor"
+                                                                 class="w-4 h-4 text-red-700">
+                                                                <path stroke-linecap="round"
+                                                                      stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                                            </svg>
+
+                                                            @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                                        </span>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.AuthorizedDate)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Remark)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder1.ShareID)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User1.FullName)</td>
+                                            <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User.FullName)</td>
+                                            <td class="border border-gray-300 px-4 py-2 uppercase">@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
+                                            <td class="border border-gray-300 px-4 py-2">
+                                                @if (item.SubAuthorizationStatus == "Transfered")
+                                                {
+
+                                                }
+                                                else
+                                                {
+                                                    <div class="flex space-x-2">
+                                                        <a href="@Url.Action("Authorize","Subscribtions", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded">Authorization</a>
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
                 </template>
 
                 <template x-if="tab === 'payment'">
