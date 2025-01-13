@@ -302,16 +302,15 @@
                                     x-collapse=""
                                     class="sub-menu text-white">
                                     <li>
-                                        <a href="apps-Document-list.html">Upload Document</a>
+                                        @Html.ActionLink("View Document", "Index", "Documents")
                                     </li>
                                     <li>
-                                        <a href="apps-Document-preview.html">View Document</a>
+                                        @Html.ActionLink("Document Category", "Create", "Documents")
                                     </li>
-                                    <!-- <li>
-                                      <a href="apps-Document-preview.html">View Proxy Table</a>
-                                    </li> -->
+
                                 </ul>
                             </li>
+                        
                         </h2>
                         <h2 class="-mx-8 mb-1 flex items-center bg-white-light/30 px-5 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]"
                             style="border-radius: 5px;">

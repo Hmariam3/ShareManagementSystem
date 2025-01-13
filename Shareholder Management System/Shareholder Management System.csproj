@@ -108,8 +108,11 @@
     <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.WebUtilities.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=4.11.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.4.11.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis, Version=4.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.4.12.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=4.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.4.12.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Configuration, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
@@ -420,6 +423,12 @@
     <Content Include="assets\images\flags\RU.svg" />
     <Content Include="assets\images\flags\SV.svg" />
     <Content Include="assets\images\flags\TR.svg" />
+    <Content Include="assets\images\folder-error.jpg" />
+    <Content Include="assets\images\folder-info.png" />
+    <Content Include="assets\images\folder-Primary.png" />
+    <Content Include="assets\images\folder-secondary.jpg" />
+    <Content Include="assets\images\folder-succeess.jpg" />
+    <Content Include="assets\images\folder-warning.jpg" />
     <Content Include="assets\images\g-8.png" />
     <Content Include="assets\images\images.png" />
     <Content Include="assets\images\knowledge\find-solution.svg" />
