@@ -34,6 +34,41 @@ namespace Shareholder_Management_System.Controllers
             {
                 return HttpNotFound();
             }
+
+            var mergedTransfers = shareholder.ShareTransfers
+                                    .Select(st => new
+                                    {
+                                        TransferID = st.TransferID,
+                                        Transferror = st.Shareholder?.FullNameEng,
+                                        Transferee = st.Shareholder1?.FullNameEng,
+                                        TransferReason = st.TransferReason,
+                                        NumSharesTransferred = st.NumSharesTransferred,
+                                        AmountPerShare = st.AmountPerShare,
+                                        PaidAmountForTransfer = st.PaidAmountForTransfer,
+                                        DividenedFor = st.DividenedFor,
+                                        Status = st.TransferAuthorizationStatus,
+                                        TransferDate = st.TransferDate.HasValue ? st.TransferDate.Value.ToString("yyyy-MM-dd") : "",
+                                        CreatedBy = st.User?.FullName ?? "N/A"
+                                    })
+                                    .Union(shareholder.ShareTransfers1
+                                        .Select(st1 => new
+                                        {
+                                            TransferID = st1.TransferID,
+                                            Transferror = st1.Shareholder?.FullNameEng,
+                                            Transferee = st1.Shareholder1?.FullNameEng,
+                                            TransferReason = st1.TransferReason,
+                                            NumSharesTransferred = st1.NumSharesTransferred,
+                                            AmountPerShare = st1.AmountPerShare,
+                                            PaidAmountForTransfer = st1.PaidAmountForTransfer,
+                                            DividenedFor = st1.DividenedFor,
+                                            Status = st1.TransferAuthorizationStatus,
+                                            TransferDate = st1.TransferDate.HasValue ? st1.TransferDate.Value.ToString("yyyy-MM-dd") : "",
+                                            CreatedBy = st1.User?.FullName ?? "N/A"
+                                        }))
+                                    .ToList();
+
+            ViewBag.MergedTransfers = mergedTransfers;
+
             return View(shareholder);
         }
 
