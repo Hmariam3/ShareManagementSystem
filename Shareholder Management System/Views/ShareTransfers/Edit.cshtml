@@ -248,9 +248,15 @@
                                     <div class="custom-file-container__image-preview">
                                         @if (ViewBag.DocumentId != null)
                                         {
-                                            <div class="mt-2">
+                                            @*<div class="mt-2">
                                                 <span>Current File: </span>
                                                 <a href="@Url.Action("PreviewDocument", "Documents", new { id = ViewBag.DocumentId })" target="_blank" class="text-primary">
+                                                    @ViewBag.ExistingDocumentName
+                                                </a>
+                                            </div>*@
+                                            <div class="mt-2">
+                                                <span>Current File: </span>
+                                                <a href="@Url.Action("DownloadDocument", "Documents", new { id = ViewBag.DocumentId })" target="_blank" class="text-primary">
                                                     @ViewBag.ExistingDocumentName
                                                 </a>
                                             </div>
