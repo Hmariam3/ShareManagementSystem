@@ -74,40 +74,40 @@
             </form>
 
             @*@using (Html.BeginForm("Authorize", "Subscribtions", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
-                    <div class="flex justify-center mt-5">
-                        <div>
-                            <div class="flex justify-between">
-                                @if (Model.SubAuthorizationStatus == "Approved")
-                                {
-                                    <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
-                                }
-                                else
-                                {
-                                    <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
-                                }
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between" style="margin-left:5px">
-                                @if (Model.SubAuthorizationStatus == "Rejected")
-                                {
-                                    <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
-                                }
-                                else
-                                {
-                                    <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
-                                }
-                            </div>
-                        </div>
+        {
+            @Html.AntiForgeryToken()
+            <div class="flex justify-center mt-5">
+                <div>
+                    <div class="flex justify-between">
+                        @if (Model.SubAuthorizationStatus == "Approved")
+                        {
+                            <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
+                        }
+                        else
+                        {
+                            <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
+                        }
                     </div>
+                </div>
 
-                    <a href="@Url.Action("PendingSubscription")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
-                        Back To List
-                    </a>
-                }*@
+                <div>
+                    <div class="flex justify-between" style="margin-left:5px">
+                        @if (Model.SubAuthorizationStatus == "Rejected")
+                        {
+                            <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
+                        }
+                        else
+                        {
+                            <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <a href="@Url.Action("PendingSubscription")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
+                Back To List
+            </a>
+        }*@
 
             @using (Html.BeginForm("Authorize", "Subscribtions", FormMethod.Post))
             {
@@ -149,9 +149,9 @@
                 <button type="submit" name="action" value="reject" class="btn btn-danger mt-6" id="submitReject" style="display:none;" onclick="return validateRemark()">Submit Reject</button>
             }
 
-            <a href="@Url.Action("PendingSubscription")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
-                Back To List
-            </a>
+            <div class="mt-8 text-right">
+                <a href="@Url.Action("PendingSubscription")" class="btn btn-primary w-32 py-1 bg-green-200 hover:bg-green-200 rounded text-white text-sm text-center">Back to List</a>
+            </div>
 
         </div>
     </div>

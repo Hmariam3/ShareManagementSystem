@@ -36,99 +36,165 @@
         </div>
     </div>
     <div class="flex px-4">
+
         <div class="w-1/2 ltr:text-left rtl:text-right">
-            <div class="mt-6 space-y-1 text-white-dark">
-                <p class="text-lg text-gray-600 mt-2">
-                    FullName: <span class="text-gray-800 font-semibold uppercase">@Model.Shareholder.FullNameEng</span>
+            <div class="mt-6 space-y-1 text-gray-900 dark:text-white">
+                <p class="text-lg text-gray-600 dark:text-white mt-2">
+                    FullName: <span class="text-gray-800 font-semibold uppercase dark:text-white">@Model.Shareholder.FullNameEng</span>
                 </p>
-                <p class="text-lg text-gray-600">
-                    Shareholder ID: <span class="text-gray-800">@Model.Shareholder.ShareID</span>
+                <p class="text-lg text-gray-600 dark:text-white">
+                    Shareholder ID: <span class="text-gray-800 font-bold dark:text-white">@Model.Shareholder.ShareID</span>
                 </p>
             </div>
         </div>
         <div class="w-1/2 ltr:text-right rtl:text-left">
-            <div class="mt-6 space-y-1 text-white-dark">
-                <p class="text-lg text-gray-600">
-                    Payment Due Date @Model.PaymentDueDate
+            <div class="mt-6 space-y-1 text-gray-900 dark:text-white">
+                <p class="text-lg text-gray-600 dark:text-white">
+                    Payment Due Date: @Model.PaymentDueDate
                 </p>
-                <p> <span class="text-sm text-red-600" style="color:red">(@daysLeftMessage)</span></p>
+                <p>
+                    <span class="text-sm text-red-600 font-semibold uppercase dark:text-white" style="color:red">(@daysLeftMessage)</span>
+                </p>
             </div>
         </div>
+
     </div>
 
     <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
     <div class="flex flex-col flex-wrap justify-between gap-6 lg:flex-row">
         <div class="flex-1">
-            <div class="space-y-1 text-white-dark">
+            <div class="space-y-1 text-gray-900 dark:text-white">
                 @if (Model == null)
                 {
-                <p class="text-red-600">Model is null</p>
+                    <p class="text-red-600 dark:text-red-400">Model is null</p>
                 }
 
                 @if (Model?.User1 == null)
                 {
-                <p class="text-red-600">User is null</p>
+                    <p class="text-red-600 dark:text-red-400">User is null</p>
                 }
                 else
                 {
-                <p class="text-lg text-gray-600">Created By: <span class="text-gray-800">@Model.User1.FullName</span></p>
+                    <p class="text-green-600 dark:text-green-400 text-lg uppercase">
+                        Created By: <span class="text-green-600 dark:text-green-400 text-lg font-bold">@Model.User1.FullName</span>
+                    </p>
                 }
+
                 @if (Model?.User == null)
                 {
-                <p class="text-red-600">Not Approved yet</p>
+                    <p class="text-red-600 dark:text-red-400">Not Approved yet</p>
                 }
                 else
                 {
-                <p class="text-lg text-gray-600">Approved By: <span class="text-gray-800">@Model.User.FullName</span></p>
+                    <p class="text-green-600 dark:text-green-400 text-lg uppercase">
+                        Approved By: <span class="text-green-600 dark:text-green-400 text-lg font-bold">@Model.User.FullName</span>
+                    </p>
                 }
             </div>
+
             <div>
-                <p class="text-gray-800 text-lg uppercase mt-4"> Branch @Model.Branch1.BranchName </p>
+                @if (Model != null && Model.Branch1 != null)
+                {
+                    <p class="text-green-600 dark:text-green-400 text-lg uppercase">Branch @Model.Branch1.BranchName</p>
+                }
+                else
+                {
+                    <p class="text-red-600 dark:text-red-400 text-lg uppercase">Null</p>
+                }
             </div>
+
         </div>
         <div class="flex flex-col justify-between gap-6 sm:flex-row lg:w-2/3">
-            <div class="xl:1/3 sm:w-1/2 lg:w-2/5">
+
+            <div class="xl:w-1/3 sm:w-1/2 lg:w-2/5">
                 <div class="mb-2 flex w-full items-center justify-between">
-                    <div class="text-white-dark">Num of Subscribed Shares :</div>
-                    <div>
-                        <p class="text-gray-800 text-lg">@Model.SubNumShares</p>
-                    </div>
+                    <div class="text-gray-900 dark:text-white">Num of Subscribed Shares :</div>
+                    <div><p class="text-green-600 dark:text-green-400 text-lg">@Model.SubNumShares</p></div>
                 </div>
+
                 <div class="mb-2 flex w-full items-center justify-between">
-                    <div class="text-white-dark">Paid Amount :</div>
-                    <div><p class="text-green-600 text-lg">@Model.PaidSubscription</p></div>
+                    <div class="text-gray-900 dark:text-white">Paid Amount :</div>
+                    <div><p class="text-green-600 dark:text-green-400 text-lg">@Model.PaidSubscription</p></div>
                 </div>
+
                 <div class="mb-2 flex w-full items-center justify-between">
-                    <div class="text-white-dark">Status :</div>
+                    <div class="text-gray-900 dark:text-white">Status :</div>
                     <div>
-                        <p class="text-gray-800 text-lg">@Model.SubStatus</p>
+                        <p class="text-green-600 dark:text-green-400 text-lg">@Model.SubStatus</p>
                     </div>
                 </div>
             </div>
-            <div class="xl:1/3 sm:w-1/2 lg:w-2/5">
+
+            <div class="xl:w-1/3 sm:w-1/2 lg:w-2/5">
                 <div class="mb-2 flex w-full items-center justify-between">
-                    <div class="text-white-dark">Subscribed Amount</div>
-                    <div class="whitespace-nowrap">
-                        <p class="text-gray-800 text-lg">@Model.SubAmount</p>
+                    <div class="text-gray-900 dark:text-white">Subscribed Amount</div>
+                    <div>
+                        <p class="text-green-600 dark:text-green-400 text-lg">@Model.SubAmount</p>
                     </div>
                 </div>
+
                 <div class="mb-2 flex w-full items-center justify-between">
-                    <div class="text-white-dark">UnPaid Amount:</div>
+                    <div class="text-gray-900 dark:text-white">UnPaid Amount:</div>
                     <div>
-                        <p class="text-green-600 text-lg">@Model.UnpaidSubscription</p>
+                        <p class="text-green-600 dark:text-green-400 text-lg">@Model.UnpaidSubscription</p>
                     </div>
                 </div>
+
                 <div class="mb-2 flex w-full items-center justify-between">
-                    <div class="text-white-dark">Authorization Status :</div>
+                    <div class="text-gray-900 dark:text-white">Authorization Status :</div>
                     <div>
-                        <p class="text-gray-800 text-lg">@Model.SubAuthorizationStatus</p>
+                        @if (@Model.SubAuthorizationStatus == "Approved")
+                        {
+                            <div class="inline-flex items-center space-x-2">
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 dark:text-green-400 dark:bg-green-700 rounded-full">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-green-700 dark:text-green-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => @Model.SubAuthorizationStatus)
+                                </span>
+                            </div>
+                        }
+                        else if (@Model.SubAuthorizationStatus == "Pending")
+                        {
+                            <div class="inline-flex items-center space-x-2">
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 dark:text-yellow-400 dark:bg-yellow-700 rounded-full">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-yellow-700 dark:text-yellow-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => @Model.SubAuthorizationStatus)
+                                </span>
+                            </div>
+                        }
+                        else if (@Model.SubAuthorizationStatus == "Rejected")
+                        {
+                            <div class="inline-flex items-center space-x-2">
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 dark:text-red-400 dark:bg-red-700 rounded-full">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-red-700 dark:text-red-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => @Model.SubAuthorizationStatus)
+                                </span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="inline-flex items-center space-x-2">
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 dark:text-yellow-400 dark:bg-yellow-700 rounded-full">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-yellow-700 dark:text-yellow-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => @Model.SubAuthorizationStatus)
+                                </span>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     <div class="mt-8 text-right">
-        <a href="@Url.Action(" Index")" class="btn btn-primary w-32 py-1 bg-green-200 hover:bg-green-200 rounded text-white text-sm text-center">Back to List</a>
+        <a href="@Url.Action("Index")" class="btn btn-primary w-32 py-1 bg-green-200 hover:bg-green-200 rounded text-white text-sm text-center">Back to List</a>
     </div>
 </div>
 
