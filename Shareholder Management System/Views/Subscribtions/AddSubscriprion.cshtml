@@ -160,6 +160,9 @@
         $('#shareholderDropdown').on('change', function () {
             var selectedShareId = $(this).val();
 
+            // Clear the result area when the shareholder is changed or reset
+            $('#resultsub').html('');
+
             // Update SubID Dropdown
             if (selectedShareId) {
                 $.ajax({
