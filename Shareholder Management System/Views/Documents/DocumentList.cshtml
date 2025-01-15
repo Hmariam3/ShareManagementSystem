@@ -1,0 +1,238 @@
+﻿
+@model IEnumerable<Shareholder_Management_System.Models.Document>
+
+
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+
+}
+
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+
+    <div x-data="miscellaneous ">
+        <div class="space-y-6 !mt-2">
+            <div class="panel">
+                <div class="relative">
+                    <div class="mb-5 sm:absolute sm:top-0 sm:mb-0 sm:ltr:right-56 sm:rtl:left-56">
+                        <div class="flex items-center">
+                            <div class="theme-dropdown relative" x-data="{ columnDropdown: false }"
+                                 @@click.outside="columnDropdown = false">
+                                <a href="javascript:;"
+                                   class="flex items-center rounded-md border border-[#e0e6ed] px-4 py-2 text-sm font-semibold dark:border-[#253b5c] dark:bg-[#1b2e4b] dark:text-white-dark"
+                                   @@click="columnDropdown = ! columnDropdown">
+                                    <span class="ltr:mr-1 rtl:ml-1">Columns Visibility</span>
+                                    <svg class="h-5 w-5" viewbox="0 0 24 24" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M19 9L12 15L5 9" stroke="currentColor" stroke-width="1.5"
+                                              stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </a>
+                                <div class="absolute top-11 z-[10] hidden w-[100px] min-w-[150px] rounded bg-white py-2 text-dark shadow ltr:left-0 rtl:right-0 dark:bg-[#1b2e4b] dark:text-white-light"
+                                     :class="columnDropdown && '!block'">
+                                    <ul class="space-y-2 px-4 font-semibold">
+                                        <template x-for="(col,i) in columns" :key="i">
+                                            <li>
+                                                <div>
+                                                    <label class="cursor-pointer">
+                                                        <input type="checkbox" class="form-checkbox"
+                                                               :id="`chk-${i}`" :value="(i)"
+                                                               @@change="col.hidden=  $event.target.checked,showHideColumns(i,$event.target.checked)"
+                                                               :checked="col.hidden">
+                                                        <span :for="`chk-${i}`" class="ltr:ml-2 rtl:mr-2"
+                                                              x-text="col.name"></span>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table id="myTable1" class="whitespace-nowrap">
+                        <thead>
+                            <tr>
+
+                            <tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be populated by Alpine.js and SimpleDatatables -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- end main content section -->
+
+</div>
+
+
+<script>
+
+    // main section
+    document.addEventListener('alpine:init', () => {
+
+        Alpine.data('miscellaneous', () => ({
+            columns: [
+                { name: 'Documnet Id', hidden: true },
+                { name: 'Document Name', hidden: true },
+                { name: 'Document Type', hidden: true },
+                { name: 'Document Owner', hidden: true },
+                { name: 'Created By', hidden: true },
+                { name: 'Created Date', hidden: true },
+                { name: 'Authorization Status', hidden: true },
+                { name: 'Authorization Date', hidden: true },
+                { name: 'Authorizer', hidden: true },
+                //{ name: 'Action', hidden: true },
+
+
+            ],
+
+            hideCols: [],
+            showCols: [0, 1, 2, 3, 4,5,6,7,8,9,10,11],
+
+            showHideColumns(col, value) {
+                if (value) {
+                    this.showCols.push(col);
+                    this.hideCols = this.hideCols.filter((d) => d != col);
+                } else {
+                    this.hideCols.push(col);
+                    this.showCols = this.showCols.filter((d) => d != col);
+                }
+                let headers = this.datatable1.columns();
+                headers.hide(this.hideCols);
+                headers.show(this.showCols);
+            },
+
+            datatable1: null,
+            proxyID: null,
+            editModalOpen: false,
+            activateProxyModal: false,
+
+            init() {
+                let headers = this.columns.map((col) => {
+                    return col.name;
+                });
+                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+                    data: {
+                        headings: headers,
+                        data: [
+                            @foreach (var item in Model)
+                            {
+                                <text>
+                                [
+                                "@item.DocID",
+                                `
+                                    <a href="@Url.Action("DownloadDocument", "Documents", new { id = item.DocID })" target="_blank" class="text-primary">
+                                        @item.DocName
+                                    </a>
+                                `,
+                                "@item.DocType",  // Document Type
+                                "@item.DocOwner",
+                                "@item.User.FullName",
+                                "@item.CreatedDate",
+                                "@item.DocAuthorizationStatus",
+                                "@(item.DocAuthorizationDate != null ? item.DocType : "N/A")",
+                                "@(item.DocAuthorizer != null ? item.DocType : "N / A")",
+                                @*"@(item.DocAuthorizer != null ? item.DocType : "N / A")",*@
+
+
+                                ],
+                                </text>
+                            }
+                        ],
+                    },
+                    perPage: 10,
+                    perPageSelect: [10, 20, 30, 50, 100],
+                    columns: [
+
+                    ],
+
+                    firstLast: true,
+                    firstText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    lastText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    prevText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    nextText:
+                        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    labels: {
+                        perPage: "<span class='ml-2'>{select}</span>",
+                        noRows: 'There is no any Proxies for this shareholder',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    },
+
+                });
+                let cols = this.datatable1.columns();
+                cols.hide(this.hideCols);
+                cols.show(this.showCols);
+            },
+           createDownloadButton(documentId) {
+                // Generate the download URL using Razor's Url.Action
+
+                if (documentId) {
+                    let downloadUrl = '@Url.Action("DownloadDocument", "Documents", new { id = "__documentId__" })';
+                    downloadUrl = downloadUrl.replace("__documentId__", documentId);
+                    // Trigger the file download by navigating to the generated URL
+                    window.location.href = downloadUrl;
+                } else {
+                    alert("Document ID is missing!");
+                }
+            },
+            openDocumentInNewTab(documentId) {
+                if (documentId) {
+                    // Generate the document URL using Razor's Url.Action
+                    let documentUrl = '@Url.Action("DownloadDocument", "Documents", new { id = "__documentId__" })';
+                    // Replace the placeholder with the actual document ID
+                    documentUrl = documentUrl.replace("__documentId__", documentId);
+
+                    // Open the document in a new tab
+                    window.open(documentUrl, '_blank');
+                } else {
+                    alert("Document ID is missing!");
+                }
+            },
+            formatDate(date) {
+                if (date) {
+                    const dt = new Date(date);
+                    const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
+                    const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
+                    return day + '/' + month + '/' + dt.getFullYear();
+                }
+                return '';
+            },
+
+            closeEditModal() {
+                this.editModalOpen = false;
+            },
+        }));
+    });
+    // Success message function (Toast)
+    async function showMessage(msg = '', type = 'success') {
+    const toast = window.Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+    });
+    toast.fire({
+        icon: type,
+        title: msg,
+        padding: '10px 20px',
+    });
+}
+
+
+</script>
+

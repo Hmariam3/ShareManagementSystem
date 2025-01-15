@@ -17,7 +17,6 @@ namespace Shareholder_Management_System.Controllers
         // GET: Shareholders
         public ActionResult Index()
         {
-
             var shareholders = db.Shareholders.Include(s => s.Branch1).Include(s => s.User).Include(s => s.User1).Include(s => s.Document);
             return View(shareholders.ToList());
         }
@@ -122,7 +121,7 @@ namespace Shareholder_Management_System.Controllers
                         Document document = new Document
                         {
                             DocOwner = "Shareholder",
-                            DocType = "ShareholderInfo",
+                            DocType = "ShareholderAgrement",
                             ShID = shareholder.ShID,
                             CreatedBy = userId,
                             DocAuthorizationStatus = "Pending",
@@ -146,9 +145,7 @@ namespace Shareholder_Management_System.Controllers
 
                         int documentId = documentsController.Create(document, shFile);
                         int kebeleId = documentsController.Create(kebele, shFile1);
-
-
-
+                        
                         // Update ShDocument fields
                         shareholder.ShDocument = documentId;
                         shareholder.KebeleID = kebeleId;
@@ -266,7 +263,7 @@ namespace Shareholder_Management_System.Controllers
             Document document = new Document
             {
                 DocOwner = "Shareholder",
-                DocType = "ShBlockLetter",
+                DocType = type,
                 ShID = shareholder.ShID,
                 CreatedBy = userId,
                 DocAuthorizationStatus = "Pending",
@@ -500,6 +497,7 @@ namespace Shareholder_Management_System.Controllers
                     {
                         shareholder.ShDocument = docID;
                     }
+                    shareholder.PendingDoc = null;
                 }
                 else if (shareholder.Status.Equals("Updated"))
                 {
@@ -542,9 +540,15 @@ namespace Shareholder_Management_System.Controllers
                         db.Entry(document).State = EntityState.Modified;
                     }
                 }
-
+                if (shareholder.Status.Equals("Blocked") || shareholder.Status.Equals("UnBlocked"))
+                {
+                    db.Entry(shareholder).Property(x => x.Status).IsModified = false;
+                }
+                else
+                {
+                    shareholder.Status = "Active";
+                }
                 // Update shareholder status to Active and Approved
-                shareholder.Status = "Active";
                 shareholder.AuthorizationStatus = "Approved";
                 shareholder.Authorizer = userId;
                 shareholder.AuthorizedDate = DateTime.Now;
@@ -590,7 +594,7 @@ namespace Shareholder_Management_System.Controllers
                         kebeleDocument.DocAuthorizationDate = DateTime.Now;
                         db.Entry(kebeleDocument).State = EntityState.Modified;
                     }
-                }
+                } 
                 else
                 {
                     int docID = shareholder.PendingDoc ?? 0;
@@ -607,7 +611,13 @@ namespace Shareholder_Management_System.Controllers
                     }
                 }
 
-
+                if (shareholder.Status.Equals("Blocked"))
+                {
+                    shareholder.Status = "UnBlocked";
+                }
+                else if(shareholder.Status.Equals("UnBlocked")) {
+                    shareholder.Status = "Blocked";
+                }
                 shareholder.Authorizer = userId;
                 shareholder.AuthorizedDate = DateTime.Now;
                 shareholder.AuthorizationStatus = "Rejected";

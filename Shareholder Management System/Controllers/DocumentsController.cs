@@ -113,13 +113,14 @@ namespace Shareholder_Management_System.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public int Create(Document document, HttpPostedFileBase uploadedFile)
+        public int Create(Document document, HttpPostedFileBase uploadedFile, int? transfreeID = null)
         {
             if (ModelState.IsValid)
             {
                 if (uploadedFile != null && uploadedFile.ContentLength > 0)
                 {
                     var shareholder = db.Shareholders.Find(document.ShID);
+                    var transfer = db.ShareTransfers.Find(document.ShID);
                     var proxies = db.Proxies.Find(document.ProxyID);
 
                     // Generate a base file name using Shareholder.FullNameEng based on document type
@@ -128,16 +129,22 @@ namespace Shareholder_Management_System.Controllers
 
                     switch (document.DocType)
                     {
-                        case "ShareholderInfo":
-                            baseFileName = $"{shareholder.FullNameEng}_ShareholderInfo";
+                        case "ShareholderAgreement":
+                            baseFileName = $"{shareholder.FullNameEng}_ShareholderAgreement";
                             break;
                         case "ShareholderID":
                             baseFileName = $"{shareholder.FullNameEng}_ID";
                             break;
+                        case "ShBlockLetter":
+                            baseFileName = $"{shareholder.FullNameEng}_ShBlockLetter";
+                            break;
+                        case "ShUnBlockLetter":
+                            baseFileName = $"{shareholder.FullNameEng}_ShUnBlockLetter";
+                            break;
                         case "ProxyID":
                             baseFileName = $"{shareholder.FullNameEng}_ProxyID";
                             break;
-                        case "ProxyDelegation":
+                        case "DeligationLetter":
                             baseFileName = $"{shareholder.FullNameEng}_DelegationLetter";
                             break;
                         case "Payment Slip":
@@ -147,7 +154,8 @@ namespace Shareholder_Management_System.Controllers
                             baseFileName = $"{shareholder.FullNameEng}_BlockingDocument";
                             break;
                         case "Transfer Document":
-                            baseFileName = $"{shareholder.FullNameEng}_TransferDocument";
+                            var shareholder1 = db.Shareholders.Find(transfreeID);
+                            baseFileName = $"{shareholder.FullNameEng}_{shareholder1.FullNameEng}_Transfer Document";
                             break;
                         default:
                             throw new Exception("Invalid document type.");
@@ -160,16 +168,22 @@ namespace Shareholder_Management_System.Controllers
                     string folderPath = "";
                     switch (document.DocType)
                     {
-                        case "ShareholderInfo":
-                            folderPath = Path.Combine(baseFolder, "Shareholder", "ShareholderInfo");
+                        case "ShareholderAgreement":
+                            baseFileName = $"{shareholder.FullNameEng}_ShareholderAgreement";
                             break;
                         case "ShareholderID":
                             folderPath = Path.Combine(baseFolder, "Shareholder", "ID");
                             break;
+                        case "ShBlockLetter":
+                            baseFileName = $"{shareholder.FullNameEng}_ShBlockLetter";
+                            break;
+                        case "ShUnBlockLetter":
+                            baseFileName = $"{shareholder.FullNameEng}_ShUnBlockLetter";
+                            break;
                         case "ProxyID":
                             folderPath = Path.Combine(baseFolder, "Proxy", "ID");
                             break;
-                        case "ProxyDelegation":
+                        case "DeligationLetter":
                             folderPath = Path.Combine(baseFolder, "Proxy", "Delegation");
                             break;
                         case "Payment Slip":
@@ -179,6 +193,7 @@ namespace Shareholder_Management_System.Controllers
                             folderPath = Path.Combine(baseFolder, "Blocking", "BlockingDocument");
                             break;
                         case "Transfer Document":
+
                             folderPath = Path.Combine(baseFolder, "Transfer", "TransferDocument");
                             break;
                         default:
@@ -211,6 +226,7 @@ namespace Shareholder_Management_System.Controllers
                     document.DocPath = $"~/{folderPath.Replace(Server.MapPath("~/"), "").Replace("\\", "/")}/{fileName}";
                     document.DocName = fileName;
 
+                    document.CreatedDate = DateTime.Now;
                     // Add the document to the database
                     db.Documents.Add(document);
                     db.SaveChanges();
@@ -237,6 +253,34 @@ namespace Shareholder_Management_System.Controllers
                 .ToList();
 
             return Json(docCounts, JsonRequestBehavior.AllowGet);
+        }
+        // GET: Documents
+        public ActionResult DocumentList(string docType)
+        {
+            IEnumerable<Document> documents = new List<Document>();
+
+            documents = db.Documents.Where(d => d.DocType.Equals(docType)).Include(d => d.Proxy).Include(d => d.User).Include(d => d.User1).Include(d => d.Shareholder).ToList();
+
+            return View(documents);
+
+        }
+
+        public JsonResult GetDocumentPath(int id)
+        {
+            // Retrieve the document from the database using the document ID
+            var document = db.Documents.FirstOrDefault(d => d.DocID == id);
+
+            if (document == null)
+            {
+                // If the document does not exist, return an error response
+                return Json(new { success = false, message = "Document not found." }, JsonRequestBehavior.AllowGet);
+            }
+
+            // Construct the URL path (relative to the web root) to access the file
+            string webFilePath = Url.Content("~/" + Path.GetFileName(document.DocPath));
+
+            // Return the file path as a URL
+            return Json(new { success = true, filePath = webFilePath }, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetDocumentStatsByType(string docType)
         {
