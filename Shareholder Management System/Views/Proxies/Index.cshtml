@@ -33,7 +33,7 @@
                             <label for="shid">Via FullName (Eng) OR</label>
                             @Html.DropDownList("ShID",
                                 new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                htmlAttributes: new { id = "searchable-select", @class = "form-select w-full" } 
+                                htmlAttributes: new { id = "searchable-select", @class = "form-select w-full" }
                             )
                         </div>
                         <div class="col-span-1">
@@ -1315,20 +1315,45 @@ async function deActivateProxy(proxyID) {
     });
 }
 
-    // Success message function (Toast)
-async function showMessage(msg = '', type = 'success') {
-    const toast = window.Swal.mixin({
-        toast: true,
-        position: 'top',
-        showConfirmButton: false,
-        timer: 3000,
-    });
-    toast.fire({
-        icon: type,
-        title: msg,
-        padding: '10px 20px',
-    });
-}
+//    // Success message function (Toast)
+//async function showMessage(msg = '', type = 'success') {
+//    const toast = window.Swal.mixin({
+//        toast: true,
+//        position: 'top',
+//        showConfirmButton: false,
+//        timer: 3000,
+//    });
+//    toast.fire({
+//        icon: type,
+//        title: msg,
+//        padding: '10px 20px',
+//    });
+//}
 
 
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Check if an error message exists in TempData
+        const errorMessage = `@TempData["ErrorMessage"]`.trim();
+        if (errorMessage) {
+            showMessage(errorMessage, 'error'); // Display error as a toast
+        }
+    });
+
+    // SweetAlert2 Toast Function
+    async function showMessage(msg = '', type = 'success') {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 5000, // Increased timer for better visibility
+        });
+        toast.fire({
+            icon: type,
+            html: msg, // Use 'html' to support line breaks
+            padding: '10px 20px',
+        });
+    }
 </script>

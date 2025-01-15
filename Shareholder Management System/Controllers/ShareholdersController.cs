@@ -93,10 +93,19 @@ namespace Shareholder_Management_System.Controllers
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
 
+
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
+            ViewBag.Authorizer = new SelectList(db.Users, "UID", "FullName", shareholder.Authorizer);
+            ViewBag.ShCategories = new SelectList(db.ShCategories, "ShCategories", "ShCategories", shareholder.SHCategory);
+
+
             //Ensure both files are provided
             if (shFile == null || shFile1 == null)
             {
-                ModelState.AddModelError("", "Both Identification and Agreement documents are required.");
+                //ModelState.AddModelError("", "Both Identification and Agreement documents are required.");
+                TempData["ErrorMessage"] = "Both Identification and Agreement documents are required.";
+
                 return View(shareholder);
             }
 
@@ -114,6 +123,14 @@ namespace Shareholder_Management_System.Controllers
                 {
                     try
                     {
+
+                        Shareholder share = db.Shareholders.Find(shareholder.ShareID);
+                        if(share != null)
+                        {
+                            TempData["ErrorMessage"] = "Shareholder ID is already taken, so please check it again.";
+                            return View(shareholder);
+                        }
+
                         db.Shareholders.Add(shareholder);
                         db.SaveChanges();
 
@@ -121,7 +138,7 @@ namespace Shareholder_Management_System.Controllers
                         Document document = new Document
                         {
                             DocOwner = "Shareholder",
-                            DocType = "ShareholderAgrement",
+                            DocType = "ShareholderAgreement",
                             ShID = shareholder.ShID,
                             CreatedBy = userId,
                             DocAuthorizationStatus = "Pending",
@@ -158,17 +175,26 @@ namespace Shareholder_Management_System.Controllers
                     }
                     catch (Exception ex)
                     {
-                        ModelState.AddModelError("", "An error occurred while saving the documents. Please try again.");
+                        TempData["ErrorMessage"] = "An error occurred while saving the documents. Please try again.";
                         System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Files cannot be empty.");
+                    TempData["ErrorMessage"] = "Files cannot be empty.";
                 }
             }
             else
             {
+                // Collect all ModelState errors into a single string
+                var errorMessages = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                // Combine all error messages into a single string, separated by line breaks
+                TempData["ErrorMessage"] = string.Join("<br>", errorMessages);
+
                 foreach (var state in ModelState)
                 {
                     foreach (var error in state.Value.Errors)
@@ -178,11 +204,9 @@ namespace Shareholder_Management_System.Controllers
                 }
             }
 
+
             // Re-assign ViewBags if the model state is invalid or error occurs
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
-            ViewBag.Authorizer = new SelectList(db.Users, "UID", "FullName", shareholder.Authorizer);
-            ViewBag.ShCategories = new SelectList(db.ShCategories, "ShCategories", "ShCategories");
+          
 
             return View(shareholder);
         }
@@ -217,6 +241,8 @@ namespace Shareholder_Management_System.Controllers
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
 
+
+
             if (ModelState.IsValid)
             {
                 shareholder.Branch = branchId;
@@ -231,6 +257,19 @@ namespace Shareholder_Management_System.Controllers
 
                 db.SaveChanges();
                 return RedirectToAction("Index");
+            }
+            else
+            {
+                // Collect all ModelState errors into a single string
+                var errorMessages = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                // Combine all error messages into a single string, separated by line breaks
+                TempData["ErrorMessage"] = string.Join("<br>", errorMessages);
+
+                
             }
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);

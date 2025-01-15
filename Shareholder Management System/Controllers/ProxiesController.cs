@@ -228,7 +228,8 @@ namespace Shareholder_Management_System.Controllers
 
             if (proxyFile == null || kebeleID == null)
             {
-                ModelState.AddModelError("", "Both Identification and Agreement documents are required.");
+
+                TempData["ErrorMessage"] = "Both Identification and Agreement documents are required.";
                 ViewBag.NewProxy = proxy;
                 return RedirectToAction("Index", new { ShID = proxy.ShID });
             }
@@ -287,15 +288,25 @@ namespace Shareholder_Management_System.Controllers
                     }
                     catch (Exception ex)
                     {
-                        ModelState.AddModelError("", "An error occurred while saving the documents. Please try again.");
+                        TempData["ErrorMessage"] = "An error occurred while saving the documents. Please try again.";
                         System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
                     }
 
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Files cannot be empty.");
+                    TempData["ErrorMessage"] = "Files cannot be empty.";
                 }
+            }
+            else
+            {
+                // Collect all ModelState errors and store them in TempData
+                var errorMessages = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                TempData["ErrorMessage"] = string.Join("<br>", errorMessages);
             }
 
 

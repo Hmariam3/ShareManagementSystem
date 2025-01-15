@@ -169,16 +169,16 @@ namespace Shareholder_Management_System.Controllers
                     switch (document.DocType)
                     {
                         case "ShareholderAgreement":
-                            baseFileName = $"{shareholder.FullNameEng}_ShareholderAgreement";
+                            folderPath = Path.Combine(baseFolder, "Shareholder", "Agreement");
                             break;
                         case "ShareholderID":
                             folderPath = Path.Combine(baseFolder, "Shareholder", "ID");
                             break;
                         case "ShBlockLetter":
-                            baseFileName = $"{shareholder.FullNameEng}_ShBlockLetter";
+                            folderPath = $"{shareholder.FullNameEng}_ShBlockLetter";
                             break;
                         case "ShUnBlockLetter":
-                            baseFileName = $"{shareholder.FullNameEng}_ShUnBlockLetter";
+                            folderPath = $"{shareholder.FullNameEng}_ShUnBlockLetter";
                             break;
                         case "ProxyID":
                             folderPath = Path.Combine(baseFolder, "Proxy", "ID");
@@ -277,7 +277,7 @@ namespace Shareholder_Management_System.Controllers
             }
 
             // Construct the URL path (relative to the web root) to access the file
-            string webFilePath = Url.Content("~/" + Path.GetFileName(document.DocPath));
+            string webFilePath = Url.Content(document.DocPath);
 
             // Return the file path as a URL
             return Json(new { success = true, filePath = webFilePath }, JsonRequestBehavior.AllowGet);
