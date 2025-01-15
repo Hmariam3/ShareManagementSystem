@@ -659,6 +659,7 @@
     <Content Include="Views\Shareholders\PendingRequests.cshtml" />
     <Content Include="Views\Shareholders\Authorization.cshtml" />
     <Content Include="Views\Shareholders\_PendingRequestsCount.cshtml" />
+    <Content Include="Views\Documents\DocumentList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -25,23 +25,26 @@
             {
                 @Html.AntiForgeryToken()
                 <div class="flex sm:flex-row flex-col text-center">
-                    <label for="horizontalEmail" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Search For Shareholder using one option</label>
+                    <label for="horizontalEmail" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">
+                        Search For Shareholder using one option
+                    </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                        <div>
+                        <div class="col-span-1">
                             <label for="shid">Via FullName (Eng) OR</label>
                             @Html.DropDownList("ShID",
                                 new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                htmlAttributes: new { id = "searchable-select"}
+                                htmlAttributes: new { id = "searchable-select", @class = "form-select w-full" } 
                             )
                         </div>
-                        <div>
+                        <div class="col-span-1">
                             <label for="shareID">Via Shareholder ID</label>
-                            <input id="shareID" name="shareID" type="text" placeholder="Enter shareID and hit enter" class="form-input" value="@ViewBag.ShareID" />
+                            <input id="shareID" name="shareID" type="text" placeholder="Enter shareID and hit enter"
+                                   class="form-input w-full" value="@ViewBag.ShareID" />
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary  mx-3 ">Fetch</button>
+                    <button type="submit" class="btn btn-primary mx-3">Search</button>
                 </div>
+
             }
         </div>
 
@@ -648,8 +651,7 @@
         $('#searchable-select').select2({
             placeholder: "Select a Shareholder",
             allowClear: true,
-            width: '100%',
-            // Customize search behavior to support spaces and partial matches
+            width: 'resolve', // Ensures the dropdown inherits the container's width
             matcher: function (params, data) {
                 if ($.trim(params.term) === '') {
                     return data;
@@ -662,6 +664,7 @@
                 return terms.every(term => text.includes(term)) ? data : null;
             }
         });
+
 
         $("#createProxyForm").validate({
             rules: {
@@ -961,7 +964,7 @@ document.addEventListener('alpine:init', () => {
                         select: 20,
                         sortable: false,
                         render: function (data, cell, row) {
-                            const status = row.cells[1].data.toLowerCase();
+                            const status = row.cells[2].data.toLowerCase();
                             let detailsUrl = '@Url.Action("Details", "Proxies", new { id = "__ID__" })'.replace("__ID__", data);
                             return `<div class="flex gap-4 items-center">
                                 <a href="${detailsUrl}" class="hover:text-primary" x-tooltip="Details">
@@ -1005,7 +1008,7 @@ document.addEventListener('alpine:init', () => {
                                     </button>
                                     <ul x-cloak="" x-show="open" x-transition="" x-transition.duration.300ms="" class="bottom-full !mt-0 mb-1 whitespace-nowrap ltr:left-0 rtl:right-0">
                                         <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'ProxyID')">Change ID</a></li>
-                                        <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'DelegationLetter')">Change Delg Letter</a></li>
+                                        <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'DeligationLetter')">Change Delg Letter</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -1080,6 +1083,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         activateProxy(proxyID) {
+            this.type = "DeligationLetter";
             this.proxyID = proxyID;
             this.activateProxyModal = true;
         },

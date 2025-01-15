@@ -19,7 +19,7 @@ namespace Shareholder_Management_System.Controllers
         {
             var shareholder = new Shareholder();
             IEnumerable<Proxy> proxies = new List<Proxy>();
-            var shareholders = db.Shareholders.Select(s => new SelectListItem
+            var shareholders = db.Shareholders.OrderBy(s => s.FullNameEng).Select(s => new SelectListItem
             {
                 Value = s.ShID.ToString(), // ShID as value
                 Text = s.FullNameEng // FullNameEng as text
@@ -97,6 +97,7 @@ namespace Shareholder_Management_System.Controllers
                 DocOwner = "Proxy",
                 DocType = type,
                 ShID = proxy.ShID,
+                ProxyID = proxy.ProxyID,
                 CreatedBy = userId,  // Assuming 1 is the user creating it, update as per your logic
                 DocAuthorizationStatus = "Pending",
                 CreatedDate = DateTime.Now,
@@ -144,9 +145,10 @@ namespace Shareholder_Management_System.Controllers
             // Handle document creation and file upload logic
             Document document = new Document
             {
-                DocOwner = "Shareholder",
-                DocType = "DelegationLetter",
+                DocOwner = "Proxy",
+                DocType = "DeligationLetter",
                 ShID = proxy.ShID,
+                ProxyID = proxy.ProxyID,
                 CreatedBy = userId,  // Assuming 1 is the user creating it, update as per your logic
                 DocAuthorizationStatus = "Pending",
                 CreatedDate = DateTime.Now,
@@ -210,7 +212,7 @@ namespace Shareholder_Management_System.Controllers
         {
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
             ViewBag.ProxyAuthorizer = new SelectList(db.Users, "UID", "FullName");
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID");
+            ViewBag.ShID = new SelectList(db.Shareholders.OrderBy(s => s.FullNameEng), "ShID", "ShareID");
             return View();
         }
 
@@ -252,6 +254,7 @@ namespace Shareholder_Management_System.Controllers
                             DocOwner = "Proxy",
                             DocType = "DeligationLetter",
                             ShID = proxy.ShID,
+                            ProxyID = proxy.ProxyID,
                             CreatedBy = userId,
                             DocAuthorizationStatus = "Pending",
                             CreatedDate = DateTime.Now,
@@ -261,6 +264,7 @@ namespace Shareholder_Management_System.Controllers
                             DocOwner = "Proxy",
                             DocType = "ProxyID",
                             ShID = proxy.ShID,
+                            ProxyID = proxy.ProxyID,
                             CreatedBy = userId,
                             DocAuthorizationStatus = "Pending",
                             CreatedDate = DateTime.Now,
@@ -346,7 +350,7 @@ namespace Shareholder_Management_System.Controllers
             }
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", proxy.CreatedBy);
             ViewBag.ProxyAuthorizer = new SelectList(db.Users, "UID", "FullName", proxy.ProxyAuthorizer);
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", proxy.ShID);
+            ViewBag.ShID = new SelectList(db.Shareholders.OrderBy(s => s.FullNameEng), "ShID", "ShareID", proxy.ShID);
             return View(proxy);
         }
 
@@ -378,7 +382,7 @@ namespace Shareholder_Management_System.Controllers
             }
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", proxy.CreatedBy);
             ViewBag.ProxyAuthorizer = new SelectList(db.Users, "UID", "FullName", proxy.ProxyAuthorizer);
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "ShareID", proxy.ShID);
+            ViewBag.ShID = new SelectList(db.Shareholders.OrderBy(s => s.FullNameEng), "ShID", "ShareID", proxy.ShID);
             return View(proxy);
         }
 
@@ -462,7 +466,7 @@ namespace Shareholder_Management_System.Controllers
                         document.DocAuthorizationDate = DateTime.Now;
                         db.Entry(document).State = EntityState.Modified;
                     }
-                    if (document.DocType.Equals("ShareholderID"))
+                    if (document.DocType.Equals("ProxyID"))
                     {
                         proxy.KebeleID = docID;
                     }
@@ -470,6 +474,7 @@ namespace Shareholder_Management_System.Controllers
                     {
                         proxy.ProxyDocument = docID;
                     }
+                    proxy.PendingDoc = null;
                 }
                 else
                 {
@@ -489,8 +494,15 @@ namespace Shareholder_Management_System.Controllers
 
                 }
 
+                if (proxy.ProxyStatus.Equals("InActive") || proxy.ProxyStatus.Equals("Active"))
+                {
+                    db.Entry(proxy).Property(x => x.ProxyStatus).IsModified = false;
+                }
+                else
+                {
+                    proxy.ProxyStatus = "Active";
+                }
 
-                proxy.ProxyStatus = "Active";
                 proxy.ProxyAuthorizationStatus = "Approved";
                 proxy.ProxyAuthorizer = userId;
                 proxy.AuthorizedDate = DateTime.Now;
@@ -551,6 +563,15 @@ namespace Shareholder_Management_System.Controllers
                         document.DocAuthorizationDate = DateTime.Now;
                         db.Entry(document).State = EntityState.Modified;
                     }
+                }
+
+                if (proxy.ProxyStatus.Equals("InActive"))
+                {
+                    proxy.ProxyStatus = "Active";
+                }
+                else if (proxy.ProxyStatus.Equals("Active"))
+                {
+                    proxy.ProxyStatus = "InActive";
                 }
 
                 proxy.ProxyAuthorizer = userId;

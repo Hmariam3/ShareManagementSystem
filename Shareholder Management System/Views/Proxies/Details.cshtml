@@ -56,7 +56,7 @@
                                 <button type="button" class="btn btn-outline-secondary" @@click="closeRejectModal">
                                     Cancel
                                 </button>
-                                <button type="button" class="btn btn-danger" @@click="submitRejection(selectedShareholderId)">
+                                <button type="button" class="btn btn-danger" @@click="submitRejection(selectedProxyId)">
                                     Submit
                                 </button>
                             </div>
@@ -351,14 +351,14 @@ document.addEventListener('alpine:init', () => {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showMessage('Shareholder rejected successfully.', 'success');
+                    showMessage('proxy rejected successfully.', 'success');
 
                     this.closeRejectModal();
                     setTimeout(() => {
                         location.reload();
                     }, 2000);
                 } else {
-                    showMessage('Failed to reject shareholder.', 'error');
+                    showMessage('Failed to reject proxy.', 'error');
                 }
             })
             .catch(error => {
