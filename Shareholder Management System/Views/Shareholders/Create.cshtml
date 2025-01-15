@@ -111,15 +111,7 @@
             }
     }
 </style>
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="text-danger">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
-        }
-    </div>
-}
+
 
 
 
@@ -380,6 +372,28 @@
 </div>
 
 <script>
+     document.addEventListener('DOMContentLoaded', () => {
+        // Check if an error message exists
+        const errorMessage = `@Html.Raw(TempData["ErrorMessage"])`.trim();
+        if (errorMessage) {
+            showMessage(errorMessage, 'error'); // Pass the error message to SweetAlert2 toast
+        }
+    });
+
+     async function showMessage(msg = '', type = 'success') {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 10000,
+        });
+        toast.fire({
+            icon: type,
+            title: msg,
+            padding: '10px 20px',
+        });
+    }
+
     function formWizard() {
         return {
             step: 1,
