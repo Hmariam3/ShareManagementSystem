@@ -175,7 +175,7 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
             //ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
             //ViewBag.ShID = new SelectList(db.Shareholders.Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
 
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
@@ -225,7 +225,7 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
                 return RedirectToAction("Create");
             }
 
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "ShareID", subscribtion.SubTransferFrom);
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
@@ -241,7 +241,8 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
         {
             //ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng");
             // ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng");
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
@@ -304,7 +305,8 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
             }
 
             // If the model state is not valid, reload the view with the previous data
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscription.SubTransferFrom);
             ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscription.SubAuthorizer);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscription.CreatedBy);
