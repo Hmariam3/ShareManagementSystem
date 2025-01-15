@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Shareholder_Management_System.Models;
 using Shareholder_Management_System.commons;
 using System.Web.Security;
+using Shareholder_Management_System.ViewModel;
 
 namespace Shareholder_Management_System.Controllers
 {
@@ -57,13 +58,25 @@ namespace Shareholder_Management_System.Controllers
                     //    return RedirectToAction("ChangePassword");
                     //}
 
+
+                    if (checkUser.IsFirstLogin == true)
+                    {
+                        // Redirect to password reset form
+                        TempData["UserId"] = checkUser.UID;
+                        return RedirectToAction("PasswordReset");
+                    }
+
                     Session["ID"] = checkUser.UID.ToString();
                     Session["FullName"] = checkUser.FullName;
                     Session["Username"] = checkUser.UserName;
                     Session["Branch"] = checkUser.Branch;
                     Session["Roles"] = checkUser.Role;
                     Session["BranchName"] = checkUser.Branch1.BranchName;
-        
+
+                    checkUser.activeStatus = true;
+                    db.SaveChanges();
+
+
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -78,11 +91,82 @@ namespace Shareholder_Management_System.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult PasswordReset()
+        {
+            if (TempData["UserId"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+            int userId = (int)TempData["UserId"];
+
+            return View(new PasswordResetViewModel { UserId = userId });
+        }
+
+        [HttpPost]
+        public ActionResult PasswordReset(PasswordResetViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Find the user in the database
+                var user = db.Users.Find(model.UserId);
+                if (user == null)
+                {
+                    ViewBag.ErrorMessage = "User not found.";
+                    return View(model);
+                }
+
+                var passwordHash = new PasswordHasher();
+                var passwordHasher = new PasswordHash();
+
+                // Verify the entered password against the hashed password stored in the database
+                string userHashed = passwordHasher.HashPassword(model.CurrentPassword);
+
+                // Verify the current password
+                if (!userHashed.Equals(user.Password))
+                {
+                    ViewBag.ErrorMessage = "Current password is incorrect.";
+                    return View(model);
+                }
+
+                // Verify new password and confirm password match
+                if (model.NewPassword != model.ConfirmPassword)
+                {
+                    ViewBag.ErrorMessage = "New password and confirmation do not match.";
+                    return View(model);
+                }
+
+                // Update the user's password
+                user.Password = _passwordHasher.HashPassword(model.NewPassword);
+                user.IsFirstLogin = false; // Mark first login as completed
+                db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Password changed successfully.";
+                return RedirectToAction("Login");
+            }
+
+            return View(model);
+        }
+
         public ActionResult SignOut()
         {
+            if (Session["ID"] != null && int.TryParse(Session["ID"].ToString(), out int id))
+            {
+                User user = db.Users.Find(id);
+                if (user != null)
+                {
+                    user.activeStatus = false;
+                    db.SaveChanges();
+                }
+            }
+            else
+            {
+                // Handle the case where the session does not contain the ID or the ID is not valid
+            }
+
             Session.Clear();
             Session.Abandon();
-                        
+
             // Sign out the user
             FormsAuthentication.SignOut();
 
@@ -96,10 +180,32 @@ namespace Shareholder_Management_System.Controllers
             Session["Username"] = null;
             Session["Branch"] = null;
             Session["Roles"] = null;
+            Session["BranchName"] = null;
+
 
             // Redirect to the Login view
             return RedirectToAction("Login", "UsersAuthorization");
         }
+
+        [HttpPost]
+        public ActionResult Heartbeat()
+        {
+            // Check if the session is still valid
+            if (Session["ID"] != null)
+            {
+                // Reset the session timeout to 10 seconds
+                Session.Timeout = 1; // This sets the session to expire in 1 minute, but we are using it to reset every 10 seconds
+
+                // Optionally, return a success response
+                return Json(new { success = true });
+            }
+            else
+            {
+                // Return a status indicating the session has expired
+                return Json(new { success = false, message = "Session expired" });
+            }
+        }
+
 
         // GET: UsersAuthorization
         public ActionResult Index()
