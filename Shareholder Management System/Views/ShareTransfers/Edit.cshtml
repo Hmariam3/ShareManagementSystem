@@ -49,7 +49,7 @@
         });
     </script>
 }
-@using (Html.BeginForm())
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -61,7 +61,7 @@
                 <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Share Transfer Edit Form</h5>
             </div>
             <div class="grid grid-cols-1 gap-6 pt-5 ">
-                <div>
+                <div class="hidden">
                     <input class="form-input" id="selectedSubscriptionIds" name="selectedSubscriptionIds" style="width: 200px" placeholder="Sub ID Populate here" readonly value="@string.Join(", ", ViewBag.CheckedSubscriptions)" />
                     <input class="form-input" id="selectedPaymentIds" name="selectedPaymentIds" style="width: 500px" placeholder="Pay ID Populate here" readonly value="@string.Join(", ", ViewBag.CheckedPayments)" />
                     <input class="form-input" id="transferType" name="TransferType" style="width: 500px" placeholder="Transfer Type is here" value="@Model.TransferType" readonly required />
@@ -249,13 +249,13 @@
                                         @if (ViewBag.DocumentId != null)
                                         {
                                             @*<div class="mt-2">
-                                                <span>Current File: </span>
-                                                <a href="@Url.Action("PreviewDocument", "Documents", new { id = ViewBag.DocumentId })" target="_blank" class="text-primary">
-                                                    @ViewBag.ExistingDocumentName
-                                                </a>
-                                            </div>*@
+                                                    <span>Current File: </span>
+                                                    <a href="@Url.Action("PreviewDocument", "Documents", new { id = ViewBag.DocumentId })" target="_blank" class="text-primary">
+                                                        @ViewBag.ExistingDocumentName
+                                                    </a>
+                                                </div>*@
                                             <div class="mt-2">
-                                                <span>Current File: </span>
+                                                <span>View Current File: </span>
                                                 <a href="@Url.Action("DownloadDocument", "Documents", new { id = ViewBag.DocumentId })" target="_blank" class="text-primary">
                                                     @ViewBag.ExistingDocumentName
                                                 </a>
@@ -315,22 +315,28 @@
             } else {
                 $('#transferTypeDiv').hide();
             }
+
+            // Hide all radio button options initially
             $('#transferTypeFull').parent().hide();
             $('#transferTypePartial').parent().hide();
             $('#transferTypePaidUp').parent().hide();
             $('#transferTypeRight').parent().hide();
 
+            // Disable all radio buttons by default
+            $('#transferTypeDiv input[type="radio"]').prop('disabled', true);
+
             if (transferCategory === 'Subscription') {
-                $('#transferTypePaidUp').parent().show().find('input').prop('disabled', false);
-                $('#transferTypeRight').parent().show().find('input').prop('disabled', false);
+                $('#transferTypePaidUp').parent().show().find('input').prop('disabled', true);
+                $('#transferTypeRight').parent().show().find('input').prop('disabled', true);
             } else if (transferCategory === 'Payment') {
-                $('#transferTypeFull').parent().show().find('input').prop('disabled', false);
-                $('#transferTypePartial').parent().show().find('input').prop('disabled', false);
+                $('#transferTypeFull').parent().show().find('input').prop('disabled', true);
+                $('#transferTypePartial').parent().show().find('input').prop('disabled', true);
             } else if (transferCategory === 'Full Transfer') {
                 $('#transferTypeFull').parent().show();
                 $('#transferTypeFull').prop('checked', true).prop('disabled', true);
             }
         }
+
 
         function setTransferTypeAndCategory() {
             $('#transferTypeDiv').show();

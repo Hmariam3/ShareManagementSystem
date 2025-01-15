@@ -12,7 +12,7 @@
         <div class="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
 
             <!-- Approve Button -->
-            <form id="approveForm" action="@Url.Action(" Approve", "ShareTransfers" )" method="post" style="display:inline;">
+            <form id="approveForm" action="@Url.Action("Approve", "ShareTransfers" )" method="post" style="display:inline;">
                 <input type="hidden" name="id" value="@Model.TransferID" />
                 <button type="button" class="btn btn-success gap-2" onclick="showAlert('approve')">
                     <!-- Checkmark Icon for Approve -->
@@ -25,7 +25,7 @@
             </form>
 
             <!-- Reject Button -->
-            <form id="rejectForm" action="@Url.Action(" Reject", "ShareTransfers" )" method="post" style="display:inline;">
+            <form id="rejectForm" action="@Url.Action("Reject", "ShareTransfers" )" method="post" style="display:inline;">
                 <input type="hidden" name="id" value="@Model.TransferID" />
                 <button type="button" class="btn btn-danger gap-2" onclick="showAlert('reject')">
                     <!-- Cross Icon for Reject -->
