@@ -11,24 +11,20 @@
         <div x-data="approvalrequest" class="panel mb-6 ">
             <div class="flex items-center justify-between">
                 <h5 class="text-lg font-semibold dark:text-white-light">There are some changes Needs Approval</h5>
+                @if (Model.ProxyStatus.Equals("Document-Updated") || Model.ProxyStatus.Equals("Proxy-ReActivated"))
+                {
+                    <button type="button" class="hover:text-secondary btn btn-danger" @@click="openDocumentInNewTab(@Model.ProxyDocument)">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                            <path opacity="0.5"
+                                  d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                  stroke="currentColor" stroke-width="1.5"></path>
+                            <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                        </svg> Changed Document.
+                    </button>
+                }
                 <div class="">
                     <div class="flex flex-wrap items-center justify-center gap-2">
-                        <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.KebeleID)">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
-                                <path opacity="0.5"
-                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
-                                      stroke="currentColor" stroke-width="1.5"></path>
-                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
-                            </svg> Identification Doc.
-                        </button>
-                        <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.ProxyDocument)">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
-                                <path opacity="0.5"
-                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
-                                      stroke="currentColor" stroke-width="1.5"></path>
-                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
-                            </svg> Agreement Doc.
-                        </button>
+
 
                         <button type="button" class="hover:text-secondary btn btn-primary" @@click="approveRequest(@Model.ProxyID)">
                             <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
@@ -69,7 +65,7 @@
     }
 
 
-    <div x-data="">
+    <div x-data="proxy">
         <div class="pt-5">
             <div class="mb-5 grid grid-cols-1 gap-5 lg:grid-cols-4 xl:grid-cols-4">
                 <div class="panel lg:col-span-2 pb-0 xl:col-span-2">
@@ -82,8 +78,35 @@
                         </div>
                     </div>
                     <div class="relative overflow-y-auto max-h-[360px] pr-3">
+                        <div class="group relative flex items-center py-1 dark:border-[#1b2e4b] ">
+                            <div class="flex-1">
+                               Attachements
+                            </div>
+                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                                <div class="flex flex-wrap items-center justify-center gap-2">
+                                    <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.KebeleID)">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                            <path opacity="0.5"
+                                                  d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                  stroke="currentColor" stroke-width="1.5"></path>
+                                            <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                        </svg> Identification Doc.
+                                    </button>
+                                    <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.ProxyDocument)">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                            <path opacity="0.5"
+                                                  d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                  stroke="currentColor" stroke-width="1.5"></path>
+                                            <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                        </svg> Delegation Letter.
+                                    </button>
+                                                                      
+                                </div>
+                            </div>
+                        </div>
 
-                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Basic Information ---</h6>
+
+                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3 mt-2">--- Basic Information ---</h6>
 
                         <!-- Basic Information -->
                         <div class="group relative flex items-center py-1 border-t border-[#ebedf2] dark:border-[#1b2e4b] ">
@@ -174,98 +197,119 @@
 
                 <div class="panel lg:col-span-2 pb-0 xl:col-span-2">
                     <h5 class="mb-5 text-lg font-semibold dark:text-white-light">Shareholder Details</h5>
-
                     <!-- Scrollable container with fixed height -->
                     <div class="relative overflow-y-auto max-h-[360px] pr-3">
 
-                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Basic Information ---</h6>
-
-                        <!-- Basic Information -->
-                        <div class="group relative flex items-center py-1 border-t border-[#ebedf2] dark:border-[#1b2e4b] ">
-                            <div class="flex-1">Share ID:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.ShareID)</div>
-                        </div>
-
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Full Name Afan Oromo:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.FullNameAfanOromo)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Shareholder Category:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.SHCategory)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">TIN Number:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TINNum)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1 border-b border-[#ebedf2] dark:border-[#1b2e4b]">
-                            <div class="flex-1">Account Number:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.AccountNumber)</div>
-                        </div>
-
-                        <!-- Address Information -->
-                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Address Information ---</h6>
-
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Region:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Region)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Zone:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Zone)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">City:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.City)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Subcity:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Subcity)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Woreda:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Woreda)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Kebele:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Kebele)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Phone Number:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.PhoneNo)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Home Telephone:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TeleHome)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Work Telephone:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TeleWork)</div>
-                        </div>
-                        <div class="group relative flex items-center py-1 border-b border-[#ebedf2] dark:border-[#1b2e4b]">
-                            <div class="flex-1">Email:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Email)</div>
-                        </div>
-
-                        <!-- Status Information -->
-                        <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Status Information ---</h6>
-
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Created Branch:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Branch1.BranchName)</div>
-                        </div>
-
-                        <div class="group relative flex items-center py-1">
-                            <div class="flex-1">Created Date:</div>
-                            <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
-                                <div class="group relative flex items-center py-1">
-                                    <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.CreatedDate)</div>
+                        <div class="relative overflow-y-auto max-h-[360px] pr-3">
+                            <div class="group relative flex items-center py-1 dark:border-[#1b2e4b] ">
+                                <div class="flex-1">
+                                    Attachements
+                                </div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                                    <div class="flex flex-wrap items-center justify-center gap-2">
+                                        <button type="button" class="hover:text-secondary btn btn-success" @@click="openDocumentInNewTab(@Model.Shareholder.KebeleID)">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                                <path opacity="0.5"
+                                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                            </svg> Identification Doc.
+                                        </button>
+                                       
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
+
+
+                            <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Basic Information ---</h6>
+
+                            <!-- Basic Information -->
+                            <div class="group relative flex items-center py-1 border-t border-[#ebedf2] dark:border-[#1b2e4b] ">
+                                <div class="flex-1">Share ID:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.ShareID)</div>
+                            </div>
+
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Full Name Afan Oromo:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.FullNameAfanOromo)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Shareholder Category:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.SHCategory)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">TIN Number:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TINNum)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1 border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                <div class="flex-1">Account Number:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.AccountNumber)</div>
+                            </div>
+
+                            <!-- Address Information -->
+                            <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Address Information ---</h6>
+
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Region:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Region)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Zone:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Zone)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">City:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.City)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Subcity:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Subcity)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Woreda:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Woreda)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Kebele:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Kebele)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Phone Number:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.PhoneNo)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Home Telephone:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TeleHome)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Work Telephone:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.TeleWork)</div>
+                            </div>
+                            <div class="group relative flex items-center py-1 border-b border-[#ebedf2] dark:border-[#1b2e4b]">
+                                <div class="flex-1">Email:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Email)</div>
+                            </div>
+
+                            <!-- Status Information -->
+                            <h6 class="border-b border-t border-[#ebedf2] dark:border-[#1b2e4b] font-semibold text-[#515365] dark:text-white-dark py-3">--- Status Information ---</h6>
+
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Created Branch:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.Branch1.BranchName)</div>
+                            </div>
+
+                            <div class="group relative flex items-center py-1">
+                                <div class="flex-1">Created Date:</div>
+                                <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">
+                                    <div class="group relative flex items-center py-1">
+                                        <div class="text-md font-semibold dark:text-white-light ltr:ml-auto rtl:mr-auto">@Html.DisplayFor(model => model.Shareholder.CreatedDate)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                </div>
 
             </div>
         </div>
@@ -291,6 +335,33 @@
 
 <script>
 document.addEventListener('alpine:init', () => {
+    Alpine.data('proxy', () => ({
+        openDocumentInNewTab(documentId) {
+            console.log(documentId);
+            if (documentId) {
+                // Make an AJAX request to fetch the document path
+                    fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Open the document in a new tab using the retrieved file path
+                            const documentUrl = window.location.origin + data.filePath; // Make sure it's a full URL
+                            console.log(documentUrl);
+                            console.log("abel");
+                            window.open(documentUrl, '_blank', 'width=800,height=600');
+                        } else {
+                            alert(data.message || "Failed to retrieve document path.");
+                        }
+                    })
+                    .catch(error => {
+                        console.log("Error fetching document path:", error);
+                        alert("An error occurred while trying to fetch the document.");
+                    });
+            } else {
+                alert("Document ID is missing!");
+            }
+        },
+    }));
 
     Alpine.data('approvalrequest', () => ({
 

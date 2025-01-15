@@ -369,6 +369,9 @@
     <Compile Include="Models\Subscribtion.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>

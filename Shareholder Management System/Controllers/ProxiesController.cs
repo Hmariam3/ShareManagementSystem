@@ -505,7 +505,7 @@ namespace Shareholder_Management_System.Controllers
 
                 }
 
-                if (proxy.ProxyStatus.Equals("InActive") || proxy.ProxyStatus.Equals("Active"))
+                if (proxy.ProxyStatus.Equals("InActive"))
                 {
                     db.Entry(proxy).Property(x => x.ProxyStatus).IsModified = false;
                 }

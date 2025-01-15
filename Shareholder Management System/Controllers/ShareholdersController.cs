@@ -579,7 +579,7 @@ namespace Shareholder_Management_System.Controllers
                         db.Entry(document).State = EntityState.Modified;
                     }
                 }
-                if (shareholder.Status.Equals("Blocked") || shareholder.Status.Equals("UnBlocked"))
+                if (shareholder.Status.Equals("Blocked"))
                 {
                     db.Entry(shareholder).Property(x => x.Status).IsModified = false;
                 }
@@ -652,7 +652,7 @@ namespace Shareholder_Management_System.Controllers
 
                 if (shareholder.Status.Equals("Blocked"))
                 {
-                    shareholder.Status = "UnBlocked";
+                    shareholder.Status = "Active";
                 }
                 else if(shareholder.Status.Equals("UnBlocked")) {
                     shareholder.Status = "Blocked";
