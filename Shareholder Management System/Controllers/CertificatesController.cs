@@ -80,11 +80,17 @@ namespace Shareholder_Management_System.Controllers
 
             // Set the new certificate number by incrementing the last one
             var newCertNum = (lastCertNum + 1).ToString();
-            var shareholders = db.Shareholders.Select(s => new SelectListItem
-            {
-                Value = s.ShID.ToString(), // ShID as value
-                Text = s.FullNameEng // FullNameEng as text
-            }).ToList();
+            var shareholders = db.Shareholders
+                .Where(s => s.Status.Equals("Active") && s.AuthorizationStatus.Equals("Approved")) // Filter by Status and AuthorizationStatus
+                .OrderBy(s => s.FullNameEng) // Order by FullNameEng
+                .Select(s => new SelectListItem
+                {
+                    Value = s.ShID.ToString(), // ShID as value
+        Text = s.FullNameEng // FullNameEng as text
+    })
+                .ToList();
+
+            // Add a default option
             shareholders.Insert(0, new SelectListItem
             {
                 Value = "", // Null value for the default option
