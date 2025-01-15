@@ -185,7 +185,7 @@ namespace Shareholder_Management_System.Controllers
                             DocumentsController documentsController = new DocumentsController();
                             documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
 
-                            int documentId = documentsController.Create(document, uploadedFile);
+                            int documentId = documentsController.Create(document, uploadedFile, shareTransfer.TransfareeShID);
 
                             if (documentId > 0)
                             {
