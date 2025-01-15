@@ -48,12 +48,16 @@ namespace Shareholder_Management_System.Controllers
         // GET: Payments/Create
         public ActionResult Create(int? subId)
         {
-            var shareholders1 = db.Shareholders.Select(s => new SelectListItem
-            {
-                Value = s.ShID.ToString(),
-                Text = s.FullNameEng + " / " + s.ShareID
+            var shareholders1 = db.Shareholders
+                .Where(s => s.Status.Equals("Active") && s.AuthorizationStatus.Equals("Approved"))
+                .OrderBy(s => s.FullNameEng)
+                .Select(s => new SelectListItem
+                {
+                    Value = s.ShID.ToString(),
+                    Text = s.FullNameEng + " / " + s.ShareID
+                })
+                .ToList();
 
-            }).ToList();
             shareholders1.Insert(0, new SelectListItem
             {
                 Value = "",

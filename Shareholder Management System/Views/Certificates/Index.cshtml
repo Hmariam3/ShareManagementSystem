@@ -35,7 +35,7 @@
                         <th>EndingSerial</th>
                         <th>PaymentIDs</th>
 
-                        <th>DeliveredBy</th>
+                        <th>CreatedBy</th>
                         <th>Status</th>
                         <th>CertGenerationDate</th>
                         <th>Remark</th>
@@ -78,7 +78,7 @@
                             'EndingSerial',
                             'PaymentIDs',
 
-                            'DeliveredBy',
+                            'CreateddBy',
                             'Status',
                             'CertGenerationDate',
                             'Remark',
@@ -98,7 +98,7 @@
         "@item.BeginingSerial", // BeginingSerial
         "@item.EndingSerial", // EndingSerial
         "@item.PaymentIDs", // PaymentIDs
-        "@item.DeliveredBy", // DeliveredBy
+        "@item.User.FullName", // DeliveredBy
                                ` @{
             string statusClass;
             if (item.CertAuthorizationStatus == "Approved")

@@ -35,7 +35,7 @@
                         <th>EndingSerial</th>
                         <th>PaymentIDs</th>
 
-                        <th>DeliveredBy</th>
+                        <th>CreatedBy</th>
 
                         <th>CertGenerationDate</th>
                         <th>Remark</th>
@@ -78,8 +78,8 @@
                             'EndingSerial',
                             'PaymentIDs',
 
-                            'DeliveredBy',
-                            
+                            'CreatedBy',
+
                             'CertGenerationDate',
                             'Remark',
                             'Action'
@@ -99,7 +99,7 @@
         "@item.EndingSerial", // EndingSerial
         "@item.PaymentIDs", // PaymentIDs
 
-        "@item.Shareholder.FullNameEng", // DeliveredBy
+        "@item.User.FullName", // DeliveredBy
 
         "@(item.CertGenerationDate.HasValue ? item.CertGenerationDate.Value.ToString("yyyy-MM-dd") : "")", // CertGenerationDate
         "@item.Remark", // Remark
