@@ -175,10 +175,11 @@ namespace Shareholder_Management_System.Controllers
                             folderPath = Path.Combine(baseFolder, "Shareholder", "ID");
                             break;
                         case "ShBlockLetter":
-                            folderPath = $"{shareholder.FullNameEng}_ShBlockLetter";
+                            folderPath = Path.Combine(baseFolder, "Shareholder", "ShBlockLetter");
                             break;
                         case "ShUnBlockLetter":
-                            folderPath = $"{shareholder.FullNameEng}_ShUnBlockLetter";
+                            folderPath = Path.Combine(baseFolder, "Shareholder", "ShUnBlockLetter");
+                            
                             break;
                         case "ProxyID":
                             folderPath = Path.Combine(baseFolder, "Proxy", "ID");

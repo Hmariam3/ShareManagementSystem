@@ -75,17 +75,17 @@ namespace Shareholder_Management_System.Controllers
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
+            var proxy = db.Proxies.Find(proxyID);
 
             if (proxyFile == null || proxyFile.ContentLength == 0)
             {
                 return Json(new { success = false, message = "File is required." });
             }
-            var activeProxy = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Approved" && p.ProxyStatus == "Active").FirstOrDefault();
-            if (activeProxy != null && activeProxy.ProxyID != proxyID)
+            var activeProxy = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Approved" && p.ProxyStatus == "Active" && p.ProxyID != proxyID && p.ShID != proxy.ShID).FirstOrDefault();
+            if (activeProxy != null)
             {
                 return Json(new { success = false, message = "There is another active proxy so frist please inactivate that proxyy." });
             }
-            var proxy = db.Proxies.Find(proxyID);
             if (proxy == null)
             {
                 return Json(new { success = false, message = "Proxy not found." });
@@ -131,16 +131,24 @@ namespace Shareholder_Management_System.Controllers
                 return Json(new { success = false, message = "File is required." });
             }
 
+            // Find the proxy to activate
             var proxy = db.Proxies.Find(proxyID);
             if (proxy == null)
             {
                 return Json(new { success = false, message = "Proxy not found." });
             }
 
-            var activeProxy = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Approved" && p.ProxyStatus == "Active").FirstOrDefault();
-            if (activeProxy != null && activeProxy.ProxyID != proxyID)
+            // Check for other active proxies for the same shareholder
+            var activeProxy = db.Proxies
+                .FirstOrDefault(p =>
+                    p.ProxyAuthorizationStatus == "Approved" &&
+                    p.ProxyStatus == "Active" &&
+                    p.ProxyID != proxyID &&
+                    p.ShID == proxy.ShID);
+
+            if (activeProxy != null)
             {
-                return Json(new { success = false, message = "There is another active proxy so frist please inactivate that proxyy." });
+                return Json(new { success = false, message = "Another active proxy exists. Please deactivate it first." });
             }
             // Handle document creation and file upload logic
             Document document = new Document
@@ -159,7 +167,6 @@ namespace Shareholder_Management_System.Controllers
 
             int documentId = documentsController.Create(document, proxyFile);
             proxy.PendingDoc = documentId;
-
             proxy.CreatedDate = DateTime.Now;
             proxy.ProxyAuthorizationStatus = "Pending";
             proxy.ProxyStatus = "Proxy-ReActivated";
@@ -401,7 +408,7 @@ namespace Shareholder_Management_System.Controllers
         public ActionResult Approve(int id)
         {
             var proxy = db.Proxies.Find(id);
-            var activeProxy = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Approved" && p.ProxyStatus == "Active").FirstOrDefault();
+            var activeProxy = db.Proxies.Where(p => p.ProxyAuthorizationStatus == "Approved" && p.ProxyStatus == "Active" && p.ShID == proxy.ShID).FirstOrDefault();
             if (activeProxy != null && activeProxy.ProxyID != id)
             {
                 return Json(new { success = false, message = "There is another active proxy so frist please inactivate that proxyy." });

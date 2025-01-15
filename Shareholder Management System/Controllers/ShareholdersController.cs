@@ -124,8 +124,8 @@ namespace Shareholder_Management_System.Controllers
                     try
                     {
 
-                        Shareholder share = db.Shareholders.Find(shareholder.ShareID);
-                        if(share != null)
+                        var isShareIDTaken = db.Shareholders.Any(s => s.ShareID == shareholder.ShareID);
+                        if (isShareIDTaken)
                         {
                             TempData["ErrorMessage"] = "Shareholder ID is already taken, so please check it again.";
                             return View(shareholder);
@@ -175,7 +175,7 @@ namespace Shareholder_Management_System.Controllers
                     }
                     catch (Exception ex)
                     {
-                        TempData["ErrorMessage"] = "An error occurred while saving the documents. Please try again.";
+                        TempData["ErrorMessage"] = "An error occurred while registering shareholder. Please try again.";
                         System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
                     }
                 }

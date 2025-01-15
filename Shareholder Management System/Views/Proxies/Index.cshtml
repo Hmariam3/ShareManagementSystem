@@ -1192,17 +1192,18 @@ document.addEventListener('alpine:init', () => {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showMessage('Proxy activated successfully.', 'success');
+                    showMessage(data.message, 'success');
                     this.editProxyDocumentModal = false;
                     setTimeout(() => {
                         location.reload();
                     }, 1000);
                 } else {
-                    showMessage('Failed to update proxy document.');
+                    showMessage(data.message, 'error');
                 }
             })
-            .catch(error => {
-                showMessage(data.message || 'An error occurred while updating the proxy.', 'error');
+                .catch(error => {
+                    showMessage(data.message, 'error');
+
             });
         },
         submitActivateProxy() {
@@ -1216,17 +1217,18 @@ document.addEventListener('alpine:init', () => {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showMessage('Proxy activated successfully.', 'success');
+                    showMessage(data.message, 'success');
+                    
                     this.editProxyDocumentModal = false;
                     setTimeout(() => {
                         location.reload();
                     }, 1000);
                 } else {
-                    showMessage('Failed to update proxy document.');
+                    showMessage(data.message, 'error');
                 }
             })
             .catch(error => {
-                showMessage(data.message || 'An error occurred while updating the proxy.', 'error');
+                    showMessage(data.message, 'error');
             });
         },
         openEditModal(proxyID) {
@@ -1297,19 +1299,20 @@ async function deActivateProxy(proxyID) {
             .then(data => {
                 if (data.success) {
                     // Show success message
-                    showMessage('Proxy deactivated successfully.', 'success');
+                    showMessage(data.message, 'success');
                     // Optionally reload the page after the message
                     setTimeout(() => {
                         location.reload();
                     }, 1000);
                 } else {
                     // Show error message
-                    showMessage(data.message || 'An error occurred while deactivating the proxy.', 'error');
+                    showMessage(data.message, 'error');
+                    
                 }
             })
-            .catch(error => {
-                showMessage('An error occurred while processing your request.', 'error');
-                console.error('Error:', error);
+                .catch(error => {
+                    showMessage(data.message, 'error');
+
             });
         }
     });

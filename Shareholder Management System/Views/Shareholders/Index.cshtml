@@ -458,17 +458,20 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showMessage('Shareholder document successfully updated.', 'success');
+                        showMessage(data.message, 'success');
+                        
                         this.blockShModal = false;
                         setTimeout(() => {
                             location.reload();
                         }, 2000);
                     } else {
-                        showMessage('File is required.');
+                        showMessage(data.message, 'error');
+                        
                     }
                 })
-                .catch(error => {
-                    showMessage(data.message || 'An error occurred while updating the shareholder document.', 'error');
+                    .catch(error => {
+                        showMessage(data.message, 'error');
+                        
                 });
             },
             submitShBlock() {
@@ -482,17 +485,20 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showMessage('Shareholder document successfully blocked.', 'success');
+                        showMessage(data.message, 'success');
+
                         this.blockShModal = false;
                         setTimeout(() => {
                             location.reload();
                         }, 2000);
                     } else {
-                        showMessage('File is required.');
+                        showMessage(data.message, 'error');
+
                     }
                 })
-                .catch(error => {
-                    showMessage(data.message || 'An error occurred while blocking the shareholder document.', 'error');
+                    .catch(error => {
+                        showMessage(data.message, 'error');
+
                 });
             },
             submitShUnBlock() {
@@ -505,17 +511,20 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showMessage('Shareholder document successfully unblocked.', 'success');
+                        showMessage(data.message, 'success');
+
                         this.blockShModal = false;
                         setTimeout(() => {
                             location.reload();
                         }, 2000);
                     } else {
-                        showMessage('Failed to unblock shareholder.');
+                        showMessage(data.message, 'error');
+
                     }
                 })
-                .catch(error => {
-                    showMessage(data.message || 'An error occurred while unblocking the shareholder document.', 'error');
+                    .catch(error => {
+                        showMessage(data.message, 'error');
+
                 });
             },
 
