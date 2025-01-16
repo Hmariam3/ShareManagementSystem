@@ -370,8 +370,16 @@ namespace Shareholder_Management_System.Controllers
                 return RedirectToAction("Profile", "Users", new { id = encryptedId }); // Redirect to Profile page with error message
             }
 
+            string newPassword = _passwordHasher.HashPassword(resetPasswordModel.NewPassword);
+
+            if (user.Password == newPassword)
+            {
+                TempData["ErrorMessage"] = "Current password and new password match.";
+                return RedirectToAction("Profile", "Users", new { id = encryptedId }); // Redirect to Profile page with error message
+            }
+
             // Update the user's password (hash the new password)
-            user.Password = _passwordHasher.HashPassword(resetPasswordModel.NewPassword);
+            user.Password = newPassword;
             db.SaveChanges();
 
             TempData["SuccessMessage"] = "Password reset successfully.";

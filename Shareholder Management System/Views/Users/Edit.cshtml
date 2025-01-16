@@ -93,14 +93,15 @@
 
                         <!-- Conditional Display for Status -->
                         <span class="block mt-1 text-gray-700 text-sm font-medium">
-                            @(Model.Status ? "Active" : "Inactive")
+                            @(Model.Status.HasValue ? (Model.Status.Value ? "Active" : "Inactive") : "Unknown")
                         </span>
 
                         <!-- Checkbox for boolean status -->
-                        @Html.CheckBoxFor(model => model.Status, new { @class = "form-checkbox mt-1" })
+                        @Html.CheckBox("Status", Model.Status ?? false, new { @class = "form-checkbox mt-1" })
 
                         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-red-500 text-sm" })
                     </div>
+
                 </div>
 
             </div>

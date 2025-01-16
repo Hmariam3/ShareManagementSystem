@@ -1,0 +1,127 @@
+﻿﻿@model IEnumerable<Shareholder_Management_System.Models.Branch>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<!-- Include SweetAlert Library -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/sweetalert2.min.css">
+<script src="~/js/sweetalert.js"></script>
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+
+@if (TempData["Message"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to show message
+            const showMessage = (msg = 'Example notification text.', position = 'top-right', showCloseButton = true, duration = 5000) => {
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: position,
+                    showConfirmButton: false,
+                    timer: duration,
+                    showCloseButton: showCloseButton,
+                });
+
+                toast.fire({
+                    title: msg,
+                });
+            };
+
+            // Call the showMessage function with the TempData message
+            showMessage('@TempData["Message"]', 'top-right', true, 5000);
+        });
+    </script>
+}
+
+<div class="bg-white shadow-md rounded-lg overflow-hidden panel">
+    <div class="flex justify-between px-6 py-4 border-b border-gray-200 items-center">
+        <h2 class="text-xl font-semibold dark:text-white-light">Branch Information</h2>
+        <p>
+            <button onclick="location.href='@Url.Action("Create")'"
+                    class="flex items-center inline-block px-6 py-3 text-white font-semibold text-sm uppercase rounded-md shadow-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                    style="background-color: #00ADEF; hover:bg: #008bb5; focus:ring-color: #00ADEF;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                Add New
+            </button>
+        </p>
+    </div>
+    <div class="p-6 overflow-x-auto">
+        <table id="userTable" class="min-w-full leading-normal">
+            <thead>
+                <tr class="bg-gray-100 text-gray-600 text-left text-sm uppercase font-semibold tracking-wider">
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.BranchCode) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.BranchName) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.SubProcess) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> @Html.DisplayNameFor(model => model.Process) </th>
+                    <th class="px-5 py-3 border-b-2 border-gray-200"> Actions </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.BranchCode) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.BranchName) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.SubProcess) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.Process) </td>
+
+                        <td>
+                            <div class="flex space-x-4">
+                                @{
+                                    string encryptedId = TripleDESEncryptionHelper.Encrypt(item.ID.ToString());
+                                }
+                                <a href="@Url.Action("Edit", new { id = encryptedId })" class="text-blue-500 hover:text-blue-700" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3.536-3.536a1.5 1.5 0 112.121 2.122L11 13m1-1L9 15l-2 2m2-2l3 3 5-5-2.828-2.828a1.5 1.5 0 00-2.122 0L11 11z" />
+                                    </svg>
+                                </a>
+                                <a href="@Url.Action("Details", new { id = encryptedId })" class="text-cyan-500 hover:text-cyan-700" title="Details">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M19 12c0-3.866-3.134-7-7-7S5 8.134 5 12s3.134 7 7 7 7-3.134 7-7z" />
+                                    </svg>
+                                </a>
+                                @*<a href="javascript:void(0);" onclick="confirmDeleteBranch('@Url.Action("Delete", new { id = encryptedId })')" class="text-red-500 hover:text-red-700" title="Delete Branch">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0a2 2 0 012-2h4a2 2 0 012 2m-6 0h6" />
+                                    </svg>
+                                </a>*@
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#userTable').DataTable({
+            pageLength: 5, // Number of rows to show per page
+            lengthMenu: [5, 10, 15, 25] // Options for the number of rows per page
+        });
+    });
+</script>
+
+<script>
+    function confirmDeleteBranch(url) {
+        console.log("Generated URL: ", url); // Print the URL to the console
+        if (confirm("Do you want to delete the branch?")) {
+            window.location.href = url; // Redirect to the reset action if user confirms
+        }
+    }
+</script>

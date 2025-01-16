@@ -112,12 +112,22 @@ namespace Shareholder_Management_System.Controllers
                 var user = db.Users.Find(model.UserId);
                 if (user == null)
                 {
-                    ViewBag.ErrorMessage = "User not found.";
+                    TempData["errormessage"] = "User not found.";
                     return View(model);
                 }
 
                 var passwordHash = new PasswordHasher();
                 var passwordHasher = new PasswordHash();
+
+                // Password policy regex: Minimum 10 characters, at least one letter, one number, and one special character
+                var passwordPolicyRegex = new System.Text.RegularExpressions.Regex(@"^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{10,}$");
+
+                if (!passwordPolicyRegex.IsMatch(model.NewPassword))
+                {
+                    TempData["errormessage"] = "Password must be at least 10 characters long and contain at least one letter, one number, and one special character.";
+                    return View(model);
+                }
+
 
                 // Verify the entered password against the hashed password stored in the database
                 string userHashed = passwordHasher.HashPassword(model.CurrentPassword);
@@ -125,19 +135,28 @@ namespace Shareholder_Management_System.Controllers
                 // Verify the current password
                 if (!userHashed.Equals(user.Password))
                 {
-                    ViewBag.ErrorMessage = "Current password is incorrect.";
+                    TempData["errormessage"] = "Current password is incorrect.";
                     return View(model);
                 }
 
                 // Verify new password and confirm password match
                 if (model.NewPassword != model.ConfirmPassword)
                 {
-                    ViewBag.ErrorMessage = "New password and confirmation do not match.";
+                    TempData["errormessage"] = "New password and confirmation do not match.";
+                    return View(model);
+                }
+
+                string newPassword = _passwordHasher.HashPassword(model.NewPassword);
+
+                // Verify new password and current passwords are not the same
+                if (user.Password == newPassword)
+                {
+                    TempData["errormessage"] = "The new password must be different from the current password.";
                     return View(model);
                 }
 
                 // Update the user's password
-                user.Password = _passwordHasher.HashPassword(model.NewPassword);
+                user.Password = newPassword;
                 user.IsFirstLogin = false; // Mark first login as completed
                 db.SaveChanges();
 
@@ -147,6 +166,7 @@ namespace Shareholder_Management_System.Controllers
 
             return View(model);
         }
+
 
         public ActionResult SignOut()
         {

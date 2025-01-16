@@ -1,0 +1,131 @@
+﻿﻿@model Shareholder_Management_System.Models.Branch
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<!-- Include SweetAlert Library -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/sweetalert2.min.css">
+<script src="~/js/sweetalert.js"></script>
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+
+@if (TempData["Message"] != null)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to show message
+            const showMessage = (msg = 'Example notification text.', position = 'top-right', showCloseButton = true, duration = 5000) => {
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: position,
+                    showConfirmButton: false,
+                    timer: duration,
+                    showCloseButton: showCloseButton,
+                });
+
+                toast.fire({
+                    title: msg,
+                });
+            };
+
+            // Call the showMessage function with the TempData message
+            showMessage('@TempData["Message"]', 'top-right', true, 5000);
+        });
+    </script>
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="animate__animated p-6" :class="[$store.app.animation]">
+        <!-- start main content section -->
+        <div x-data="invoiceAdd">
+            <div class="flex flex-col gap-2.5 xl:flex-row">
+                <div class="panel flex-1 px-0 py-6 ltr:lg:mr-6 rtl:lg:ml-6">
+                    <div class="flex flex-wrap justify-between px-4">
+                        <div class="w-full lg:w-1/2 lg:max-w-fit">
+                            <div class="flex shrink-0 items-center text-black dark:text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-blue-500 hover:text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 10l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V10z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 21V10h6v11" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 12h3v3h-3z" />
+                                </svg>
+                            </div>
+                            <div class="mt-6 space-y-1 text-gray-500 dark:text-gray-400">
+                                <div>Cooperative Bank of Oromia</div>
+                                <div> Rwanda Embassy area, Bole Sub-city, Woreda 02 Africa Ave, Addis Ababa</div>
+                            </div>
+                        </div>
+                        <div class="mb-6 w-full lg:w-1/2">
+                            <div class="flex items-center">
+                                <label for="number" class="mb-0 flex-1 ltr:mr-2 rtl:ml-2">Branch Code</label>
+                                @Html.EditorFor(model => model.BranchCode, new { htmlAttributes = new { @class = "form-input w-2/3 lg:w-[350px]" } })
+                                @Html.ValidationMessageFor(model => model.BranchCode, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <label for="invoiceLabel" class="mb-0 flex-1 ltr:mr-2 rtl:ml-2">Branch Name</label>
+                                @Html.EditorFor(model => model.BranchName, new { htmlAttributes = new { @class = "form-input w-2/3 lg:w-[350px]" } })
+                                @Html.ValidationMessageFor(model => model.BranchName, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <label for="startDate" class="mb-0 flex-1 ltr:mr-2 rtl:ml-2">Process</label>
+                                @Html.DropDownListFor(model => model.Process, (SelectList)ViewBag.Processes, "Select a Process", new { @class = "form-input w-2/3 lg:w-[350px]" })
+                                @Html.ValidationMessageFor(model => model.Process, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="mt-4 flex items-center">
+                                <label for="dueDate" class="mb-0 flex-1 ltr:mr-2 rtl:ml-2">Sub Process</label>
+                                @Html.DropDownListFor(model => model.SubProcess, (SelectList)ViewBag.SubProcesses, "Select a SubProcess", new { @class = "form-input w-2/3 lg:w-[350px]" })
+                                @Html.ValidationMessageFor(model => model.SubProcess, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-6 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <div class="mt-8 px-4">
+                        <div class="flex justify-center items-center space-x-4">
+                            <!-- Save Button and Back Link -->
+                            <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+                                <button type="submit"
+                                        style="background-color: #00ADEF; color: white; display: block; visibility: visible; position: relative; z-index: 10; border-radius: 0.375rem; font-size: 0.875rem; padding: 0.625rem 2rem; width: 200px;"
+                                        class="hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                    <i class="fas fa-plus mr-2"></i> Create
+                                </button>
+                            </div>
+                            <div>
+                                <a href="@Url.Action("Index")" class="bg-gray-500 hover:bg-gray-700 dark:text-white font-bold py-2 px-4 rounded inline-flex items-center">
+                                    <!-- Back Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="19 12 5 12"></polyline>
+                                        <polyline points="12 19 5 12 12 5"></polyline>
+                                    </svg>
+                                    Back to List
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end main content section -->
+
+    </div>
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

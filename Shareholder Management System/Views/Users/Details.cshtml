@@ -36,7 +36,7 @@
             <div>
                 <div class="font-semibold text-gray-600">@Html.DisplayNameFor(model => model.Status)</div>
                 <div class="text-gray-400 font-extrabold">
-                    @if (Model.Status)
+                    @if (Model.Status ?? false)
                     {
                         <span class="text-green-500">Active</span>
                     }
@@ -45,6 +45,7 @@
                         <span class="text-red-500">Inactive</span>
                     }
                 </div>
+
             </div>
 
             <div>
