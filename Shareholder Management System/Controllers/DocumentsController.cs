@@ -175,11 +175,10 @@ namespace Shareholder_Management_System.Controllers
                             folderPath = Path.Combine(baseFolder, "Shareholder", "ID");
                             break;
                         case "ShBlockLetter":
-                            folderPath = Path.Combine(baseFolder, "Shareholder", "ShBlockLetter");
+                            folderPath = Path.Combine(baseFolder, "Shareholder", "ShareholderBlock");
                             break;
                         case "ShUnBlockLetter":
-                            folderPath = Path.Combine(baseFolder, "Shareholder", "ShUnBlockLetter");
-                            
+                            folderPath = Path.Combine(baseFolder, "Shareholder", "ShareholderUnBlock");
                             break;
                         case "ProxyID":
                             folderPath = Path.Combine(baseFolder, "Proxy", "ID");
@@ -265,7 +264,31 @@ namespace Shareholder_Management_System.Controllers
             return View(documents);
 
         }
+        [HttpGet]
+        public JsonResult GetPinnedDocuments()
+        {
+            try
+            {
+                // Fetch documents and sort by the number of files (Count)
+                var documents = db.Documents
+                    .GroupBy(d => d.DocType)
+                    .Select(g => new
+                    {
+                        DocType = g.Key,
+                        Count = g.Count(),
+                        Documents = g.ToList()
+                    })
+                    .OrderByDescending(g => g.Count) // Sort by Count in descending order
+                    .ToList();
 
+                return Json(documents, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error fetching pinned documents: " + ex.Message);
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
         public JsonResult GetDocumentPath(int id)
         {
             // Retrieve the document from the database using the document ID

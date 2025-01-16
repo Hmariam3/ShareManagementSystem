@@ -14,7 +14,7 @@
 <script src="~/select2.min.js"></script>
 <script src="~/Scripts/JS/chart.js"></script>
 
-<h2 class="text-center font-bold">View The Category and List of the Document</h2>
+<p class="text-center font-bold" style="font-size:x-large;margin-top:20px"><strong>View The Category and List of the Document</strong></p>
 
 
 @Html.AntiForgeryToken()
@@ -97,9 +97,9 @@
         <div class="flex flex-col" x-data="{activeTab:'tab-recent'}">
             <div class="flex space-x-2 px-[var(--margin-x)] transition-all duration-[.25s]">
                 <button @@click="activeTab = 'tab-recent'" class="btn h-8 rounded-full text-xs+ font-medium" :class="activeTab === 'tab-recent' ? 'bg-slate-150 text-slate-800 dark:bg-navy-600 dark:text-navy-50' : 'hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 hover:text-slate-800 focus:text-slate-800 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25 dark:hover:text-navy-100 dark:focus:text-navy-100'">
-                    Recent
+                    Documents
                 </button>
-                <button @@click="activeTab = 'tab-pinned'" class="btn h-8 rounded-full text-xs+ font-medium" :class="activeTab === 'tab-pinned' ? 'bg-slate-150 text-slate-800 dark:bg-navy-600 dark:text-navy-50' : 'hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 hover:text-slate-800 focus:text-slate-800 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25 dark:hover:text-navy-100 dark:focus:text-navy-100'">
+                <button @@click="activeTab = 'tab-pinned'" class="btn h-8 rounded-full text-xs+ font-medium">
                     Pinned
                 </button>
             </div>
@@ -122,7 +122,7 @@
                         <div class="pt-5 text-base font-medium tracking-wide text-warning">
                             <a href="@Url.Action("DocumentList","Documents", new { docType = "ShareholderAgreement"}) " target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
-                                    <strong> Agreement Doc. </strong>
+                                    <strong> Agreement Document. </strong>
                                 </p>
                             </a>
                         </div>
@@ -191,7 +191,7 @@
                             </button>
                         </div>
                         <div class="pt-5 text-base font-medium tracking-wide text-success">
-                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ProxyDelegation"})" target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "DeligationLetter"})" target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
                                     <strong>Proxy Delegation</strong>
                                 </p>
@@ -360,7 +360,7 @@
                 document.getElementById('shareholderSize').innerText = `${data.SizeInMB.toFixed(2)} MB`;
             })
              .catch(error => console.error('Error fetching Shareholder ID document stats:', error));
-         fetch('@Url.Action("GetDocumentStatsByType", "Documents")?docType=DelegationLetter')
+    fetch('@Url.Action("GetDocumentStatsByType", "Documents")?docType=DeligationLetter')
             .then(response => response.json())
             .then(data => {
                 document.getElementById('delegationFileCount').innerText = `${data.Count} files`;
@@ -389,7 +389,30 @@
             })
              .catch(error => console.error('Error fetching Shareholder ID document stats:', error));
 </script>
+<script>
+    // Add event listener for the "Pinned" button
+document.querySelector('[x-on\\:click="activeTab = \'tab-pinned\'"]').addEventListener("click", function () {
+    fetch('@Url.Action("GetPinnedDocuments", "Documents")')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success === false) {
+                console.error("Error fetching pinned documents:", data.message);
+            } else {
+                // Update the chart with sorted data
+                updateChart(data);
 
+                // Update the table with sorted data
+                populateTable(data);
+            }
+        })
+        .catch(error => console.error("Error fetching pinned documents:", error));
+});
+</script>
 
 
 <script>
@@ -504,6 +527,235 @@
             row.style.display = rowText.includes(query) ? "" : "none";
         });
     }
+
+
+
+// Function to update the chart
+function updateChart(data) {
+    const docTypes = data.map(d => d.DocType);
+    const docCounts = data.map(d => d.Count);
+
+    // Destroy the existing chart if it exists
+    if (window.docTypePieChart) {
+        window.docTypePieChart.destroy();
+    }
+
+    // Create a new chart
+    var ctx = document.getElementById('docTypePieChart').getContext('2d');
+    window.docTypePieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: docTypes,
+            datasets: [{
+                label: 'Document Types',
+                data: docCounts,
+                backgroundColor: [
+                    '#FF6384', // Color for each slice
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0',
+                    '#9966FF',
+                    '#9966FF',
+                ]
+            }]
+        },
+        options: {
+            responsive: false, // Set to false to maintain the fixed dimensions
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    enabled: true
+                }
+            }
+        }
+    });
+}
+
+// Function to populate the table
+function populateTable(data) {
+    const tableContainer = document.getElementById("documentsTableContainer");
+    tableContainer.innerHTML = ""; // Clear any existing content
+
+    // Create and add search bar
+    const searchContainer = document.createElement("div");
+    searchContainer.className = "search-container";
+    const searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.id = "searchBar";
+    searchInput.placeholder = "Search...";
+    searchInput.addEventListener("input", function () {
+        filterTable(searchInput.value.toLowerCase());
+    });
+    searchContainer.appendChild(searchInput);
+    tableContainer.appendChild(searchContainer);
+
+    // Create the table wrapper
+    const tableWrapper = document.createElement("div");
+    tableWrapper.className = "table-wrapper";
+
+    const table = document.createElement("table");
+    table.className = "document-table";
+
+    // Define table headers
+    const headers = [
+        'Document Type', 'Number of Files', 'Action'
+    ];
+
+    // Add headers to table
+    const headerRow = document.createElement("tr");
+    headers.forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    // Check if data is empty and handle gracefully
+    if (data.length > 0) {
+        data.forEach(item => {
+            const row = document.createElement("tr");
+            row.className = "data-row";
+
+            // Create table cells for document data
+            const fields = [
+                item.DocType,
+                item.Count
+            ];
+            fields.forEach(value => {
+                const td = document.createElement("td");
+                td.textContent = value !== null ? value : ""; // Handle null values
+                row.appendChild(td);
+            });
+
+            // Add action buttons
+            const actionTd = document.createElement("td");
+            const viewButton = document.createElement("button");
+            viewButton.textContent = "View";
+            viewButton.className = "view-button";
+            viewButton.addEventListener("click", function () {
+                alert(`Viewing documents of type: ${item.DocType}`);
+            });
+            actionTd.appendChild(viewButton);
+            row.appendChild(actionTd);
+
+            table.appendChild(row);
+        });
+    } else {
+        // Handle case when no data is available
+        const noDataRow = document.createElement("tr");
+        const noDataTd = document.createElement("td");
+        noDataTd.colSpan = headers.length;
+        noDataTd.textContent = "No documents available.";
+        noDataTd.style.textAlign = "center";
+        noDataRow.appendChild(noDataTd);
+        table.appendChild(noDataRow);
+    }
+
+    tableWrapper.appendChild(table);
+    tableContainer.appendChild(tableWrapper);
+}
+
+// Function to filter the table
+function filterTable(query) {
+    const rows = document.querySelectorAll(".data-row");
+    rows.forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        row.style.display = rowText.includes(query) ? "" : "none";
+    });
+}
+
+function populateTable(data) {
+    const tableContainer = document.getElementById("documentsTableContainer");
+    tableContainer.innerHTML = ""; // Clear any existing content
+
+    // Create and add search bar
+    const searchContainer = document.createElement("div");
+    searchContainer.className = "search-container";
+    const searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.id = "searchBar";
+    searchInput.placeholder = "Search...";
+    searchInput.addEventListener("input", function () {
+        filterTable(searchInput.value.toLowerCase());
+    });
+    searchContainer.appendChild(searchInput);
+    tableContainer.appendChild(searchContainer);
+
+    // Create the table wrapper
+    const tableWrapper = document.createElement("div");
+    tableWrapper.className = "table-wrapper";
+
+    const table = document.createElement("table");
+    table.className = "document-table";
+
+    // Define table headers
+    const headers = [
+        'Document Type', 'Number of Files', 'Action'
+    ];
+
+    // Add headers to table
+    const headerRow = document.createElement("tr");
+    headers.forEach(header => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    // Check if data is empty and handle gracefully
+    if (data.length > 0) {
+        data.forEach(item => {
+            const row = document.createElement("tr");
+            row.className = "data-row";
+
+            // Create table cells for document data
+            const fields = [
+                item.DocType,
+                item.Count
+            ];
+            fields.forEach(value => {
+                const td = document.createElement("td");
+                td.textContent = value !== null ? value : ""; // Handle null values
+                row.appendChild(td);
+            });
+
+            // Add action buttons
+            const actionTd = document.createElement("td");
+            const viewButton = document.createElement("button");
+            viewButton.textContent = "View";
+            viewButton.className = "view-button";
+            viewButton.addEventListener("click", function () {
+                alert(`Viewing documents of type: ${item.DocType}`);
+            });
+            actionTd.appendChild(viewButton);
+            row.appendChild(actionTd);
+
+            table.appendChild(row);
+        });
+    } else {
+        // Handle case when no data is available
+        const noDataRow = document.createElement("tr");
+        const noDataTd = document.createElement("td");
+        noDataTd.colSpan = headers.length;
+        noDataTd.textContent = "No documents available.";
+        noDataTd.style.textAlign = "center";
+        noDataRow.appendChild(noDataTd);
+        table.appendChild(noDataRow);
+    }
+
+    tableWrapper.appendChild(table);
+    tableContainer.appendChild(tableWrapper);
+}
+
+function filterTable(query) {
+    const rows = document.querySelectorAll(".data-row");
+    rows.forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        row.style.display = rowText.includes(query) ? "" : "none";
+    });
+}
 </script>
 
 
