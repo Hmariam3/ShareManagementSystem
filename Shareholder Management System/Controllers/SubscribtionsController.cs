@@ -102,30 +102,30 @@ namespace Share.Controllers
         //    return PartialView("_AddonsubscriptionsList", subscriptions.ToList());
         //}
 
-   [HttpPost]
-public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
-{
-    var subscriptions = db.Subscribtions
-        .Include(s => s.Shareholder)
-        .Include(s => s.Shareholder1)
-        .Include(s => s.User)
-        .Include(s => s.User1)
-        .AsQueryable();
+        [HttpPost]
+        public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
+        {
+            var subscriptions = db.Subscribtions
+                .Include(s => s.Shareholder)
+                .Include(s => s.Shareholder1)
+                .Include(s => s.User)
+                .Include(s => s.User1)
+                .AsQueryable();
 
-    if (ShareId.HasValue)
-    {
-        subscriptions = subscriptions.Where(s => s.ShID == ShareId);
-    }
+            if (ShareId.HasValue)
+            {
+                subscriptions = subscriptions.Where(s => s.ShID == ShareId);
+            }
 
-    if (SubId.HasValue)
-    {
-        subscriptions = subscriptions.Where(s => s.SubID == SubId);
-    }
+            if (SubId.HasValue)
+            {
+                subscriptions = subscriptions.Where(s => s.SubID == SubId);
+            }
 
-    subscriptions = subscriptions.Where(s => s.SubAuthorizationStatus == "Approved");
+            subscriptions = subscriptions.Where(s => s.SubAuthorizationStatus == "Approved");
 
-    return PartialView("_AddonsubscriptionsList", subscriptions.ToList());
-}
+            return PartialView("_AddonsubscriptionsList", subscriptions.ToList());
+        }
 
 
 
@@ -335,9 +335,9 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
                            .Where(s => s.ShID == shareholderId
                                         && s.SubAuthorizationStatus == "Approved"
                                         && s.UnpaidSubscription >= 0
-                                        && s.SubNumShares !=0
+                                        && s.SubNumShares != 0
                                         && s.PaidSubscription.Value >= 0.25m * s.SubAmount.Value) // Ensure PaidSubscription is at least 25% of SubAmount
-                                       
+
                            .Select(s => new
                            {
                                s.SubID,
@@ -827,7 +827,7 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
                 worksheet.Cells[5, 2].Value = "Shareholder ID";
                 worksheet.Cells[5, 3].Value = "Shareholder Name";
                 worksheet.Cells[5, 4].Value = "Number of Shares";
-                worksheet.Cells[5, 5].Value =  "Authorized By";
+                worksheet.Cells[5, 5].Value = "Authorized By";
                 worksheet.Cells[5, 6].Value = "Paid Amount";
                 worksheet.Cells[5, 7].Value = "Unpaid Amount";
                 worksheet.Cells[5, 8].Value = "Due Date";
