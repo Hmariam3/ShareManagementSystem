@@ -51,8 +51,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=7.5.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
-      <HintPath>..\packages\EPPlus.7.5.1\lib\net35\EPPlus.dll</HintPath>
+    <Reference Include="EPPlus, Version=7.5.2.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.7.5.2\lib\net35\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus.Interfaces, Version=7.5.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.Interfaces.7.5.0\lib\net35\EPPlus.Interfaces.dll</HintPath>
@@ -289,6 +289,7 @@
     <Compile Include="Commons\PasswordHash.cs" />
     <Compile Include="Controllers\AuditLogsController.cs" />
     <Compile Include="Controllers\BlockedsController.cs" />
+    <Compile Include="Controllers\Branches1Controller.cs" />
     <Compile Include="Controllers\CertificatesController.cs" />
     <Compile Include="Controllers\DividendsController.cs" />
     <Compile Include="Controllers\DividenedDetailsController.cs" />
@@ -367,9 +368,6 @@
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Subscribtion.cs">
-      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
@@ -736,6 +734,11 @@
     <Content Include="Views\Shareholders\_PendingRequestsCount.cshtml" />
     <Content Include="Views\Documents\DocumentList.cshtml" />
     <Content Include="Views\UsersAuthorization\PasswordReset.cshtml" />
+    <Content Include="Views\Branches1\Create.cshtml" />
+    <Content Include="Views\Branches1\Delete.cshtml" />
+    <Content Include="Views\Branches1\Details.cshtml" />
+    <Content Include="Views\Branches1\Edit.cshtml" />
+    <Content Include="Views\Branches1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
