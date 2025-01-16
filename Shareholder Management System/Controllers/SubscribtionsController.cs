@@ -709,7 +709,9 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
                     worksheet.Cells[i + 6, 2].Value = summary.ShareholderName;
                     worksheet.Cells[i + 6, 3].Value = summary.TotalNumberOfShares;
                     worksheet.Cells[i + 6, 4].Value = summary.TotalPaidAmount;
+                    worksheet.Cells[i + 6, 4].Style.Numberformat.Format = "#,##0.00";
                     worksheet.Cells[i + 6, 5].Value = summary.TotalUnpaidSubscription;
+                    worksheet.Cells[i + 6, 5].Style.Numberformat.Format = "#,##0.00";
                 }
 
                 // Adjust column widths
@@ -824,8 +826,8 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
                 worksheet.Cells[5, 1].Value = "Subscription ID";
                 worksheet.Cells[5, 2].Value = "Shareholder ID";
                 worksheet.Cells[5, 3].Value = "Shareholder Name";
-                worksheet.Cells[5, 4].Value = "Authorized By";
-                worksheet.Cells[5, 5].Value = "Number of Shares";
+                worksheet.Cells[5, 4].Value = "Number of Shares";
+                worksheet.Cells[5, 5].Value =  "Authorized By";
                 worksheet.Cells[5, 6].Value = "Paid Amount";
                 worksheet.Cells[5, 7].Value = "Unpaid Amount";
                 worksheet.Cells[5, 8].Value = "Due Date";
@@ -852,15 +854,22 @@ public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
                     worksheet.Cells[i + 6, 1].Value = sub.SubID; // Subscription ID
                     worksheet.Cells[i + 6, 2].Value = sub.Shareholder.ShareID; // Shareholder ID
                     worksheet.Cells[i + 6, 3].Value = sub.Shareholder?.FullNameEng ?? "N/A"; // Shareholder Name
-                    worksheet.Cells[i + 6, 4].Value = sub.User?.FullName ?? "N/A"; // Authorized By
-                    worksheet.Cells[i + 6, 5].Value = sub.SubNumShares ?? 0; // Number of Shares
-                    worksheet.Cells[i + 6, 6].Value = sub.PaidSubscription ?? 0; // Paid Amount
-                    worksheet.Cells[i + 6, 7].Value = sub.UnpaidSubscription ?? 0; // Unpaid Amount
-                    worksheet.Cells[i + 6, 8].Value = sub.PaymentDueDate?.ToString("yyyy-MM-dd") ?? "N/A"; // Payment Due Date
+                    worksheet.Cells[i + 6, 4].Value = sub.SubNumShares ?? 0; // Number of Shares 
+                    worksheet.Cells[i + 6, 5].Value = sub.User?.FullName ?? "Not Approved"; // Authorized By
+                    //worksheet.Cells[i + 6, 6].Value = sub.PaidSubscription ?? 0; // Paid Amount
+                    //worksheet.Cells[i + 6, 7].Value = sub.UnpaidSubscription ?? 0; // Unpaid Amount
+                    // Paid Amount
+                    worksheet.Cells[i + 6, 6].Value = sub.PaidSubscription ?? 0;
+                    worksheet.Cells[i + 6, 6].Style.Numberformat.Format = "#,##0.00";
+
+                    // Unpaid Amount
+                    worksheet.Cells[i + 6, 7].Value = sub.UnpaidSubscription ?? 0;
+                    worksheet.Cells[i + 6, 7].Style.Numberformat.Format = "#,##0.00";
+                    worksheet.Cells[i + 6, 8].Value = sub.PaymentDueDate?.ToString("yyyy-MM-dd") ?? "Not Given"; // Payment Due Date
                     worksheet.Cells[i + 6, 9].Value = sub.SubDate?.ToString("yyyy-MM-dd") ?? "N/A"; // Creation Date
                     worksheet.Cells[i + 6, 10].Value = sub.User1?.FullName ?? "N/A"; // Last Modified By
                     worksheet.Cells[i + 6, 11].Value = sub.SubAuthorizationStatus ?? "N/A"; // Authorization Status
-                    worksheet.Cells[i + 6, 12].Value = sub.Branch1.BranchName; // Authorization Status
+                    worksheet.Cells[i + 6, 12].Value = sub.Branch1 != null ? sub.Branch1.BranchName : "N/A";// Branch
                 }
 
                 // Autofit columns for better readability
