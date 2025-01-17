@@ -127,37 +127,82 @@ namespace Shareholder_Management_System.Controllers
                 if (selectedPayments != null && selectedPayments.Any())
                 {
                     certificate.PaymentIDs = string.Join(",", selectedPayments);
+                    // Fetch the payment amount for the given PaymentIDs
+                    var totalPaymentAmount = db.Payments
+                                               .Where(p => selectedPayments.Contains(p.PayID))
+                                               .Sum(p => p.PaidAmount);
+                    // Get the max EndingSerial from the Certificates table, or start from 0 if no entries exist
+                    int lastEndingSerial = db.Certificates.Any() ? db.Certificates.Max(c => c.EndingSerial).GetValueOrDefault() : 0;
+
+                    // Calculate BeginningSerial and EndingSerial
+                    certificate.BeginingSerial = lastEndingSerial + 1;
+                    int numberOfShares = (int)(totalPaymentAmount / 1000); // Assuming each share is worth 1000
+                    certificate.EndingSerial = certificate.BeginingSerial + numberOfShares - 1;
+
+                    // Fetch the last certificate number and convert it after retrieving it in memory
+                    int lastCertNum = db.Certificates
+                                        .Where(c => c.CertNum != null) // Filter out any null CertNum
+                                        .ToList() // Fetch into memory
+                                        .Select(c => int.Parse(c.CertNum)) // Parse CertNum as an integer
+                                        .DefaultIfEmpty(0) // Handle case where no CertNum exists
+                                        .Max(); // Get the max value
+
+                    // Set the new certificate number by incrementing the last one
+                    var newCertNum = (lastCertNum + 1).ToString();
+
+                    // Assign the certificate number to ViewBag
+                    ViewBag.NewCertNum = newCertNum;
+
+                    // Set the certificate number before saving it to the database
+                    certificate.CertNum = newCertNum;
                 }
+                
 
-                // Fetch the payment amount for the given PaymentIDs
-                var totalPaymentAmount = db.Payments
-                                           .Where(p => selectedPayments.Contains(p.PayID))
-                                           .Sum(p => p.PaidAmount);
+                if (selectedPayments == null)
+                {
+                    ModelState.AddModelError("ShID", "Atleast one Payment must be selected.");
+                    var shareholders = db.Shareholders
+                       .Where(s => s.Status.Equals("Active") && s.AuthorizationStatus.Equals("Approved")) // Filter by Status and AuthorizationStatus
+                       .OrderBy(s => s.FullNameEng) // Order by FullNameEng
+                       .Select(s => new SelectListItem
+                       {
+                           Value = s.ShID.ToString(), // ShID as value
+                            Text = s.FullNameEng // FullNameEng as text
+                        })
+                       .ToList();
+                    // Add a default option
+                    shareholders.Insert(0, new SelectListItem
+                    {
+                        Value = "",
+                        Text = "Select a Shareholder"
+                    });
 
-                // Get the max EndingSerial from the Certificates table, or start from 0 if no entries exist
-                int lastEndingSerial = db.Certificates.Any() ? db.Certificates.Max(c => c.EndingSerial).GetValueOrDefault() : 0;
+                    ViewBag.Shareholders = shareholders;
 
-                // Calculate BeginningSerial and EndingSerial
-                certificate.BeginingSerial = lastEndingSerial + 1;
-                int numberOfShares = (int)(totalPaymentAmount / 1000); // Assuming each share is worth 1000
-                certificate.EndingSerial = certificate.BeginingSerial + numberOfShares - 1;
+                    int lastEndingSerial = db.Certificates.Any() ? db.Certificates.Max(c => c.EndingSerial).GetValueOrDefault() : 0;
 
-                // Fetch the last certificate number and convert it after retrieving it in memory
-                int lastCertNum = db.Certificates
-                                    .Where(c => c.CertNum != null) // Filter out any null CertNum
-                                    .ToList() // Fetch into memory
-                                    .Select(c => int.Parse(c.CertNum)) // Parse CertNum as an integer
-                                    .DefaultIfEmpty(0) // Handle case where no CertNum exists
-                                    .Max(); // Get the max value
+                    // Calculate BeginningSerial and EndingSerial
+                    certificate.BeginingSerial = lastEndingSerial + 1;
 
-                // Set the new certificate number by incrementing the last one
-                var newCertNum = (lastCertNum + 1).ToString();
+                    // Fetch the last certificate number and convert it after retrieving it in memory
+                    int lastCertNum = db.Certificates
+                                        .Where(c => c.CertNum != null) // Filter out any null CertNum
+                                        .ToList() // Fetch into memory
+                                        .Select(c => int.Parse(c.CertNum)) // Parse CertNum as an integer
+                                        .DefaultIfEmpty(0) // Handle case where no CertNum exists
+                                        .Max(); // Get the max value
 
-                // Assign the certificate number to ViewBag
-                ViewBag.NewCertNum = newCertNum;
+                    // Set the new certificate number by incrementing the last one
+                    var newCertNum = (lastCertNum + 1).ToString();
 
-                // Set the certificate number before saving it to the database
-                certificate.CertNum = newCertNum;
+                    // Assign the certificate number to ViewBag
+                    ViewBag.NewCertNum = newCertNum;
+
+                    // Set the certificate number before saving it to the database
+                    certificate.CertNum = newCertNum;
+
+                    return View(certificate);
+                }
 
                 // Save the certificate to the database
                 db.Certificates.Add(certificate);
@@ -261,8 +306,6 @@ namespace Shareholder_Management_System.Controllers
                 Payments = formattedPayments
             }, JsonRequestBehavior.AllowGet);
         }
-
-
 
         public ActionResult GetPaymentDetails(IEnumerable<int> payIDs, int shID)
         {
