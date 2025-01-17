@@ -34,8 +34,9 @@
                             <label for="shid">Shareholder</label>
                             @Html.DropDownList("ShID",
                                 new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                htmlAttributes: new { id = "seachable-select" }
+                                htmlAttributes: new { id = "seachable-select", required = "required" }
                             )
+                            @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
                         </div>
                     </div>
 
@@ -73,7 +74,7 @@
                             @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
                         </div>
                     </div>
-
+              
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-primary mt-6" style="background:#00adef;">Submit</button>
                 }
@@ -237,7 +238,7 @@
         // Event listener for dropdown change
         $('#seachable-select').change(function () {
             var selectedValue = $(this).val(); // Get selected value
-            console.log(selectedValue + "selll")
+
             if (selectedValue) {
                 $('#paymentsTableBody2').empty();
                 $('#totalNumberOfShares').text('0');
@@ -327,7 +328,7 @@
         $('input[name="selectedPayments"]:checked').each(function () {
             selectedPayIDs.push($(this).val());
         });
-       
+
         if (selectedPayIDs.length > 0) {
             $.ajax({
                 url: '@Url.Action("GetPaymentDetails", "Certificates")',

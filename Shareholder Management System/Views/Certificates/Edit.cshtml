@@ -29,15 +29,18 @@
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(model => model.CertID)
-
+             
                 <!-- Shareholder Dropdown -->
-                <div class="mb-5">
-                    <label for="shid">Shareholder</label>
-                    @Html.DropDownList("ShID",
-                        new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text", Model.ShID),
-                        htmlAttributes: new { id = "seachable-select" }
-                    )
-                    @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                <div x-data="search">
+                    <div>
+                        <label for="shid">Shareholder</label>
+                        @Html.DropDownList(
+                          "ShID",
+                          new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
+                          htmlAttributes: new { id = "seachable-select", @class = "form-input", @disabled = "disabled" }
+                        )
+
+                    </div>
                 </div>
 
                 <!-- Payments Table -->
@@ -108,17 +111,17 @@
         </div>
 
         @*<!-- Preview Section -->
-        <div>
-            <div class="mb-5 flex items-center justify-between">
-                <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Preview</h5>
-            </div>
-            <hr />
-            <div class="mb-5">
-                <div x-data="invoicePreview">
-                    <!-- Preview content here -->
+            <div>
+                <div class="mb-5 flex items-center justify-between">
+                    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Preview</h5>
                 </div>
-            </div>
-        </div>*@
+                <hr />
+                <div class="mb-5">
+                    <div x-data="invoicePreview">
+                        <!-- Preview content here -->
+                    </div>
+                </div>
+            </div>*@
     </div>
 </div>
 
@@ -129,15 +132,30 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
     <script>
-        document.addEventListener("DOMContentLoaded", function (e) {
-            var options = {
-                searchable: true
-            };
-            NiceSelect.bind(document.getElementById("seachable-select"), options);
-        });
+     
 
         $(document).ready(function () {
+            // Initialize Select2 with custom search handling
+            $('#seachable-select').select2({
+                placeholder: "Select a Shareholder",
+                allowClear: true,
+                width: '100%',
+                matcher: function (params, data) {
+                    if ($.trim(params.term) === '') {
+                        return data;
+                    }
+
+                    // Match against each part of the search term
+                    const terms = params.term.toLowerCase().split(' ');
+                    const text = data.text.toLowerCase();
+
+                    return terms.every(term => text.includes(term)) ? data : null;
+                }
+            });
             // Event listener for dropdown change
             $('#seachable-select').change(function () {
                 var selectedValue = $(this).val();
