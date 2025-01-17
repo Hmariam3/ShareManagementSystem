@@ -267,7 +267,8 @@
                                                                         {
                                                                             id = "startDate",
                                                                             @class = "form-input",
-                                                                            @type = "date", // Ensuring the input is of type "date"
+                                                                            @type = "date", // Ensure the input is of type "date"
+                                                                            @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
                                                                         }
                                                                     })
                                                                     @Html.ValidationMessageFor(model => proxy.StartDate, "", new { @class = "text-danger" })
@@ -276,14 +277,15 @@
                                                                 <div>
                                                                     <label for="endDate" class="text-white-dark">End Date </label>
                                                                     @Html.EditorFor(model => proxy.EndDate, new
-                                                                    {
-                                                                        htmlAttributes = new
-                                                                        {
-                                                                            id = "endDate",
-                                                                            @class = "form-input",
-                                                                            @type = "date", // Ensuring the input is of type "date"
-                                                                        }
-                                                                    })
+                                                               {
+                                                                   htmlAttributes = new
+                                                                   {
+                                                                       id = "endDate",
+                                                                       @class = "form-input",
+                                                                       @type = "date", // Ensuring the input is of type "date"
+                                                                       @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
+                                                                   }
+                                                               })
                                                                 </div>
                                                             </fieldset>
                                                         </div>
