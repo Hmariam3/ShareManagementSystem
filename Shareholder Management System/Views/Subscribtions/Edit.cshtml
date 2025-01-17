@@ -5,6 +5,9 @@
     ViewBag.Title = "Edit";
 }
 
+<link href="~/Scripts/select2/css/select2.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
 <style>
     html, body {
         height: 100%;
@@ -44,9 +47,14 @@
                 <div class="grid grid-cols-2 gap-4">
                     <!-- Left Column -->
                     <div>
+                        @*<div class="mb-5">
+                                @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-input", @Readonly = "Readonly" })
+                                @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                            </div>*@
                         <div class="mb-5">
                             @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "control-label" })
-                            @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-input", @Readonly = "Readonly" })
+                            @Html.DropDownList("ShID", null, htmlAttributes: new { @class = "form-input select2" })
                             @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
                         </div>
 
@@ -78,10 +86,14 @@
                     <!-- Right Column -->
                     <div>
                         <div class="mb-5">
-                            <label>Share Transfer From  </label>
-                            @Html.DropDownList("SubTransferFrom", null, htmlAttributes: new { @class = "form-input", @Readonly = "Readonly" })
+                            <label>Share Transfer From</label>
+
+                            <!-- Display the selected text in a readonly input field -->
+                            <input type="text" class="form-input" value="@ViewData["SubTransferFromDisplayText"]" readonly />
+
                             @Html.ValidationMessageFor(model => model.SubTransferFrom, "", new { @class = "text-danger" })
                         </div>
+
                         <div class="mb-5">
                             <label>Paid Subscription <span style="color:red">*</span> </label>
                             @Html.EditorFor(model => model.PaidSubscription, new { htmlAttributes = new { @class = "form-input" } })
@@ -127,6 +139,13 @@
 
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "Select an option",
+                allowClear: true
+            });
+        });
+    </script>
 }
 

@@ -362,6 +362,24 @@ namespace Share.Controllers
             {
                 return HttpNotFound();
             }
+
+            // Get the display text of the selected Shareholder (FullNameEng) based on SubTransferFrom
+            var selectedValue = subscribtion.SubTransferFrom;
+            var displayText = db.Shareholders
+                                .Where(s => s.ShID == selectedValue)
+                                .Select(s => s.FullNameEng)
+                                .FirstOrDefault();
+
+            // Make sure the value exists before assigning it to ViewData
+            if (!string.IsNullOrEmpty(displayText))
+            {
+                ViewData["SubTransferFromDisplayText"] = displayText;
+            }
+            else
+            {
+                ViewData["SubTransferFromDisplayText"] = "Not Transfered"; // Fallback if no text found
+            }
+
             //ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.ShID);
             ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
             ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.SubTransferFrom);
