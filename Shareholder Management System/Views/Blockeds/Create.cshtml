@@ -51,25 +51,36 @@
                                         @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-sm" })
                                     </div>
 
-
                                     <!-- Payments Table -->
                                     <div>
                                         <h5>Available Payments</h5>
-                                        <table class="table table-bordered" id="paymentsTable">
-                                            <thead>
-                                                <tr>
-                                                    <th>Select</th>
-                                                    <th>PayID</th>
-                                                    <th>Payment Mode</th>
-                                                    <th>Paid Amount</th>
-                                                    <th>Blocked Amount</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <!-- Payment rows will be dynamically added -->
-                                            </tbody>
-                                        </table>
+                                        <div class="table-wrapper">
+                                            <table class="table table-bordered" id="paymentsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Select</th>
+                                                        <th>PayID</th>
+                                                        <th>Payment Mode</th>
+                                                        <th>Paid Amount</th>
+                                                        <th>Blocked Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Payment rows will be dynamically added -->
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
+
+                                    <style>
+                                        .table-wrapper {
+                                            max-height: 300px; /* Set desired height */
+                                            overflow-y: auto;
+                                            border: 1px solid #ddd; /* Optional: To make the scrollbar more distinct */
+                                        }
+                                    </style>
+
+                                    
 
                                     <!-- Blocked Amount -->
                                     @Html.LabelFor(model => model.BlockedAmount, htmlAttributes: new { @class = "control-label" })

@@ -130,7 +130,7 @@
                                 [
                                 "@item.DocID",
                                 `
-                                    <a href="@Url.Action("DownloadDocument", "Documents", new { id = item.DocID })" target="_blank" class="text-primary">
+                                    <a href="@Url.Action("DownloadDocument", "Documents", new { id = item.DocID })" target="_self" class="text-primary">
                                         @item.DocName
                                     </a>
                                 `,
@@ -139,9 +139,8 @@
                                 "@item.User.FullName",
                                 "@item.CreatedDate",
                                 "@item.DocAuthorizationStatus",
-                                "@(item.DocAuthorizationDate != null ? item.DocType : "N/A")",
-                                "@(item.DocAuthorizer != null ? item.DocType : "N / A")",
-                                @*"@(item.DocAuthorizer != null ? item.DocType : "N / A")",*@
+                                "@(item.DocAuthorizationDate != null ? item.DocAuthorizationDate.ToString() : "N/A")", // Display DocAuthorizationDate if it has a value
+                                "@(item.DocAuthorizer != null ? item.User.FullName : "N/A")" // Display DocAuthorizer if it has a value
 
 
                                 ],

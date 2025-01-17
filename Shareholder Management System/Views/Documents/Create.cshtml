@@ -14,7 +14,7 @@
 <script src="~/select2.min.js"></script>
 <script src="~/Scripts/JS/chart.js"></script>
 
-<p class="text-center font-bold" style="font-size:x-large;margin-top:20px"><strong>View The Category and List of the Document</strong></p>
+<p class="text-center font-bold" style="font-size:x-large;margin-top:20px">View The Category and List of the Document</p>
 
 
 @Html.AntiForgeryToken()
@@ -99,9 +99,9 @@
                 <button @@click="activeTab = 'tab-recent'" class="btn h-8 rounded-full text-xs+ font-medium" :class="activeTab === 'tab-recent' ? 'bg-slate-150 text-slate-800 dark:bg-navy-600 dark:text-navy-50' : 'hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 hover:text-slate-800 focus:text-slate-800 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25 dark:hover:text-navy-100 dark:focus:text-navy-100'">
                     Documents
                 </button>
-                <button @@click="activeTab = 'tab-pinned'" class="btn h-8 rounded-full text-xs+ font-medium">
+                @*<button @@click="activeTab = 'tab-pinned'" class="btn h-8 rounded-full text-xs+ font-medium">
                     Pinned
-                </button>
+                </button>*@
             </div>
             <div>
                 <div x-show="activeTab === 'tab-recent'" x-transition:enter="transition-all duration-500 easy-in-out"
@@ -112,7 +112,7 @@
 
                     <div class="card w-56 shrink-0 p-3 pt-4">
                         <div class="flex items-center justify-between">
-                            <img class="w-14" src="/assets/images/folder-primary.png" alt="folder">
+                            <img class="w-14" src="~/assets/images/folder-primary.png" alt="folder">
                             <button class="btn -mr-2 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
@@ -120,9 +120,9 @@
                             </button>
                         </div>
                         <div class="pt-5 text-base font-medium tracking-wide text-warning">
-                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ShareholderAgreement"}) " target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ShareholderAgreement"}) " target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
-                                    <strong> Agreement Document. </strong>
+                                    <strong> Agreement Document </strong>
                                 </p>
                             </a>
                         </div>
@@ -137,7 +137,7 @@
 
                     <div class="card w-56 shrink-0 p-3 pt-4">
                         <div class="flex items-center justify-between">
-                            <img class="w-14" src="/assets/images/folder-primary.png" alt="folder">
+                            <img class="w-14" src="~/assets/images/folder-warning.jpg" alt="folder">
                             <button class="btn -mr-2 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
@@ -145,7 +145,7 @@
                             </button>
                         </div>
                         <div class="pt-5 text-base font-medium tracking-wide text-warning">
-                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ShareholderID"}) " target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ShareholderID"}) " target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
                                     <strong> Shareholder ID </strong>
                                 </p>
@@ -159,9 +159,60 @@
                         </div>
 
                     </div>
+
+
                     <div class="card w-56 shrink-0 p-3 pt-4">
                         <div class="flex items-center justify-between">
-                            <img class="w-14" src="/assets/images/folder-warning.jpg" alt="folder">
+                            <img class="w-14" src="~/assets/images/folder-error.jpg" alt="folder">
+                            <button class="btn -mr-2 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="pt-5 text-base font-medium tracking-wide text-warning">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ShBlockLetter"}) " target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
+                                <p class="font-medium text-slate-600 dark:text-navy-100">
+                                    <strong> Shareholder Block </strong>
+                                </p>
+                            </a>
+                        </div>
+
+                        <div class="mt-1.5 flex items-center justify-between">
+                            <p id="ShBlockLetterFileCount" class="text-slate-400 text-xs+ dark:text-navy-300">
+                                Loading files...
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="card w-56 shrink-0 p-3 pt-4">
+                        <div class="flex items-center justify-between">
+                            <img class="w-14" src="~/assets/images/folder-primary.png" alt="folder">
+                            <button class="btn -mr-2 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="pt-5 text-base font-medium tracking-wide text-warning">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ShUnBlockLetter"}) " target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
+                                <p class="font-medium text-slate-600 dark:text-navy-100">
+                                    <strong> Shareholder ShUnBlockLetter </strong>
+                                </p>
+                            </a>
+                        </div>
+
+                        <div class="mt-1.5 flex items-center justify-between">
+                            <p id="ShUnBlockLetterFileCount" class="text-slate-400 text-xs+ dark:text-navy-300">
+                                Loading files...
+                            </p>
+                        </div>
+
+                    </div>
+                    <div class="card w-56 shrink-0 p-3 pt-4">
+                        <div class="flex items-center justify-between">
+                            <img class="w-14" src="~/assets/images/folder-warning.jpg" alt="folder">
                             <button class="btn -mr-2 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
@@ -169,7 +220,7 @@
                             </button>
                         </div>
                         <div class="pt-5 text-base font-medium tracking-wide text-info">
-                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ProxyID"})" target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "ProxyID"})" target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
                                     <strong>Proxy ID</strong>
                                 </p>
@@ -183,7 +234,7 @@
                     </div>
                     <div class="card swiper-slide w-56 shrink-0 p-3 pt-4">
                         <div class="flex items-center justify-between">
-                            <img class="w-14" src="/assets/images/folder-info.png" alt="folder">
+                            <img class="w-14" src="~/assets/images/folder-info.png" alt="folder">
                             <button class="btn -mr-2 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
@@ -191,14 +242,14 @@
                             </button>
                         </div>
                         <div class="pt-5 text-base font-medium tracking-wide text-success">
-                            <a href="@Url.Action("DocumentList","Documents", new { docType = "DeligationLetter"})" target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "DeligationLetter"})" target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
                                     <strong>Proxy Delegation</strong>
                                 </p>
                             </a>
                         </div>
                         <div class="mt-1.5 flex items-center justify-between">
-                            <p id="PaymentFileCount" class="text-slate-400 text-xs+ dark:text-navy-300">
+                            <p id="delegationFileCount" class="text-slate-400 text-xs+ dark:text-navy-300">
                                 Loading files...
                             </p>
 
@@ -206,7 +257,7 @@
                     </div>
                     <div class="card swiper-slide w-56 shrink-0 p-3 pt-4">
                         <div class="flex items-center justify-between">
-                            <img class="w-14" src="/assets/images/folder-secondary.jpg" alt="folder">
+                            <img class="w-14" src="~/assets/images/folder-secondary.jpg" alt="folder">
                             <button class="btn -mr-2 size-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
@@ -214,14 +265,14 @@
                             </button>
                         </div>
                         <div class="pt-5 text-base font-medium tracking-wide text-secondary dark:text-secondary-light">
-                            <a href="@Url.Action("DocumentList","Documents", new { docType = "Payment Slip"})" target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "Payment Slip"})" target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
                                     <strong>Payment Slip</strong>
                                 </p>
                             </a>
                         </div>
                         <div class="mt-1.5 flex items-center justify-between">
-                            <p id="delegationFileCount" class="text-slate-400 text-xs+ dark:text-navy-300">
+                            <p id="PaymentFileCount" class="text-slate-400 text-xs+ dark:text-navy-300">
                                 Loading files...
                             </p>
 
@@ -238,7 +289,7 @@
                             </button>
                         </div>
                         <div class="pt-5 text-base font-medium tracking-wide text-danger">
-                            <a href="@Url.Action("DocumentList","Documents", new { docType = "Blocking Document"})" target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "Blocking Document"})" target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
                                     <strong>Blocking Document</strong>
                                 </p>
@@ -262,7 +313,7 @@
                             </button>
                         </div>
                         <div class="pt-5 text-base font-medium tracking-wide text-primary">
-                            <a href="@Url.Action("DocumentList","Documents", new { docType = "Transfer Document"})" target="_blank" class="btn h-8 rounded-full text-xs+ font-medium">
+                            <a href="@Url.Action("DocumentList","Documents", new { docType = "Transfer Document"})" target="_self" class="btn h-8 rounded-full text-xs+ font-medium">
                                 <p class="font-medium text-slate-600 dark:text-navy-100">
                                     <strong>Transfer Letter</strong>
                                 </p>
@@ -386,6 +437,20 @@
             .then(data => {
                 document.getElementById('TransferFileCount').innerText = `${data.Count} files`;
                 document.getElementById('TransferFileSize').innerText = `${data.SizeInMB.toFixed(2)} MB`;
+            })
+        .catch(error => console.error('Error fetching Shareholder ID document stats:', error));
+    fetch('@Url.Action("GetDocumentStatsByType", "Documents")?docType=ShBlockLetter')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ShBlockLetterFileCount').innerText = `${data.Count} files`;
+                document.getElementById('ShBlockLetterFileSize').innerText = `${data.SizeInMB.toFixed(2)} MB`;
+            })
+        .catch(error => console.error('Error fetching Shareholder ID document stats:', error));
+    fetch('@Url.Action("GetDocumentStatsByType", "Documents")?docType=ShUnBlockLetter')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ShUnBlockLetterFileCount').innerText = `${data.Count} files`;
+                document.getElementById('ShUnBlockLetterFileSize').innerText = `${data.SizeInMB.toFixed(2)} MB`;
             })
              .catch(error => console.error('Error fetching Shareholder ID document stats:', error));
 </script>

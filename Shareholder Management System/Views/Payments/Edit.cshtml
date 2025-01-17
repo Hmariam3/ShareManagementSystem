@@ -27,26 +27,19 @@
                 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
                     <h5 class="text-lg font-semibold" style="padding:7px;">Share Holder Detail</h5>
                 </div>
-
-                @*<div class="text-lg font-semibold">Shareholder Details</div>*@
-
                 <div class="mb-5">
                     <div class="flex items-center">
                         <span class="text-red-500">*</span> <!-- Required asterisk -->
                         <label for="ShID" class="block dark:text-white-light text-sm font-semibold mb-2">Share Holder</label>
-
                     </div>
-                    
-                        @Html.DropDownList("ShID",
-                            new SelectList(ViewBag.Shareholders1, "Value", "Text", Model.ShID), // Pass the current selected ShID
-                            htmlAttributes: new { id = "seachable-select" }
-                        )
-                        @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
-                   
+                    @Html.DropDownList(
+                        "ShID",
+                        new SelectList(ViewBag.Shareholders1, "Value", "Text", Model.ShID),
+                        htmlAttributes: new { id = "seachable-select", disabled = "disabled" } // Initially enabled, dynamically handled
+                    )
+                    @Html.HiddenFor(model => model.ShID)
+                    @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
                 </div>
-
-
-
                 <!-- Scrollable container for the table -->
                 <div class="table-responsive mt-4 mb-5" style="max-height: 300px; overflow-y: auto;">
                     <table class="table-auto w-full border-collapse border border-gray-300 mt-8" id="subscriptionTable">
@@ -70,10 +63,9 @@
                                 {
                                     <tr>
                                         <td class="px-4 py-2">
-                                            <input type="radio" name="selectedSubscription" class="form-radio" value="@subscription.SubID"
+                                            <input type="radio" name="selectedSubscription" class="form-radio subscription-radio" value="@subscription.SubID"
                                                    data-unpaid="@subscription.UnpaidSubscription"
-                                                   @(subscription.SubID == Model.SubID ? "checked" : "" ) />
-
+                                                   @(subscription.SubID == Model.SubID ? "checked" : "") />
                                         </td>
                                         <td class="px-4 py-2">@subscription.SubID</td>
                                         <td class="px-4 py-2">@subscription.ShID</td>
@@ -95,13 +87,9 @@
                         </tbody>
                     </table>
                 </div>
-
                 <!-- Hidden input to store selected subscription -->
                 @Html.HiddenFor(model => model.SubID, new { @id = "selectedSubID" })
                 @Html.Hidden("UnpaidSubscription", null, new { id = "UnpaidSubscription" })
-
-
-
             </div>
         </div>
 
@@ -184,12 +172,12 @@
 
 
                             @*<div class="flex items-center space-x-2">
-                        @Html.LabelFor(model => model.PaidAmount, htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-                        <div class="amount-input-container flex flex-col ml-4">
-                            @Html.EditorFor(model => model.PaidAmount, new { htmlAttributes = new { @class = "form-input border border-blue-500 bg-blue-50 text-blue-700", @id = "PaidAmount", @readonly = "readonly", @placeholder = "Total Paid Amount" } })
-                            @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
-                        </div>
-                    </div>*@
+                                    @Html.LabelFor(model => model.PaidAmount, htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+                                    <div class="amount-input-container flex flex-col ml-4">
+                                        @Html.EditorFor(model => model.PaidAmount, new { htmlAttributes = new { @class = "form-input border border-blue-500 bg-blue-50 text-blue-700", @id = "PaidAmount", @readonly = "readonly", @placeholder = "Total Paid Amount" } })
+                                        @Html.ValidationMessageFor(model => model.PaidAmount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>*@
 
 
                             @if (TempData["Message"] != null)
@@ -238,12 +226,12 @@
                         </div>
                     </div>
                     @*<div class="mb-5">
-                @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
-                    @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
-                </div>
-            </div>*@
+                            @Html.LabelFor(model => model.PaymentTransferFrom, "Transfer From", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("PaymentTransferFrom", null, htmlAttributes: new { @class = "form-input" })
+                                @Html.ValidationMessageFor(model => model.PaymentTransferFrom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>*@
 
                     <div class="col-span-1">
                         <div class="space-y-4">
@@ -361,78 +349,94 @@
         });
     });
 </script>
-
-
 <script>
-    $(document).ready(function () {
-        // Trigger when a shareholder is selected
-        $('#seachable-select').on('change', function() {
-            var shareholderId = $(this).val();
-            if (shareholderId) {
-                fetchSubscriptions(shareholderId);
-            } else {
-                $('#subscriptionTable tbody').empty().append('<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">Select a shareholder to view subscriptions.</td></tr>');
-            }
-        });
+    // Disable the dropdown after the first selection
+    document.getElementById("seachable-select").addEventListener("change", function () {
+        this.disabled = true;
+    });
 
-        // Function to fetch subscriptions for the selected shareholder
-        function fetchSubscriptions(shareholderId) {
-            $.ajax({
-                url: '@Url.Action("GetSubscriptionsByShareholder", "Payments")',
-                type: 'GET',
-                data: { shId: shareholderId },
-                success: function(subscriptions) {
-                    var tbody = $('#subscriptionTable tbody');
-                    tbody.empty(); // Clear the table before populating new data
-
-                    if (subscriptions.length > 0) {
-                        $.each(subscriptions, function(index, subscription) {
-                            tbody.append(
-                                '<tr>' +
-                                '<td class="px-4 py-2"><input type="radio" class="form-radio" name="selectedSubscription" value="' + subscription.SubID + '" data-unpaid="' + subscription.UnpaidSubscription + '"></td>' +
-                                '<td class="px-4 py-2">' + subscription.SubID + '</td>' +
-                                '<td class="px-4 py-2">' + subscription.ShID + '</td>' +
-                                '<td class="px-4 py-2">' + subscription.SubNumShares + '</td>' +
-                                '<td class="px-4 py-2">' + subscription.SubAmount + '</td>' +
-                                '<td class="px-4 py-2">' + subscription.PaidSubscription + '</td>' +
-                                '<td class="px-4 py-2">' + subscription.UnpaidSubscription + '</td>' +
-                                '<td class="px-4 py-2">' + subscription.SubAuthorizationStatus + '</td>' +
-                                '<td class="px-4 py-2">' + subscription.SubStatus + '</td>' +
-                                '</tr>'
-                            );
-                        });
-
-                        // Handle radio button selection
-                        $('input[name="selectedSubscription"]').on('change', function() {
-                            var selectedSubID = $(this).val();
-                            var unpaidSubscription = $(this).data('unpaid');
-                            $('#selectedSubID').val(selectedSubID); // Set hidden input value
-                            $('#UnpaidSubscription').val(unpaidSubscription); // Set hidden input value for UnpaidSubscription
-                        });
-                    } else {
-                        tbody.append('<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">No subscriptions found for this shareholder.</td></tr>');
-                    }
-                },
-                error: function() {
-                    alert('Error retrieving subscriptions.');
-                }
-            });
-        }
-
-        // Validate PaidAmount against UnpaidSubscription
-        $('#PaidAmount').on('input', function () {
-            var paidAmount = parseFloat($(this).val()); // Get the PaidAmount
-            var unpaidSubscription = parseFloat($('#UnpaidSubscription').val()); // Get the UnpaidSubscription
-
-            // Check if PaidAmount is greater than UnpaidSubscription
-            if (paidAmount > unpaidSubscription) {
-                $('#PaidAmount').next('.text-danger').text('Paid Amount cannot be greater than Unpaid Subscription.');
-            } else {
-                $('#PaidAmount').next('.text-danger').text(''); // Clear the error message
-            }
+    // Disable the selected radio button
+    const radios = document.querySelectorAll(".subscription-radio");
+    radios.forEach(radio => {
+        radio.addEventListener("change", function () {
+            radios.forEach(r => r.disabled = true); // Disable all radios
+            this.disabled = true; // Disable the selected radio button
         });
     });
 </script>
+
+
+
+<script>
+        @*$(document).ready(function () {
+            // Trigger when a shareholder is selected
+            $('#seachable-select').on('change', function() {
+                var shareholderId = $(this).val();
+                if (shareholderId) {
+                    fetchSubscriptions(shareholderId);
+                } else {
+                    $('#subscriptionTable tbody').empty().append('<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">Select a shareholder to view subscriptions.</td></tr>');
+                }
+            });
+
+            // Function to fetch subscriptions for the selected shareholder
+            function fetchSubscriptions(shareholderId) {
+                $.ajax({
+                    url: '@Url.Action("GetSubscriptionsByShareholder", "Payments")',
+                    type: 'GET',
+                    data: { shId: shareholderId },
+                    success: function(subscriptions) {
+                        var tbody = $('#subscriptionTable tbody');
+                        tbody.empty(); // Clear the table before populating new data
+
+                        if (subscriptions.length > 0) {
+                            $.each(subscriptions, function(index, subscription) {
+                                tbody.append(
+                                    '<tr>' +
+                                    '<td class="px-4 py-2"><input type="radio" class="form-radio" name="selectedSubscription" value="' + subscription.SubID + '" data-unpaid="' + subscription.UnpaidSubscription + '"></td>' +
+                                    '<td class="px-4 py-2">' + subscription.SubID + '</td>' +
+                                    '<td class="px-4 py-2">' + subscription.ShID + '</td>' +
+                                    '<td class="px-4 py-2">' + subscription.SubNumShares + '</td>' +
+                                    '<td class="px-4 py-2">' + subscription.SubAmount + '</td>' +
+                                    '<td class="px-4 py-2">' + subscription.PaidSubscription + '</td>' +
+                                    '<td class="px-4 py-2">' + subscription.UnpaidSubscription + '</td>' +
+                                    '<td class="px-4 py-2">' + subscription.SubAuthorizationStatus + '</td>' +
+                                    '<td class="px-4 py-2">' + subscription.SubStatus + '</td>' +
+                                    '</tr>'
+                                );
+                            });
+
+                            // Handle radio button selection
+                            $('input[name="selectedSubscription"]').on('change', function() {
+                                var selectedSubID = $(this).val();
+                                var unpaidSubscription = $(this).data('unpaid');
+                                $('#selectedSubID').val(selectedSubID); // Set hidden input value
+                                $('#UnpaidSubscription').val(unpaidSubscription); // Set hidden input value for UnpaidSubscription
+                            });
+                        } else {
+                            tbody.append('<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">No subscriptions found for this shareholder.</td></tr>');
+                        }
+                    },
+                    error: function() {
+                        alert('Error retrieving subscriptions.');
+                    }
+                });
+            }*@
+
+            // Validate PaidAmount against UnpaidSubscription
+            $('#PaidAmount').on('input', function () {
+                var paidAmount = parseFloat($(this).val()); // Get the PaidAmount
+                var unpaidSubscription = parseFloat($('#UnpaidSubscription').val()); // Get the UnpaidSubscription
+
+                // Check if PaidAmount is greater than UnpaidSubscription
+                if (paidAmount > unpaidSubscription) {
+                    $('#PaidAmount').next('.text-danger').text('Paid Amount cannot be greater than Unpaid Subscription.');
+                } else {
+                    $('#PaidAmount').next('.text-danger').text(''); // Clear the error message
+                }
+            });
+        });
+    </script>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

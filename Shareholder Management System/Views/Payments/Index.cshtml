@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/JS/simple-datatables.js"></script>
 
 <div class="animate__animated p-6" :class="[$store.app.animation]">
     <!-- Main Content Section -->
@@ -34,12 +35,12 @@
                         </div>
                         <div class="table-responsive mt-4">
 
-                            <table id="paymentTable" class="display">
+                            <table id="paymentTable" class="table-hover display nowrap" style="width:100%;">
                                 <thead class="whitespace-nowrap">
                                     <tr>
-                                        <th>Payment Date</th>
-                                        <th>Share ID</th>
                                         <th>Full Name</th>
+                                        <th>Share ID</th>
+                                        <th>Payment Date</th>
                                         <th>District</th>
                                         <th>Branch Name</th>
                                         <th>Creation Date</th>
@@ -56,9 +57,10 @@
                                     @foreach (var item in Model)
                                     {
                                         <tr>
-                                            <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
                                             <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+
                                             <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
                                             <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
                                             <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
@@ -142,6 +144,21 @@
         </div>
     </div>
 </div>
+
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
+<script defer="" src="~/Scripts/JS/popper.min.js"></script>
+<script defer="" src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
+<script defer="" src="~/Scripts/JS/sweetalert.min.js"></script>
+<script src="assets/js/highlight.min.js"></script>
+<script src="assets/js/alpine-collaspe.min.js"></script>
+<script src="assets/js/alpine-persist.min.js"></script>
+<script defer="" src="assets/js/alpine-ui.min.js"></script>
+<script defer="" src="assets/js/alpine-focus.min.js"></script>
+<script defer="" src="assets/js/alpine.min.js"></script>
+<script src="assets/js/custom.js"></script>
+<script defer="" src="assets/js/apexcharts.js"></script>
+<script src="assets/js/simple-datatables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @if (ViewBag.SuccessMessage != null)
@@ -158,7 +175,8 @@
     </script>
 }
 
-<script>$(document).on('click', '.delete-btn', async function (event) {
+<script>
+    $(document).on('click', '.delete-btn', async function (event) {
         event.preventDefault();
 
         const button = $(this);
@@ -200,9 +218,9 @@
 <script>
     $(document).ready(function () {
         $('#paymentTable').DataTable({
+            pageLength: 5, // Set default rows per page
+            lengthMenu: [5, 10, 20, 50], // Define options for rows per page dropdown
             searchable: true, // Enables search functionality
-            perPage: 5, // Default number of records per page
-            perPageSelect: [5, 10, 20], // Options for records per page
             firstLast: true, // Enable first and last page buttons
             firstText:
                 '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180">' +
@@ -231,4 +249,6 @@
             }
         });
     });
+
 </script>
+

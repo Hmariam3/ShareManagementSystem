@@ -107,7 +107,8 @@ namespace Share_Management_System.Controllers
         public ActionResult Create(Blocked blocked, HttpPostedFileBase uploadedFile)
         {
             PopulateDropdowns(blocked);
-
+            int Createdby = Convert.ToInt32(Session["ID"]);
+            int Approveddby = Convert.ToInt32(Session["ID"]);
             if (ModelState.IsValid)
             {
                 var payment = db.Payments.Find(blocked.PayID);
@@ -124,7 +125,7 @@ namespace Share_Management_System.Controllers
                         DocOwner = "Shareholder",
                         DocType = "Blocking Document",
                         ShID = payment.ShID,
-                        CreatedBy = 2,
+                        CreatedBy = Createdby,
                         DocAuthorizationStatus = "Pending",
                         CreatedDate = DateTime.Now,
                     };
@@ -140,8 +141,8 @@ namespace Share_Management_System.Controllers
                         decimal currentBlockedAmount = payment.BlockedAmount ?? 0;
                         decimal newBlockedAmount = currentBlockedAmount + (blocked.BlockedAmount ?? 0);
 
-                        blocked.BlockedBy = 2; // Placeholder for BlockedBy
-                        blocked.BlockedAuthorizer = 2; // Placeholder for BlockedAuthorizer
+                        blocked.BlockedBy = Createdby; // Placeholder for BlockedBy
+                        blocked.BlockedAuthorizer = Approveddby; // Placeholder for BlockedAuthorizer
                         blocked.BlockingDoc = documentId; // Placeholder for BlockingDoc
                         blocked.DateBlocked = DateTime.Now;
                         blocked.BlockedAuthorizationStatus = "Pending";
@@ -298,6 +299,8 @@ namespace Share_Management_System.Controllers
         [HttpPost]
         public ActionResult ConfirmBlockApproval(int BlockID, int PayID, decimal BlockedAmount)
         {
+            int Createdby = Convert.ToInt32(Session["ID"]);
+            int Approveddby = Convert.ToInt32(Session["ID"]);
             try
             {
                 // Find the blocked record by BlockID
@@ -325,8 +328,19 @@ namespace Share_Management_System.Controllers
                     payment.BlockedAmount += BlockedAmount;
                 }
                 payment.PaidAmount -= BlockedAmount;
-                // Save changes to the database
-                db.SaveChanges();
+
+                // Update the Document Status
+                var document = db.Documents.FirstOrDefault(d => d.DocID == blocked.BlockingDoc);
+                if (document != null)
+                {
+                    document.DocAuthorizationStatus = "Approved";
+                    document.DocAuthorizer = Approveddby;
+                    document.DocAuthorizationDate = DateTime.Now;
+                }
+                    // Save changes to the database
+                    db.SaveChanges();
+
+
 
                 // Return success response
                 return Json(new { success = true });
@@ -343,6 +357,8 @@ namespace Share_Management_System.Controllers
         {
             try
             {
+                int Createdby = Convert.ToInt32(Session["ID"]);
+                int Approveddby = Convert.ToInt32(Session["ID"]);
                 // Find the blocked record by BlockID
                 var blocked = db.Blockeds.Find(BlockID);
                 if (blocked == null)
@@ -353,6 +369,14 @@ namespace Share_Management_System.Controllers
                 blocked.Remark = Reason;
                 blocked.AuthorizationDate = DateTime.Now;
 
+
+                var document = db.Documents.FirstOrDefault(d => d.DocID == blocked.BlockingDoc);
+                if (document != null)
+                {
+                    document.DocAuthorizationStatus = "Rejected";
+                    document.DocAuthorizer = Approveddby;
+                    document.DocAuthorizationDate = DateTime.Now;
+                }
                 // Save changes to the database
                 db.SaveChanges();
 
