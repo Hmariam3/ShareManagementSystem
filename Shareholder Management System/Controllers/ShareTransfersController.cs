@@ -888,7 +888,7 @@ namespace Shareholder_Management_System.Controllers
                             DocumentsController documentsController = new DocumentsController();
                             documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
 
-                            int documentId = documentsController.Create(document, uploadedFile);
+                            int documentId = documentsController.Create(document, uploadedFile, shareTransfer.TransfareeShID);
                             if (documentId > 0)
                             {
                                 existingShareTransfer.TransferDoc = documentId;
@@ -900,11 +900,6 @@ namespace Shareholder_Management_System.Controllers
                         }
 
                         db.Entry(existingShareTransfer).State = EntityState.Modified;
-                        //db.Entry(existingShareTransfer).Property(x => x.TransferrorShID).IsModified = false;
-                        //db.Entry(existingShareTransfer).Property(x => x.TransferDoc).IsModified = false;
-                        //db.Entry(existingShareTransfer).Property(x => x.CreationDate).IsModified = false;
-                        //db.Entry(existingShareTransfer).Property(x => x.Branch).IsModified = false;
-                        //db.Entry(existingShareTransfer).Property(x => x.TransferAuthorizationStatus).IsModified = false;
                         db.SaveChanges();
 
                         // Record the audit log
