@@ -101,7 +101,7 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.UnpaidCapital = UnpaidCapital;
 
             //Total of Paid and Unpaid Capital
-            ViewBag.TotalCapital = ViewBag.PaidUpCapital + ViewBag.UnpaidCapital;
+            ViewBag.TotalCapital = (ViewBag.PaidUpCapital ?? 0) + (ViewBag.UnpaidCapital ?? 0);
 
             return View(users);
         }
