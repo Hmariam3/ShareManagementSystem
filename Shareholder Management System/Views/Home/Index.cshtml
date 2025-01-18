@@ -367,7 +367,7 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th class="ltr:rounded-l-md rtl:rounded-r-md">ID</th>
+                                     
                                         <th>DATE</th>
                                         <th>NAME</th>
                                         <th>Role</th>
@@ -378,8 +378,8 @@
                                     @foreach (var user in Model)
                                     {
                                         <tr>
-                                            <td>@Html.DisplayFor(modelItem => user.UID)</td>
-                                            <td>@user.CreatedDate?.ToString("MMM dd, yyyy")</td>
+                                  
+                                            <td>@user.CreatedDate</td>
                                             <td>@user.FullName</td>
                                             <td>
                                                 @if (@user.Role == "Initiator")
