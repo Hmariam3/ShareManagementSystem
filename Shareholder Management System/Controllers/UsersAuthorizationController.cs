@@ -71,7 +71,21 @@ namespace Shareholder_Management_System.Controllers
                     Session["Username"] = checkUser.UserName;
                     Session["Branch"] = checkUser.Branch;
                     Session["Roles"] = checkUser.Role;
-                    Session["BranchName"] = checkUser.Branch1.BranchName;
+                    //Session["BranchName"] = checkUser.Branch1.BranchName;
+                    if (checkUser != null)
+                    {
+                        if (checkUser.Branch1 != null)
+                        {
+                            Session["BranchName"] = checkUser.Branch1.BranchName;
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                    }
 
                     checkUser.activeStatus = true;
                     db.SaveChanges();
