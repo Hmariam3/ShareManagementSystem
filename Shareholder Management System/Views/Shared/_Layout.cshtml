@@ -266,7 +266,7 @@
                             </li>
                         </h2>
 
-                        <h2>
+                        @*<h2>
                             <li class="menu nav-item">
                                 <button type="button"
                                         class="nav-link group"
@@ -311,7 +311,7 @@
                                 </ul>
                             </li>
                         
-                        </h2>
+                        </h2>*@
                         <h2 class="-mx-8 mb-1 flex items-center bg-white-light/30 px-5 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]"
                             style="border-radius: 5px;">
                             <svg class="hidden h-5 w-4 flex-none"
@@ -558,7 +558,52 @@
 
                                     </ul>
                                 </li>
+                                <h2>
+                                    <li class="menu nav-item">
+                                        <button type="button"
+                                                class="nav-link group"
+                                                :class="{'active' : activeDropdown === 'Document'}"
+                                                @@click="activeDropdown === 'Document' ? activeDropdown = null : activeDropdown = 'Document'">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
 
+                                                    <path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+                                                          fill="white" />
+                                                </svg>
+
+                                                <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Document Management</span>
+
+                                            </div>
+                                            <div class="rtl:rotate-180"
+                                                 :class="{'!rotate-90' : activeDropdown === 'Document'}">
+                                                <svg width="16"
+                                                     height="16"
+                                                     viewbox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 5L15 12L9 19"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"
+                                                          stroke-linecap="round" v
+                                                          stroke-linejoin="round"></path>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                        <ul x-cloak=""
+                                            x-show="activeDropdown === 'Document'"
+                                            x-collapse=""
+                                            class="sub-menu text-white">
+                                            <li>
+                                                @Html.ActionLink("View Document", "Index", "Documents")
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("Document Category", "Create", "Documents")
+                                            </li>
+
+                                        </ul>
+                                    </li>
+
+                                </h2>
                                 <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
                                     <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <line x1="5" y1="12" x2="19" y2="12"></line>
