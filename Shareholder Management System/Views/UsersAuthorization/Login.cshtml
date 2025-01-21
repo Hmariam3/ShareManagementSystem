@@ -75,7 +75,7 @@
                                     <div>
                                         <label for="Email">Username</label>
                                         <div class="relative text-white-dark">
-                                            @Html.TextBoxFor(model => model.UserName, new { @class = "form-input ps-10 placeholder:text-white-dark w-full", placeholder = "Username" })
+                                            @Html.TextBoxFor(model => model.UserName, new { @class = "form-input ps-10 placeholder:text-white-dark w-full", placeholder = "Username", @required = "required" })
                                             <span class="absolute start-4 top-1/2 -translate-y-1/2">
                                                 <!-- SVG icon -->
                                             </span>
@@ -85,7 +85,7 @@
                                     <div>
                                         <label for="Password">Password</label>
                                         <div class="relative text-white-dark">
-                                            @Html.PasswordFor(model => model.Password, new { @class = "form-input ps-10 placeholder:text-white-dark w-full", placeholder = "Password" })
+                                            @Html.PasswordFor(model => model.Password, new { @class = "form-input ps-10 placeholder:text-white-dark w-full", placeholder = "Password", @required = "required"})
                                             <span class="absolute start-4 top-1/2 -translate-y-1/2">
                                                 <!-- SVG icon -->
                                             </span>
