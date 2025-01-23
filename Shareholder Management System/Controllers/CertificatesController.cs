@@ -272,7 +272,7 @@ namespace Shareholder_Management_System.Controllers
 
             // Fetch payments related to the shareholder
             var payments = db.Payments
-                .Where(p => p.ShID == shID)
+                .Where(p => p.ShID == shID && p.PaidAmount != 0 && p.PaymentAuthorizationStatus == "Approved")
                 .Select(p => new
                 {
                     SHName = p.Shareholder.FullNameEng,

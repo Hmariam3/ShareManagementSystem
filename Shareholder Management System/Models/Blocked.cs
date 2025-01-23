@@ -31,7 +31,6 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> Branch { get; set; }
     
         public virtual Branch Branch1 { get; set; }
-        public virtual Document Document { get; set; }
         public virtual Payment Payment { get; set; }
         public virtual Shareholder Shareholder { get; set; }
         public virtual User User { get; set; }

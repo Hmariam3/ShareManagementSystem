@@ -18,7 +18,7 @@ namespace Share_Management_System.Controllers
         // GET: Blockeds
         public ActionResult Index()
         {
-            var blockeds = db.Blockeds.Include(b => b.Document).Include(b => b.Payment).Include(b => b.Shareholder).Include(b => b.User).Include(b => b.User1);
+            var blockeds = db.Blockeds.Include(b => b.Payment).Include(b => b.Shareholder).Include(b => b.User).Include(b => b.User1);
             return View(blockeds.ToList());
         }
 
@@ -184,7 +184,7 @@ namespace Share_Management_System.Controllers
         public JsonResult GetPaymentsByShareholderId(int shId)
         {
             var payments = db.Payments
-                             .Where(p => p.ShID == shId)
+                             .Where(p => p.ShID == shId && p.PaidAmount > 0 && p.PaymentAuthorizationStatus == "Approved")
                              .Select(p => new
                              {
                                  PayID = p.PayID,

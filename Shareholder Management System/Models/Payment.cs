@@ -50,7 +50,6 @@ namespace Shareholder_Management_System.Models
         public virtual Branch Branch1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }
-        public virtual Document Document { get; set; }
         public virtual Shareholder Shareholder { get; set; }
         public virtual Shareholder Shareholder1 { get; set; }
         public virtual ShareTransfer ShareTransfer { get; set; }

@@ -153,7 +153,7 @@
                 <h2 class="text-2xl font-extrabold ">General Informations</h2>
                 <div class="!mt-6">
                     @Html.LabelFor(model => model.ShareID, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.ShareID, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter shareholder number" } })
+                    @Html.EditorFor(model => model.ShareID, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter shareholder number", @readonly = "readonly" } })
                     @Html.ValidationMessageFor(model => model.ShareID, "", new { @class = "text-danger" })
                 </div>
 

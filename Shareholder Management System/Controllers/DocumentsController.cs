@@ -112,7 +112,7 @@ namespace Shareholder_Management_System.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public int Create(Document document, HttpPostedFileBase uploadedFile, int? transfreeID = null)
         {
             if (ModelState.IsValid)
@@ -163,6 +163,7 @@ namespace Shareholder_Management_System.Controllers
 
                     // Define the base folder
                     string baseFolder = Server.MapPath("~/Documents/");
+
 
                     // Define the path based on the document type
                     string folderPath = "";

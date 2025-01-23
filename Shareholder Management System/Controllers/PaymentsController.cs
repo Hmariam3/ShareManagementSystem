@@ -26,7 +26,7 @@ namespace Shareholder_Management_System.Controllers
         public ActionResult Index()
         {
             ViewBag.SuccessMessage = TempData["SuccessMessage"];
-            var payments = db.Payments.Include(p => p.Branch1).Include(p => p.Document).Include(p => p.Shareholder).Include(p => p.Shareholder1).Include(p => p.Subscribtion).Include(p => p.User).Include(p => p.User1);
+            var payments = db.Payments.Include(p => p.Branch1)./*Include(p => p.Document).*/Include(p => p.Shareholder).Include(p => p.Shareholder1).Include(p => p.Subscribtion).Include(p => p.User).Include(p => p.User1);
             return View(payments.ToList());
         }
 
@@ -174,7 +174,6 @@ namespace Shareholder_Management_System.Controllers
                         payment.PaymentAuthorizationStatus = "Pending";
                         payment.Branch = branchId;
                         payment.PaymentSlip = documentId;
-
 
 
                         // Save the payment
