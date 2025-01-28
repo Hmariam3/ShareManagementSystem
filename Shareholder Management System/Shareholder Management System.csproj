@@ -330,6 +330,7 @@
     <Compile Include="Models\Document.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Nationaliteis.cs" />
     <Compile Include="Models\Payment.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
@@ -512,6 +513,7 @@
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="assets\nationalities.json" />
     <EntityDeploy Include="Models\Shareholder_Management_System.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Shareholder_Management_System.Designer.cs</LastGenOutput>
