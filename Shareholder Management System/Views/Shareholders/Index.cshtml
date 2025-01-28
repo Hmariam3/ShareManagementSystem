@@ -166,7 +166,6 @@
                 { name: 'Full Name (Eng)', hidden: true },
                 { name: 'Full Name (Afan Oromo)', hidden: true },
                 { name: 'Full Name (Amharic)', hidden: true },
-                { name: 'Gender', hidden: true },
                 { name: 'Shareholder Status', hidden: false },
                 { name: 'Authorization Status', hidden: false },
                 { name: 'Nationality', hidden: true },
@@ -178,7 +177,6 @@
                 { name: 'City', hidden: true },
                 { name: 'Subcity', hidden: true },
                 { name: 'Woreda', hidden: true },
-                { name: 'Fayda Number', hidden: true },
                 { name: 'Kebele', hidden: true },
                 { name: 'House No', hidden: false },
                 { name: 'PoBox', hidden: false },
@@ -197,12 +195,12 @@
                 { name: 'User (Created By)', hidden: false },
                 { name: 'User1 (Modified By)', hidden: false },
                 { name: 'Actions', hidden: true },
-                //{ name: 'ID Document', hidden: false },
-                //{ name: 'Document', hidden: false },
+                { name: 'ID Document', hidden: false },
+                { name: 'Document', hidden: false },
             ],
 
             hideCols: [],
-            showCols: [0, 1, 2, 3, 4, 5, 6,7,8,9,10,11,12],
+            showCols: [0, 1, 2, 3, 4, 5, 6,7,8,9,10],
 
             showHideColumns(col, value) {
                 if (value) {
@@ -215,9 +213,6 @@
                 let headers = this.datatable1.columns();
                 headers.hide(this.hideCols);
                 headers.show(this.showCols);
-                let cols = this.datatable1.columns();
-                cols.hide(this.hideCols);
-                cols.show(this.showCols);
             },
 
             datatable1: null,
@@ -227,64 +222,64 @@
             unBlockShModal: false,
             editShDocumentModal: false,
 
-          init() {
-    let headers = this.columns.map((col) => {
-        return col.name;
-    });
-    this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
-        data: {
-            headings: headers,
-            data: [
-                @foreach (var item in Model)
-                {
-                    <text>
-                    [
-                        "@item.ShareID",
-                        "@item.FullNameEng",
-                        "@item.FullNameAfanOromo",
-                        "@item.FullNameAmharic",
-                        "@item.Gender", 
-                        "@item.Status",
-                        "@item.AuthorizationStatus",
-                        "@item.Nationality",
-                        "@item.SHCategory",
-                        "@item.TINNum",
-                        "@item.AccountNumber",
-                        "@item.Region",
-                        "@item.Zone",
-                        "@item.City",
-                        "@item.Subcity",
-                        "@item.Woreda",
-                        "@item.FaydaNumber",
-                        "@item.Kebele",
-                        "@item.HouseNo",
-                        "@item.PoBox",
-                        "@item.PhoneNo",
-                        "@item.PhoneNo2",
-                        "@item.PhoneNo3",
-                        "@item.TeleHome",
-                        "@item.TeleWork",
-                        "@item.Email",
-                        "@item.Email2",
-                        "@item.Email3",
-                        "@item.CreatedDate",
-                        "@item.AuthorizedDate",
-                        "@item.Remark",
-                        "@(item.Branch1 != null ? item.Branch1.BranchName : "N/A")",
-                        "@(item.User != null ? item.User.FullName : "N/A")",
-                        "@(item.User1 != null ? item.User1.FullName : "N/A")",
-                        "@item.ShID",
-                    ],
-                    </text>
-                }
-            ]
-        },
+            init() {
+                let headers = this.columns.map((col) => {
+                    return col.name;
+                });
+                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+                    data: {
+                        headings: headers,
+                        data: [
+                            @foreach (var item in Model)
+                            {
+                                <text>
+                                [
+                                    "@item.ShareID",
+                                    "@item.FullNameEng",
+                                    "@item.FullNameAfanOromo",
+                                    "@item.FullNameAmharic",
+                                    "@item.Status",
+                                    "@item.AuthorizationStatus",
+                                    "@item.Nationality",
+                                    "@item.SHCategory",
+                                    "@item.TINNum",
+                                    "@item.AccountNumber",
+                                    "@item.Region",
+                                    "@item.Zone",
+                                    "@item.City",
+                                    "@item.Subcity",
+                                    "@item.Woreda",
+                                    "@item.Kebele",
+                                    "@item.HouseNo",
+                                    "@item.PoBox",
+                                    "@item.PhoneNo",
+                                    "@item.PhoneNo2",
+                                    "@item.PhoneNo3",
+                                    "@item.TeleHome",
+                                    "@item.TeleWork",
+                                    "@item.Email",
+                                    "@item.Email2",
+                                    "@item.Email3",
+                                    "@item.CreatedDate",
+                                    "@item.AuthorizedDate",
+                                    "@item.Remark",
+                                    "@(item.Branch1 != null ? item.Branch1.BranchName : "N/A")", // Handle null for Branch1
+                                    "@(item.User != null ? item.User.FullName : "N/A")", // Handle null for User
+                                    "@(item.User1 != null ? item.User1.FullName : "N/A")", // Handle null for User1
+                                    "@item.ShID",
+                                    "@item.KebeleID", // Shareholder.ShareID
+                                    "@item.ShDocument", // Shareholder.ShareID
+                                ],
+                                </text>
+                            }
+                         ]
+                    },
                     perPage: 15,
                     perPageSelect: [10, 20, 30, 50, 100],
                     columns: [
-                        { select: 5, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
-                        { select: 6, render: (data, cell, row) => this.formatAuthorizationStatus(data) }, // Format the status
-                        { select: 27, render: (data, cell, row) => this.formatDate(data) }, // Format the date
+                        { select: 4, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
+                        { select: 5, render: (data, cell, row) => this.formatAuthorizationStatus(data) }, // Format the status
+                        { select: 25, render: (data, cell, row) => this.formatDate(data) }, // Format the date
                         {
                             select: 32,
                             sortable: false,

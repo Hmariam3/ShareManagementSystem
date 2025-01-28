@@ -174,11 +174,6 @@
                         @Html.EditorFor(model => model.FullNameAmharic, new { htmlAttributes = new { @class = "form-input", @placeholder = "ሙሉ ሲም " } })
                         @Html.ValidationMessageFor(model => model.FullNameAmharic, "", new { @class = "text-danger" })
                     </div>
-                    <div>
-                        @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.Gender, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter The Gender of Shareholder " } })
-                        @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
-                    </div>
                 </div>
 
                 <div class="!mt-6">
@@ -241,11 +236,6 @@
                         @Html.LabelFor(model => model.Woreda, htmlAttributes: new { @class = "control-label" })
                         @Html.EditorFor(model => model.Woreda, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Woreda" } })
                         @Html.ValidationMessageFor(model => model.Woreda, "", new { @class = "text-danger" })
-                    </div>
-                    <div>
-                        @Html.LabelFor(model => model.FaydaNumber, htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.FaydaNumber, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Fayda Number" } })
-                        @Html.ValidationMessageFor(model => model.FaydaNumber, "", new { @class = "text-danger" })
                     </div>
                     <div>
                         @Html.LabelFor(model => model.Kebele, htmlAttributes: new { @class = "control-label" })

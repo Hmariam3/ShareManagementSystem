@@ -397,7 +397,7 @@
             .catch(error => {
                 console.error('Error fetching document stats:', error);
         });
-    fetch('@Url.Action("GetDocumentStatsByType", "Documents")?docType=ShareholderID')
+    fetch('@Url.Action("GetDocumentStatsByType", "Documents")?docType=ShareholderInfo')
             .then(response => response.json())
             .then(data => {
                 document.getElementById('shareholderFileCount').innerText = `${data.Count} files`;
