@@ -21,23 +21,23 @@ namespace Shareholder_Management_System.Models
             [Display(Name = "Full Name (English)")]
             public string FullNameEng { get; set; }
 
-            [Required(ErrorMessage = "Full name in Afaan Oromo is required.")]
-            [Display(Name = "Full Name (Afaan Oromo)")]
+            [Required(ErrorMessage = "Maqaa Guutuu galchaa")]
+            [Display(Name = "Maqaa Guutuu")]
             public string FullNameAfanOromo { get; set; }
 
-            [Required(ErrorMessage = "Full name in Afaan Oromo is required.")]
+            [Required(ErrorMessage = "ሙሉ ስም ያስገቡ")]
             [Display(Name = "ሙሉ ስም")]
             public string FullNameAmharic { get; set; }
 
             [Required(ErrorMessage = "Nationality is required.")]
             [Display(Name = "Nationality")]
-            public string Nationality { get; set; }
+            public string Nationality { get; set; } = "Ethiopian"; 
 
             [Required(ErrorMessage = "Shareholder category is required.")]
             [Display(Name = "Shareholder Category")]
             public string SHCategory { get; set; }
 
-            [Required(ErrorMessage = "TIN Number is required.")]
+            //[Required(ErrorMessage = "TIN Number is required.")]
             [RegularExpression(@"^[0-9]*$", ErrorMessage = "TIN number must be a numeric value.")]
             [Display(Name = "TIN Number")]
             public string TINNum { get; set; }
@@ -52,7 +52,7 @@ namespace Shareholder_Management_System.Models
             [Display(Name = "Region")]
             public string Region { get; set; }
 
-            [Required(ErrorMessage = "Zone is required.")]
+            //[Required(ErrorMessage = "Zone is required.")]
             [Display(Name = "Zone")]
             public string Zone { get; set; }
 

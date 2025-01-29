@@ -930,8 +930,8 @@ document.addEventListener('alpine:init', () => {
             { name: 'Authorized Date', hidden: false },
             { name: 'Remark', hidden: false },
             { name: 'Edit Proxty', hidden: false },
-            { name: 'Ident. Doc', hidden: false },
-            { name: 'Delg Letter', hidden: false },
+            //{ name: 'Ident. Doc', hidden: false },
+            //{ name: 'Delg Letter', hidden: false },
         ],
 
         hideCols: [],
@@ -992,8 +992,8 @@ document.addEventListener('alpine:init', () => {
                                 "@(item.AuthorizedDate.HasValue ? item.AuthorizedDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
                                 "@item.Remark", // Remark
                                 "@item.ProxyID", // Pass ProxyID again for later use
-                                "@item.KebeleID", // Pass ProxyID again for later use
-                                "@item.ProxyDocument", // Pass ProxyID again for later use
+                                @*"@item.KebeleID", // Pass ProxyID again for later use
+                                "@item.ProxyDocument", // Pass ProxyID again for later use*@
                             ],
                             </text>
                         }
