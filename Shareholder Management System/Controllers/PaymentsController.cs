@@ -108,7 +108,8 @@ namespace Shareholder_Management_System.Controllers
         public ActionResult Create([Bind(Include = "PayID,ShID,SubID,PaymentMode,Branch,PaidAmount,BlockedAmount,ReferenceNum," +
             "PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer," +
             "AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions,
-            string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string AccountAmount, string SourceOfFunds)
+            string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string AccountAmount, string SourceOfFunds, 
+            string RTGSamount, string Bonusamount)
         {
 
 
@@ -137,6 +138,14 @@ namespace Shareholder_Management_System.Controllers
                 if (!string.IsNullOrEmpty(chequeAmount))
                 {
                     PaymentMode.Add($"Cheque = {chequeAmount}");
+                }
+                if (!string.IsNullOrEmpty(RTGSamount))
+                {
+                    PaymentMode.Add($"RTGS = {RTGSamount}");
+                }
+                if (!string.IsNullOrEmpty(Bonusamount))
+                {
+                    PaymentMode.Add($"Bonus = {Bonusamount}");
                 }
 
                 // Join all payment details into a single string
@@ -288,6 +297,8 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.CpoAmount = paymentModeDict.ContainsKey("cpo") ? (decimal?)paymentModeDict["cpo"] : null;
             ViewBag.DividendAmount = paymentModeDict.ContainsKey("dividend") ? (decimal?)paymentModeDict["dividend"] : null;
             ViewBag.ChequeAmount = paymentModeDict.ContainsKey("cheque") ? (decimal?)paymentModeDict["cheque"] : null;
+            ViewBag.ChequeAmount = paymentModeDict.ContainsKey("RTGS") ? (decimal?)paymentModeDict["RTGSamount"] : null;
+            ViewBag.ChequeAmount = paymentModeDict.ContainsKey("Bonus") ? (decimal?)paymentModeDict["Bonusamount"] : null;
 
             // Pass the necessary data to the view model
             var viewModel = new Payment
@@ -312,7 +323,9 @@ namespace Shareholder_Management_System.Controllers
         // POST: Payments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, [Bind(Include = "PayID,ShID,SubID,PaymentMode,PaidAmount,BlockedAmount,ReferenceNum,PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer,AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions, string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string accountAmount, string SourceOfFunds)
+        public ActionResult Edit(int id, [Bind(Include = "PayID,ShID,SubID,PaymentMode,PaidAmount,BlockedAmount,ReferenceNum,PaymentSlip,PaymentDate,PaymentTransferFrom,CreatedBy,CreationDate,PaymentAuthorizationStatus,PaymentAuthorizer,AuthorizationDate,Remark")] Payment payment, HttpPostedFileBase uploadedFile, int[] selectedSubscriptions, 
+            string cashAmount, string cpoAmount, string dividendAmount, string chequeAmount, string accountAmount, string SourceOfFunds,
+            string RTGSamount, string Bonusamount)
         {
             if (ModelState.IsValid)
             {
@@ -342,6 +355,9 @@ namespace Shareholder_Management_System.Controllers
                 if (!string.IsNullOrEmpty(cpoAmount)) paymentModes.Add($"cpo={cpoAmount}");
                 if (!string.IsNullOrEmpty(dividendAmount)) paymentModes.Add($"dividend={dividendAmount}");
                 if (!string.IsNullOrEmpty(chequeAmount)) paymentModes.Add($"cheque={chequeAmount}");
+                if (!string.IsNullOrEmpty(RTGSamount)) paymentModes.Add($"RTGS={RTGSamount}");
+                if (!string.IsNullOrEmpty(Bonusamount)) paymentModes.Add($"Bonus={Bonusamount}");
+
                 existingPayment.PaymentMode = string.Join(",", paymentModes);
                 existingPayment.SourceOfFunds = SourceOfFunds;
                 // Update user and branch details
