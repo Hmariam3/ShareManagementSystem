@@ -1,4 +1,4 @@
-﻿﻿@model Shareholder_Management_System.Models.ApprovalsViewModel
+﻿@model Shareholder_Management_System.Models.ApprovalsViewModel
 
 
 @{
@@ -633,7 +633,7 @@
                         </div>
                         <div class="panel mt-5 overflow-hidden border-0 p-0">
                             <template x-if="displayType === 'list'">
-                                <div class="p-6 overflow-x-auto" style="max-height: 600px; overflow-y: auto;">
+                                <div>
                                     <div class="table-responsive sticky-column sticky-header">
                                         <table id="shareholderTable" class="whitespace-nowrap table-striped table-hover table-bordered table-compact">
                                             <thead>
@@ -895,9 +895,9 @@
                 </template>
 
                 <template x-if="tab === 'subscription'">
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden panel mx-4 mt-5">
-                       
-                        <div class="flex justify-end mb-2">
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden panel">
+
+                        <div class="flex justify-end mb-3">
                             <input type="text"
                                    id="searchInput"
                                    class="border border-gray-300 rounded-md p-2 w-100"
@@ -1050,6 +1050,8 @@
 
                 </template>
 
+
+
                 <template x-if="tab === 'payment'">
 
                     <div class="panel">
@@ -1058,7 +1060,7 @@
                         </div>
 
                         <div class="mb-5">
-                            <div class="table-responsive"> 
+                            <div class="p-6 overflow-x-auto" style="max-height: 600px; overflow-y: auto;">
                                 <table class="table-striped">
                                     <thead>
 
@@ -1987,6 +1989,7 @@
         }));
     });
 </script>
+
 <script>
     function filterTable() {
         const input = document.getElementById('searchInput').value.toLowerCase();
@@ -2006,4 +2009,3 @@
         }
     }
 </script>
-
