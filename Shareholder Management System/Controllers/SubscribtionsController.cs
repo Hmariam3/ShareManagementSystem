@@ -134,7 +134,7 @@ namespace Share.Controllers
 
         public ActionResult PendingSubscription()
         {
-            var subscribtions = db.Subscribtions.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1).Where(a => a.SubAuthorizationStatus != "Approved" && a.PaymentDueDate >= DateTime.Now);
+            var subscribtions = db.Subscribtions.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1).Where(a => a.SubAuthorizationStatus == "Pending" && a.PaymentDueDate >= DateTime.Now);
             return View(subscribtions.ToList());
         }
 
