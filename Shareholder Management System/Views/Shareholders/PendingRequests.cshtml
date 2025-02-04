@@ -349,36 +349,36 @@
                                                             <td x-text="shareholder.createdBy"></td>
                                                             <td class="text-center">
                                                                 @*<ul class="flex items-center justify-center gap-2">
-                                        <li>
-                                            <a :href="'@Url.Action("Details", "Shareholders", new { id = "__ShID__" })'.replace('__ShID__', shareholder.id)"
-                                               class="hover:text-primary" x-tooltip="Details">
-                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                                                     xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
-                                                    <path d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
-                                                          stroke="currentColor" stroke-width="1.5"></path>
-                                                    <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
-                                                          stroke="currentColor" stroke-width="1.5"></path>
-                                                </svg>
-                                            </a>
-                                        </li>
+                                                                        <li>
+                                                                            <a :href="'@Url.Action("Details", "Shareholders", new { id = "__ShID__" })'.replace('__ShID__', shareholder.id)"
+                                                                               class="hover:text-primary" x-tooltip="Details">
+                                                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                                                                     xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                                                                    <path d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                                                    <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
+                                                                                          stroke="currentColor" stroke-width="1.5"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                        </li>
 
-                                        <li>
-                                            <a href="javascript:;" @@click="approveRequest(shareholder.id)" x-tooltip="Approve">
-                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary">
-                                                    <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
-                                                    <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                </svg>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;" @@click="openRejectModal(shareholder.id)" x-tooltip="Reject">
-                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
-                                                    <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
-                                                    <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                                </svg>
-                                            </a>
-                                        </li>
-                                    </ul>*@
+                                                                        <li>
+                                                                            <a href="javascript:;" @@click="approveRequest(shareholder.id)" x-tooltip="Approve">
+                                                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary">
+                                                                                    <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                                                                    <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="javascript:;" @@click="openRejectModal(shareholder.id)" x-tooltip="Reject">
+                                                                                <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-danger">
+                                                                                    <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                                                                    <path d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>*@
                                                                 <a :href="'@Url.Action("Authorization", "Shareholders", new { id = "__ShID__" })'.replace('__ShID__', shareholder.id)" class="btn btn-primary  gap-2">
                                                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
 
@@ -1055,13 +1055,17 @@
                 <template x-if="tab === 'payment'">
 
                     <div class="panel">
-                        <div class="mb-5 flex items-center justify-between">
-                            <h5 class="text-lg font-semibold dark:text-white-light">Payment Table</h5>
+                        <div class="flex justify-end mb-3">
+                            <input type="text"
+                                   id="searchInputa"
+                                   class="border border-gray-300 rounded-md p-2 w-100"
+                                   placeholder="Search Payments"
+                                   oninput="filterTable()" />
                         </div>
 
                         <div class="mb-5">
                             <div class="p-6 overflow-x-auto" style="max-height: 600px; overflow-y: auto;">
-                                <table class="table-striped">
+                                <table id="paymentb" class="table-striped">
                                     <thead>
 
                                         <tr>
@@ -1994,6 +1998,26 @@
     function filterTable() {
         const input = document.getElementById('searchInput').value.toLowerCase();
         const table = document.getElementById('userTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let rowVisible = false;
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j].innerText.toLowerCase().includes(input)) {
+                    rowVisible = true;
+                    break;
+                }
+            }
+            rows[i].style.display = rowVisible ? '' : 'none';
+        }
+    }
+</script>
+
+<script>
+    function filterTable() {
+        const input = document.getElementById('searchInputa').value.toLowerCase();
+        const table = document.getElementById('paymentb');
         const rows = table.getElementsByTagName('tr');
 
         for (let i = 1; i < rows.length; i++) {
