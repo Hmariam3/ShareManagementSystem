@@ -386,13 +386,13 @@ namespace Shareholder_Management_System.Controllers
                             ShID = shareTransfer.TransfareeShID,
                             SubNumShares = shareTransfer.NumSharesTransferred,
                             SubAmount = shareTransfer.PaidAmountForTransfer,
-                            PaidSubscription = shareTransfer.PaidAmountForTransfer,
-                            UnpaidSubscription = 0.00M, // Explicitly set UnpaidSubscription to 0.00
+                            PaidSubscription = 0.00M, // Explicitly set paidSubscription to 0.00
+                            UnpaidSubscription = shareTransfer.PaidAmountForTransfer, 
                             SubTransferFrom = shareTransfer.TransferrorShID,
-                            PaymentDueDate = shareTransfer.TransferDate,
+                            PaymentDueDate = transferrorSubscription.PaymentDueDate,
                             AuthorizedDate = DateTime.Now,
                             SubAuthorizer = AuthorizerId,
-                            SubStatus = "Fully Paid",
+                            SubStatus = "Unpaid",
                             CreatedBy = shareTransfer.CreatedBy,
                             SubDate = DateTime.Now,
                             SubAuthorizationStatus = "Approved",
@@ -402,30 +402,30 @@ namespace Shareholder_Management_System.Controllers
                         db.Subscribtions.Add(newSubscription);
                         db.SaveChanges();
 
-                        // Add a new payment for the transferee shareholder
-                        var newPayments = new Payment
-                        {
-                            ShID = shareTransfer.TransfareeShID,
-                            SubID = newSubscription.SubID,
-                            PaymentMode = "AccountTransfer",
-                            PaidAmount = shareTransfer.PaidAmountForTransfer,
-                            ReferenceNum = "RightTransfer",
-                            PaymentTransferFrom = shareTransfer.TransferrorShID,
-                            PaymentDate = shareTransfer.TransferDate,
-                            CreatedBy = shareTransfer.CreatedBy,
-                            PaymentAuthorizationStatus = "Approved",
-                            PaymentAuthorizer = AuthorizerId,
-                            AuthorizationDate = DateTime.Now,
-                            TransferID = shareTransfer.TransferID,
-                            TransferAmount = shareTransfer.PaidAmountForTransfer,
-                            CreationDate = shareTransfer.CreationDate,
-                            Branch = shareTransfer.Branch,
-                            Remark = shareTransfer.Remark
+                        //// Add a new payment for the transferee shareholder
+                        //var newPayments = new Payment
+                        //{
+                        //    ShID = shareTransfer.TransfareeShID,
+                        //    SubID = newSubscription.SubID,
+                        //    PaymentMode = "AccountTransfer",
+                        //    PaidAmount = shareTransfer.PaidAmountForTransfer,
+                        //    ReferenceNum = "RightTransfer",
+                        //    PaymentTransferFrom = shareTransfer.TransferrorShID,
+                        //    PaymentDate = shareTransfer.TransferDate,
+                        //    CreatedBy = shareTransfer.CreatedBy,
+                        //    PaymentAuthorizationStatus = "Approved",
+                        //    PaymentAuthorizer = AuthorizerId,
+                        //    AuthorizationDate = DateTime.Now,
+                        //    TransferID = shareTransfer.TransferID,
+                        //    TransferAmount = shareTransfer.PaidAmountForTransfer,
+                        //    CreationDate = shareTransfer.CreationDate,
+                        //    Branch = shareTransfer.Branch,
+                        //    Remark = shareTransfer.Remark
 
 
-                        };
-                        db.Payments.Add(newPayments);
-                        db.SaveChanges();
+                        //};
+                        //db.Payments.Add(newPayments);
+                        //db.SaveChanges();
 
                         // Update the Document Status
                         var document = db.Documents.FirstOrDefault(d => d.DocID == shareTransfer.TransferDoc);
