@@ -110,144 +110,144 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubID)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubNumShares) Shares</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.SHCategory)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Premium)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAmount)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaidSubscription)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.UnpaidSubscription)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaymentDueDate)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubStatus)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubDate)</td>
-                        @*<td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAuthorizationStatus)</td>*@
-                        <td class="border border-gray-300 px-4 py-2 text-center">
-                            @if (item.SubAuthorizationStatus == "Approved")
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubID)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubNumShares)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder.SHCategory)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Premium)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAmount)</td>
+                    <td class="border border-gray-300 px-4 py-2">@(item.PaidSubscription?.ToString("C") ?? "N/A")</td>
+                    <td class="border border-gray-300 px-4 py-2">@(item.UnpaidSubscription?.ToString("C") ?? "N/A")</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.PaymentDueDate)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubStatus)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubDate)</td>
+                    @*<td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.SubAuthorizationStatus)</td>*@
+                    <td class="border border-gray-300 px-4 py-2 text-center">
+                        @if (item.SubAuthorizationStatus == "Approved")
+                        {
+                            <div class="inline-flex items-center space-x-2">
+
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
+
+                                    <svg fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="3"
+                                         stroke="currentColor"
+                                         class="w-4 h-4 text-green-700">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                </span>
+
+                            </div>
+                        }
+                        else if (item.SubAuthorizationStatus == "Pending")
+                        {
+                            <div class="inline-flex items-center space-x-2">
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                    <svg fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="3"
+                                         stroke="currentColor"
+                                         class="w-4 h-4 text-red-700">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+                                    </svg>
+
+                                    @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                </span>
+                            </div>
+                        }
+                        else if (item.SubAuthorizationStatus == "Rejected")
+                        {
+                            <div class="inline-flex items-center space-x-2">
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
+                                    <!-- SVG Icon for Red Status -->
+                                    <svg fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="3"
+                                         stroke="currentColor"
+                                         class="w-4 h-4 text-red-700">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                </span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="inline-flex items-center space-x-2">
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                    <svg fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="3"
+                                         stroke="currentColor"
+                                         class="w-4 h-4 text-red-700">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                    </svg>
+
+                                    @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
+                                </span>
+                            </div>
+                        }
+                    </td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.AuthorizedDate)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Remark)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder1.ShareID)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User1.FullName)</td>
+                    <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User.FullName)</td>
+                    <td class="border border-gray-300 px-4 py-2 uppercase">@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
+
+                    <td class="border border-gray-300 px-4 py-2">
+                        <div class="flex space-x-2">
+                            @if (item.SubAuthorizationStatus != "Approved" && item.SubAuthorizationStatus != "Transfered")
                             {
-                                <div class="inline-flex items-center space-x-2">
+                                <a href="@Url.Action("Edit", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded" title="Edit this item">
 
-                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
-
-                                        <svg fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke-width="3"
-                                             stroke="currentColor"
-                                             class="w-4 h-4 text-green-700">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                        </svg>
-                                        @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                                    </span>
-
-                                </div>
-                            }
-                            else if (item.SubAuthorizationStatus == "Pending")
-                            {
-                                <div class="inline-flex items-center space-x-2">
-                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
-                                        <svg fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke-width="3"
-                                             stroke="currentColor"
-                                             class="w-4 h-4 text-red-700">
-                                            <path stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"></path>
-                                        </svg>
-
-                                        @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                                    </span>
-                                </div>
-                            }
-                            else if (item.SubAuthorizationStatus == "Rejected")
-                            {
-                                <div class="inline-flex items-center space-x-2">
-                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
-                                        <!-- SVG Icon for Red Status -->
-                                        <svg fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke-width="3"
-                                             stroke="currentColor"
-                                             class="w-4 h-4 text-red-700">
-                                            <path stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
-                                        </svg>
-                                        @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                                    </span>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="inline-flex items-center space-x-2">
-                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
-                                        <svg fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke-width="3"
-                                             stroke="currentColor"
-                                             class="w-4 h-4 text-red-700">
-                                            <path stroke-linecap="round"
-                                                  stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
-                                        </svg>
-
-                                        @Html.DisplayFor(modelItem => item.SubAuthorizationStatus)
-                                    </span>
-                                </div>
-                            }
-                        </td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.AuthorizedDate)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Remark)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.Shareholder1.ShareID)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User1.FullName)</td>
-                        <td class="border border-gray-300 px-4 py-2">@Html.DisplayFor(modelItem => item.User.FullName)</td>
-                        <td class="border border-gray-300 px-4 py-2 uppercase">@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
-
-                        <td class="border border-gray-300 px-4 py-2">
-                            <div class="flex space-x-2">
-                                @if (item.SubAuthorizationStatus != "Approved" && item.SubAuthorizationStatus != "Transfered")
-                                {
-                                    <a href="@Url.Action("Edit", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded" title="Edit this item">
-
-                                        <svg fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke-width="2"
-                                             stroke="white"
-                                             class="w-4 h-4 text-red-700">
-                                            <path stroke-linecap="round"
-                                                  stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                        </svg>
-
-                                    </a>
-
-                                    <a href="@Url.Action("Delete", new { id = item.SubID })" class="btn btn-danger px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded" title="Delete">
-                                        <svg fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke-width="2"
-                                             stroke="white"
-                                             class="w-4 h-4 text-red-700">
-                                            <path stroke-linecap="round"
-                                                  stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                        </svg>
-
-                                    </a>
-                                }
-                                <a href="@Url.Action("Details", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded" title="View Details">
                                     <svg fill="none"
                                          viewBox="0 0 24 24"
                                          stroke-width="2"
                                          stroke="white"
                                          class="w-4 h-4 text-red-700">
                                         <path stroke-linecap="round"
-                                              stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                              stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>
 
                                 </a>
 
-                            </div>
-                        </td>
-                    </tr>
+                                <a href="@Url.Action("Delete", new { id = item.SubID })" class="btn btn-danger px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded" title="Delete">
+                                    <svg fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="2"
+                                         stroke="white"
+                                         class="w-4 h-4 text-red-700">
+                                        <path stroke-linecap="round"
+                                              stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                    </svg>
+
+                                </a>
+                            }
+                            <a href="@Url.Action("Details", new { id = item.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded" title="View Details">
+                                <svg fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="2"
+                                     stroke="white"
+                                     class="w-4 h-4 text-red-700">
+                                    <path stroke-linecap="round"
+                                          stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                </svg>
+
+                            </a>
+
+                        </div>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>

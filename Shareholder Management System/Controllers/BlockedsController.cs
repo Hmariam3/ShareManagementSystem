@@ -172,9 +172,9 @@ namespace Share_Management_System.Controllers
         {
             ViewBag.BlockingDoc = new SelectList(db.Documents, "DocID", "DocName", blocked?.BlockingDoc);
             ViewBag.PayID = new SelectList(db.Payments, "PayID", "PaymentMode", blocked?.PayID);
-            ViewBag.ShID = new SelectList(db.Shareholders.Select(s => new {
+            ViewBag.ShID = new SelectList(db.Shareholders.Where(a=>a.AuthorizationStatus== "Approved" && a.Status == "Active").Select(s => new {
                 s.ShID,
-                FullNameWithID = s.FullNameEng + " (" + s.ShID + ")"
+                FullNameWithID = s.FullNameEng + " (" + s.ShareID + ")"
             }), "ShID", "FullNameWithID", blocked?.ShID);
             ViewBag.BlockedBy = new SelectList(db.Users, "UID", "FullName", blocked?.BlockedBy);
             ViewBag.BlockedAuthorizer = new SelectList(db.Users, "UID", "FullName", blocked?.BlockedAuthorizer);

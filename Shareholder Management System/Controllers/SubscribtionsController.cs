@@ -134,7 +134,7 @@ namespace Share.Controllers
 
         public ActionResult PendingSubscription()
         {
-            var subscribtions = db.Subscribtions.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1).Where(a => a.SubAuthorizationStatus != "Approved" && a.PaymentDueDate >= DateTime.Now);
+            var subscribtions = db.Subscribtions.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1).Where(a => a.SubAuthorizationStatus == "Pending" && a.PaymentDueDate >= DateTime.Now);
             return View(subscribtions.ToList());
         }
 
@@ -902,6 +902,42 @@ namespace Share.Controllers
         }
 
 
+        /// Setting DUE DATE FOR ALL AT ONCE
+        ///        
+
+        public ActionResult UpdateDuedate()
+        {
+            return View();
+        }
+
+        // POST: Subscribtions/SetDueDate
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateDuedate(DateTime newDueDate)
+        {
+            // Check if the selected date is in the past
+            if (newDueDate < DateTime.Today)
+            {
+                TempData["ErrorMessage"] = "The due date cannot be in the past. Please select a valid date.";
+                return RedirectToAction("UpdateDuedate"); // Redirect back to the input view
+            }
+
+            // Fetch all subscriptions
+            var subscriptions = db.Subscribtions.Where(a=>a.SubNumShares !=0 && a.SubAuthorizationStatus!="Transfered").ToList();
+
+            // Update the PaymentDueDate for all subscriptions
+            foreach (var subscription in subscriptions)
+            {
+                subscription.PaymentDueDate = newDueDate;
+                db.Entry(subscription).State = EntityState.Modified;
+            }
+
+            // Save all changes to the database
+            db.SaveChanges();
+
+            TempData["SuccessMessage"] = "All subscription due dates updated successfully.";
+            return RedirectToAction("Index");
+        }
 
         protected override void Dispose(bool disposing)
         {

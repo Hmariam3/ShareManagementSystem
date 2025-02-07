@@ -1,4 +1,4 @@
-﻿﻿@model Shareholder_Management_System.Models.ApprovalsViewModel
+﻿@model Shareholder_Management_System.Models.ApprovalsViewModel
 
 
 @{
@@ -257,7 +257,7 @@
                             </div>
                             <div class="panel mt-5 overflow-hidden border-0 p-0">
                                 <template x-if="displayType === 'list'">
-                                    <div>
+                                    <div class="p-6 overflow-x-auto" style="max-height: 600px; overflow-y: auto;">
                                         <div class="table-responsive sticky-column sticky-header">
 
                                             <table id="shareholderTable" class="whitespace-nowrap table-striped table-hover table-bordered table-compact">
@@ -895,12 +895,17 @@
                 </template>
 
                 <template x-if="tab === 'subscription'">
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden panel">
 
-                    <div class="bg-white shadow-md rounded-lg overflow-hidden panel mx-4 mt-5">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h2 class="text-xl font-semibold text-gray-700 uppercase">Pending Authorization</h2>
+                        <div class="flex justify-end mb-3">
+                            <input type="text"
+                                   id="searchInput"
+                                   class="border border-gray-300 rounded-md p-2 w-100"
+                                   placeholder="Search Subscriptions"
+                                   oninput="filterTable()" />
                         </div>
-                        <div class="p-6 overflow-x-auto">
+
+                        <div class="p-6 overflow-x-auto" style="max-height: 600px; overflow-y: auto;">
                             <table id="userTable" class="min-w-full leading-normal">
                                 <thead>
                                     <tr class="bg-gray-100">
@@ -908,7 +913,7 @@
                                         <th class="border border-gray-300 px-4 py-2">FullName of Shareholders</th>
                                         <th class="border border-gray-300 px-4 py-2">Sub ID</th>
                                         <th class="border border-gray-300 px-4 py-2">Shareholder ID</th>
-                                        <th class="border border-gray-300 px-4 py-2">FullName</th>
+                                        <th class="border border-gray-300 px-4 py-2">Num of Share Subscribed</th>
                                         <th class="border border-gray-300 px-4 py-2">Category</th>
                                         <th class="border border-gray-300 px-4 py-2">Premium</th>
                                         <th class="border border-gray-300 px-4 py-2">SubAmount</th>
@@ -1045,16 +1050,22 @@
 
                 </template>
 
+
+
                 <template x-if="tab === 'payment'">
 
                     <div class="panel">
-                        <div class="mb-5 flex items-center justify-between">
-                            <h5 class="text-lg font-semibold dark:text-white-light">Payment Table</h5>
+                        <div class="flex justify-end mb-3">
+                            <input type="text"
+                                   id="searchInputa"
+                                   class="border border-gray-300 rounded-md p-2 w-100"
+                                   placeholder="Search Payments"
+                                   oninput="filterTable()" />
                         </div>
 
                         <div class="mb-5">
-                            <div class="table-responsive">
-                                <table class="table-striped">
+                            <div class="p-6 overflow-x-auto" style="max-height: 600px; overflow-y: auto;">
+                                <table id="paymentb" class="table-striped">
                                     <thead>
 
                                         <tr>
@@ -1981,4 +1992,44 @@
             }
         }));
     });
+</script>
+
+<script>
+    function filterTable() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const table = document.getElementById('userTable');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let rowVisible = false;
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j].innerText.toLowerCase().includes(input)) {
+                    rowVisible = true;
+                    break;
+                }
+            }
+            rows[i].style.display = rowVisible ? '' : 'none';
+        }
+    }
+</script>
+
+<script>
+    function filterTable() {
+        const input = document.getElementById('searchInputa').value.toLowerCase();
+        const table = document.getElementById('paymentb');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            let rowVisible = false;
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j].innerText.toLowerCase().includes(input)) {
+                    rowVisible = true;
+                    break;
+                }
+            }
+            rows[i].style.display = rowVisible ? '' : 'none';
+        }
+    }
 </script>

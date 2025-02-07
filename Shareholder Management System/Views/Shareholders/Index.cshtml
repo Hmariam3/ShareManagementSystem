@@ -166,6 +166,9 @@
                 { name: 'Full Name (Eng)', hidden: true },
                 { name: 'Full Name (Afan Oromo)', hidden: true },
                 { name: 'Full Name (Amharic)', hidden: true },
+                { name: 'Age', hidden: true },
+                { name: 'Birth Date', hidden: true },
+                { name: 'Gender', hidden: true },
                 { name: 'Shareholder Status', hidden: false },
                 { name: 'Authorization Status', hidden: false },
                 { name: 'Nationality', hidden: true },
@@ -177,6 +180,7 @@
                 { name: 'City', hidden: true },
                 { name: 'Subcity', hidden: true },
                 { name: 'Woreda', hidden: true },
+                { name: 'Fayda Number', hidden: true },
                 { name: 'Kebele', hidden: true },
                 { name: 'House No', hidden: false },
                 { name: 'PoBox', hidden: false },
@@ -196,7 +200,7 @@
                 { name: 'User1 (Modified By)', hidden: false },
                 { name: 'Actions', hidden: true },
                 { name: 'ID Document', hidden: false },
-                { name: 'Document', hidden: false },
+               { name: 'Document', hidden: false },
             ],
 
             hideCols: [],
@@ -213,6 +217,9 @@
                 let headers = this.datatable1.columns();
                 headers.hide(this.hideCols);
                 headers.show(this.showCols);
+                let cols = this.datatable1.columns();
+                cols.hide(this.hideCols);
+                cols.show(this.showCols);
             },
 
             datatable1: null,
@@ -222,71 +229,75 @@
             unBlockShModal: false,
             editShDocumentModal: false,
 
-            init() {
-                let headers = this.columns.map((col) => {
-                    return col.name;
-                });
-                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
-                    data: {
-                        headings: headers,
-                        data: [
-                            @foreach (var item in Model)
-                            {
-                                <text>
-                                [
-                                    "@item.ShareID",
-                                    "@item.FullNameEng",
-                                    "@item.FullNameAfanOromo",
-                                    "@item.FullNameAmharic",
-                                    "@item.Status",
-                                    "@item.AuthorizationStatus",
-                                    "@item.Nationality",
-                                    "@item.SHCategory",
-                                    "@item.TINNum",
-                                    "@item.AccountNumber",
-                                    "@item.Region",
-                                    "@item.Zone",
-                                    "@item.City",
-                                    "@item.Subcity",
-                                    "@item.Woreda",
-                                    "@item.Kebele",
-                                    "@item.HouseNo",
-                                    "@item.PoBox",
-                                    "@item.PhoneNo",
-                                    "@item.PhoneNo2",
-                                    "@item.PhoneNo3",
-                                    "@item.TeleHome",
-                                    "@item.TeleWork",
-                                    "@item.Email",
-                                    "@item.Email2",
-                                    "@item.Email3",
-                                    "@item.CreatedDate",
-                                    "@item.AuthorizedDate",
-                                    "@item.Remark",
-                                    "@(item.Branch1 != null ? item.Branch1.BranchName : "N/A")", // Handle null for Branch1
-                                    "@(item.User != null ? item.User.FullName : "N/A")", // Handle null for User
-                                    "@(item.User1 != null ? item.User1.FullName : "N/A")", // Handle null for User1
-                                    "@item.ShID",
-                                    "@item.KebeleID", // Shareholder.ShareID
-                                    "@item.ShDocument", // Shareholder.ShareID
-                                ],
-                                </text>
-                            }
-                         ]
-                    },
-                    perPage: 15,
-                    perPageSelect: [10, 20, 30, 50, 100],
+          init() {
+    let headers = this.columns.map((col) => {
+        return col.name;
+    });
+    this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
+        data: {
+            headings: headers,
+            data: [
+                @foreach (var item in Model)
+                {
+                    <text>
+                    [
+                        "@item.ShareID",
+                        "@item.FullNameEng",
+                        "@item.FullNameAfanOromo",
+                        "@item.FullNameAmharic",
+                        "@item.Age",
+                        "@item.BirthDate",
+                        "@item.Gender", 
+                        "@item.Status",
+                        "@item.AuthorizationStatus",
+                        "@item.Nationality",
+                        "@item.SHCategory",
+                        "@item.TINNum",
+                        "@item.AccountNumber",
+                        "@item.Region",
+                        "@item.Zone",
+                        "@item.City",
+                        "@item.Subcity",
+                        "@item.Woreda",
+                        "@item.FaydaNumber",
+                        "@item.Kebele",
+                        "@item.HouseNo",
+                        "@item.PoBox",
+                        "@item.PhoneNo",
+                        "@item.PhoneNo2",
+                        "@item.PhoneNo3",
+                        "@item.TeleHome",
+                        "@item.TeleWork",
+                        "@item.Email",
+                        "@item.Email2",
+                        "@item.Email3",
+                        "@item.CreatedDate",
+                        "@item.AuthorizedDate",
+                        "@item.Remark",
+                        "@(item.Branch1 != null ? item.Branch1.BranchName : "N/A")",
+                        "@(item.User != null ? item.User.FullName : "N/A")",
+                        "@(item.User1 != null ? item.User1.FullName : "N/A")",
+                        "@item.ShID",
+                        "@item.KebeleID",
+                        "@item.ShDocument",
+                    ],
+                    </text>
+                }
+            ]
+        },
+                    perPage: 20,
+                    perPageSelect: [20, 30, 50, 60, 100],
                     columns: [
-                        { select: 4, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
-                        { select: 5, render: (data, cell, row) => this.formatAuthorizationStatus(data) }, // Format the status
-                        { select: 25, render: (data, cell, row) => this.formatDate(data) }, // Format the date
+                        { select: 7, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
+                        { select: 8, render: (data, cell, row) => this.formatAuthorizationStatus(data) }, // Format the status
+                        { select: 30, render: (data, cell, row) => this.formatDate(data) }, // Format the date
                         {
-                            select: 32,
+                            select: 36,
                             sortable: false,
                             render: function (data, cell, row) {
                                 let editUrl = '@Url.Action("Edit", "Shareholders", new { id = "__ShID__" })'.replace("__ShID__", data);
                                 let detailsUrl = '@Url.Action("Details", "Shareholders", new { id = "__ShID__" })'.replace("__ShID__", data);
-                                const status = row.cells[4].data;
+                                const status = row.cells[5].data;
 
                                 return `<div class="flex gap-4 items-center">
                                     <a href="${detailsUrl}" class="hover:text-primary" x-tooltip="Details">
@@ -330,7 +341,7 @@
                             },
                         },
                         {
-                            select: 33,
+                            select: 37,
                             sortable: false,
                             render: function (data, cell, row) {
                                 return `<div class="flex gap-4 items-center">
@@ -347,7 +358,7 @@
                             },
                         },
                         {
-                            select: 34,
+                            select: 38,
                             sortable: false,
                             render: function (data, cell, row) {
                                 return `<div class="flex gap-4 items-center">

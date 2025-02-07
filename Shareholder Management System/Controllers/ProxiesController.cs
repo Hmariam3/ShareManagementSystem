@@ -32,7 +32,10 @@ namespace Shareholder_Management_System.Controllers
 
             ViewBag.Shareholders = shareholders;
             ViewBag.ShareID = "";
+            var nationalities = db.Nationalities.ToList();
 
+
+            ViewBag.Nationality = new SelectList(nationalities, "Nationality1", "Nationality1", "Ethiopian"); // "ETH" is the alpha_3_code for Ethiopia
 
             if (String.IsNullOrEmpty(ShID) && String.IsNullOrEmpty(shareID))
             {
@@ -174,7 +177,8 @@ namespace Shareholder_Management_System.Controllers
             // Update the proxy record in the database
             db.Entry(proxy).State = EntityState.Modified;
             db.SaveChanges();
-
+            AuditLogsController auditLogsController = new AuditLogsController();
+            auditLogsController.RecordLog("Activate  Shareholder Proxy", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
             return Json(new { success = true });
         }
 
@@ -194,6 +198,8 @@ namespace Shareholder_Management_System.Controllers
                 db.Entry(proxy).Property(x => x.ProxyDocument).IsModified = false;
 
                 db.SaveChanges();
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Deactivate  Shareholder Proxy", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
                 return Json(new { success = true });
             }
             return Json(new { success = false, message = "Proxy not found" });
@@ -220,6 +226,8 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
             ViewBag.ProxyAuthorizer = new SelectList(db.Users, "UID", "FullName");
             ViewBag.ShID = new SelectList(db.Shareholders.OrderBy(s => s.FullNameEng), "ShID", "ShareID");
+            var nationalities = db.Nationalities.ToList();
+            ViewBag.Nationality = new SelectList(nationalities, "Nationality1", "Nationality1", "Ethiopian"); // "ETH" is the alpha_3_code for Ethiopia
             return View();
         }
 
@@ -243,6 +251,18 @@ namespace Shareholder_Management_System.Controllers
 
             if (ModelState.IsValid)
             {
+                // Calculate Age from Birthdate
+                if (proxy.BirthDate.HasValue) // Ensure Birthdate is provided
+                {
+                    DateTime birthdate = proxy.BirthDate.Value;
+                    int age = CalculateAge(birthdate);
+                    proxy.Age = age; // Assign calculated age to the Shareholder object
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Birthdate is required to calculate Age.";
+                    return View(proxy);
+                }
                 proxy.CreatedBy = userId;
                 proxy.ProxyStatus = "New";
                 proxy.CreatedDate = DateTime.Now;
@@ -256,7 +276,8 @@ namespace Shareholder_Management_System.Controllers
                     {
                         db.Proxies.Add(proxy);
                         db.SaveChanges();
-
+                        AuditLogsController auditLogsController = new AuditLogsController();
+                        auditLogsController.RecordLog("Registration of  Shareholder Proxy", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
                         Document document = new Document
                         {
                             DocOwner = "Proxy",
@@ -290,6 +311,8 @@ namespace Shareholder_Management_System.Controllers
                         //// Update the shareholder record in the database
                         db.Entry(proxy).State = EntityState.Modified;
                         db.SaveChanges();
+                       
+                        auditLogsController.RecordLog("Registration of Proxy Document", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
                         return RedirectToAction("Index", new { ShID = proxy.ShID });
 
                     }
@@ -321,7 +344,19 @@ namespace Shareholder_Management_System.Controllers
 
             return RedirectToAction("Index", new { ShID = proxy.ShID });
         }
+        private int CalculateAge(DateTime birthdate)
+        {
+            int age = DateTime.Now.Year - birthdate.Year;
 
+            // Subtract one year if the birthday hasn't occurred yet this year
+            if (DateTime.Now.Month < birthdate.Month ||
+                (DateTime.Now.Month == birthdate.Month && DateTime.Now.Day < birthdate.Day))
+            {
+                age--;
+            }
+
+            return age;
+        }
 
         [HttpGet]
         public JsonResult GetProxyData(int id)
@@ -369,6 +404,10 @@ namespace Shareholder_Management_System.Controllers
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", proxy.CreatedBy);
             ViewBag.ProxyAuthorizer = new SelectList(db.Users, "UID", "FullName", proxy.ProxyAuthorizer);
             ViewBag.ShID = new SelectList(db.Shareholders.OrderBy(s => s.FullNameEng), "ShID", "ShareID", proxy.ShID);
+            var nationalities = db.Nationalities.ToList();
+
+
+            ViewBag.Nationality = new SelectList(nationalities, "Nationality1", "Nationality1", "Ethiopian"); // "ETH" is the alpha_3_code for Ethiopia
             return View(proxy);
         }
 
@@ -384,6 +423,18 @@ namespace Shareholder_Management_System.Controllers
 
             if (ModelState.IsValid)
             {
+                // Calculate Age from Birthdate
+                if (proxy.BirthDate.HasValue) // Ensure Birthdate is provided
+                {
+                    DateTime birthdate = proxy.BirthDate.Value;
+                    int age = CalculateAge(birthdate);
+                    proxy.Age = age; // Assign calculated age to the Shareholder object
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Birthdate is required to calculate Age.";
+                    return View(proxy);
+                }
                 proxy.CreatedBy = userId;
                 proxy.ProxyStatus = "Updated";
                 proxy.CreatedDate = DateTime.Now;
@@ -396,6 +447,8 @@ namespace Shareholder_Management_System.Controllers
                 db.Entry(proxy).Property(x => x.KebeleID).IsModified = false;
 
                 db.SaveChanges();
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Edit  Proxy Information", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
                 return RedirectToAction("Index", new { ShID = proxy.ShID });
             }
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", proxy.CreatedBy);
