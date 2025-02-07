@@ -62,30 +62,9 @@
 
     </div>
 
-    <!-- screen loader -->
+
     <div class="screen_loader animate__animated fixed inset-0 z-[60] grid place-content-center bg-[#fafafa] dark:bg-[#060818]">
-        <svg width="64"
-             height="64"
-             viewbox="0 0 135 135"
-             xmlns="http://www.w3.org/2000/svg"
-             fill="#4361ee">
-            <path d="M67.447 58c5.523 0 10-4.477 10-10s-4.477-10-10-10-10 4.477-10 10 4.477 10 10 10zm9.448 9.447c0 5.523 4.477 10 10 10 5.522 0 10-4.477 10-10s-4.478-10-10-10c-5.523 0-10 4.477-10 10zm-9.448 9.448c-5.523 0-10 4.477-10 10 0 5.522 4.477 10 10 10s10-4.478 10-10c0-5.523-4.477-10-10-10zM58 67.447c0-5.523-4.477-10-10-10s-10 4.477-10 10 4.477 10 10 10 10-4.477 10-10z">
-                <animatetransform attributename="transform"
-                                  type="rotate"
-                                  from="0 67 67"
-                                  to="-360 67 67"
-                                  dur="2.5s"
-                                  repeatcount="indefinite"></animatetransform>
-            </path>
-            <path d="M28.19 40.31c6.627 0 12-5.374 12-12 0-6.628-5.373-12-12-12-6.628 0-12 5.372-12 12 0 6.626 5.372 12 12 12zm30.72-19.825c4.686 4.687 12.284 4.687 16.97 0 4.686-4.686 4.686-12.284 0-16.97-4.686-4.687-12.284-4.687-16.97 0-4.687 4.686-4.687 12.284 0 16.97zm35.74 7.705c0 6.627 5.37 12 12 12 6.626 0 12-5.373 12-12 0-6.628-5.374-12-12-12-6.63 0-12 5.372-12 12zm19.822 30.72c-4.686 4.686-4.686 12.284 0 16.97 4.687 4.686 12.285 4.686 16.97 0 4.687-4.686 4.687-12.284 0-16.97-4.685-4.687-12.283-4.687-16.97 0zm-7.704 35.74c-6.627 0-12 5.37-12 12 0 6.626 5.373 12 12 12s12-5.374 12-12c0-6.63-5.373-12-12-12zm-30.72 19.822c-4.686-4.686-12.284-4.686-16.97 0-4.686 4.687-4.686 12.285 0 16.97 4.686 4.687 12.284 4.687 16.97 0 4.687-4.685 4.687-12.283 0-16.97zm-35.74-7.704c0-6.627-5.372-12-12-12-6.626 0-12 5.373-12 12s5.374 12 12 12c6.628 0 12-5.373 12-12zm-19.823-30.72c4.687-4.686 4.687-12.284 0-16.97-4.686-4.686-12.284-4.686-16.97 0-4.687 4.686-4.687 12.284 0 16.97 4.686 4.687 12.284 4.687 16.97 0z">
-                <animatetransform attributename="transform"
-                                  type="rotate"
-                                  from="0 67 67"
-                                  to="360 67 67"
-                                  dur="8s"
-                                  repeatcount="indefinite"></animatetransform>
-            </path>
-        </svg>
+        <img src="~/assets/images/cooplogo.gif" alt="Loading..." width="200" height="200" />
     </div>
 
     <!-- scroll to top button -->
@@ -267,51 +246,51 @@
                         </h2>
 
                         @*<h2>
-                            <li class="menu nav-item">
-                                <button type="button"
-                                        class="nav-link group"
-                                        :class="{'active' : activeDropdown === 'Document'}"
-                                        @@click="activeDropdown === 'Document' ? activeDropdown = null : activeDropdown = 'Document'">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                <li class="menu nav-item">
+                                    <button type="button"
+                                            class="nav-link group"
+                                            :class="{'active' : activeDropdown === 'Document'}"
+                                            @@click="activeDropdown === 'Document' ? activeDropdown = null : activeDropdown = 'Document'">
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
 
-                                            <path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
-                                                  fill="white" />
-                                        </svg>
+                                                <path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+                                                      fill="white" />
+                                            </svg>
 
-                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Document Management</span>
+                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Document Management</span>
 
-                                    </div>
-                                    <div class="rtl:rotate-180"
-                                         :class="{'!rotate-90' : activeDropdown === 'Document'}">
-                                        <svg width="16"
-                                             height="16"
-                                             viewbox="0 0 24 24"
-                                             fill="none"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 5L15 12L9 19"
-                                                  stroke="currentColor"
-                                                  stroke-width="1.5"
-                                                  stroke-linecap="round" v
-                                                  stroke-linejoin="round"></path>
-                                        </svg>
-                                    </div>
-                                </button>
-                                <ul x-cloak=""
-                                    x-show="activeDropdown === 'Document'"
-                                    x-collapse=""
-                                    class="sub-menu text-white">
-                                    <li>
-                                        @Html.ActionLink("View Document", "Index", "Documents")
-                                    </li>
-                                    <li>
-                                        @Html.ActionLink("Document Category", "Create", "Documents")
-                                    </li>
+                                        </div>
+                                        <div class="rtl:rotate-180"
+                                             :class="{'!rotate-90' : activeDropdown === 'Document'}">
+                                            <svg width="16"
+                                                 height="16"
+                                                 viewbox="0 0 24 24"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 5L15 12L9 19"
+                                                      stroke="currentColor"
+                                                      stroke-width="1.5"
+                                                      stroke-linecap="round" v
+                                                      stroke-linejoin="round"></path>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                    <ul x-cloak=""
+                                        x-show="activeDropdown === 'Document'"
+                                        x-collapse=""
+                                        class="sub-menu text-white">
+                                        <li>
+                                            @Html.ActionLink("View Document", "Index", "Documents")
+                                        </li>
+                                        <li>
+                                            @Html.ActionLink("Document Category", "Create", "Documents")
+                                        </li>
 
-                                </ul>
-                            </li>
-                        
-                        </h2>*@
+                                    </ul>
+                                </li>
+
+                            </h2>*@
                         <h2 class="-mx-8 mb-1 flex items-center bg-white-light/30 px-5 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]"
                             style="border-radius: 5px;">
                             <svg class="hidden h-5 w-4 flex-none"
@@ -374,6 +353,9 @@
                                         </li>
                                         <li>
                                             <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
+                                        </li>
+                                        <li>
+                                            <a href="~/Subscribtions/UpdateDuedate">Update All Due Dates</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -684,15 +666,15 @@
                                 </h2>
 
                                 @*<li class="menu nav-item  ">
-            <a :href="'@Url.Action("PendingRequests", "Shareholders")'" class="nav-link group">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><path fill="white" d="M16 2.906a5.945 5.945 0 0 0-5.938 5.938c0 1.945.907 3.324 1.657 4.375c.75 1.05 1.281 1.773 1.281 2.812v3.188L4.781 21.03L4 21.188V26h1v1c0 .574.254 1.117.656 1.469c.403.351.918.531 1.438.531h17.812c.52 0 1.035-.18 1.438-.531A1.97 1.97 0 0 0 27 27v-1h1v-4.813l-.781-.156L19 19.22v-3.19c0-1.039.531-1.761 1.281-2.812s1.657-2.43 1.657-4.375A5.945 5.945 0 0 0 16 2.906m0 2a3.91 3.91 0 0 1 3.938 3.938c0 1.351-.555 2.199-1.282 3.219C17.93 13.082 17 14.284 17 16.03V19h-2v-2.969c0-1.746-.93-2.949-1.656-3.968c-.727-1.02-1.281-1.868-1.281-3.22A3.91 3.91 0 0 1 16 4.907zM14 21h4l8 1.781V24H6v-1.219zm-7 5h18v.969c-.012.008-.027.031-.094.031H7.094c-.067 0-.082-.023-.094-.031z" /></svg>
-                    <span class="text-black ltr:pl-3 rtl:pr-3 text-white">Pending Requests</span>
-                    @Html.Action("GetPendingRequestsCount", "Shareholders")
-                </div>
-            </a>
+                                        <a :href="'@Url.Action("PendingRequests", "Shareholders")'" class="nav-link group">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><path fill="white" d="M16 2.906a5.945 5.945 0 0 0-5.938 5.938c0 1.945.907 3.324 1.657 4.375c.75 1.05 1.281 1.773 1.281 2.812v3.188L4.781 21.03L4 21.188V26h1v1c0 .574.254 1.117.656 1.469c.403.351.918.531 1.438.531h17.812c.52 0 1.035-.18 1.438-.531A1.97 1.97 0 0 0 27 27v-1h1v-4.813l-.781-.156L19 19.22v-3.19c0-1.039.531-1.761 1.281-2.812s1.657-2.43 1.657-4.375A5.945 5.945 0 0 0 16 2.906m0 2a3.91 3.91 0 0 1 3.938 3.938c0 1.351-.555 2.199-1.282 3.219C17.93 13.082 17 14.284 17 16.03V19h-2v-2.969c0-1.746-.93-2.949-1.656-3.968c-.727-1.02-1.281-1.868-1.281-3.22A3.91 3.91 0 0 1 16 4.907zM14 21h4l8 1.781V24H6v-1.219zm-7 5h18v.969c-.012.008-.027.031-.094.031H7.094c-.067 0-.082-.023-.094-.031z" /></svg>
+                                                <span class="text-black ltr:pl-3 rtl:pr-3 text-white">Pending Requests</span>
+                                                @Html.Action("GetPendingRequestsCount", "Shareholders")
+                                            </div>
+                                        </a>
 
-        </li>*@
+                                    </li>*@
 
                                 <li class="menu nav-item">
                                     <a href="@Url.Action("RecordLog", "AuditLogs")"
@@ -1007,84 +989,84 @@
                                     }
 
                                     @*<li>
-                                        @{
-                                            string encryptedId = TripleDESEncryptionHelper.Encrypt(sessionId.ToString());
-                                        }
-                                        <a href="@Url.Action("Profile", "Users", new { id = encryptedId })"
-                                           class="dark:hover:text-white">
-                                            <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
-                                                 width="18"
-                                                 height="18"
-                                                 viewBox="0 0 24 24"
-                                                 fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="12"
-                                                        cy="6"
-                                                        r="4"
-                                                        stroke="currentColor"
-                                                        stroke-width="1.5"></circle>
-                                                <path opacity="0.5"
-                                                      d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
-                                                      stroke="currentColor"
-                                                      stroke-width="1.5"></path>
-                                            </svg>
-                                            Profile
-                                        </a>
-                                    </li>*@
+                                            @{
+                                                string encryptedId = TripleDESEncryptionHelper.Encrypt(sessionId.ToString());
+                                            }
+                                            <a href="@Url.Action("Profile", "Users", new { id = encryptedId })"
+                                               class="dark:hover:text-white">
+                                                <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
+                                                     width="18"
+                                                     height="18"
+                                                     viewBox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="12"
+                                                            cy="6"
+                                                            r="4"
+                                                            stroke="currentColor"
+                                                            stroke-width="1.5"></circle>
+                                                    <path opacity="0.5"
+                                                          d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"></path>
+                                                </svg>
+                                                Profile
+                                            </a>
+                                        </li>*@
 
                                     </li>
                                     @*<li>
-                                        <a href="apps-mailbox.html"
-                                           class="dark:hover:text-white"
-                                           @@click="toggle">
-                                            <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
-                                                 width="18"
-                                                 height="18"
-                                                 viewbox="0 0 24 24"
-                                                 fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path opacity="0.5"
-                                                      d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
-                                                      stroke="currentColor"
-                                                      stroke-width="1.5"></path>
-                                                <path d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8"
-                                                      stroke="currentColor"
-                                                      stroke-width="1.5"
-                                                      stroke-linecap="round"></path>
-                                            </svg>
-                                            Inbox
-                                        </a>
-                                    </li>*@
+                                            <a href="apps-mailbox.html"
+                                               class="dark:hover:text-white"
+                                               @@click="toggle">
+                                                <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
+                                                     width="18"
+                                                     height="18"
+                                                     viewbox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path opacity="0.5"
+                                                          d="M2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C22 6.34315 22 8.22876 22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12Z"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"></path>
+                                                    <path d="M6 8L8.1589 9.79908C9.99553 11.3296 10.9139 12.0949 12 12.0949C13.0861 12.0949 14.0045 11.3296 15.8411 9.79908L18 8"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"
+                                                          stroke-linecap="round"></path>
+                                                </svg>
+                                                Inbox
+                                            </a>
+                                        </li>*@
                                     @*<li>
-                                        <a href="auth-boxed-lockscreen.html"
-                                           class="dark:hover:text-white"
-                                           @@click="toggle">
-                                            <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
-                                                 width="18"
-                                                 height="18"
-                                                 viewbox="0 0 24 24"
-                                                 fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z"
-                                                      stroke="currentColor"
-                                                      stroke-width="1.5"></path>
-                                                <path opacity="0.5"
-                                                      d="M6 10V8C6 4.68629 8.68629 2 12 2C15.3137 2 18 4.68629 18 8V10"
-                                                      stroke="currentColor"
-                                                      stroke-width="1.5"
-                                                      stroke-linecap="round"></path>
-                                                <g opacity="0.5">
-                                                    <path d="M9 16C9 16.5523 8.55228 17 8 17C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15C8.55228 15 9 15.4477 9 16Z"
-                                                          fill="currentColor"></path>
-                                                    <path d="M13 16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16C11 15.4477 11.4477 15 12 15C12.5523 15 13 15.4477 13 16Z"
-                                                          fill="currentColor"></path>
-                                                    <path d="M17 16C17 16.5523 16.5523 17 16 17C15.4477 17 15 16.5523 15 16C15 15.4477 15.4477 15 16 15C16.5523 15 17 15.4477 17 16Z"
-                                                          fill="currentColor"></path>
-                                                </g>
-                                            </svg>
-                                            Lock Screen
-                                        </a>
-                                    </li>*@
+                                            <a href="auth-boxed-lockscreen.html"
+                                               class="dark:hover:text-white"
+                                               @@click="toggle">
+                                                <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
+                                                     width="18"
+                                                     height="18"
+                                                     viewbox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16Z"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"></path>
+                                                    <path opacity="0.5"
+                                                          d="M6 10V8C6 4.68629 8.68629 2 12 2C15.3137 2 18 4.68629 18 8V10"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"
+                                                          stroke-linecap="round"></path>
+                                                    <g opacity="0.5">
+                                                        <path d="M9 16C9 16.5523 8.55228 17 8 17C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15C8.55228 15 9 15.4477 9 16Z"
+                                                              fill="currentColor"></path>
+                                                        <path d="M13 16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16C11 15.4477 11.4477 15 12 15C12.5523 15 13 15.4477 13 16Z"
+                                                              fill="currentColor"></path>
+                                                        <path d="M17 16C17 16.5523 16.5523 17 16 17C15.4477 17 15 16.5523 15 16C15 15.4477 15.4477 15 16 15C16.5523 15 17 15.4477 17 16Z"
+                                                              fill="currentColor"></path>
+                                                    </g>
+                                                </svg>
+                                                Lock Screen
+                                            </a>
+                                        </li>*@
                                     <li class="border-t border-white-light dark:border-white-light/10">
                                         <a href="@Url.Action("SignOut", "UsersAuthorization")" class="!py-3 text-danger">
                                             <svg class="h-4.5 w-4.5 rotate-90 ltr:mr-2 rtl:ml-2" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1120,22 +1102,22 @@
     </div>
 
     @*<!-- Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Content will be loaded here via Ajax -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Content will be loaded here via Ajax -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
 
     <script>
         document.addEventListener("alpine:init", () => {

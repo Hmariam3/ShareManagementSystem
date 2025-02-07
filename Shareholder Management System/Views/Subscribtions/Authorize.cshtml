@@ -4,8 +4,6 @@
     ViewBag.Title = "AUTHORIZE SUBSCRIPTION";
 }
 
-
-
 <div class="flex items-center justify-center mt-20">
     <div class="panel bg-white shadow-md rounded-lg p-6 w-full max-w-3xl">
         <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
@@ -13,105 +11,49 @@
         </div>
 
         <div class="mb-5">
-            <form class="grid grid-cols-2 gap-5">
-                <!-- Two-column layout with gap -->
-                <!-- First column -->
-                <div class="grid grid-cols-2 gap-2 items-center">
-                    <label class="font-semibold">Fullname</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder.FullNameEng)</p>
-
-                    <label class="font-semibold">Number of Shares</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubNumShares)</p>
-
-                    <label class="font-semibold">Shareholder ID</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder.ShareID)</p>
-
-
-
-                    <label class="font-semibold">Subscription Amount</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubAmount)</p>
-
-                    <label class="font-semibold">Paid Subscription</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.PaidSubscription)</p>
-
-                    <label class="font-semibold">Unpaid Subscription</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.UnpaidSubscription)</p>
-
-                </div>
-
-                <!-- Second column -->
-                <div class="grid grid-cols-2 gap-2 items-center">
-                    <label class="font-semibold">Premium</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Premium)</p>
-
-                    <label class="font-semibold">Payment Due Date</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.PaymentDueDate)</p>
-
-                    <label class="font-semibold">Subscription Status</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubStatus)</p>
-
-                    <label class="font-semibold">Subscription Date</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubDate)</p>
-
-                    <label class="font-semibold">Authorization Status</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubAuthorizationStatus)</p>
-
-                    <label class="font-semibold">Authorized Date</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.AuthorizedDate)</p>
-
-                    <label class="font-semibold">Remark</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Remark)</p>
-
-                    <label class="font-semibold"> Share Transfered from</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder1.ShareID)</p>
-
-                    <label class="font-semibold">Authorized By</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.User.FullName)</p>
-
-                    <label class="font-semibold">Approved By</label>
-                    <p class="form-control-plaintext">@Html.DisplayFor(model => model.User1.FullName)</p>
-                </div>
-            </form>
-
-            @*@using (Html.BeginForm("Authorize", "Subscribtions", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            <div class="flex justify-center mt-5">
-                <div>
-                    <div class="flex justify-between">
-                        @if (Model.SubAuthorizationStatus == "Approved")
-                        {
-                            <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
-                        }
-                        else
-                        {
-                            <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
-                        }
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between" style="margin-left:5px">
-                        @if (Model.SubAuthorizationStatus == "Rejected")
-                        {
-                            <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
-                        }
-                        else
-                        {
-                            <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <a href="@Url.Action("PendingSubscription")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
-                Back To List
-            </a>
-        }*@
-
-            @using (Html.BeginForm("Authorize", "Subscribtions", FormMethod.Post))
-            {
+            <form id="subscriptionForm" method="post" action="@Url.Action("Authorize", "Subscribtions")">
                 @Html.AntiForgeryToken()
+                <div class="grid grid-cols-2 gap-5">
+                    <!-- Form fields as before... -->
+                    <div class="grid grid-cols-2 gap-2 items-center">
+                        <label class="font-semibold">Fullname</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder.FullNameEng)</p>
+                        <label class="font-semibold">Number of Shares</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubNumShares)</p>
+                        <label class="font-semibold">Shareholder ID</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder.ShareID)</p>
+                        <label class="font-semibold">Subscription Amount</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubAmount)</p>
+                        <label class="font-semibold">Paid Subscription</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.PaidSubscription)</p>
+                        <label class="font-semibold">Unpaid Subscription</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.UnpaidSubscription)</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 items-center">
+                        <label class="font-semibold">Premium</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.Premium)</p>
+                        <label class="font-semibold">Payment Due Date</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.PaymentDueDate)</p>
+                        <label class="font-semibold">Subscription Status</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubStatus)</p>
+                        <label class="font-semibold">Subscription Date</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubDate)</p>
+                        <label class="font-semibold">Authorization Status</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.SubAuthorizationStatus)</p>
+                        <label class="font-semibold">Authorized Date</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.AuthorizedDate)</p>
+                        <label class="font-semibold">Remark</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.Remark)</p>
+                        <label class="font-semibold">Share Transferred from</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.Shareholder1.ShareID)</p>
+                        <label class="font-semibold">Authorized By</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.User.FullName)</p>
+                        <label class="font-semibold">Approved By</label>
+                        <p class="form-control-plaintext">@Html.DisplayFor(model => model.User1.FullName)</p>
+                    </div>
+                </div>
+
                 <div class="flex justify-center mt-5">
                     <div>
                         <div class="flex justify-between">
@@ -133,45 +75,144 @@
                             }
                             else
                             {
-                                <button type="button" class="btn btn-danger mt-6" onclick="showRemarkField()">Reject</button>
+                                <button type="button" class="btn btn-danger mt-6" onclick="showRemarkModal()">Reject</button>
                             }
                         </div>
                     </div>
                 </div>
 
-                <div id="remarkSection" style="display:none; margin-top: 20px;">
-                    <label for="remark">Please provide a remark:</label>
-                    <textarea id="remark" name="remark" rows="4" class="form-input border border-gray-300 rounded-md p-2" placeholder="Enter your remark..."></textarea>
-                </div>
-
+                <!-- Hidden Input for Action -->
                 <input type="hidden" name="action" id="hiddenAction" value="" />
-
-                <button type="submit" name="action" value="reject" class="btn btn-danger mt-6" id="submitReject" style="display:none;" onclick="return validateRemark()">Submit Reject</button>
-            }
+            </form>
 
             <div class="mt-8 text-right">
                 <a href="@Url.Action("PendingSubscription")" class="btn btn-primary w-32 py-1 bg-green-200 hover:bg-green-200 rounded text-white text-sm text-center">Back to List</a>
             </div>
-
         </div>
     </div>
 </div>
 
+<div id="remarkModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeRemarkModal()">&times;</span>
+        <h2 class="modal-title" style="color:antiquewhite">Please provide a remark:</h2>
+        <textarea id="remark" name="remark" rows="4" class="form-input" placeholder="Enter your remark..." required></textarea>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-danger" onclick="submitReject()">Reject</button>
+            <button class="close-action" onclick="closeRemarkModal()">Close</button>
+        </div>
+    </div>
+</div>
 
-
-<script>
-    function showRemarkField() {
-        document.getElementById('remarkSection').style.display = 'block';
-        document.getElementById('submitReject').style.display = 'inline-block';
+<style>
+    .modal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
     }
 
-    function validateRemark() {
+    .modal-content {
+        background-color: #0e1726;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        position: relative;
+    }
+
+        .close:hover {
+            color: #e74c3c;
+        }
+
+    .modal-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .form-input {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+        resize: none;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s;
+    }
+
+        .form-input:focus {
+            border-color: #00adef;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 173, 239, 0.5);
+        }
+
+    .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+    }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+    .close-action {
+        cursor: pointer;
+        color: #007bff;
+        margin-left: 10px;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+        .close-action:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+<script>
+    function showRemarkModal() {
+        document.getElementById('remarkModal').style.display = 'flex';
+    }
+
+    function closeRemarkModal() {
+        document.getElementById('remarkModal').style.display = 'none';
+    }
+
+    function submitReject() {
         var remark = document.getElementById('remark').value;
         if (!remark) {
-            alert('Please Fill in the Remark Before Rejecting.');
-            return false; // Prevent form submission
+            alert('Please fill in the remark before rejecting.');
+            return;
         }
-        document.getElementById('hiddenAction').value = 'reject'; // Set hidden action for form submission
-        return true; // Allow form submission
+        document.getElementById('hiddenAction').value = 'reject'; // Set the action to reject
+        var remarkInput = document.createElement("input");
+        remarkInput.type = "hidden";
+        remarkInput.name = "remark";
+        remarkInput.value = remark; // Add remark to the form
+        document.getElementById('subscriptionForm').appendChild(remarkInput);
+
+        closeRemarkModal(); // Close the modal
+        document.getElementById('subscriptionForm').submit(); // Submit the form
     }
 </script>
