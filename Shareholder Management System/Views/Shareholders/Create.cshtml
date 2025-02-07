@@ -184,19 +184,23 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 !mt-6">
-                    <div class="!mt-6">
+                    <div>
                         @Html.LabelFor(model => model.Nationality, htmlAttributes: new { @class = "control-label" })
 
                         @Html.DropDownListFor(
-                            model => model.Nationality,
-                            (SelectList)ViewBag.Nationalities,
+                            model => model.Nationality, // Bind to the Nationality property in your model
+                            (SelectList)ViewBag.Nationality, // Use the SelectList from ViewBag
                             "Select Nationality", // Default option text
-                            new { @class = "form-input", id = "searchable-select" }
+                            new { @class = "form-input", id = "searchable-select" } // HTML attributes
                         )
-                       
+
                         @Html.ValidationMessageFor(model => model.Nationality, "", new { @class = "text-danger" })
                     </div>
-
+                    <div>
+                        @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-input", @type = "date", @placeholder = "Birth Date" } })
+                        @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                    </div>
                     <div class="!mt-6">
                         @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label" })
                         @Html.DropDownListFor(model => model.Gender, new List<SelectListItem>
@@ -206,6 +210,7 @@
                         }, "Select the gender", new { @class = "form-input" })
                         @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
                     </div>
+
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 !mt-6">
                     <div>

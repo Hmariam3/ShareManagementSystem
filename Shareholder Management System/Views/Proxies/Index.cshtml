@@ -250,56 +250,70 @@
                                                                 }, "Select Gender", new { @class = "form-input", @placeholder = "Gender" })
                                                                 @Html.ValidationMessageFor(model => proxy.Gender, "", new { @class = "text-danger" })
                                                             </div>
-                                                            <div class="!mt-2">
+                                                        </div>
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                            <div>
+                                                                @Html.LabelFor(model => proxy.BirthDate, htmlAttributes: new { @class = "control-label" })
+                                                                @Html.EditorFor(model => proxy.BirthDate, new { htmlAttributes = new { @class = "form-input", @type = "date", @placeholder = "Enter Birth Date" } })
+                                                                @Html.ValidationMessageFor(model => proxy.BirthDate, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div>
                                                                 @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.Nationality, new { htmlAttributes = new { @class = "form-input", @placeholder = "Nationality" } })
+
+                                                                @Html.DropDownListFor(
+                                                                    model => proxy.Nationality, // Bind to the Nationality property in your model
+                                                                    (SelectList)ViewBag.Nationality, // Use the SelectList from ViewBag
+                                                                    "Select Nationality", // Default option text
+                                                                    new { @class = "form-input", id = "searchable-select1" } // HTML attributes
+                                                                )
+
                                                                 @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
                                                             </div>
-                                                            </div>
-
-                                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
-                                                                <div>
-                                                                    @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
-                                                                    @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Primary Mobile Number *" } })
-                                                                    @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
-                                                                </div>
-                                                                <div>
-                                                                    @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
-                                                                    @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Additional Mobile Number" } })
-                                                                    @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
-                                                                </div>
-                                                            </div>
-                                                            <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                                <div>
-                                                                    <label for="startDate" class="text-white-dark">Start Date * </label>
-                                                                    @Html.EditorFor(model => proxy.StartDate, new
-                                                                    {
-                                                                        htmlAttributes = new
-                                                                        {
-                                                                            id = "startDate",
-                                                                            @class = "form-input",
-                                                                            @type = "date", // Ensure the input is of type "date"
-                                                                            @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
-                                                                        }
-                                                                    })
-                                                                    @Html.ValidationMessageFor(model => proxy.StartDate, "", new { @class = "text-danger" })
-                                                                </div>
-
-                                                                <div>
-                                                                    <label for="endDate" class="text-white-dark">End Date </label>
-                                                                    @Html.EditorFor(model => proxy.EndDate, new
-                                                               {
-                                                                   htmlAttributes = new
-                                                                   {
-                                                                       id = "endDate",
-                                                                       @class = "form-input",
-                                                                       @type = "date", // Ensuring the input is of type "date"
-                                                                       @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
-                                                                   }
-                                                               })
-                                                                </div>
-                                                            </fieldset>
                                                         </div>
+
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                            <div>
+                                                                @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
+                                                                @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Primary Mobile Number *" } })
+                                                                @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div>
+                                                                @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
+                                                                @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Additional Mobile Number" } })
+                                                                @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                        <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label for="startDate" class="text-white-dark">Start Date * </label>
+                                                                @Html.EditorFor(model => proxy.StartDate, new
+                                                                {
+                                                                    htmlAttributes = new
+                                                                    {
+                                                                        id = "startDate",
+                                                                        @class = "form-input",
+                                                                        @type = "date", // Ensure the input is of type "date"
+                                                                        @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
+                                                                    }
+                                                                })
+                                                                @Html.ValidationMessageFor(model => proxy.StartDate, "", new { @class = "text-danger" })
+                                                            </div>
+
+                                                            <div>
+                                                                <label for="endDate" class="text-white-dark">End Date </label>
+                                                                @Html.EditorFor(model => proxy.EndDate, new
+                                                           {
+                                                               htmlAttributes = new
+                                                               {
+                                                                   id = "endDate",
+                                                                   @class = "form-input",
+                                                                   @type = "date", // Ensuring the input is of type "date"
+                                                                   @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
+                                                               }
+                                                           })
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
 
                                                         <div class="!mt-2">
                                                             <div class="form-section">
@@ -910,6 +924,8 @@ document.addEventListener('alpine:init', () => {
             { name: 'ID', hidden: false },
             { name: 'Full Name', hidden: true },
             { name: 'Gender', hidden: true },
+            { name: 'Age', hidden: true },
+            { name: 'Birth Date', hidden: true },
             { name: 'Proxy Status', hidden: true },
             { name: 'Authorization Status', hidden: false },
             { name: 'Nationality', hidden: true },
@@ -930,8 +946,8 @@ document.addEventListener('alpine:init', () => {
             { name: 'Authorized Date', hidden: false },
             { name: 'Remark', hidden: false },
             { name: 'Edit Proxty', hidden: false },
-            //{ name: 'Ident. Doc', hidden: false },
-            //{ name: 'Delg Letter', hidden: false },
+            { name: 'Ident. Doc', hidden: false },
+            { name: 'Delg Letter', hidden: false },
         ],
 
         hideCols: [],
@@ -972,6 +988,8 @@ document.addEventListener('alpine:init', () => {
                                 "@item.ProxyID", // FullName
                                 "@item.FullName", // FullName
                                 "@item.Gender",
+                                "@item.Age",
+                                "@item.BirthDate",
                                 "@item.ProxyStatus",  // Pass ProxyID for use in JavaScript
                                 "@item.ProxyAuthorizationStatus", // ProxyAuthorizationStatus
                                 "@item.Nationality", // Nationality
@@ -992,8 +1010,8 @@ document.addEventListener('alpine:init', () => {
                                 "@(item.AuthorizedDate.HasValue ? item.AuthorizedDate.Value.ToString("yyyy-MM-dd") : "")", // AuthorizedDate
                                 "@item.Remark", // Remark
                                 "@item.ProxyID", // Pass ProxyID again for later use
-                                @*"@item.KebeleID", // Pass ProxyID again for later use
-                                "@item.ProxyDocument", // Pass ProxyID again for later use*@
+                                "@item.KebeleID", // Pass ProxyID again for later use
+                                "@item.ProxyDocument", // Pass ProxyID again for later use
                             ],
                             </text>
                         }
@@ -1002,9 +1020,9 @@ document.addEventListener('alpine:init', () => {
                 perPage: 15,
                 perPageSelect: [10, 20, 30, 50, 100],
                 columns: [
-                    { select: 4, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
+                    { select: 5, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
                     {
-                        select: 3, // Selecting the 3rd column (as index starts from 0)
+                        select: 6, // Selecting the 3rd column (as index starts from 0)
                         render: function (data, cell, row) {
                             let styleClass = '';
                             if (data == 'Approved') {
@@ -1021,7 +1039,7 @@ document.addEventListener('alpine:init', () => {
                         },
                     },
                     {
-                        select: 20,
+                        select: 24,
                         sortable: false,
                         render: function (data, cell, row) {
                             const status = row.cells[2].data.toLowerCase();
@@ -1076,7 +1094,7 @@ document.addEventListener('alpine:init', () => {
                         },
                     },
                     {
-                        select: 21,
+                        select: 25,
                         sortable: false,
                         render: function (data, cell, row) {
                             return `<div class="flex gap-4 items-center">
@@ -1096,7 +1114,7 @@ document.addEventListener('alpine:init', () => {
                         },
                     },
                     {
-                        select: 22,
+                        select: 26,
                         sortable: false,
                         render: function (data, cell, row) {
 
@@ -1307,6 +1325,8 @@ document.addEventListener('alpine:init', () => {
                         $('#proxyId').val(data.ProxyID);
                         $('#shId').val(data.ShID);
                         $('#FullName').val(data.FullName);
+                        $('#Age').val(data.FullName);
+                        $('#Birth Date').val(data.FullName);
                         $('#Gender').val(data.Gender);
                         $('#Nationality').val(data.Nationality);
                         $('#PhoneNo').val(data.PhoneNo);

@@ -4,11 +4,17 @@
     ViewBag.Title = "Audit Log Records";
 }
 
+<link href="~/css/jquery-1.13.4.dataTables.min.css" rel="stylesheet" />
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+
 <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">
     Audit Log Records
 </h5>
 
-<div class="animate__animated p-6" :class="[$store.app.animation]">
+<div class="animate__animated p-6" :class="[$store.app.animation]" :class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-2">
     <!-- Main Content Section -->
     <div x-data="miscellaneous">
         <div class="space-y-6">
