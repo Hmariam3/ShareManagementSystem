@@ -36,14 +36,16 @@ namespace Shareholder_Management_System.Models
         public string FullNameEng { get; set; }
         public string FullNameAfanOromo { get; set; }
         public string FullNameAmharic { get; set; }
+        public Nullable<int> Age { get; set; }
         public string Gender { get; set; }
+        public Nullable<System.DateTime> BirthDate { get; set; }
         public string Nationality { get; set; }
         public string Region { get; set; }
         public string Zone { get; set; }
         public string City { get; set; }
         public string Subcity { get; set; }
-        public string Woreda { get; set; }
         public string FaydaNumber { get; set; }
+        public string Woreda { get; set; }
         public string Kebele { get; set; }
         public string HouseNo { get; set; }
         public string PoBox { get; set; }

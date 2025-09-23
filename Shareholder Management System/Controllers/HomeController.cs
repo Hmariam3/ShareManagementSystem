@@ -93,15 +93,15 @@ namespace Shareholder_Management_System.Controllers
             //Total PaidUp capital
             var PaidUpCapital = db.Subscribtions.Sum(s => s.PaidSubscription);
 
-            ViewBag.PaidUpCapital = PaidUpCapital;
+            ViewBag.PaidUpCapital = PaidUpCapital.HasValue ? PaidUpCapital.Value.ToString("N0", System.Globalization.CultureInfo.CurrentCulture) : "ETB0";
 
             //Total Unpaid caputal
             var UnpaidCapital = db.Subscribtions.Sum(s => s.UnpaidSubscription);
 
-            ViewBag.UnpaidCapital = UnpaidCapital;
+            ViewBag.UnpaidCapital = UnpaidCapital.HasValue ? UnpaidCapital.Value.ToString("N0", System.Globalization.CultureInfo.CurrentCulture) : "ETB0";
 
             //Total of Paid and Unpaid Capital
-            ViewBag.TotalCapital = (ViewBag.PaidUpCapital ?? 0) + (ViewBag.UnpaidCapital ?? 0);
+            ViewBag.TotalCapital = ((PaidUpCapital ?? 0) + (UnpaidCapital ?? 0)).ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
 
             return View(users);
         }

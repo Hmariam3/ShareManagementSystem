@@ -1,7 +1,9 @@
 ﻿@model Shareholder_Management_System.Models.Shareholder
 
 @{
-    ViewBag.Title = "Create";
+                /**/
+
+                ViewBag.Title = "Create";
 }
 <link rel="stylesheet" type="text/css" href="~/Content/CSS/select2.min.css">
 <script src="~/Scripts/JS/select2.min.js"></script>
@@ -130,14 +132,14 @@
         <!-- Step 2 -->
         <div class="progress-step" :class="{ 'active': step === 2 }">
             <div class="hexagon">2</div>
-            <div class="label">Description</div>
+            <div class="label">Address</div>
             <div class="progress-line"></div>
         </div>
 
         <!-- Step 3 -->
         <div class="progress-step" :class="{ 'active': step === 3 }">
             <div class="hexagon">3</div>
-            <div class="label">Shipping</div>
+            <div class="label">Contact</div>
             <div class="progress-line"></div>
         </div>
 
@@ -188,17 +190,17 @@
                         @Html.LabelFor(model => model.Nationality, htmlAttributes: new { @class = "control-label" })
 
                         @Html.DropDownListFor(
-                            model => model.Nationality, // Bind to the Nationality property in your model
-                            (SelectList)ViewBag.Nationality, // Use the SelectList from ViewBag
-                            "Select Nationality", // Default option text
-                            new { @class = "form-input", id = "searchable-select" } // HTML attributes
+                            model => model.Nationality,
+                            (SelectList)ViewBag.Nationality,
+                            "Select Nationality",
+                            new { @class = "form-input", id = "searchable-select" }
                         )
 
                         @Html.ValidationMessageFor(model => model.Nationality, "", new { @class = "text-danger" })
                     </div>
                     <div>
                         @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label" })
-                        @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-input", @type = "date", @placeholder = "Birth Date" } })
+                        @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-input", @type = "date", @placeholder = "Birth Date", @max = DateTime.Now.ToString("yyyy-MM-dd") } })
                         @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
                     </div>
                     <div class="!mt-6">
@@ -406,6 +408,41 @@
     </div>
 
 </div>
+<script>
+    $('#submitProxyForm').on('click', function (e) {
+        e.preventDefault();
+
+        let fileInputs = [$('#shFile1')[0], $('#shFile')[0]];
+        let fileErrorContainer = $("#fileError");
+        let maxSizeInBytes = 2 * 1024 * 1024; // 20MB
+        let isValid = true;
+
+        // Clear previous errors
+        fileErrorContainer.html('');
+
+        fileInputs.forEach(function (fileInput) {
+            if (fileInput.files.length === 0) {
+                fileErrorContainer.text("All files are required.");
+                isValid = false;
+            } else {
+                let file = fileInput.files[0];
+                if (file.size > maxSizeInBytes) {
+                    fileErrorContainer.text("The file must be less than 2MB.");
+                    isValid = false;
+                }
+            }
+        });
+
+        if (!isValid) return;
+
+        // Optional: validate other form fields
+        if (!$("#createProxyForm").valid()) return;
+
+        $("#createProxyForm").submit();
+    });
+</script>
+
+
 
 <script>
     $(document).ready(function () {

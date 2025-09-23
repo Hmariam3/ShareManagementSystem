@@ -71,19 +71,32 @@
                 <div class="panel">
                     <div class="mb-5">
                         <div class="panel">
-                            <div class="mx-auto flex max-w-full flex-col gap-4 md:flex-row">
-                                <div>
-                                    <label for="shid">Transfer From</label>
-                                    @Html.DropDownList("TransferrorShID", (SelectList)ViewBag.ShareholdersFrom, new { @id = "TransferrorShID", @class = "form-input", @disabled = "disabled" })
-                                    <span class="text-danger"></span>
-                                </div>
-                                <div>
-                                    <label for="shid">Transfer To</label>
-                                    @Html.DropDownList("TransfareeShID", (SelectList)ViewBag.ShareholdersTo, new { @id = "TransfereeShID", @class = "form-input" })
-                                    <span class="text-danger"></span>
+                            <div class="panel">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="TransferrorShID">Transfer From</label>
+                                        <select id="TransferrorShID" name="TransferrorShID" class="form-input" style="width: 100%;" disabled>
+                                            <option value="" disabled selected>Select Shareholder</option>
+                                            @if (Model != null && ViewBag.SelectedTransferror != null)
+                                            {
+                                                <option value="@ViewBag.SelectedTransferror.Value" selected>@ViewBag.SelectedTransferror.Text</option>
+                                            }
+                                        </select>
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.TransferrorShID)</span>
+                                    </div>
+                                    <div>
+                                        <label for="TransfereeShID">Transfer To <span class="text-danger">*</span></label>
+                                        <select id="TransfereeShID" name="TransfareeShID" class="form-input select2" style="width: 100%;" required>
+                                            <option value="" disabled selected>Select Shareholder</option>
+                                            @if (Model != null && ViewBag.SelectedTransferee != null)
+                                            {
+                                                <option value="@ViewBag.SelectedTransferee.Value" selected>@ViewBag.SelectedTransferee.Text</option>
+                                            }
+                                        </select>
+                                        <span class="text-danger">@Html.ValidationMessageFor(m => m.TransfareeShID)</span>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                         <br />
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -300,6 +313,66 @@
 }
 
 <script src="~/Scripts/JS/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#TransferrorShID').prop('disabled', true);
+        $('#TransfereeShID').select2({
+            placeholder: "Select a Shareholder",
+            allowClear: true,
+            width: '100%',
+            minimumInputLength: 3,
+            ajax: {
+                url: '@Url.Action("SearchShareholders", "ShareTransfers")',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    var term = params.term || '';
+                    var transferrorId = $('#TransferrorShID').val() || '';
+                    if (window.location.hostname === 'localhost') {
+                        console.log('TransfereeShID AJAX request: term=', term, 'transferrorId=', transferrorId);
+                    }
+                    return { term: term, transferrorId: transferrorId };
+                },
+                processResults: function (data) {
+                    if (window.location.hostname === 'localhost') {
+                        console.log('TransfereeShID AJAX response:', data);
+                    }
+                    if (!data || !data.results) {
+                        if (window.location.hostname === 'localhost') {
+                            console.error('Invalid TransfereeShID response format:', data);
+                        }
+                        return { results: [] };
+                    }
+                    return { results: data.results };
+                },
+                error: function (xhr, status, error) {
+                    if (window.location.hostname === 'localhost') {
+                        console.error('TransfereeShID AJAX error:', status, error, xhr.responseText);
+                    }
+                    return { results: [] };
+                },
+                cache: true
+            }
+        }).on('select2:open', function () {
+            if (window.location.hostname === 'localhost') {
+                console.log('TransfereeShID dropdown opened. Minimum input length should be 3.');
+            }
+        }).on('change', function () {
+            // Ensure the select element's value is updated
+            $(this).val($(this).select2('val')).trigger('change.select2');
+        });
+
+        // Client-side validation for TransfereeShID
+        $('#TransfereeShID').on('change', function () {
+            if (!$(this).val()) {
+                $(this).closest('.panel').find('.text-danger').text('Transfer To is required.');
+            } else {
+                $(this).closest('.panel').find('.text-danger').text('');
+            }
+        });
+    });
+</script>
+
 @* This script doing what is wanted on the page load *@
 <script>
     $(document).ready(function () {
@@ -925,7 +998,7 @@
 
 
 </script>
-<script>
+@*<script>
     $('#TransferrorShID').change(function () {
         var transferrorId = $(this).val();
         // AJAX request to update "Transfer To" options based on "Transfer From" selection
@@ -953,4 +1026,4 @@
             allowClear: true
         });
     });
-</script>
+</script>*@

@@ -1,0 +1,300 @@
+﻿@model Shareholder_Management_System.Models.Certificate
+
+@{
+    ViewBag.Title = "Split Certificate";
+    var parValue = ViewBag.ParValue ?? 100; // Example: Fetch the par value (default to 100)
+}
+<link href="~/css/select2.min.css" rel="stylesheet" />
+<div x-data="form">
+    @using (Html.BeginForm("SplitCertificate", "Certificates", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-2">
+            <div class="panel">
+                <div class="mb-5 flex items-center justify-between">
+                    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Split Certificate</h5>
+                </div>
+                <div class="mb-4">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </div>
+                @Html.HiddenFor(model => model.CertID)
+
+                <!-- Shareholder Dropdown -->
+                <div x-data="search">
+                    <label for="shid">Shareholder</label>
+                    @Html.DropDownList(
+                 "ShID",
+                 new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
+                 htmlAttributes: new { id = "seachable-select", @class = "form-input", @disabled = "disabled" }
+             )
+                </div>
+
+                <!-- Original Certificate Details -->
+                <div class="mb-5">
+                    <label>Original Certificate</label>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            @Html.LabelFor(model => model.CertNum, new { @class = "control-label" })
+                            @Html.EditorFor(model => model.CertNum, new { htmlAttributes = new { @class = "form-input", @readonly = "readonly" } })
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.BeginingSerial, new { @class = "control-label" })
+                            @Html.EditorFor(model => model.BeginingSerial, new { htmlAttributes = new { @class = "form-input", @readonly = "readonly", @id = "beginSerial" } })
+                        </div>
+                        <div>
+                            @Html.LabelFor(model => model.EndingSerial, new { @class = "control-label" })
+                            @Html.EditorFor(model => model.EndingSerial, new { htmlAttributes = new { @class = "form-input", @readonly = "readonly", @id = "endSerial" } })
+                        </div>
+                        <!-- Display the Total Paid-Up Amount -->
+                        <div class="mb-5">
+                            <label>Total Paid-Up Amount</label>
+                            <input type="text" id="totalPaidUp" class="form-input" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+
+                <div class="mb-5">
+                    <label>Remaining Certificate</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="control-label">Remaining Amount</label>
+                            <input type="number" id="remainingAmount" class="form-input" readonly>
+                        </div>
+                        <div>
+                            <label class="control-label">Remaining Beginning Serial</label>
+                            <input type="number" id="remainingBeginSerial" class="form-input" readonly>
+                        </div>
+                        <div>
+                            <label class="control-label">Remaining Ending Serial</label>
+                            <input type="number" id="remainingEndSerial" class="form-input" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label>Requested Certificate</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="control-label">Requested Amount</label>
+                            <input type="number" id="requestedAmounts" class="form-input" placeholder="Enter amount to split">
+                        </div>
+                        <div>
+                            <label class="control-label">New Beginning Serial</label>
+                            <input type="number" id="newBeginSerial" class="form-input">
+                        </div>
+                        <div>
+                            <label class="control-label">New Ending Serial</label>
+                            <input type="number" id="newEndSerial" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" id="addSplit" class="btn btn-secondary mt-2">+ Add Another</button>
+                <div class="mt-4">
+                    <!-- Labels as Headers -->
+                    <div class="grid grid-cols-4 gap-2 bg-gray-100 p-2 border-b border-gray-300">
+                        <div>
+                            <label class="control-label font-semibold">Requested Amount</label>
+                        </div>
+                        <div>
+                            <label class="control-label font-semibold">New Beginning Serial</label>
+                        </div>
+                        <div>
+                            <label class="control-label font-semibold">New Ending Serial</label>
+                        </div>
+                        <div>
+                            <label class="control-label font-semibold">Action</label>
+                        </div>
+                    </div>
+                    <!-- Scrollable container for inputs -->
+                    <div id="splitCertificates" style="max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-top: none; padding: 10px;">
+                        <!-- Dynamic split sections will be appended here -->
+                    </div>
+                </div>
+
+                <!-- Remark -->
+                <div class="mb-5">
+                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Remark, new { @class = "form-input" })
+                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-6" style="background:#00adef;">Split</button>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<script src="~/Scripts/select2/js/select2.full.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        let amountPerSerial = 100; // Define unit amount per serial
+        let splits = []; // Array to store split details
+        let originalBeginSerial = parseInt($("#beginSerial").val()) || 0;
+        let originalEndSerial = parseInt($("#endSerial").val()) || 0;
+
+        function calculatePaidUpAmount() {
+            let beginSerial = parseInt($("#beginSerial").val()) || 0;
+            let endSerial = parseInt($("#endSerial").val()) || 0;
+            if (endSerial >= beginSerial) {
+                let totalAmount = (endSerial - beginSerial + 1) * amountPerSerial;
+                $("#totalPaidUp").val(totalAmount);
+                updateRemaining();
+            } else {
+                $("#totalPaidUp").val("Invalid Serial Range");
+            }
+        }
+
+        function updateRemaining() {
+            let totalPaidUp = parseInt($("#totalPaidUp").val()) || 0;
+            let totalRequested = splits.reduce((sum, split) => sum + split.amount, 0);
+            let remainingAmount = totalPaidUp - totalRequested;
+            $("#remainingAmount").val(remainingAmount);
+
+            let lastEndSerial = originalBeginSerial - 1;
+            splits.forEach(split => {
+                lastEndSerial = split.endSerial;
+            });
+            $("#remainingBeginSerial").val(lastEndSerial + 1);
+            $("#remainingEndSerial").val(originalEndSerial);
+        }
+
+        function updateRequestedSerials() {
+            let requestedAmount = parseInt($("#requestedAmounts").val()) || 0;
+            let totalPaidUp = parseInt($("#totalPaidUp").val()) || 0;
+            let totalRequested = splits.reduce((sum, split) => sum + split.amount, 0);
+            let remainingAmount = totalPaidUp - totalRequested;
+
+            if (requestedAmount > 0 && requestedAmount <= remainingAmount) {
+                let numberOfSerials = Math.ceil(requestedAmount / amountPerSerial);
+                let beginSerial = splits.length > 0 ? splits[splits.length - 1].endSerial + 1 : originalBeginSerial;
+                let endSerial = beginSerial + numberOfSerials - 1;
+
+                if (endSerial > originalEndSerial) {
+                    alert("Requested amount exceeds available serial range.");
+                    $("#requestedAmounts").val("");
+                    $("#newBeginSerial, #newEndSerial").val("");
+                    return;
+                }
+
+                $("#newBeginSerial").val(beginSerial);
+                $("#newEndSerial").val(endSerial);
+            } else {
+                $("#newBeginSerial, #newEndSerial").val("");
+                if (requestedAmount > remainingAmount && requestedAmount > 0) {
+                    alert("Requested amount exceeds remaining balance.");
+                }
+            }
+        }
+
+        function syncSplitsFromUI() {
+            splits = [];
+            $(".split-entry").each(function () {
+                let amount = parseInt($(this).find(".requested-amount").val()) || 0;
+                let beginSerial = parseInt($(this).find(".begin-serial").val()) || 0;
+                let endSerial = parseInt($(this).find(".end-serial").val()) || 0;
+                if (amount > 0 && beginSerial > 0 && endSerial >= beginSerial) {
+                    splits.push({
+                        amount: amount,
+                        beginSerial: beginSerial,
+                        endSerial: endSerial
+                    });
+                }
+            });
+            updateRemaining();
+            validateSplits();
+        }
+
+        function validateSplits() {
+            let totalPaidUp = parseInt($("#totalPaidUp").val()) || 0;
+            let totalRequested = splits.reduce((sum, split) => sum + split.amount, 0);
+            if (totalRequested > totalPaidUp) {
+                alert("Total requested amounts exceed original certificate amount.");
+                return false;
+            }
+
+            let prevEnd = originalBeginSerial - 1;
+            for (let i = 0; i < splits.length; i++) {
+                if (splits[i].beginSerial <= prevEnd || splits[i].endSerial > originalEndSerial || splits[i].beginSerial > splits[i].endSerial) {
+                    alert(`Invalid serial range in split ${i + 1}.`);
+                    return false;
+                }
+                prevEnd = splits[i].endSerial;
+            }
+            return true;
+        }
+
+        $("#addSplit").click(function () {
+            let requestedAmount = parseInt($("#requestedAmounts").val()) || 0;
+            let newBeginSerial = parseInt($("#newBeginSerial").val()) || 0;
+            let newEndSerial = parseInt($("#newEndSerial").val()) || 0;
+
+            if (requestedAmount <= 0 || newBeginSerial <= 0 || newEndSerial <= 0) {
+                alert("Please enter a valid amount and serial range.");
+                return;
+            }
+
+            splits.push({
+                amount: requestedAmount,
+                beginSerial: newBeginSerial,
+                endSerial: newEndSerial
+            });
+
+            $("#splitCertificates").append(`
+            <div class="split-entry flex gap-2 mt-2">
+                <input type="number" name="RequestedAmounts[]" class="form-input requested-amount" value="${requestedAmount}">
+                <input type="number" name="BeginSerials[]" class="form-input begin-serial" value="${newBeginSerial}">
+                <input type="number" name="EndSerials[]" class="form-input end-serial" value="${newEndSerial}">
+                <button type="button" class="btn btn-danger remove-split">Remove</button>
+            </div>
+        `);
+
+            $("#requestedAmounts, #newBeginSerial, #newEndSerial").val("");
+            updateRemaining();
+        });
+
+        $(document).on("click", ".remove-split", function () {
+            $(this).closest(".split-entry").remove();
+            syncSplitsFromUI();
+        });
+
+        $(document).on("input", ".split-entry input", function () {
+            syncSplitsFromUI();
+        });
+
+        // Initial setup
+        calculatePaidUpAmount();
+        $("#requestedAmounts").on("input", updateRequestedSerials);
+
+        // Optional: Adjust amount based on serials or vice versa
+        $(document).on("input", ".begin-serial, .end-serial", function () {
+            let $entry = $(this).closest(".split-entry");
+            let begin = parseInt($entry.find(".begin-serial").val()) || 0;
+            let end = parseInt($entry.find(".end-serial").val()) || 0;
+            if (begin > 0 && end >= begin) {
+                let amount = (end - begin + 1) * amountPerSerial;
+                $entry.find(".requested-amount").val(amount);
+            }
+            syncSplitsFromUI();
+        });
+
+        $(document).on("input", ".requested-amount", function () {
+            let $entry = $(this).closest(".split-entry");
+            let amount = parseInt($(this).val()) || 0;
+            let begin = parseInt($entry.find(".begin-serial").val()) || 0;
+            if (amount > 0 && begin > 0) {
+                let numberOfSerials = Math.ceil(amount / amountPerSerial);
+                $entry.find(".end-serial").val(begin + numberOfSerials - 1);
+            }
+            syncSplitsFromUI();
+        });
+    });
+</script>

@@ -29,9 +29,17 @@ namespace Shareholder_Management_System.Models
         public Nullable<System.DateTime> CertGenerationDate { get; set; }
         public Nullable<int> CertAuthorizer { get; set; }
         public string Remark { get; set; }
+        public Nullable<int> TotalPaidupAmount { get; set; }
+        public Nullable<int> SplitStatus { get; set; }
+        public string RevokeStatus { get; set; }
+        public Nullable<int> RevokedBy { get; set; }
+        public Nullable<System.DateTime> RevokedDate { get; set; }
+        public string RevokeReason { get; set; }
+        public Nullable<int> ParentCertId { get; set; }
     
         public virtual Shareholder Shareholder { get; set; }
         public virtual User User { get; set; }
         public virtual User User1 { get; set; }
+        public virtual User User2 { get; set; }
     }
 }

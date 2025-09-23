@@ -16,7 +16,7 @@ using Shareholder_Management_System.Models;
 
 namespace Shareholder_Management_System.Controllers
 {
-    public class SimulationDividenedsController : Controller
+    public class SimulationDividenedsController : BaseController
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 

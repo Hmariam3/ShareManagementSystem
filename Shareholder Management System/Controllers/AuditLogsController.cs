@@ -2,7 +2,8 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using System.Data.Entity; 
+using System.Data.Entity;
+using System.Collections.Generic; // Added for List<AuditLog>
 
 namespace Shareholder_Management_System.Controllers
 {
@@ -25,30 +26,43 @@ namespace Shareholder_Management_System.Controllers
         {
             var query = _context.AuditLogs.Include(a => a.User).AsQueryable();
 
-            // Apply filters
-            if (!string.IsNullOrEmpty(branch))
-            {
-                query = query.Where(a => a.PerformerBranch.Contains(branch));
-            }
-            if (startDate.HasValue)
-            {
-                query = query.Where(a => a.TransactionDate >= startDate.Value);
-            }
-            if (endDate.HasValue)
-            {
-                query = query.Where(a => a.TransactionDate <= endDate.Value);
-            }
-            if (!string.IsNullOrEmpty(userName))
-            {
-                query = query.Where(a => a.User.FullName.Contains(userName));
-            }
-            if (!string.IsNullOrEmpty(tableName))
-            {
-                query = query.Where(a => a.TableName.Contains(tableName));
-            }
+            // Always populate dropdowns with all distinct values, capped at 1000 for performance
+            ViewBag.Branches = _context.AuditLogs.Select(a => a.PerformerBranch).Distinct().OrderBy(b => b).Take(1000).ToList();
+            ViewBag.Users = _context.Users.Select(u => u.FullName).Distinct().OrderBy(u => u).Take(1000).ToList();
 
-            // Return the filtered list to the view
-            return View(query.ToList());
+            bool hasFilter = !string.IsNullOrEmpty(branch) || startDate.HasValue || endDate.HasValue || !string.IsNullOrEmpty(userName) || !string.IsNullOrEmpty(tableName);
+
+            if (hasFilter)
+            {
+                if (!string.IsNullOrEmpty(branch))
+                {
+                    query = query.Where(a => a.PerformerBranch == branch);
+                }
+                if (startDate.HasValue)
+                {
+                    query = query.Where(a => a.TransactionDate >= startDate.Value);
+                }
+                if (endDate.HasValue)
+                {
+                    // Move AddDays(1) out of the query to avoid LINQ to Entities error
+                    var endDatePlusOne = endDate.Value.AddDays(1);
+                    query = query.Where(a => a.TransactionDate < endDatePlusOne);
+                }
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    query = query.Where(a => a.User.FullName == userName);
+                }
+                if (!string.IsNullOrEmpty(tableName))
+                {
+                    query = query.Where(a => a.TableName.Contains(tableName));
+                }
+                return View(query.ToList());
+            }
+            else
+            {
+                // No filter: return empty list
+                return View(new List<AuditLog>());
+            }
         }
 
         [HttpPost]
@@ -76,8 +90,12 @@ namespace Shareholder_Management_System.Controllers
 
         private string GenerateMessage(string actionType, string tableName)
         {
-            switch (actionType.ToLower())
+            // Normalize actionType for case-insensitive matching
+            var action = (actionType ?? "").Trim().ToLower();
+            switch (action)
             {
+                case "updating overdue":
+                    return $"{tableName} Overdue subs Updated.";
                 case "register":
                     return $"{tableName} successfully registered.";
                 case "update":
@@ -86,6 +104,11 @@ namespace Shareholder_Management_System.Controllers
                     return $"{tableName} successfully deleted.";
                 case "approve":
                     return $"{tableName} successfully approved.";
+                case "rejection":
+                case "reject":
+                    return $"{tableName} was rejected.";
+                case "approval":
+                    return $"{tableName} was approved.";
                 default:
                     return $"{actionType} action performed.";
             }

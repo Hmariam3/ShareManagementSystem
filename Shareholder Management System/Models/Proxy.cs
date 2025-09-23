@@ -24,14 +24,16 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> ShID { get; set; }
         public string FullName { get; set; }
         public string FullNameAfanOromo { get; set; }
+        public Nullable<int> Age { get; set; }
         public string Gender { get; set; }
+        public Nullable<System.DateTime> BirthDate { get; set; }
         public string Nationality { get; set; }
         public string Region { get; set; }
         public string Zone { get; set; }
         public string City { get; set; }
         public string Subcity { get; set; }
-        public string Woreda { get; set; }
         public string FaydaNumber { get; set; }
+        public string Woreda { get; set; }
         public string Kebele { get; set; }
         public string PhoneNo { get; set; }
         public string PhoneNo2 { get; set; }
@@ -49,6 +51,8 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> PendingDoc { get; set; }
         public Nullable<int> Branch { get; set; }
         public Nullable<int> KebeleID { get; set; }
+        public string Department { get; set; }
+        public string Position { get; set; }
     
         public virtual Branch Branch1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

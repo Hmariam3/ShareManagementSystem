@@ -7,46 +7,39 @@
 <script src="~/Scripts/JS/sweetalert.min.js"></script>
 @section Scripts {
     <script>
-        // Store TempData message in a JavaScript variable
-        var successMessage = '@TempData["SuccessMessage"]';
-        var errorMessage = '@TempData["ErrorMessage"]';
+    // Store TempData message in a JavaScript variable
+    var successMessage = '@TempData["SuccessMessage"]';
+    var errorMessage = '@TempData["ErrorMessage"]';
 
-        document.addEventListener("DOMContentLoaded", function () {
-            // Display success message if it exists
-            if (successMessage) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Approved!',
-                    text: successMessage,
-                    toast: true,
-                    position: 'top',
-                    showConfirmButton: false,
-                    timer: 5000,
-                    timerProgressBar: true,
-                    customClass: {
-                        popup: 'colored-toast success' // Added 'success' class
-                    }
-                });
-            }
+    document.addEventListener("DOMContentLoaded", function () {
+        // Display success message if it exists
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Approved!',
+                html: `<p style="font-size: 18px;">${successMessage}</p>`,
+                confirmButtonText: 'OK',
+                width: '30rem' // Adjust modal size
+            });
+        }
 
-            // Display error message if it exists
-            if (errorMessage) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Rejected!',
-                    text: errorMessage,
-                    toast: true,
-                    position: 'top',
-                    showConfirmButton: false,
-                    timer: 5000,
-                    timerProgressBar: true,
-                    customClass: {
-                        popup: 'colored-toast error' // Added 'error' class
-                    }
-                });
-            }
-        });
-    </script>
+        // Display error message if it exists
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Rejected!',
+                html: `<p style="font-size: 18px;">${errorMessage}</p>`,
+                confirmButtonText: 'OK',
+                width: '30rem',
+                showCloseButton: true
+            }).then(() => {
+                // Reload the page after the error message is dismissed
+                window.location.reload();
+            });
+        }
+    });
+</script>
+
 }
 
 <style>
@@ -190,8 +183,8 @@
                                 <text>
                                 [
                                     
-                                    "@item.Shareholder.FullNameEng",
-                                    "@item.Shareholder1.FullNameEng",
+                                    "@item.Shareholder.FullNameEng" + " " + "(@item.Shareholder.ShareID)",
+                                    "@item.Shareholder1.FullNameEng" + " " + "(@item.Shareholder1.ShareID)",
                                     "@item.TransferID",
                                     "@item.TransferCategory",
                                     "@item.TransferType",
@@ -270,34 +263,5 @@
         }));
     });
 </script>
-<script>
-    async function showAlert(action, event) {
-        // Prevent the default link navigation if action is delete
-        if (action === 'delete') {
-            event.preventDefault();
-        }
 
-        // Set alert text based on action type
-        let actionText = action === 'delete' ? 'delete this transfer' : '';
-        let confirmText = action === 'delete' ? 'Delete' : '';
-
-        // Display confirmation dialog
-        new window.Swal({
-            icon: 'warning',
-            title: 'Are you sure?',
-            text: `You are about to ${actionText}. This action cannot be undone!`,
-            showCancelButton: true,
-            confirmButtonText: confirmText,
-            cancelButtonText: 'Cancel',
-            padding: '2em',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Navigate to the delete link if confirmed
-                if (action === 'delete') {
-                    window.location.href = document.getElementById('deleteTransfer').href;
-                }
-            }
-        });
-    }
-</script>
 

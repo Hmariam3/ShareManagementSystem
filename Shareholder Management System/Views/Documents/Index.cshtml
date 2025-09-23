@@ -27,19 +27,34 @@
     @using (Html.BeginForm("Index", "Documents", FormMethod.Get))
     {
         @Html.AntiForgeryToken()
-        <div class="flex sm:flex-row flex-col text-center panel !mt-2">
-            <label for="horizontalEmail" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">Search For Shareholder</label>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label for="shid">Via FullName (Eng) OR</label>
-                    @Html.DropDownList("ShID",
-                        new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                        htmlAttributes: new { id = "searchable-select"}
-                    )
+
+            <div class="panel mt-4 p-4 rounded-xl shadow-md bg-white box-border" style="max-width: 100%; overflow: hidden;">
+                <!-- Label -->
+                <label for="searchable-select" class="block font-medium text-gray mb-2">
+                    Search For Shareholder
+                </label>
+
+                <!-- Dropdown + Button wrapper -->
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4 w-full box-border">
+                    <!-- Dropdown -->
+            
+                        @Html.DropDownList("ShID",
+                            new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
+                            htmlAttributes: new {
+                                @class = "w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 box-border",
+                                id = "searchable-select"
+                            }
+                        )
+           
+
+                    <!-- Button -->
+                    <div class="w-full sm:w-auto flex-shrink-0">
+                        <button type="submit" class="w-full sm:w-auto btn btn-primary px-5 py-2 rounded-lg whitespace-nowrap">
+                            Fetch
+                        </button>
+                    </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary  mx-3 ">Fetch</button>
-        </div>
     }
     <!-- start main content section -->
     <div x-data="miscellaneous ">
@@ -103,30 +118,30 @@
 </div>
 
 
-<script>
-    $(document).ready(function () {
-        // Initialize Select2 with custom search handling
-        $('#searchable-select').select2({
-            placeholder: "Select a Shareholder",
-            allowClear: false,
-            width: '150%',
-            // Customize search behavior to support spaces and partial matches
-            matcher: function (params, data) {
-                if ($.trim(params.term) === '') {
-                    return data;
-                }
+        <script>
+            $(document).ready(function () {
+                // Initialize Select2 with custom search handling
+                $('#searchable-select').select2({
+                    placeholder: "Select a Shareholder",
+                    allowClear: false,
+                    width: '150%',
+                    // Customize search behavior to support spaces and partial matches
+                    matcher: function (params, data) {
+                        if ($.trim(params.term) === '') {
+                            return data;
+                        }
 
-                // Match against each part of the search term
-                const terms = params.term.toLowerCase().split(' ');
-                const text = data.text.toLowerCase();
+                        // Match against each part of the search term
+                        const terms = params.term.toLowerCase().split(' ');
+                        const text = data.text.toLowerCase();
 
-                return terms.every(term => text.includes(term)) ? data : null;
-            }
-        });
-    });
-</script>
+                        return terms.every(term => text.includes(term)) ? data : null;
+                    }
+                });
+            });
+        </script>
 
-<script>
+        <script>
 
     // main section
     document.addEventListener('alpine:init', () => {
@@ -284,5 +299,5 @@
 }
 
 
-</script>
+        </script>
 

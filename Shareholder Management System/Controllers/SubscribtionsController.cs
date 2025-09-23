@@ -16,7 +16,7 @@ using System.Web.Mvc;
 
 namespace Share.Controllers
 {
-    public class SubscribtionsController : Controller
+    public class SubscribtionsController : BaseController
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
@@ -80,27 +80,6 @@ namespace Share.Controllers
             return View(subscribtions);
         }
 
-        //[HttpPost]
-        //public ActionResult Addonsubscriptions(int? ShareId)
-        //{
-        //    var subscriptions = db.Subscribtions
-        //        .Include(s => s.Shareholder)
-        //        .Include(s => s.Shareholder1)
-        //        .Include(s => s.User)
-        //        .Include(s => s.User1)
-        //        .AsQueryable(); // Use IQueryable for dynamic filtering
-
-        //    if (ShareId.HasValue)
-        //    {
-        //        subscriptions = subscriptions.Where(s => s.ShID == ShareId && s.SubAuthorizationStatus == "Approved"/* && s.UnpaidSubscription > 0 && s.PaymentDueDate >= DateTime.Now*/);
-        //    }
-        //    else
-        //    {
-        //        subscriptions = subscriptions.Where(s => s.ShID == ShareId && s.SubAuthorizationStatus == "Approved" /*&& s.UnpaidSubscription > 0*/);
-        //    }
-
-        //    return PartialView("_AddonsubscriptionsList", subscriptions.ToList());
-        //}
 
         [HttpPost]
         public ActionResult Addonsubscriptions(int? ShareId, int? SubId)
@@ -127,22 +106,115 @@ namespace Share.Controllers
             return PartialView("_AddonsubscriptionsList", subscriptions.ToList());
         }
 
-
-
-
-
-
         public ActionResult PendingSubscription()
         {
             var subscribtions = db.Subscribtions.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1).Where(a => a.SubAuthorizationStatus == "Pending" && a.PaymentDueDate >= DateTime.Now);
             return View(subscribtions.ToList());
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string shareholderName)
         {
-            var subscribtions = db.Subscribtions.Include(s => s.Shareholder).Include(s => s.Shareholder1).Include(s => s.User).Include(s => s.User1);
-            return View(subscribtions.ToList());
+            var viewModel = new SubscriptionViewModel
+            {
+                Subscriptions = Enumerable.Empty<Subscribtion>().AsQueryable(),
+                ShareholderList = new SelectList(db.Shareholders.Select(s => s.FullNameEng).Distinct()),
+                SelectedShareholder = shareholderName
+            };
+
+            if (!string.IsNullOrEmpty(shareholderName))
+            {
+                viewModel.Subscriptions = db.Subscribtions
+                    .Include(s => s.Shareholder)
+                    .Include(s => s.Shareholder1)
+                    .Include(s => s.User)
+                    .Include(s => s.User1)
+                    .Where(s => s.Shareholder.FullNameEng.Contains(shareholderName));
+            }
+
+            return View(viewModel);
         }
+
+
+        public JsonResult GetSubscriptionsByShareholderName(string shareholderName)
+        {
+            if (string.IsNullOrEmpty(shareholderName))
+                return Json(new { success = false, message = "No shareholder name provided." }, JsonRequestBehavior.AllowGet);
+
+            var shareholder = db.Shareholders.FirstOrDefault(s => s.FullNameEng == shareholderName);
+            if (shareholder == null)
+                return Json(new { success = false, message = "Shareholder not found." }, JsonRequestBehavior.AllowGet);
+
+            var subscriptions = db.Subscribtions
+                                  .Where(sub => sub.ShID == shareholder.ShID)
+                                  .Select(sub => new
+                                  {
+                                      sub.ShID,
+                                      sub.SubID,
+                                      sub.SubNumShares,
+                                      sub.Premium,
+                                      sub.SubAmount,
+                                      sub.PaidSubscription,
+                                      sub.UnpaidSubscription,
+                                      sub.SubTransferFrom,
+                                      sub.PaymentDueDate, // Keep as DateTime
+                                      sub.SubStatus,
+                                      sub.CreatedBy,
+                                      SubDate = sub.SubDate, // Keep as DateTime
+                                      sub.SubAuthorizationStatus,
+                                      sub.SubAuthorizer,
+                                      AuthorizedDate = sub.AuthorizedDate, // Keep as DateTime
+                                      sub.Remark,
+                                      sub.Branch,
+                                      sub.Shareholder1.FullNameEng,
+                                      sub.Shareholder1.ShareID
+                                  }).ToList();
+
+            return Json(new { success = true, data = subscriptions }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ExportSubscriptionsToExcel(string shareholderName)
+        {
+            IQueryable<Subscribtion> subscriptions = db.Subscribtions
+                .Include(s => s.Shareholder)
+                .Include(s => s.Shareholder1)
+                .Include(s => s.User)
+                .Include(s => s.User1);
+
+            if (!string.IsNullOrEmpty(shareholderName))
+            {
+                subscriptions = subscriptions
+                    .Where(s => s.Shareholder.FullNameEng.Contains(shareholderName));
+            }
+
+            var data = subscriptions.ToList();
+
+            var grid = new System.Web.UI.WebControls.GridView();
+            grid.DataSource = data.Select(s => new
+            {
+                SubscriptionID = s.SubID,
+                Shareholder = s.Shareholder.FullNameEng,
+                SubscribedShares = s.SubNumShares,
+                PaymentDueDate = s.PaymentDueDate?.ToString("yyyy-MM-dd"),
+                CreatedBy = s.User?.UserName,
+                ApprovedBy = s.User1?.UserName
+            }).ToList();
+            grid.DataBind();
+
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=Subscriptions.xlsx");
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.Charset = "";
+            System.IO.StringWriter sw = new System.IO.StringWriter();
+            System.Web.UI.HtmlTextWriter htw = new System.Web.UI.HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            return Content(sw.ToString(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+
+
+
 
         // GET: Subscribtions/Details/5
         public ActionResult Details(int? id)
@@ -159,161 +231,157 @@ namespace Share.Controllers
             return View(subscribtion);
         }
 
-        // GET: Subscribtions/Create
+
         //public ActionResult Create()
         //{
-        //    ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng");
-        //    ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng");
+        //    ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+        //    ViewBag.SubTransferFrom = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
         //    ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
         //    ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+
         //    return View();
         //}
 
-        public ActionResult Create()
-        {
 
-            //ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
-            //ViewBag.ShID = new SelectList(db.Shareholders.Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Create([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark,Branch")] Subscribtion subscribtion)
+        //{
+        //    int Createdby = Convert.ToInt32(Session["ID"]);
+        //    int branchIDD = Convert.ToInt32(Session["Branch"]);
 
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
-            ViewBag.SubTransferFrom = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
-            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+        //    if (subscribtion.PaymentDueDate < DateTime.Today)
+        //    {
+        //        ModelState.AddModelError("PaymentDueDate", "The Payment Due Date cannot be in the past.");
+        //    }
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Subscribtions.Add(subscribtion);
 
-            return View();
-        }
+        //        subscribtion.SubDate = DateTime.Now;
+        //        subscribtion.PaidSubscription = 0;
+        //        subscribtion.SubStatus = "UnPaid";
+        //        subscribtion.SubAuthorizationStatus = "Pending";
+        //        subscribtion.CreatedBy = Createdby;
+        //        subscribtion.Branch = branchIDD;
+        //        subscribtion.SubAuthorizer = null;
+        //        //subscribtion.CreatedBy = Session["Username"];
 
+        //        subscribtion.SubAmount = subscribtion.SubNumShares * 100;
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark,Branch")] Subscribtion subscribtion)
-        {
-            int Createdby = Convert.ToInt32(Session["ID"]);
-            int branchIDD = Convert.ToInt32(Session["Branch"]);
+        //        subscribtion.UnpaidSubscription = subscribtion.SubAmount;
 
-            if (subscribtion.PaymentDueDate < DateTime.Today)
-            {
-                ModelState.AddModelError("PaymentDueDate", "The Payment Due Date cannot be in the past.");
-            }
-            if (ModelState.IsValid)
-            {
-                db.Subscribtions.Add(subscribtion);
+        //        //subscribtion.SubAuthorizer = Session["subusername"];
 
-                subscribtion.SubDate = DateTime.Now;
-                subscribtion.PaidSubscription = 0;
-                subscribtion.SubStatus = "UnPaid";
-                subscribtion.SubAuthorizationStatus = "Pending";
-                subscribtion.CreatedBy = Createdby;
-                subscribtion.Branch = branchIDD;
-                subscribtion.SubAuthorizer = null;
-                //subscribtion.CreatedBy = Session["Username"];
+        //        db.SaveChanges();
+        //        TempData["SuccessMessage"] = "Subscription created successfully!";
 
-                subscribtion.SubAmount = subscribtion.SubNumShares * 100;
+        //        AuditLogsController auditLogsController = new AuditLogsController();
 
-                subscribtion.UnpaidSubscription = subscribtion.SubAmount;
-
-                //subscribtion.SubAuthorizer = Session["subusername"];
-
-                db.SaveChanges();
-                TempData["SuccessMessage"] = "Subscription created successfully!";
-
-                AuditLogsController auditLogsController = new AuditLogsController();
-
-                auditLogsController.RecordLog("Registration", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy ?? 0, Session["BranchName"].ToString());
+        //        auditLogsController.RecordLog("Registration", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy ?? 0, Session["BranchName"].ToString());
 
 
-                return RedirectToAction("Create");
-            }
+        //        return RedirectToAction("Create");
+        //    }
 
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
-            ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "ShareID", subscribtion.SubTransferFrom);
-            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
-            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", subscribtion.Branch);
-            return View(subscribtion);
-        }
+        //    ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+        //    ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "ShareID", subscribtion.SubTransferFrom);
+        //    ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
+        //    ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
+        //    ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", subscribtion.Branch);
+        //    return View(subscribtion);
+        //}
 
 
 
         /// =======================================================================================================
 
-        public ActionResult AddSubscriprion()
-        {
-            //ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng");
-            // ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng");
+        //public ActionResult AddSubscription() // Fixed typo in action name
+        //{
+        //    // Populate dropdowns for ShID, SubTransferFrom, SubAuthorizer, and CreatedBy
+        //    ViewBag.ShID = new SelectList(
+        //        db.Shareholders
+        //            .Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active"))
+        //            .Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }),
+        //        "ShID",
+        //        "DisplayName"
+        //    );
+        //    ViewBag.SubTransferFrom = new SelectList(
+        //        db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"),
+        //        "ShID",
+        //        "FullNameEng"
+        //    );
+        //    ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
+        //    ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
 
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
-            ViewBag.SubTransferFrom = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved"), "ShID", "FullNameEng");
-            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+        //    // Remove ViewBag.SubID since it's populated dynamically via AJAX
+        //    // ViewBag.SubID = new SelectList(Enumerable.Empty<SelectListItem>(), "SubID", "SubID");
 
-            ViewBag.SubID = new SelectList(Enumerable.Empty<SelectListItem>(), "SubID", "SubID");
+        //    return View();
+        //}
 
-            return View();
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult AddSubscription([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscription)
+        //{
+        //    int userdata = Convert.ToInt32(Session["ID"]);
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult AddSubscriprion([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscription)
-        {
-            int userdata = Convert.ToInt32(Session["ID"]);
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Fetch the existing subscription for the given ShID and SubID
+        //        var existingSubscription = db.Subscribtions
+        //            .FirstOrDefault(s => s.ShID == subscription.ShID && s.SubID == subscription.SubID);
 
-            if (ModelState.IsValid)
-            {
-                // Fetch the existing subscription for the given ShID and SubID
-                var existingSubscription = db.Subscribtions
-                    .FirstOrDefault(s => s.ShID == subscription.ShID && s.SubID == subscription.SubID);
+        //        if (existingSubscription != null)
+        //        {
+        //            // Update the existing subscription's values
+        //            existingSubscription.SubNumShares += subscription.SubNumShares; // Add new shares
+        //            existingSubscription.Premium = subscription.Premium;
+        //            existingSubscription.SubAmount = existingSubscription.SubNumShares * 100; // Recalculate total amount
+        //            existingSubscription.UnpaidSubscription = existingSubscription.SubAmount - existingSubscription.PaidSubscription; // Recalculate unpaid
+        //            existingSubscription.SubTransferFrom = subscription.SubTransferFrom;
+        //            existingSubscription.PaymentDueDate = subscription.PaymentDueDate;
+        //            existingSubscription.Remark = subscription.Remark;
 
-                if (existingSubscription != null)
-                {
-                    // Update the existing subscription's values
-                    existingSubscription.SubNumShares += subscription.SubNumShares; // Add new shares to the existing number of shares
-                    existingSubscription.Premium = subscription.Premium;
-                    existingSubscription.SubAmount = existingSubscription.SubNumShares * 100; // Recalculate the total amount
+        //            // Set other fields
+        //            existingSubscription.SubDate = DateTime.Now;
+        //            existingSubscription.SubStatus = existingSubscription.PaidSubscription > 0 ? "Partial Paid" : "UnPaid";
+        //            existingSubscription.SubAuthorizationStatus = "Pending";
+        //            existingSubscription.AuthorizedDate = null;
+        //            existingSubscription.CreatedBy = userdata;
+        //            existingSubscription.SubAuthorizer = null;
 
-                    existingSubscription.UnpaidSubscription = existingSubscription.SubAmount - existingSubscription.PaidSubscription; // Recalculate unpaid subscription
-                    existingSubscription.SubTransferFrom = subscription.SubTransferFrom; // Update the transfer from field
-                    existingSubscription.PaymentDueDate = subscription.PaymentDueDate; // Update the payment due date
-                    existingSubscription.Remark = subscription.Remark; // Update any remarks
+        //            // Save changes
+        //            db.Entry(existingSubscription).State = EntityState.Modified;
+        //            db.SaveChanges();
 
-                    // Set other fields
-                    existingSubscription.SubDate = DateTime.Now; // Update the date
-                    //existingSubscription.SubStatus = "UnPaid"; // Update the status (or retain the existing one if needed)
-                    if (existingSubscription.PaidSubscription > 0)
-                    {
-                        existingSubscription.SubStatus = "Partial Paid"; // Update the status (or retain the existing one if needed)
-                    }
-                    existingSubscription.SubAuthorizationStatus = "Pending"; // Update the authorization status (or retain the existing one)
-                    existingSubscription.AuthorizedDate = null;
+        //            TempData["SuccessMessage"] = "Subscription updated successfully! Total shares now: " + existingSubscription.SubNumShares;
+        //            AuditLogsController auditLogsController = new AuditLogsController();
+        //            auditLogsController.RecordLog("Addon", existingSubscription.SubID, "Subscribtion", existingSubscription.CreatedBy ?? 0, Session["BranchName"].ToString());
+        //            return RedirectToAction("AddSubscription");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "No subscription found for the given Shareholder and Subscription ID.");
+        //        }
+        //    }
 
-                    existingSubscription.CreatedBy = userdata;
-                    existingSubscription.SubAuthorizer = null;
+        //    // Reload dropdowns for the view in case of error
+        //    ViewBag.ShID = new SelectList(
+        //        db.Shareholders
+        //            .Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active"))
+        //            .Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }),
+        //        "ShID",
+        //        "DisplayName",
+        //        subscription.ShID
+        //    );
+        //    ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscription.SubTransferFrom);
+        //    ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscription.SubAuthorizer);
+        //    ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscription.CreatedBy);
 
-                    // Mark the subscription as modified and save the changes
-                    db.Entry(existingSubscription).State = EntityState.Modified;
-                    db.SaveChanges();
-
-                    TempData["SuccessMessage"] = "Subscription updated successfully! Total shares now: " + existingSubscription.SubNumShares;
-                    AuditLogsController auditLogsController = new AuditLogsController();
-                    auditLogsController.RecordLog("Addon", existingSubscription.SubID, "Subscribtion", existingSubscription.CreatedBy ?? 0, Session["BranchName"].ToString());
-                    return RedirectToAction("AddSubscriprion");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "No subscription found for the given Shareholder and Subscription ID.");
-                }
-            }
-
-            // If the model state is not valid, reload the view with the previous data
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved" && s.Status.Equals("Active")).Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
-
-            ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscription.SubTransferFrom);
-            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscription.SubAuthorizer);
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscription.CreatedBy);
-
-            return View(subscription);
-        }
-
+        //    // Since SubID is populated dynamically, no need to set ViewBag.SubID here
+        //    return View(subscription);
+        //}
 
         //public ActionResult GetSubIDs(int shareholderId)
         //{
@@ -321,132 +389,119 @@ namespace Share.Controllers
         //                   .Where(s => s.ShID == shareholderId
         //                                && s.SubAuthorizationStatus == "Approved"
         //                                && s.UnpaidSubscription >= 0
-        //                                //&& s.PaymentDueDate >= DateTime.Now
+        //                                && s.SubNumShares != 0
         //                                && s.PaidSubscription.Value >= 0.25m * s.SubAmount.Value) // Ensure PaidSubscription is at least 25% of SubAmount
-        //                   .Select(s => new { s.SubID, s.SubNumShares }) // Customize the fields as necessary
+
+        //                   .Select(s => new
+        //                   {
+        //                       s.SubID,
+        //                       s.SubNumShares
+        //                   }) // Customize the fields as necessary
         //                   .ToList();
 
         //    return Json(subIDs, JsonRequestBehavior.AllowGet);
         //}
 
-        public ActionResult GetSubIDs(int shareholderId)
-        {
-            var subIDs = db.Subscribtions
-                           .Where(s => s.ShID == shareholderId
-                                        && s.SubAuthorizationStatus == "Approved"
-                                        && s.UnpaidSubscription >= 0
-                                        && s.SubNumShares != 0
-                                        && s.PaidSubscription.Value >= 0.25m * s.SubAmount.Value) // Ensure PaidSubscription is at least 25% of SubAmount
-
-                           .Select(s => new
-                           {
-                               s.SubID,
-                               s.SubNumShares
-                           }) // Customize the fields as necessary
-                           .ToList();
-
-            return Json(subIDs, JsonRequestBehavior.AllowGet);
-        }
 
 
 
 
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Subscribtion subscribtion = db.Subscribtions.Find(id);
-            if (subscribtion == null)
-            {
-                return HttpNotFound();
-            }
+        //public ActionResult Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Subscribtion subscribtion = db.Subscribtions.Find(id);
+        //    if (subscribtion == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
 
-            // Get the display text of the selected Shareholder (FullNameEng) based on SubTransferFrom
-            var selectedValue = subscribtion.SubTransferFrom;
-            var displayText = db.Shareholders
-                                .Where(s => s.ShID == selectedValue)
-                                .Select(s => s.FullNameEng)
-                                .FirstOrDefault();
+        //    // Get the display text of the selected Shareholder (FullNameEng) based on SubTransferFrom
+        //    var selectedValue = subscribtion.SubTransferFrom;
+        //    var displayText = db.Shareholders
+        //                        .Where(s => s.ShID == selectedValue)
+        //                        .Select(s => s.FullNameEng)
+        //                        .FirstOrDefault();
 
-            // Make sure the value exists before assigning it to ViewData
-            if (!string.IsNullOrEmpty(displayText))
-            {
-                ViewData["SubTransferFromDisplayText"] = displayText;
-            }
-            else
-            {
-                ViewData["SubTransferFromDisplayText"] = "Not Transfered"; // Fallback if no text found
-            }
+        //    // Make sure the value exists before assigning it to ViewData
+        //    if (!string.IsNullOrEmpty(displayText))
+        //    {
+        //        ViewData["SubTransferFromDisplayText"] = displayText;
+        //    }
+        //    else
+        //    {
+        //        ViewData["SubTransferFromDisplayText"] = "Not Transfered"; // Fallback if no text found
+        //    }
 
-            //ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.ShID);
-            ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
-            ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.SubTransferFrom);
-            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
-            return View(subscribtion);
-        }
+        //    //ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.ShID);
+        //    ViewBag.ShID = new SelectList(db.Shareholders.Where(s => s.AuthorizationStatus == "Approved").Select(s => new { ShID = s.ShID, DisplayName = s.FullNameEng + " / " + s.ShareID }), "ShID", "DisplayName");
+        //    ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.SubTransferFrom);
+        //    ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
+        //    ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
+        //    return View(subscribtion);
+        //}
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscribtion)
-        {
-            // Get the original subscription from the database
-            var originalSubscription = db.Subscribtions.AsNoTracking().FirstOrDefault(s => s.SubID == subscribtion.SubID);
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscribtion)
+        //{
+        //    // Get the original subscription from the database
+        //    var originalSubscription = db.Subscribtions.AsNoTracking().FirstOrDefault(s => s.SubID == subscribtion.SubID);
 
-            int userdata = Convert.ToInt32(Session["ID"]);
-            int branchIDD = Convert.ToInt32(Session["Branch"]);
+        //    int userdata = Convert.ToInt32(Session["ID"]);
+        //    int branchIDD = Convert.ToInt32(Session["Branch"]);
 
-            if (originalSubscription == null)
-            {
-                return HttpNotFound();
-            }
+        //    if (originalSubscription == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
 
-            // Check if the new PaidSubscription is less than the original one
-            if (subscribtion.PaidSubscription < originalSubscription.PaidSubscription)
-            {
-                ModelState.AddModelError("PaidSubscription", "The paid amount cannot be less than the original paid amount.");
-            }
+        //    // Check if the new PaidSubscription is less than the original one
+        //    if (subscribtion.PaidSubscription < originalSubscription.PaidSubscription)
+        //    {
+        //        ModelState.AddModelError("PaidSubscription", "The paid amount cannot be less than the original paid amount.");
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                // Modify the subscription
-                db.Entry(subscribtion).State = EntityState.Modified;
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Modify the subscription
+        //        db.Entry(subscribtion).State = EntityState.Modified;
 
-                //subscribtion.SubDate = DateTime.Now;
-                //subscribtion.SubStatus = "UnPaid";
+        //        //subscribtion.SubDate = DateTime.Now;
+        //        //subscribtion.SubStatus = "UnPaid";
 
-                subscribtion.SubAuthorizationStatus = "Pending";
-                subscribtion.SubAmount = subscribtion.SubNumShares * 100;
+        //        subscribtion.SubAuthorizationStatus = "Pending";
+        //        subscribtion.SubAmount = subscribtion.SubNumShares * 100;
 
-                if (subscribtion.PaidSubscription == null)
-                {
-                    subscribtion.UnpaidSubscription = subscribtion.SubAmount;
-                }
-                else
-                {
-                    subscribtion.UnpaidSubscription = subscribtion.SubAmount - subscribtion.PaidSubscription;
-                }
+        //        if (subscribtion.PaidSubscription == null)
+        //        {
+        //            subscribtion.UnpaidSubscription = subscribtion.SubAmount;
+        //        }
+        //        else
+        //        {
+        //            subscribtion.UnpaidSubscription = subscribtion.SubAmount - subscribtion.PaidSubscription;
+        //        }
 
-                subscribtion.CreatedBy = userdata;
-                subscribtion.Branch = branchIDD;
-                subscribtion.SubAuthorizer = null;
-                db.SaveChanges();
-                TempData["SuccessMessage"] = "Subscription Updated successfully.";
-                AuditLogsController auditLogsController = new AuditLogsController();
-                auditLogsController.RecordLog("Update", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy ?? 0, Session["BranchName"].ToString());
+        //        subscribtion.CreatedBy = userdata;
+        //        subscribtion.Branch = branchIDD;
+        //        subscribtion.SubAuthorizer = null;
+        //        db.SaveChanges();
+        //        TempData["SuccessMessage"] = "Subscription Updated successfully.";
+        //        AuditLogsController auditLogsController = new AuditLogsController();
+        //        auditLogsController.RecordLog("Update", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy ?? 0, Session["BranchName"].ToString());
 
-                return RedirectToAction("Index");
-            }
+        //        return RedirectToAction("Viewall");
+        //    }
 
-            ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.ShID);
-            ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.SubTransferFrom);
-            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
-            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
-            return View(subscribtion);
-        }
+        //    ViewBag.ShID = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.ShID);
+        //    ViewBag.SubTransferFrom = new SelectList(db.Shareholders, "ShID", "FullNameEng", subscribtion.SubTransferFrom);
+        //    ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
+        //    ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
+        //    return View(subscribtion);
+        //}
 
         // GET: Subscribtions/Delete/5
         public ActionResult Delete(int? id)
@@ -501,7 +556,7 @@ namespace Share.Controllers
                 TempData["ErrorMessage"] = "Subscription not found.";
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Viewall");
         }
 
 
@@ -923,7 +978,7 @@ namespace Share.Controllers
             }
 
             // Fetch all subscriptions
-            var subscriptions = db.Subscribtions.Where(a=>a.SubNumShares !=0 && a.SubAuthorizationStatus!="Transfered").ToList();
+            var subscriptions = db.Subscribtions.Where(a => a.SubNumShares != 0 && a.SubAuthorizationStatus != "Transfered").ToList();
 
             // Update the PaymentDueDate for all subscriptions
             foreach (var subscription in subscriptions)
@@ -936,8 +991,434 @@ namespace Share.Controllers
             db.SaveChanges();
 
             TempData["SuccessMessage"] = "All subscription due dates updated successfully.";
-            return RedirectToAction("Index");
+            return RedirectToAction("UpdateDuedate");
         }
+
+        [HttpPost]
+        public ActionResult UpdateOverdueSubscriptions(Subscribtion subscribtion)
+        {
+            int userdata = Convert.ToInt32(Session["ID"]);
+            int branchIDD = Convert.ToInt32(Session["Branch"]);
+
+            // Find all overdue subscriptions
+            var overdueSubscriptions = db.Subscribtions
+                        .Where(s => s.PaymentDueDate < DateTime.Today)
+                        .ToList();
+
+            if (overdueSubscriptions.Any())
+            {
+                foreach (var subscription in overdueSubscriptions)
+                {
+                    subscription.UnpaidSubscription = 0; // Set UnpaidSubscription to 0
+                    subscription.SubStatus = "Fully Paid"; // Update the status to "Paid"
+                    subscription.SubAmount = subscription.PaidSubscription;
+                    subscription.SubNumShares = (int?)Convert.ToInt32(subscription.PaidSubscription.Value / 100);
+
+                    // Log the update for each subscription
+                    AuditLogsController auditLogsController = new AuditLogsController();
+                    auditLogsController.RecordLog("Updating Overdue", subscription.SubID, "Subscribtion", userdata, Session["BranchName"].ToString());
+                }
+
+                db.SaveChanges(); // Save changes to the database
+            }
+
+            // Return a success message
+            TempData["SuccessMessage"] = "All overdue subscriptions have been marked as paid successfully.";
+
+            return RedirectToAction("OverDueSubscription"); // Redirect back to the Index page
+        }
+
+        ///=================Overdue ZERO AFTER SUBS SELECTION============================================================
+        [HttpPost]
+        public ActionResult UpdateOverdueSubscriptionss(int id)
+        {
+            ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            var subscription = db.Subscribtions.FirstOrDefault(s => s.SubID == id);
+
+            if (subscription != null && subscription.PaymentDueDate < DateTime.Today)
+            {
+                subscription.UnpaidSubscription = 0;
+                subscription.SubStatus = "Fully Paid";
+                subscription.SubAmount = subscription.PaidSubscription;
+                subscription.SubNumShares = (int?)Convert.ToInt32(subscription.PaidSubscription.Value / 100);
+
+                // Log the action
+                int userdata = Convert.ToInt32(Session["ID"]);
+                new AuditLogsController().RecordLog("Updated Overdue", id, "Subscribtion", userdata, Session["BranchName"].ToString());
+
+                db.SaveChanges();
+                return Json(new { success = true, message = "Subscription marked as fully paid." });
+            }
+
+            return Json(new { success = false, message = "No overdue subscription found." });
+        }
+
+
+
+        public ActionResult OverDueSubscription(int? shId)
+        {
+            ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            ViewBag.SelectedShId = shId?.ToString();
+
+            // If shId is provided, get the selected shareholder's name for pre-selection
+            if (shId.HasValue)
+            {
+                var selectedShareholder = db.Shareholders
+                    .Where(s => s.ShID == shId && s.Status == "Active" && s.AuthorizationStatus == "Approved")
+                    .Select(s => new { s.FullNameEng, s.ShareID })
+                    .FirstOrDefault();
+                if (selectedShareholder != null)
+                {
+                    ViewBag.SelectedShName = $"{selectedShareholder.FullNameEng} / {selectedShareholder.ShareID}";
+                }
+            }
+
+            // Return empty list if no shId is provided
+            if (!shId.HasValue)
+            {
+                return View(new List<Subscribtion>());
+            }
+
+            // Fetch overdue subscriptions for the selected shareholder
+            var subscriptions = db.Subscribtions // Corrected from Subscribtions
+                .Include(p => p.Branch1)
+                .Include(p => p.Shareholder)
+                .Include(p => p.Shareholder1)
+                .Include(p => p.User)
+                .Include(p => p.User1)
+                .Where(s => s.ShID == shId &&
+                            s.SubAuthorizationStatus == "Approved" &&
+                            s.PaymentDueDate < DateTime.Now &&
+                            s.SubNumShares > 0 &&
+                            s.UnpaidSubscription > 0)
+                .OrderByDescending(p => p.SubDate)
+                .ToList();
+
+            return View(subscriptions);
+        }
+
+
+        public ActionResult Viewall(int? shId)
+        {
+            ViewBag.SuccessMessage = TempData["SuccessMessage"];
+            ViewBag.SelectedShId = shId?.ToString();
+
+            // If shId is provided, get the selected shareholder's name for pre-selection
+            if (shId.HasValue)
+            {
+                var selectedShareholder = db.Shareholders
+                    .Where(s => s.ShID == shId && s.Status == "Active" && s.AuthorizationStatus == "Approved")
+                    .Select(s => new { s.FullNameEng, s.ShareID })
+                    .FirstOrDefault();
+                if (selectedShareholder != null)
+                {
+                    ViewBag.SelectedShName = $"{selectedShareholder.FullNameEng} / {selectedShareholder.ShareID}";
+                }
+            }
+
+            // Return empty list if no shId is provided
+            if (!shId.HasValue)
+            {
+                return View(new List<Subscribtion>());
+            }
+
+            // Fetch payments for the selected shareholder
+            var Subscriptions = db.Subscribtions
+                .Include(p => p.Branch1)
+                .Include(p => p.Shareholder)
+                .Include(p => p.Shareholder1)
+
+                .Include(p => p.User)
+                .Include(p => p.User1)
+                .Where(p => p.ShID == shId)
+                .OrderByDescending(p => p.SubDate)
+                .ToList();
+
+            return View(Subscriptions);
+        }
+
+        [HttpGet]
+        public JsonResult SearchShareholders(string term, int page = 1)
+        {
+            const int pageSize = 10;
+            var query = db.Shareholders
+                .Where(s => s.Status == "Active" && s.AuthorizationStatus == "Approved");
+
+            if (!string.IsNullOrEmpty(term))
+            {
+                var searchTerm = term.ToLower().Trim();
+                query = query.Where(s =>
+                    //s.FullNameEng.ToLower().Contains(searchTerm) ||
+                    //s.ShareID.ToLower().Contains(searchTerm));
+                    s.FullNameEng.ToLower().StartsWith(term.ToLower()) ||
+                           s.ShareID.ToLower().StartsWith(term.ToLower()));
+            }
+
+            var total = query.Count();
+            var shareholders = query
+                .OrderBy(s => s.FullNameEng)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(s => new
+                {
+                    id = s.ShID,
+                    text = s.FullNameEng + " ( " + s.ShareID + " ) "
+                })
+                .ToList();
+
+            return Json(new
+            {
+                items = shareholders,
+                hasMore = total > page * pageSize
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Create()
+        {
+            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName");
+
+            return View();
+        }
+
+        // POST: Subscription/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark,Branch")] Subscribtion subscribtion)
+        {
+            int Createdby = Convert.ToInt32(Session["ID"]);
+            int branchIDD = Convert.ToInt32(Session["Branch"]);
+
+            if (subscribtion.PaymentDueDate < DateTime.Today)
+            {
+                ModelState.AddModelError("PaymentDueDate", "The Payment Due Date cannot be in the past.");
+            }
+            if (ModelState.IsValid)
+            {
+                db.Subscribtions.Add(subscribtion);
+
+                subscribtion.SubDate = DateTime.Now;
+                subscribtion.PaidSubscription = 0;
+                subscribtion.SubStatus = "UnPaid";
+                subscribtion.SubAuthorizationStatus = "Pending";
+                subscribtion.CreatedBy = Createdby;
+                subscribtion.Branch = branchIDD;
+                subscribtion.SubAuthorizer = null;
+                subscribtion.SubAmount = subscribtion.SubNumShares * 100;
+                subscribtion.UnpaidSubscription = subscribtion.SubAmount;
+
+                db.SaveChanges();
+                TempData["SuccessMessage"] = "Subscription created successfully!";
+
+                AuditLogsController auditLogsController = new AuditLogsController();
+                auditLogsController.RecordLog("Registration", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy ?? 0, Session["BranchName"].ToString());
+
+                return RedirectToAction("Create");
+            }
+
+            // Re-populate dropdowns in case of validation failure
+            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
+            ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", subscribtion.Branch);
+            return View(subscribtion);
+        }
+
+
+        public ActionResult AddSubscription()
+        {
+            // Populate dropdowns for SubAuthorizer and CreatedBy
+            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName");
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName");
+
+            return View();
+        }
+
+        // POST: Subscription/AddSubscription
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddSubscription([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscription)
+        {
+            int userdata = Convert.ToInt32(Session["ID"]);
+
+            if (ModelState.IsValid)
+            {
+                // Fetch the existing subscription for the given ShID and SubID
+                var existingSubscription = db.Subscribtions
+                    .FirstOrDefault(s => s.ShID == subscription.ShID && s.SubID == subscription.SubID);
+
+                if (existingSubscription != null)
+                {
+                    // Update the existing subscription's values
+                    existingSubscription.SubNumShares += subscription.SubNumShares; // Add new shares
+                    existingSubscription.Premium = subscription.Premium;
+                    existingSubscription.SubAmount = existingSubscription.SubNumShares * 100; // Recalculate total amount
+                    existingSubscription.UnpaidSubscription = existingSubscription.SubAmount - existingSubscription.PaidSubscription; // Recalculate unpaid
+                    existingSubscription.SubTransferFrom = subscription.SubTransferFrom;
+                    existingSubscription.PaymentDueDate = subscription.PaymentDueDate;
+                    existingSubscription.Remark = subscription.Remark;
+
+                    // Set other fields
+                    existingSubscription.SubDate = DateTime.Now;
+                    existingSubscription.SubStatus = existingSubscription.PaidSubscription > 0 ? "Partial Paid" : "UnPaid";
+                    existingSubscription.SubAuthorizationStatus = "Pending";
+                    existingSubscription.AuthorizedDate = null;
+                    existingSubscription.CreatedBy = userdata;
+                    existingSubscription.SubAuthorizer = null;
+
+                    // Save changes
+                    db.Entry(existingSubscription).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    TempData["SuccessMessage"] = "Subscription updated successfully! Total shares now: " + existingSubscription.SubNumShares;
+                    AuditLogsController auditLogsController = new AuditLogsController();
+                    auditLogsController.RecordLog("Addon", existingSubscription.SubID, "Subscribtion", existingSubscription.CreatedBy ?? 0, Session["BranchName"].ToString());
+                    return RedirectToAction("AddSubscription");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "No subscription found for the given Shareholder and Subscription ID.");
+                }
+            }
+
+            // Reload dropdowns for the view in case of error
+            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscription.SubAuthorizer);
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscription.CreatedBy);
+
+            return View(subscription);
+        }
+
+        // GET: Subscription/GetSubIDs
+        public ActionResult GetSubIDs(int shareholderId)
+        {
+            var subIDs = db.Subscribtions
+                           .Where(s => s.ShID == shareholderId
+                                        && s.SubAuthorizationStatus == "Approved"
+                                        //&& s.UnpaidSubscription >= 0
+                                        && s.SubNumShares != 0
+                                        && s.PaidSubscription.Value >= 0.25m * s.SubAmount.Value)
+                           .Select(s => new
+                           {
+                               s.SubID,
+                               s.SubNumShares
+                           })
+                           .ToList();
+
+            return Json(subIDs, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Subscribtion subscribtion = db.Subscribtions.Find(id);
+            if (subscribtion == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Get the display text for ShID
+            var shIDDisplayText = db.Shareholders
+                                   .Where(s => s.ShID == subscribtion.ShID)
+                                   .Select(s => s.FullNameEng + " / " + s.ShareID)
+                                   .FirstOrDefault();
+            ViewData["ShIDDisplayText"] = shIDDisplayText ?? "Select Shareholder";
+
+            // Get the display text for SubTransferFrom
+            var selectedValue = subscribtion.SubTransferFrom;
+            var transferDisplayText = db.Shareholders
+                                      .Where(s => s.ShID == selectedValue)
+                                      .Select(s => s.FullNameEng + " / " + s.ShareID)
+                                      .FirstOrDefault();
+            ViewData["SubTransferFromDisplayText"] = transferDisplayText ?? "Not Transferred";
+
+            // Populate dropdowns for SubAuthorizer and CreatedBy
+            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
+
+            return View(subscribtion);
+        }
+
+        // POST: Subscription/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "SubID,ShID,SubNumShares,Premium,SubAmount,PaidSubscription,UnpaidSubscription,SubTransferFrom,PaymentDueDate,SubStatus,CreatedBy,SubDate,SubAuthorizationStatus,SubAuthorizer,AuthorizedDate,Remark")] Subscribtion subscribtion)
+        {
+            var originalSubscription = db.Subscribtions.AsNoTracking().FirstOrDefault(s => s.SubID == subscribtion.SubID);
+
+            int userdata = Convert.ToInt32(Session["ID"]);
+            int branchIDD = Convert.ToInt32(Session["Branch"]);
+
+            if (originalSubscription == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (subscribtion.PaidSubscription < originalSubscription.PaidSubscription)
+            {
+                ModelState.AddModelError("PaidSubscription", "The paid amount cannot be less than the original paid amount.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Fetch the existing entity to update
+                var entityToUpdate = db.Subscribtions.Find(subscribtion.SubID);
+                if (entityToUpdate == null)
+                {
+                    return HttpNotFound();
+                }
+
+                // Update fields, preserving SubTransferFrom if not provided
+                entityToUpdate.ShID = subscribtion.ShID;
+                entityToUpdate.SubNumShares = subscribtion.SubNumShares;
+                entityToUpdate.Premium = subscribtion.Premium;
+                entityToUpdate.SubAmount = subscribtion.SubNumShares * 100;
+                entityToUpdate.PaidSubscription = subscribtion.PaidSubscription;
+                entityToUpdate.UnpaidSubscription = subscribtion.PaidSubscription == null ? entityToUpdate.SubAmount : entityToUpdate.SubAmount - subscribtion.PaidSubscription;
+                entityToUpdate.SubTransferFrom = subscribtion.SubTransferFrom ?? originalSubscription.SubTransferFrom; // Preserve original if null
+                entityToUpdate.PaymentDueDate = subscribtion.PaymentDueDate;
+                entityToUpdate.SubStatus = subscribtion.SubStatus;
+                entityToUpdate.CreatedBy = userdata;
+                entityToUpdate.SubDate = subscribtion.SubDate;
+                entityToUpdate.SubAuthorizationStatus = "Pending";
+                entityToUpdate.SubAuthorizer = null;
+                entityToUpdate.AuthorizedDate = subscribtion.AuthorizedDate;
+                entityToUpdate.Remark = subscribtion.Remark;
+                entityToUpdate.Branch = branchIDD;
+
+                db.SaveChanges();
+                TempData["SuccessMessage"] = "Subscription Updated successfully.";
+                //AuditLogsController auditLogsController = new AuditLogsController();
+                //auditLogsController.RecordLog("Update", subscribtion.SubID, "Subscribtion", subscribtion.CreatedBy ?? 0, Session["BranchName"].ToString());
+
+                return RedirectToAction("Viewall");
+            }
+
+            // Get the display text for ShID in case of error
+            var shIDDisplayText = db.Shareholders
+                                   .Where(s => s.ShID == subscribtion.ShID)
+                                   .Select(s => s.FullNameEng + " / " + s.ShareID)
+                                   .FirstOrDefault();
+            ViewData["ShIDDisplayText"] = shIDDisplayText ?? "Select Shareholder";
+
+            // Get the display text for SubTransferFrom in case of error
+            var selectedValue = subscribtion.SubTransferFrom;
+            var transferDisplayText = db.Shareholders
+                                      .Where(s => s.ShID == selectedValue)
+                                      .Select(s => s.FullNameEng + " / " + s.ShareID)
+                                      .FirstOrDefault();
+            ViewData["SubTransferFromDisplayText"] = transferDisplayText ?? "Not Transferred";
+
+            // Repopulate dropdowns for SubAuthorizer and CreatedBy
+            ViewBag.SubAuthorizer = new SelectList(db.Users, "UID", "FullName", subscribtion.SubAuthorizer);
+            ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", subscribtion.CreatedBy);
+
+            return View(subscribtion);
+        }
+
 
         protected override void Dispose(bool disposing)
         {

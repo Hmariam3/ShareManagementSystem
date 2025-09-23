@@ -7,8 +7,7 @@
     var userRole = Session["Roles"]?.ToString();
 }
 
-@if (userRole == "Administrator")
-{
+
     <div class="animate__animated p-6">
         <div x-data="finance">
             <div class="pt-5">
@@ -415,4 +414,4 @@
             </div>
         </div>
     </div>
-}
+

@@ -10,7 +10,7 @@ using Shareholder_Management_System.Models;
 
 namespace Shareholder_Management_System.Controllers
 {
-    public class ProxiesController : Controller
+    public class ProxiesController : BaseController
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
@@ -45,6 +45,7 @@ namespace Shareholder_Management_System.Controllers
             else
             {
 
+
                 if (!string.IsNullOrEmpty(ShID))
                 {
                     int shID = int.Parse(ShID);
@@ -66,6 +67,12 @@ namespace Shareholder_Management_System.Controllers
                 // Return the Partial View with fetched proxies
                 ViewBag.ShareID = shareholder.ShareID;
                 ViewBag.Shareholder = shareholder;
+
+                ViewBag.SelectedShId = shareholder.ShID;
+
+                ViewBag.SelectedShName = shareholder.FullNameEng + " (" + shareholder.ShareID + ")";
+
+                ViewBag.ShareID = shareholder.ShareID;
             }
             ViewBag.NewProxy = new Proxy();
 
@@ -269,64 +276,75 @@ namespace Shareholder_Management_System.Controllers
                 proxy.ProxyAuthorizationStatus = "Pending";
                 proxy.Branch = branchId;
 
-                // Handle document creation
-                if (proxyFile.ContentLength > 0 && kebeleID.ContentLength > 0)
+                if (proxyFile != null && kebeleID != null &&
+    proxyFile.ContentLength > 0 && kebeleID.ContentLength > 0)
                 {
-                    try
+
+                    int maxFileSize = 2 * 1024 * 1024;
+
+                    if (proxyFile.ContentLength > maxFileSize || kebeleID.ContentLength > maxFileSize)
                     {
-                        db.Proxies.Add(proxy);
-                        db.SaveChanges();
-                        AuditLogsController auditLogsController = new AuditLogsController();
-                        auditLogsController.RecordLog("Registration of  Shareholder Proxy", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
-                        Document document = new Document
-                        {
-                            DocOwner = "Proxy",
-                            DocType = "DeligationLetter",
-                            ShID = proxy.ShID,
-                            ProxyID = proxy.ProxyID,
-                            CreatedBy = userId,
-                            DocAuthorizationStatus = "Pending",
-                            CreatedDate = DateTime.Now,
-                        };
-                        Document kebele = new Document
-                        {
-                            DocOwner = "Proxy",
-                            DocType = "ProxyID",
-                            ShID = proxy.ShID,
-                            ProxyID = proxy.ProxyID,
-                            CreatedBy = userId,
-                            DocAuthorizationStatus = "Pending",
-                            CreatedDate = DateTime.Now,
-                        };
-
-                        DocumentsController documentsController = new DocumentsController();
-                        documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
-
-                        int documentId = documentsController.Create(document, proxyFile);
-                        int proID = documentsController.Create(kebele, kebeleID);
-                        // Update the ShDocument field of the shareholder with the documentId
-                        proxy.ProxyDocument = documentId;
-                        proxy.KebeleID = proID;
-
-                        //// Update the shareholder record in the database
-                        db.Entry(proxy).State = EntityState.Modified;
-                        db.SaveChanges();
-                       
-                        auditLogsController.RecordLog("Registration of Proxy Document", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
-                        return RedirectToAction("Index", new { ShID = proxy.ShID });
-
+                        TempData["ErrorMessage"] = "The file size must not exceed 2MB ";
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        TempData["ErrorMessage"] = "An error occurred while saving the documents. Please try again.";
-                        System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
-                    }
+                        try
+                        {
+                            db.Proxies.Add(proxy);
+                            db.SaveChanges();
 
+                            AuditLogsController auditLogsController = new AuditLogsController();
+                            auditLogsController.RecordLog("Registration of  Shareholder Proxy", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
+
+                            Document document = new Document
+                            {
+                                DocOwner = "Proxy",
+                                DocType = "DeligationLetter",
+                                ShID = proxy.ShID,
+                                ProxyID = proxy.ProxyID,
+                                CreatedBy = userId,
+                                DocAuthorizationStatus = "Pending",
+                                CreatedDate = DateTime.Now,
+                            };
+                            Document kebele = new Document
+                            {
+                                DocOwner = "Proxy",
+                                DocType = "ProxyID",
+                                ShID = proxy.ShID,
+                                ProxyID = proxy.ProxyID,
+                                CreatedBy = userId,
+                                DocAuthorizationStatus = "Pending",
+                                CreatedDate = DateTime.Now,
+                            };
+
+                            DocumentsController documentsController = new DocumentsController();
+                            documentsController.ControllerContext = new ControllerContext(this.Request.RequestContext, documentsController);
+
+                            int documentId = documentsController.Create(document, proxyFile);
+                            int proID = documentsController.Create(kebele, kebeleID);
+
+                            proxy.ProxyDocument = documentId;
+                            proxy.KebeleID = proID;
+
+                            db.Entry(proxy).State = EntityState.Modified;
+                            db.SaveChanges();
+
+                            auditLogsController.RecordLog("Registration of Proxy Document", proxy.ProxyID, "Proxy", proxy.CreatedBy ?? 0, Session["BranchName"].ToString());
+
+                            return RedirectToAction("Index", new { ShID = proxy.ShID });
+                        }
+                        catch (Exception ex)
+                        {
+                            TempData["ErrorMessage"] = "An error occurred while saving the documents. Please try again.";
+                            System.Diagnostics.Debug.WriteLine("Error: " + ex.Message);
+                        }
+                    }
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Files cannot be empty.";
                 }
+
             }
             else
             {
@@ -375,6 +393,8 @@ namespace Shareholder_Management_System.Controllers
                 FullName = proxy.FullName,
                 Nationality = proxy.Nationality,
                 PhoneNo = proxy.PhoneNo,
+                Position = proxy.Position,
+                Department = proxy.Department,
                 PhoneNo2 = proxy.PhoneNo2,
                 StartDate = proxy.StartDate?.ToString("yyyy-MM-dd"),
                 EndDate = proxy.EndDate?.ToString("yyyy-MM-dd"),

@@ -3,6 +3,9 @@
 @{
     ViewBag.Title = "Index";
 }
+@{
+    var userRole = Session["Roles"]?.ToString();
+}
 <!-- SweetAlert2 CDN -->
 
 <script src="~/Scripts/JS/sweetalert.min.js"></script>
@@ -10,40 +13,14 @@
     <script>
         // Store TempData message in a JavaScript variable
         var successMessage = '@TempData["SuccessMessage"]';
-        var errorMessage = '@TempData["ErrorMessage"]';
-
         document.addEventListener("DOMContentLoaded", function () {
             // Display success message if it exists
             if (successMessage) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Approved!',
-                    text: successMessage,
-                    toast: true,
-                    position: 'top',
-                    showConfirmButton: false,
-                    timer: 5000,
-                    timerProgressBar: true,
-                    customClass: {
-                        popup: 'colored-toast success' // Added 'success' class
-                    }
-                });
-            }
-
-            // Display error message if it exists
-            if (errorMessage) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Rejected!',
-                    text: errorMessage,
-                    toast: true,
-                    position: 'top',
-                    showConfirmButton: false,
-                    timer: 5000,
-                    timerProgressBar: true,
-                    customClass: {
-                        popup: 'colored-toast error' // Added 'error' class
-                    }
+                    html: `<p style="font-size: 18px;">${successMessage}</p>`,
+                    confirmButtonText: 'OK',
+                    width: '30rem' // Adjust modal size
                 });
             }
         });
@@ -192,13 +169,13 @@
                                 <text>
                                 [
 
-                                    "@item.Shareholder.FullNameEng",
-                                    "@item.Shareholder1.FullNameEng",
+                                    "@item.Shareholder.FullNameEng" + " " + "(@item.Shareholder.ShareID)",
+                                    "@item.Shareholder1.FullNameEng" + " " + "(@item.Shareholder1.ShareID)",
                                     "@item.TransferID",
                                     "@item.TransferCategory",
                                     "@item.TransferType",
                                     "@item.NumSharesTransferred",
-                                    "@item.PaidAmountForTransfer",
+                                    "@(item.PaidAmountForTransfer.HasValue ? item.PaidAmountForTransfer.Value.ToString("N2") : "0.00")",
                                     "@item.TransferReason",
                                     "@item.DividenedFor",
                                     `@if (item.TransferAuthorizationStatus == "Pending")
@@ -241,7 +218,7 @@
                                             </div>
                                         }
                                         `,*@
-                                   `@if (item.TransferAuthorizationStatus == "Pending")
+                                   `@if (item.TransferAuthorizationStatus == "Pending" && userRole == "Initiator")
                                    {
 
                                     <div style="display: flex; align-items: center;">

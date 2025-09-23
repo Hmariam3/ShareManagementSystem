@@ -12,11 +12,11 @@ using Shareholder_Management_System.Models;
 using System.Net.Mail;
 using System.IO;
 using Shareholder_Management_System.ViewModel;
+using System.DirectoryServices;
 
 namespace Shareholder_Management_System.Controllers
 {
-    [AdminRoleFilter]
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
         private PasswordHash _passwordHasher;
@@ -65,6 +65,7 @@ namespace Shareholder_Management_System.Controllers
             return View(user);
         }
 
+
         // GET: Users/Create
         public ActionResult Create()
         {
@@ -72,45 +73,24 @@ namespace Shareholder_Management_System.Controllers
             return View();
         }
 
-        // GET: Users/SearchBranches
-        public JsonResult SearchBranches(string searchTerm)
-        {
-            // Check if searchTerm is not null or empty
-            if (string.IsNullOrWhiteSpace(searchTerm))
-            {
-                // If no search term, return an empty list
-                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
-            }
-
-            // Search for branches based on the searchTerm
-            var branches = db.Branches
-                             .Where(b => b.BranchName.Contains(searchTerm))
-                             .Select(b => new
-                             {
-                                 Value = b.ID, // This will be the value in the dropdown
-                                 Text = b.BranchName // This will be the displayed name in the dropdown
-                             })
-                             .ToList();
-
-            // Return the result as JSON
-            return Json(branches, JsonRequestBehavior.AllowGet);
-        }
-
-
         // POST: Users/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "UID,FullName,UserName,Password,Status,Role,Branch,CreatedDate")] User user)
         {
             // Check if the username already exists in the database
             var existingUser = db.Users.FirstOrDefault(u => u.UserName == user.UserName);
-
             if (existingUser != null)
             {
-                // If the username exists, show a message and return the view
                 TempData["Message"] = "Username already exists.";
+                ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", user.Branch);
+                return View(user);
+            }
+
+            // Validate LDAP user existence (optional: call LoginController to verify)
+            if (string.IsNullOrWhiteSpace(user.UserName) || string.IsNullOrWhiteSpace(user.FullName))
+            {
+                ModelState.AddModelError("", "Please select a valid user from LDAP.");
                 ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", user.Branch);
                 return View(user);
             }
@@ -118,7 +98,7 @@ namespace Shareholder_Management_System.Controllers
             if (ModelState.IsValid)
             {
                 // Hash the password and set initial user values
-                user.Password = _passwordHasher.HashPassword(user.Password);
+                user.Password = "123456";
                 user.IsFirstLogin = true;
                 user.Locked = 0;
                 user.CreatedDate = DateTime.UtcNow;
@@ -130,25 +110,42 @@ namespace Shareholder_Management_System.Controllers
                 db.Users.Add(user);
                 db.SaveChanges();
 
-                // Call RecordLog method
+                // Record audit log
                 AuditLogsController auditLogsController = new AuditLogsController();
                 auditLogsController.RecordLog("register", user.UID, "User", id, Session["BranchName"].ToString());
 
+                // Send confirmation email (uncomment and configure as needed)
+                // var emailAddress = "hailemariam.kebede@coopbankoromiasc.com";
+                // SendConfirmationEmail(user.UserName, emailAddress);
 
-                //var emailAddress1 = "hailemariam.kebede@coopbankoromiasc.com";
-
-                //// Send a confirmation email
-                //SendConfirmationEmail(user.UserName, emailAddress1);  // Add a method to send the email
-
-                // Success message
                 TempData["Message"] = "User is registered successfully.";
                 return RedirectToAction("Index");
             }
 
-            // If model is not valid, return the form with validation errors
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchName", user.Branch);
             return View(user);
         }
+
+        // GET: Users/SearchBranches
+        public JsonResult SearchBranches(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return Json(new List<object>(), JsonRequestBehavior.AllowGet);
+            }
+
+            var branches = db.Branches
+                             .Where(b => b.BranchName.Contains(searchTerm))
+                             .Select(b => new
+                             {
+                                 Value = b.ID,
+                                 Text = b.BranchName
+                             })
+                             .ToList();
+
+            return Json(branches, JsonRequestBehavior.AllowGet);
+        }
+
 
         // Method to send email
         private void SendConfirmationEmail(string userName, string emailAddress)

@@ -1,0 +1,55 @@
+﻿@model Shareholder_Management_System.Models.Certificate
+
+@{
+    ViewBag.Title = "Revoke Certificate";
+}
+
+<div class="panel">
+    <div class="mb-5">
+        <h5 class="text-lg font-semibold dark:text-white-light">Confirm Revocation</h5>
+    </div>
+
+    <!-- Display TempData messages -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <p>Are you sure you want to revoke the following certificate?</p>
+    <div class="mb-5">
+        <strong>Certificate Number:</strong> @Model.CertNum<br />
+        <strong>Shareholder:</strong> @Model.Shareholder.FullNameEng (@Model.Shareholder.ShareID)<br />
+        <strong>Status:</strong> <span class="badge badge-outline-success">@Model.CertAuthorizationStatus</span><br />
+        <strong>Total Paid Amount:</strong> @Model.TotalPaidupAmount<br />
+        <strong>Payment IDs:</strong> @Model.PaymentIDs
+    </div>
+
+    @using (Html.BeginForm("Revoke", "Certificates", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.CertID)
+
+        <div class="mb-5">
+            @Html.LabelFor(model => model.RevokeReason, "Reason for Revocation (Optional)", new { @class = "control-label" })
+            @Html.TextAreaFor(model => model.RevokeReason, new { @class = "form-input", rows = "4", placeholder = "Enter reason for revocation" })
+            @Html.ValidationMessageFor(model => model.RevokeReason, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="flex gap-4">
+            <button type="submit" class="btn btn-danger">Revoke Certificate</button>
+            @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-secondary" })
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,4 +1,4 @@
-﻿﻿@model Shareholder_Management_System.Models.Payment
+﻿@model Shareholder_Management_System.Models.Payment
 
 
 <style>
@@ -10,6 +10,7 @@
 
 <link rel="stylesheet" type="text/css" href="~/Content/CSS/select2.min.css">
 <script src="~/Scripts/JS/select2.min.js"></script>
+
 
 @{
     ViewBag.Title = "Create Payment";
@@ -32,16 +33,15 @@
                     @*<div class="text-lg font-semibold">Shareholder Details</div>*@
 
                     <div class="mb-5">
-                        <div class="flex items-center">
-
-                            <label for="ShID" class="block dark:text-white-light text-sm font-semibold mb-2">Share Holder</label>
-
-                        </div>
-
-                        @Html.DropDownList("ShID",
-                            new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders1, "Value", "Text"),
-                            htmlAttributes: new { id = "searchable-select" }
-                        )
+                        <label for="ShID" class="block dark:text-white-light text-sm font-semibold mb-2">Share Holder</label>
+                        <select id="shareholderDropdown" name="ShID" class="form-select block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                            <option value="">Select Shareholder</option>
+                            @if (ViewBag.SelectedShId != null)
+                            {
+                                <option value="@ViewBag.SelectedShId" selected>@ViewBag.SelectedShName</option>
+                            }
+                        </select>
+                        @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-xs mt-1" })
                         <span class="text-danger" id="shareholderError"></span>
                     </div>
 
@@ -65,13 +65,20 @@
                                 <!-- Data populated via JavaScript -->
                             </tbody>
                         </table>
+                        <div class="text-danger mt-2" id="subscriptionError"></div>
                     </div>
 
                     <!-- Hidden input to store selected subscription -->
                     @Html.HiddenFor(model => model.SubID, new { @id = "selectedSubID" })
                     @Html.Hidden("UnpaidSubscription", null, new { id = "UnpaidSubscription" })
 
-
+                    <div class="table-responsive mt-4 mb-5" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table-auto w-full border-collapse border border-gray-300 mt-8" id="subscriptionTable">
+                            <!-- Table content -->
+                        </table>
+                        <div class="text-danger mt-2" id="subscriptionError"></div>
+                        <span class="text-danger" id="pendingPaymentError"></span> <!-- Add this -->
+                    </div>
 
                 </div>
             </div>
@@ -169,24 +176,24 @@
                             <div class="space-y-4">
 
                                 @*<div class="form-group mb-5">
-                                    <div class="flex items-center">
+                                        <div class="flex items-center">
 
-                                        @Html.Label("Source Of Funds", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
+                                            @Html.Label("Source Of Funds", htmlAttributes: new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
 
-                                    </div>
+                                        </div>
 
-                                    @Html.DropDownListFor(model => model.SourceOfFunds,
-                                        new SelectList(new List<SelectListItem>
-                                        {
-                                            new SelectListItem { Text = "Bank Account", Value = "Bank Account" },
-                                            new SelectListItem { Text = "Dividend", Value = "Dividend" },
-                                            new SelectListItem { Text = "Bonus", Value = "Bonus" }
-                                        }, "Value", "Text"),
-                                        "Select Source of funds",
-                                        new { @class = "form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 hover-style", @id = "sourceOfFunds" })  Added ID for JavaScript 
-                                    @Html.ValidationMessageFor(model => model.SourceOfFunds, "", new { @class = "text-danger" })
+                                        @Html.DropDownListFor(model => model.SourceOfFunds,
+                                            new SelectList(new List<SelectListItem>
+                                            {
+                                                new SelectListItem { Text = "Bank Account", Value = "Bank Account" },
+                                                new SelectListItem { Text = "Dividend", Value = "Dividend" },
+                                                new SelectListItem { Text = "Bonus", Value = "Bonus" }
+                                            }, "Value", "Text"),
+                                            "Select Source of funds",
+                                            new { @class = "form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 hover-style", @id = "sourceOfFunds" })  Added ID for JavaScript
+                                        @Html.ValidationMessageFor(model => model.SourceOfFunds, "", new { @class = "text-danger" })
 
-                                </div>*@
+                                    </div>*@
                                 <div class="mb-5">
                                     <div class="flex items-center">
 
@@ -273,36 +280,71 @@
     </script>*@
 
 <!-- script -->
-<script>
-    var upload = new FileUploadWithPreview('myFirstImage', {
-        images: {
-            baseImage: '~/assets/images/file-preview.png',
-            backgroundImage: '',
-        },
-    });
-</script>
+@*<script>
+        var upload = new FileUploadWithPreview('myFirstImage', {
+            images: {
+                baseImage: '~/assets/images/file-preview.png',
+                backgroundImage: '',
+            },
+        });
+    </script>*@
 
 
 
 <script>
     $(document).ready(function () {
-        $('.payment-field').on('input', function () {
+        function validatePayment() {
             var total = 0;
             $('.payment-field').each(function () {
                 total += parseFloat($(this).val()) || 0;
             });
-            $('#PaidAmount').text(total.toFixed(2) + 'ETB');
-            $('#PaidAmountHidden').val(total.toFixed(2)); // Set hidden field value
-            // Validate against UnpaidSubscription
+
+            // Format with commas and two decimal places for display
+            $('#PaidAmount').text(total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ETB');
+            // Keep unformatted value for hidden input
+            $('#PaidAmountHidden').val(total.toFixed(2));
+
             var unpaidSubscription = parseFloat($('#UnpaidSubscription').val()) || 0;
+            var errorMessage = '';
+
             if (total > unpaidSubscription) {
-                $('#PaidAmount').next('.text-danger').text('Paid Amount cannot exceed Unpaid Subscription.');
+                errorMessage = 'Paid Amount cannot exceed Unpaid Subscription.';
+                $('#submitButton').prop('disabled', true); // Disable submit button
             } else {
-                $('#PaidAmount').next('.text-danger').text('');
+                $('#submitButton').prop('disabled', false); // Enable submit button
+            }
+
+            $('#PaidAmount').next('.text-danger').text(errorMessage);
+        }
+
+        // Run validation when input changes
+        $('.payment-field').on('input', function () {
+            validatePayment();
+        });
+
+        // Ensure form submission works correctly
+        $('form').on('submit', function (e) {
+            var totalPaid = parseFloat($('#PaidAmountHidden').val()) || 0;
+            var unpaidSubscription = parseFloat($('#UnpaidSubscription').val()) || 0;
+
+            if (totalPaid > unpaidSubscription) {
+
+                alert('Paid Amount cannot exceed Unpaid Subscription.');
+                e.preventDefault(); // Prevent form submission
+                validatePayment();
+            } else {
+                $('#submitButton').prop('disabled', false); // Ensure the button is enabled before submission
+                return true; // Allow the form to submit
             }
         });
+
+        // Run validation on page load in case of pre-filled values
+        validatePayment();
     });
 </script>
+
+
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -311,52 +353,65 @@
 
 
 <script>
-    $(document).ready(function () {
-        // Initialize Select2 with custom search handling
-        $('#searchable-select').select2({
-            placeholder: "Select a Shareholder",
-            allowClear: true,
-            width: '100%',
-            matcher: function (params, data) {
-                if ($.trim(params.term) === '') {
-                    return data;
-                }
-
-                // Match against each part of the search term
-                const terms = params.term.toLowerCase().split(' ');
-                const text = data.text.toLowerCase();
-
-                return terms.every(term => text.includes(term)) ? data : null;
-            }
-        });
-
-        // Trigger when a shareholder is selected
-        $('#searchable-select').on('change', function () {
-            var shareholderId = $(this).val();
-            if (shareholderId) {
-                fetchSubscriptions(shareholderId);
-            } else {
-                $('#subscriptionTable tbody').empty().append(
-                    '<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">Select a shareholder to view subscriptions.</td></tr>'
-                );
-            }
-        });
-
-        // Validate PaidAmount against UnpaidSubscription
-        $('#PaidAmount').on('input', function () {
-            var paidAmount = parseFloat($(this).val()); // Get the PaidAmount
-            var unpaidSubscription = parseFloat($('#UnpaidSubscription').val()); // Get the UnpaidSubscription
-
-            // Check if PaidAmount is greater than UnpaidSubscription
-            if (paidAmount > unpaidSubscription) {
-                $('#PaidAmount').next('.text-danger').text('Paid Amount cannot be greater than Unpaid Subscription.');
-            } else {
-                $('#PaidAmount').next('.text-danger').text(''); // Clear the error message
-            }
-        });
+$(document).ready(function () {
+    // Initialize Select2 for shareholder dropdown
+    $('#shareholderDropdown').select2({
+        placeholder: "Select a Shareholder",
+        allowClear: true,
+        width: '100%',
+        minimumInputLength: 3,
+        ajax: {
+            url: '@Url.Action("SearchShareholders", "Payments")',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.items.map(function (item) {
+                        return {
+                            id: item.id,
+                            text: item.text
+                        };
+                    }),
+                    pagination: {
+                        more: data.hasMore
+                    }
+                };
+            },
+            cache: true
+        }
     });
 
-    // Function to fetch subscriptions for the selected shareholder
+    // Pre-select shareholder if provided
+    @if (ViewBag.SelectedShId != null)
+    {
+        <text>
+        $('#shareholderDropdown').val('@ViewBag.SelectedShId').trigger('change');
+        </text>
+    }
+
+    // Fetch subscriptions when shareholder changes
+    $('#shareholderDropdown').on('change', function () {
+        var shareholderId = $(this).val();
+        if (shareholderId) {
+            fetchSubscriptions(shareholderId);
+        } else {
+            $('#subscriptionTable tbody').empty().append(
+                '<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">Select a shareholder to view subscriptions.</td></tr>'
+            );
+            $('#selectedSubID').val('');
+            $('#UnpaidSubscription').val('');
+            $('#submitButton').prop('disabled', true);
+        }
+    });
+
+    // Function to fetch subscriptions
     function fetchSubscriptions(shareholderId) {
         $.ajax({
             url: '@Url.Action("GetSubscriptionsByShareholder", "Payments")',
@@ -364,139 +419,289 @@
             data: { shId: shareholderId },
             success: function (subscriptions) {
                 var tbody = $('#subscriptionTable tbody');
-                tbody.empty(); // Clear the table before populating new data
+                tbody.empty();
 
                 if (subscriptions.length > 0) {
                     $.each(subscriptions, function (index, subscription) {
                         tbody.append(
                             '<tr>' +
-                            '<td class="px-4 py-2"><input type="radio" class="form-radio" name="selectedSubscription" value="' + subscription.SubID + '" data-unpaid="' + subscription.UnpaidSubscription + '"></td>' +
+                            '<td class="px-4 py-2"><input type="radio" class="form-radio" name="selectedSubscription" value="' + subscription.SubID + '" data-unpaid="' + subscription.UnpaidSubscription + '" data-pending="' + subscription.HasPendingOrRejected + '"></td>' +
                             '<td class="px-4 py-2">' + subscription.SubID + '</td>' +
                             '<td class="px-4 py-2">' + subscription.ShID + '</td>' +
                             '<td class="px-4 py-2">' + subscription.SubNumShares + '</td>' +
-                            '<td class="px-4 py-2">' + subscription.SubAmount + '</td>' +
-                            '<td class="px-4 py-2">' + subscription.PaidSubscription + '</td>' +
-                            '<td class="px-4 py-2">' + subscription.UnpaidSubscription + '</td>' +
+                            '<td class="px-4 py-2">' + (subscription.SubAmount ? parseFloat(subscription.SubAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00') + '</td>' +
+                            '<td class="px-4 py-2">' + (subscription.PaidSubscription ? parseFloat(subscription.PaidSubscription).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00') + '</td>' +
+                            '<td class="px-4 py-2">' + (subscription.UnpaidSubscription ? parseFloat(subscription.UnpaidSubscription).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00') + '</td>' +
                             '<td class="px-4 py-2">' + subscription.SubAuthorizationStatus + '</td>' +
                             '<td class="px-4 py-2">' + subscription.SubStatus + '</td>' +
                             '</tr>'
                         );
                     });
 
-                    // Handle radio button selection
+                    // Handle subscription selection
                     $('input[name="selectedSubscription"]').on('change', function () {
                         var selectedSubID = $(this).val();
                         var unpaidSubscription = $(this).data('unpaid');
-                        $('#selectedSubID').val(selectedSubID); // Set hidden input value
-                        $('#UnpaidSubscription').val(unpaidSubscription); // Set hidden input value for UnpaidSubscription
+                        var hasPending = $(this).data('pending') === true || $(this).data('pending') === 'true';
+
+                        $('#selectedSubID').val(selectedSubID);
+                        $('#UnpaidSubscription').val(unpaidSubscription);
+
+                        if (hasPending) {
+                            $('#pendingPaymentError').text('Please approve the previous payment of this Subscription before submitting a new one.');
+                            $('#submitButton').prop('disabled', true);
+                        } else {
+                            $('#pendingPaymentError').text('');
+                            $('#submitButton').prop('disabled', false);
+                            validateForm(false); // Re-run other validations
+                        }
                     });
                 } else {
                     tbody.append(
                         '<tr><td colspan="9" class="px-4 py-2 text-center text-gray-500">No subscriptions found for this shareholder.</td></tr>'
                     );
+                    $('#selectedSubID').val('');
+                    $('#UnpaidSubscription').val('');
+                    $('#submitButton').prop('disabled', true);
                 }
             },
             error: function () {
                 alert('Error retrieving subscriptions.');
+                $('#selectedSubID').val('');
+                $('#UnpaidSubscription').val('');
+                $('#submitButton').prop('disabled', true);
             }
         });
     }
+});
 </script>
 
 <script>
-    $(document).ready(function () {
-        $('form').on('submit', function (event) {
-            let isValid = true;
+$(document).ready(function () {
+    const $form = $('form');
+    const $submitButton = $('#submitButton');
+    let hasPendingOrRejectedPayment = false;
 
-            // Validate Shareholder dropdown
-            if ($('#searchable-select').val() === "") {
-                isValid = false;
-                $('#searchable-select').siblings('.text-danger').text('Please select a shareholder.');
-            } else {
-                $('#searchable-select').siblings('.text-danger').text('');
-            }
+    // Load used reference numbers from sessionStorage or initialize empty array
+    let usedReferenceNumbers = JSON.parse(sessionStorage.getItem('usedReferenceNumbers')) || [];
 
-            // Validate Source of Funds dropdown
-            if ($('#sourceOfFunds').val() === "") {
-                isValid = false;
-                $('#sourceOfFunds').siblings('.text-danger').text('Please select a source of funds.');
-            } else {
-                $('#sourceOfFunds').siblings('.text-danger').text('');
-            }
+    // Debounce function to limit AJAX calls
+    function debounce(func, wait) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
 
-            // Validate Reference Number
-            if ($('#ReferenceNum').val().trim() === "") {
-                isValid = false;
-                $('#ReferenceNum').siblings('.text-danger').text('Please provide a reference number.');
-            } else {
-                $('#ReferenceNum').siblings('.text-danger').text('');
-            }
+    function validateForm(showErrors = false) {
+        let isValid = true;
 
-            // Validate Date of Payment
-            const paymentDateValue = $('#payment-date-picker').val();
-            const paymentDate = new Date(paymentDateValue);
+        function clearError(selector) {
+            $(selector).siblings('.text-danger').text('');
+        }
 
-            if (paymentDateValue === "") {
-                isValid = false;
-                $('#payment-date-picker').siblings('.text-danger').text('Please select a payment date.');
-            } else if (paymentDate > new Date()) {
-                isValid = false;
-                $('#payment-date-picker').siblings('.text-danger').text('Payment date cannot be in the future.');
-            } else {
-                $('#payment-date-picker').siblings('.text-danger').text('');
-            }
+        function setError(selector, message) {
+            $(selector).siblings('.text-danger').text(message);
+        }
 
-            //// Validate the uploaded file
-            //const uploadedFile = $("input[name='uploadedFile']")[0].files[0];
-            //const uploadedFileErrorElement = $('#uploadedFileError');
+        // Validate Shareholder dropdown
+        if ($('#shareholderDropdown').val() === "" || $('#shareholderDropdown').val() === null) {
+            isValid = false;
+            if (showErrors) setError('#shareholderDropdown', 'Please select a shareholder.');
+        } else {
+            clearError('#shareholderDropdown');
+        }
 
-            //if (!uploadedFile) {
-            //    isValid = false;
-            //    uploadedFileErrorElement.text('Please upload a document.');
-            //} else {
-            //    uploadedFileErrorElement.text('');
-            //}
+        // Validate Subscription
+        if ($('#subscriptionTable tbody input[type="radio"]:checked').length === 0) {
+            isValid = false;
+            if (showErrors) $('#subscriptionError').text('Please select a subscription.');
+        } else {
+            $('#subscriptionError').text('');
+        }
 
-            // Validate Payment Mode fields
-            const paymentFields = ['cashAmount', 'AccountAmount', 'cpoAmount', 'dividendAmount', 'chequeAmount', 'RTGSamount', 'Bonusamount'];
-            let isPaymentFieldFilled = false; // Flag to check if any payment field is filled
+        // Check Pending/Rejected Payments
+        if (hasPendingOrRejectedPayment) {
+            isValid = false;
+            if (showErrors) $('#pendingPaymentError').text('Approve the previous payment before submitting a new one.');
+        } else {
+            $('#pendingPaymentError').text('');
+        }
 
-            paymentFields.forEach(function (field) {
-                const value = parseFloat($(`input[name="${field}"]`).val()) || 0;
-                // Check if any field has a value greater than 0 (i.e., is filled)
-                if (value > 0) {
-                    isPaymentFieldFilled = true;
+        // Validate Reference Number (client-side only in validateForm)
+        const referenceNum = $('#ReferenceNum').val().trim();
+        if (referenceNum === "") {
+            isValid = false;
+            if (showErrors) setError('#ReferenceNum', 'Please provide a reference number.');
+        } else if (usedReferenceNumbers.includes(referenceNum)) {
+            //isValid = false;
+            //if (showErrors) setError('#ReferenceNum', 'This reference number has already been used in this session.');
+        } else {
+            clearError('#ReferenceNum');
+        }
+
+        // Validate Date of Payment
+        const paymentDateValue = $('#payment-date-picker').val();
+        const paymentDate = new Date(paymentDateValue);
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); // Set to tomorrow
+        tomorrow.setHours(0, 0, 0, 0); // Normalize to midnight
+
+        // Validate tomorrow's date
+        if (isNaN(tomorrow.getTime())) {
+            isValid = false;
+            if (showErrors) setError('#payment-date-picker', 'Invalid system date.');
+            return; // Exit early if tomorrow is invalid
+        }
+
+        // Validate payment date
+        if (paymentDateValue === "") {
+            isValid = false;
+            if (showErrors) setError('#payment-date-picker', 'Please select a payment date.');
+        } else if (isNaN(paymentDate.getTime())) {
+            isValid = false;
+            if (showErrors) setError('#payment-date-picker', 'Invalid payment date.');
+        } else if (paymentDate > tomorrow) {
+            isValid = false;
+            if (showErrors) setError('#payment-date-picker', 'Payment date cannot be after tomorrow.');
+        } else {
+            clearError('#payment-date-picker');
+        }
+
+        // Validate Uploaded File
+        const uploadedFile = $("input[name='uploadedFile']")[0].files[0];
+        const maxFileSize = 2 * 1024 * 1024;
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/pjp',
+            'image/apng', 'image/jfif', 'image/pdf', 'image/pjpeg', 'image/png', 'image/jpg'];
+
+        if (!uploadedFile) {
+            isValid = false;
+            if (showErrors) $('#uploadedFileError').text('Please upload a document.');
+        } else if (uploadedFile.size > maxFileSize) {
+            isValid = false;
+            if (showErrors) $('#uploadedFileError').text('File size must not exceed 2 MB.');
+        } else if (!allowedTypes.includes(uploadedFile.type)) {
+            isValid = false;
+            if (showErrors) $('#uploadedFileError').text('Only PDF or Image(JPG, JPEG, or PNG ...) files are allowed.');
+        } else {
+            $('#uploadedFileError').text('');
+        }
+
+        // Validate Payment Mode fields
+        const paymentFields = ['cashAmount', 'AccountAmount', 'cpoAmount', 'dividendAmount', 'chequeAmount', 'RTGSamount', 'Bonusamount'];
+        let isPaymentFieldFilled = paymentFields.some(field => parseFloat($(`input[name="${field}"]`).val()) > 0);
+
+        if (!isPaymentFieldFilled) {
+            isValid = false;
+            if (showErrors) $('#paymentFieldsError').text('At least one payment mode is required.');
+        } else {
+            $('#paymentFieldsError').text('');
+        }
+
+        return isValid;
+    }
+
+    function checkExistingPayment(subId) {
+        $.ajax({
+            url: '@Url.Action("CheckExistingPayment", "Payments")',
+            type: 'GET',
+            data: { subId: subId },
+            success: function (response) {
+                hasPendingOrRejectedPayment = response.hasPendingOrRejected;
+                if (hasPendingOrRejectedPayment) {
+                    $('#pendingPaymentError').text('Approve the previous payment before submitting a new one.');
+                    $submitButton.prop('disabled', true);
+                } else {
+                    $('#pendingPaymentError').text('');
+                    validateForm(false);
                 }
-            });
-
-            // If no payment field is filled, show error
-            if (!isPaymentFieldFilled) {
-                isValid = false;
-                $('#paymentFieldsError').text('At least one payment mode is required.');
-            } else {
-                $('#paymentFieldsError').text('');
-            }
-
-            // Prevent form submission if validation fails
-            if (!isValid) {
-                event.preventDefault();
+            },
+            error: function () {
+                $('#pendingPaymentError').text('Error checking payment status. Please try again.');
+                hasPendingOrRejectedPayment = true;
+                $submitButton.prop('disabled', true);
             }
         });
-    });
-</script>
-<script>
-    document.querySelector('#paymentForm').addEventListener('submit', function (e) {
-        const submitButton = document.querySelector('#paymentForm button[type="submit"]');
-        submitButton.disabled = true; // Disable the button
-        submitButton.textContent = 'Submitting...'; // Change button text
+    }
 
-        // Use setTimeout to allow the form to submit and handle validation
-        setTimeout(function () {
-            // Check if the form is still visible (i.e., submission failed)
-            if (document.querySelector('#paymentForm').checkValidity() === false) {
-                submitButton.disabled = false; // Re-enable the button
-                submitButton.textContent = 'Submit Payment'; // Revert button text
+    // Real-time server-side validation for ReferenceNum
+    const checkReferenceNum = debounce(function (referenceNum) {
+        if (referenceNum === "") {
+            $('#ReferenceNum').siblings('.text-danger').text('Please provide a reference number.');
+            return;
+        }
+        if (usedReferenceNumbers.includes(referenceNum)) {
+            //$('#ReferenceNum').siblings('.text-danger').text('This reference number has already been used in this session.');
+            //return;
+        }
+        $.ajax({
+            url: '@Url.Action("CheckReferenceNum", "Payments")',
+            type: 'GET',
+            data: { referenceNum: referenceNum },
+            success: function (response) {
+                if (!response.isUnique) {
+                    $('#ReferenceNum').siblings('.text-danger').text('This reference number has already been used.');
+                } else {
+                    $('#ReferenceNum').siblings('.text-danger').text('');
+                }
+            },
+            error: function () {
+                $('#ReferenceNum').siblings('.text-danger').text('Error checking reference number.');
             }
-        }, 0);
+        });
+    }, 500); // Wait 500ms after typing stops
+
+    $('#ReferenceNum').on('input change', function () {
+        const referenceNum = $(this).val().trim();
+        checkReferenceNum(referenceNum);
+        validateForm(false); // Update isValid for other fields
+    });
+
+    // Real-time validation for other fields (no immediate errors)
+    $('#shareholderDropdown, #payment-date-picker, input[name="uploadedFile"], #subscriptionTable input[type="radio"]')
+        .on('input change', function () {
+            validateForm(false);
+        });
+
+    // Payment mode fields
+    $('input[name="cashAmount"], input[name="AccountAmount"], input[name="cpoAmount"], input[name="dividendAmount"], input[name="chequeAmount"], input[name="RTGSamount"], input[name="Bonusamount"]')
+        .on('input change', function () {
+            validateForm(false);
+        });
+
+    $('#subscriptionTable input[type="radio"]').on('change', function () {
+        checkExistingPayment($(this).val());
+    });
+
+    // Form submission
+    $form.on('submit', function (event) {
+        event.preventDefault();
+        if (validateForm(true)) {
+            const referenceNum = $('#ReferenceNum').val().trim();
+            usedReferenceNumbers.push(referenceNum); // Add to used list
+            sessionStorage.setItem('usedReferenceNumbers', JSON.stringify(usedReferenceNumbers)); // Save to sessionStorage
+            $submitButton.prop('disabled', true).text('Submitting...');
+            $form.off('submit').submit();
+        }
+    });
+
+    // Initial validation on page load
+    validateForm(false);
+});
+</script>
+
+
+<script>
+    let isFormSubmitted = false;
+
+    $(document).ready(function () {
+        $('form').on('submit', function () {
+            if (isFormSubmitted) {
+                return false; // Prevent duplicate submission
+            }
+            isFormSubmitted = true; // Set the flag
+        });
     });
 </script>

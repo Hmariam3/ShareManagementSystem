@@ -4,10 +4,32 @@
     ViewBag.Title = "Create";
 }
 
-<!-- Include Select2 CSS and JS -->
 <link href="~/Scripts/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/datatables.min.css" rel="stylesheet" />
 <script src="~/Scripts/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/select2/js/select2.min.js"></script>
+<script src="~/Scripts/datatables/datatables.min.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<!-- Include SweetAlert Library -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/sweetalert2.min.css">
+<script src="~/js/sweetalert.js"></script>
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+<link href="~/css/tailwind.min.css" rel="stylesheet" />
+<!-- CSS Includes -->
+<link rel="stylesheet" href="~/css/all.min.css" />
+<link rel="stylesheet" href="~/css/select2.min.css" />
+<link rel="stylesheet" href="~/css/jquery.dataTables.min.css" />
 
 <style>
     html, body {
@@ -22,37 +44,37 @@
     }
 
     .panel {
-        width: 900px;
-        max-width: 900px;
+        width: 1200px;
+        max-width: 1000px;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         background-color: white;
     }
+
+    .select2-container {
+        width: 100% !important;
+    }
 </style>
-@{
-    var successMessage = TempData["SuccessMessage"] as string;
-    var errorMessage = TempData["ErrorMessage"] as string;
-}
 
 <!-- Pop-up Modal -->
-@if (!string.IsNullOrEmpty(successMessage) || !string.IsNullOrEmpty(errorMessage))
+@if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
 {
     <div id="popup-message" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md text-center">
             <!-- Success Message -->
-            @if (!string.IsNullOrEmpty(successMessage))
+            @if (TempData["SuccessMessage"] != null)
             {
                 <div class="mb-4 p-4 text-green-800 bg-green-200 rounded">
-                    <p class="text-lg font-semibold">@successMessage</p>
+                    <p class="text-lg font-semibold">@TempData["SuccessMessage"]</p>
                 </div>
             }
 
             <!-- Error Message -->
-            @if (!string.IsNullOrEmpty(errorMessage))
+            @if (TempData["ErrorMessage"] != null)
             {
                 <div class="mb-4 p-4 text-red-800 bg-red-200 rounded">
-                    <p class="text-lg font-semibold">@errorMessage</p>
+                    <p class="text-lg font-semibold">@TempData["ErrorMessage"]</p>
                 </div>
             }
 
@@ -62,66 +84,46 @@
             </button>
         </div>
     </div>
-
-    <!-- JavaScript for Pop-up Control -->
-    <script>
-        document.getElementById("close-popup").addEventListener("click", function () {
-            document.getElementById("popup-message").style.display = "none";
-        });
-
-        // Automatically hide the pop-up after 5 seconds
-        setTimeout(function () {
-            document.getElementById("popup-message").style.display = "none";
-        }, 1000);
-    </script>
 }
 
 <div class="container">
-
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
 
         <div class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-1 mt-20">
             <div class="panel">
-                @if (TempData["SuccessMessage"] != null)
-                {
-                    <div class="success-message font-semibold">
-                        @TempData["SuccessMessage"]
-                    </div>
-                }
-
                 <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
                     <h5 class="text-lg font-semibold dark:text-white-light uppercase" style="padding:7px;">Create Subscription</h5>
                 </div>
 
                 <!-- Searchable Dropdown for Shareholder -->
                 <div class="mb-5 flex flex-wrap">
-                    <!-- Searchable Dropdown for Shareholder -->
                     <div class="flex-1 mr-2">
                         <label>Shareholder Name<span style="color:red">*</span></label>
                         <div class="relative">
-                            @Html.DropDownList("ShID", null, "Select Shareholder", new { @class = "form-input block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", @required = "required", @id = "shareholderDropdown" })
+                            <select id="ShID" name="ShID" class="form-input block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required="required"></select>
                             @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-xs mt-1" })
                         </div>
                     </div>
 
-                    <!-- Other Form Fields -->
+                    <!-- Number of Shares -->
                     <div class="flex-1 ml-2">
                         <label>Number of Share Sub <span style="color:red">*</span></label>
                         <div class="col-md-10">
                             @Html.EditorFor(model => model.SubNumShares, new { htmlAttributes = new { @class = "form-input", @required = "required", @placeholder = "Enter Number of Shares", min = "1" } })
-                            @Html.ValidationMessageFor(model => model.SubNumShares, "", new { @class = "text-danger" })
+                            @Html.ValidationMessageFor(model => model.SubNumShares, "", new { @class = "text-red-500 text-xs mt-1" })
                         </div>
                     </div>
                 </div>
+
                 <div class="flex flex-wrap mb-5">
                     <!-- Subscription Due Date -->
                     <div class="flex-1 mr-2">
                         <label>Subscription Due Date <span style="color:red">*</span></label>
                         <div class="col-md-10">
                             @Html.EditorFor(model => model.PaymentDueDate, new { htmlAttributes = new { type = "date", @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @required = "required" } })
-                            @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-danger" })
+                            @Html.ValidationMessageFor(model => model.PaymentDueDate, "", new { @class = "text-red-500 text-xs mt-1" })
                         </div>
                     </div>
 
@@ -130,19 +132,18 @@
                         <label>Premium</label>
                         <div class="col-md-10">
                             @Html.EditorFor(model => model.Premium, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Premium Amount" } })
-                            @Html.ValidationMessageFor(model => model.Premium, "", new { @class = "text-danger" })
+                            @Html.ValidationMessageFor(model => model.Premium, "", new { @class = "text-red-500 text-xs mt-1" })
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-5">
-                    <label>Remark </label>
+                    <label>Remark</label>
                     <div class="col-md-10">
                         @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Remark" } })
-                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-red-500 text-xs mt-1" })
                     </div>
                 </div>
-
 
                 <!-- Submit Button -->
                 <button type="submit" class="btn btn-primary mt-6 mx-auto">Submit</button>
@@ -154,21 +155,43 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Initialize Select2 for the dropdown
-            $('#shareholderDropdown').select2({
-                placeholder: "Select Shareholder",
+            // Initialize Select2 for the shareholder dropdown
+            $('#ShID').select2({
+                placeholder: "Search for a shareholder",
                 allowClear: true,
-                width: '100%' // Ensures the dropdown is responsive
+                width: '100%',
+                minimumInputLength: 3,
+                ajax: {
+                    url: '@Url.Action("SearchShareholders", "Subscribtions")',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            term: params.term || '',
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        return {
+                            results: data.items,
+                            pagination: { more: data.hasMore }
+                        };
+                    },
+                    cache: true
+                }
             });
 
+            // Handle popup close button
+            $('#close-popup').on('click', function () {
+                $('#popup-message').hide();
+            });
 
+            // Automatically hide the popup after 5 seconds
+            if ($('#popup-message').length) {
+                setTimeout(function () {
+                    $('#popup-message').hide();
+                }, 1000);
+            }
         });
     </script>
-
-    <style>
-        /* Ensure the Select2 dropdown uses the full width */
-        .select2-container {
-            width: 100% !important;
-        }
-    </style>
 }

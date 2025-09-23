@@ -22,6 +22,7 @@ namespace Shareholder_Management_System.Models
             this.Blockeds1 = new HashSet<Blocked>();
             this.Certificates = new HashSet<Certificate>();
             this.Certificates1 = new HashSet<Certificate>();
+            this.Certificates2 = new HashSet<Certificate>();
             this.Dividends = new HashSet<Dividend>();
             this.Dividends1 = new HashSet<Dividend>();
             this.DividenedDetails = new HashSet<DividenedDetail>();
@@ -63,6 +64,8 @@ namespace Shareholder_Management_System.Models
         public virtual ICollection<Certificate> Certificates { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Certificate> Certificates1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Certificate> Certificates2 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Dividend> Dividends { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

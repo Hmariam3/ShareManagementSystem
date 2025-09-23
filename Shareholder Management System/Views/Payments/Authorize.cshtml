@@ -17,31 +17,31 @@
             <!-- Approve Form -->
             @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post, new { id = "approveForm" }))
             {
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="action" value="approve" />
-                <input type="hidden" name="id" value="@Model.PayID" />
-                <button type="button" onclick="showAlert('approve')" class="btn btn-success gap-2 mt-6">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
-                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
-                    </svg>
-                    Approve
-                </button>
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="action" value="approve" />
+            <input type="hidden" name="id" value="@Model.PayID" />
+            <button type="button" onclick="showAlert('approve')" class="btn btn-success gap-2 mt-6">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                    <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                </svg>
+                Approve
+            </button>
             }
 
             <!-- Reject Form -->
             @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post, new { id = "rejectForm" }))
             {
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="action" value="reject" />
-                <input type="hidden" name="id" value="@Model.PayID" />
-                <button type="button" onclick="showAlert('reject')" class="btn btn-danger mt-6">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
-                        <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
-                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
-                    </svg>
-                    Reject
-                </button>
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="action" value="reject" />
+            <input type="hidden" name="id" value="@Model.PayID" />
+            <button type="button" onclick="showAlert('reject')" class="btn btn-danger mt-6">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                    <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                </svg>
+                Reject
+            </button>
             }
         </div>
 
@@ -155,43 +155,43 @@
 
 
             @*<p>
-                    @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post))
-                    {
-                        @Html.AntiForgeryToken()
-                        <div class="flex justify-center mt-5">
-                            <div>
-                                <div class="flex justify-between">
-                                    @if (Model.PaymentAuthorizationStatus == "Approved")
-                                    {
-                                        <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
-                                    }
-                                    else
-                                    {
-                                        <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
-                                    }
-                                </div>
-                            </div>
-
-                            <div>
-                                <div class="flex justify-between" style="margin-left:5px">
-                                    @if (Model.PaymentAuthorizationStatus == "Rejected")
-                                    {
-                                        <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
-                                        <button type="submit" class="btn btn-danger mt-6" disabled>Approved</button>
-                                    }
-                                    else
-                                    {
-                                        <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
-                                    }
-                                </div>
-                            </div>
+                @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post))
+                {
+                @Html.AntiForgeryToken()
+                <div class="flex justify-center mt-5">
+                    <div>
+                        <div class="flex justify-between">
+                            @if (Model.PaymentAuthorizationStatus == "Approved")
+                            {
+                            <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
+                            }
+                            else
+                            {
+                            <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
+                            }
                         </div>
+                    </div>
 
-                        <a href="@Url.Action("Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
-                            Back To List
-                        </a>
-                    }
-                </p>*@
+                    <div>
+                        <div class="flex justify-between" style="margin-left:5px">
+                            @if (Model.PaymentAuthorizationStatus == "Rejected")
+                            {
+                            <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
+                            <button type="submit" class="btn btn-danger mt-6" disabled>Approved</button>
+                            }
+                            else
+                            {
+                            <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <a href="@Url.Action(" Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
+                    Back To List
+                </a>
+                }
+            </p>*@
 
         </div>
 
@@ -250,174 +250,174 @@
 
 @*<h2>Authorize</h2>
 
-    <div>
-        <h4>Payment</h4>
-        <hr />
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.PaymentMode)
-            </dt>
+<div>
+    <h4>Payment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentMode)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.PaymentMode)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.PaymentMode)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.PaidAmount)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.PaidAmount)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.PaidAmount)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.PaidAmount)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.BlockedAmount)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.BlockedAmount)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.BlockedAmount)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.BlockedAmount)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.ReferenceNum)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.ReferenceNum)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.ReferenceNum)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.ReferenceNum)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.PaymentDate)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentDate)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.PaymentDate)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.PaymentDate)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.CreationDate)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.CreationDate)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.PaymentAuthorizationStatus)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.PaymentAuthorizationStatus)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.AuthorizationDate)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.AuthorizationDate)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.AuthorizationDate)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.AuthorizationDate)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Remark)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Remark)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Remark)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Remark)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Branch1.BranchCode)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Branch1.BranchCode)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Branch1.BranchCode)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Branch1.BranchCode)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Document.DocName)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Document.DocName)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Document.DocName)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Document.DocName)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Shareholder.ShareID)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder.ShareID)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Shareholder1.ShareID)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Shareholder1.ShareID)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.Subscribtion.SubStatus)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.Subscribtion.SubStatus)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.User.FullName)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FullName)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.User.FullName)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.User.FullName)
+        </dd>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.User1.FullName)
-            </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.User1.FullName)
+        </dt>
 
-            <dd>
-                @Html.DisplayFor(model => model.User1.FullName)
-            </dd>
+        <dd>
+            @Html.DisplayFor(model => model.User1.FullName)
+        </dd>
 
-        </dl>
-    </div>
-    <p>
-        @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-            <div class="flex justify-center mt-5">
-                <div>
-                    <div class="flex justify-between">
-                        @if (Model.PaymentAuthorizationStatus == "Approved")
-                        {
-                            <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
-                        }
-                        else
-                        {
-                            <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
-                        }
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between" style="margin-left:5px">
-                        @if (Model.PaymentAuthorizationStatus == "Rejected")
-                        {
-                            <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
-                        }
-                        else
-                        {
-                            <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
-                        }
-                    </div>
-                </div>
+    </dl>
+</div>
+<p>
+    @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post))
+    {
+    @Html.AntiForgeryToken()
+    <div class="flex justify-center mt-5">
+        <div>
+            <div class="flex justify-between">
+                @if (Model.PaymentAuthorizationStatus == "Approved")
+                {
+                <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
+                }
+                else
+                {
+                <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
+                }
             </div>
+        </div>
 
-            <a href="@Url.Action("Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
-                Back To List
-            </a>
-        }
-    </p>*@
+        <div>
+            <div class="flex justify-between" style="margin-left:5px">
+                @if (Model.PaymentAuthorizationStatus == "Rejected")
+                {
+                <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
+                }
+                else
+                {
+                <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <a href="@Url.Action(" Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
+        Back To List
+    </a>
+    }
+</p>*@

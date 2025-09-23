@@ -28,17 +28,17 @@
             <div class="relative w-full">
                 @using (Html.BeginForm("Create", "Certificates", FormMethod.Post))
                 {
-                    @Html.AntiForgeryToken()
-                    <div x-data="search">
-                        <div>
-                            <label for="shid">Shareholder</label>
-                            @Html.DropDownList("ShID",
-                                new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                htmlAttributes: new { id = "seachable-select", required = "required" }
-                            )
-                            @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-danger" })
+                    <!-- Display TempData message if it exists -->
+                    if (TempData["ErrorMessage"] != null)
+                    {
+                        <div style="color: red; margin-bottom: 10px;">
+                            @TempData["ErrorMessage"]
                         </div>
-                    </div>
+                    }
+                    @Html.AntiForgeryToken()
+                    <label for="ShID">Shareholder</label>
+                    <select id="ShID" name="ShID" class="form-control"></select>
+
 
                     <!-- Hidden field to store the selected ShID -->
                     @Html.HiddenFor(model => model.ShID, new { @id = "ShID" })
@@ -55,11 +55,11 @@
                                     <th class="border p-2">Payment ID</th>
                                     <th class="border p-2">Shareholder Name</th>
                                     <th class="border p-2">Payment Mode</th>
-                                    <th class="border p-2">Branch</th>
                                     <th class="border p-2">Paid Amount</th>
-                                    <th class="border p-2">Blocked Amount</th>
-                                    <th class="border p-2">Reference Number</th>
+                                    @*<th class="border p-2">Blocked Amount</th>
+                                        <th class="border p-2">Reference Number</th>*@
                                     <th class="border p-2">Payment Date</th>
+                                    <th class="border p-2">Branch</th>
                                 </tr>
                             </thead>
                             <tbody id="paymentsTableBody">
@@ -170,7 +170,7 @@
                                 <tr>
                                     <th class="p-2">Payment Date</th>
                                     <th class="p-2">Pay ID</th>
-                                    <th class="p-2">Reference Number</th>
+                                    @*<th class="p-2">Reference Number</th>*@
                                     <th class="p-2">Number of Shares</th>
                                     <th class="p-2">Paid Amount</th>
                                 </tr>
@@ -191,7 +191,7 @@
                             </div>
                             <div class="flex items-center">
                                 <div class="flex-1">Per Share Value</div>
-                                <div class="w-[37%]" id="perShareValue">1000.00</div>
+                                <div class="w-[37%]" id="perShareValue">100.00</div>
                             </div>
                             <div class="flex items-center text-lg font-semibold">
                                 <div class="flex-1">Total Paid Up Amount</div>
@@ -204,10 +204,8 @@
         </div>
     </div>
 </div>
+@*<input type="hidden" id="selectedShID" value="@ViewBag.SelectedShID" />*@
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
@@ -221,52 +219,123 @@
 <script src="~/Scripts/select2/js/select2.min.js"></script>
 <link href="~/css/select2.min.css" rel="stylesheet" />
 
+<!-- Hidden input to store SelectedShID from the controller -->
+<input type="hidden" id="selectedShID" value="@ViewBag.SelectedShID" />
+
+
 <script>
     $(document).ready(function () {
-        // Initialize Select2 with custom search handling
-        $('#seachable-select').select2({
+        // Initialize Select2
+        $('#ShID').select2({
             placeholder: "Select a Shareholder",
             allowClear: true,
             width: '100%',
+            ajax: {
+                url: '/Certificates/GetShareholders',
+                type: 'GET',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        searchTerm: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.map(item => ({
+                            id: item.id,
+                            text: item.text
+                        }))
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
             matcher: function (params, data) {
                 if ($.trim(params.term) === '') {
                     return data;
                 }
-
-                // Match against each part of the search term
                 const terms = params.term.toLowerCase().split(' ');
                 const text = data.text.toLowerCase();
-
                 return terms.every(term => text.includes(term)) ? data : null;
             }
         });
 
-        // Event listener for dropdown change
-        $('#seachable-select').change(function () {
-            var selectedValue = $(this).val(); // Get selected value
 
-            $('#selectAll').prop('checked', false); // Uncheck "Select All"
-            $('input[name="selectedPayments"]').prop('checked', false); // Uncheck all individual checkboxes
+        // Get the pre-selected ShID from the hidden input
+        var selectedShID = $('#ShID').val();
+        console.log("Initial SelectedShID from ViewBag:", selectedShID); // Debug log
+
+        // Set the dropdown value and update UI if a valid ShID is provided
+        if (selectedShID && selectedShID !== '' && selectedShID !== '0') {
+            // Set the value in Select2
+            $('#ShID').val(selectedShID);
+            // Trigger a full change event to update both state and UI
+            $('#ShID').trigger('change');
+            console.log("Dropdown programmatically set to ShID:", selectedShID);
+
+            // Fetch payments only if the table is empty (to retain existing data)
+            if ($('#paymentsTableBody').children().length === 0) {
+                console.log("Payments table empty, fetching payments for ShID:", selectedShID);
+                fetchPayments(selectedShID);
+            } else {
+                console.log("Payments table already populated, skipping fetch.");
+            }
+        } else {
+            console.log("No valid SelectedShID provided, dropdown remains at placeholder.");
+        }
+
+        // Event listener for manual dropdown changes
+        $('#ShID').on('change', function () {
+            var selectedValue = $(this).val();
+            console.log("Dropdown manually changed to:", selectedValue); // Debug log
+            $('#selectAll').prop('checked', false);
+            $('input[name="selectedPayments"]').prop('checked', false);
 
             if (selectedValue) {
                 $('#paymentsTableBody2').empty();
                 $('#totalNumberOfShares').text('0');
                 $('#totalPaidUpAmount').text('0.00');
                 clearDisplayData();
-                // Call fetchPayments with the selected ID
                 fetchPayments(selectedValue);
+            } else {
+                $('#paymentsTableBody2').empty();
+                $('#totalNumberOfShares').text('0');
+                $('#totalPaidUpAmount').text('0.00');
+                clearDisplayData();
+                $('#statusMessage').text('Please select a shareholder');
             }
         });
 
-        // Handle checkbox selection for payments
+        // Checkbox event handlers
+        $('#selectAll').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('input[name="selectedPayments"]').prop('checked', isChecked);
+            updatePreview();
+        });
+
         $(document).on('change', 'input[name="selectedPayments"]', function () {
+            if (!$(this).prop('checked')) {
+                $('#selectAll').prop('checked', false);
+            }
+            var allChecked = $('input[name="selectedPayments"]').length === $('input[name="selectedPayments"]:checked').length;
+            $('#selectAll').prop('checked', allChecked);
+
+            var checkedCount = $('input[name="selectedPayments"]:checked').length;
+            var totalCount = $('input[name="selectedPayments"]').length;
+            if (checkedCount === 0) {
+                $('#statusMessage').text('No payments selected');
+            } else if (checkedCount === totalCount) {
+                $('#statusMessage').text('All payments selected');
+            } else {
+                $('#statusMessage').text(`${checkedCount} of ${totalCount} payments selected`);
+            }
             updatePreview();
         });
     });
 
-    // Clear the displayed shareholder and payment data
     function clearDisplayData() {
-        $('#ShID').val('');
+      //  $('#ShID').val('');
         $('#SHName').empty();
         $('#SHNum').empty();
         $('#SHRegion').empty();
@@ -277,20 +346,18 @@
         $('#SHKebele').empty();
         $('#SHHouseNo').empty();
         $('#SHPhoneNo').empty();
-        var tbody = $('#paymentsTableBody');
-        tbody.empty(); // Clear previous payments data
+        $('#paymentsTableBody').empty();
     }
 
-    // Fetch payments for the selected shareholder by ID
     function fetchPayments(shID) {
+        console.log("Fetching payments for ShID:", shID); // Debug log
         $.ajax({
             url: '@Url.Action("GetPaymentsByShID", "Certificates")',
             type: 'GET',
-            data: { shID: shID }, // Pass the correct ShID to the controller
+            data: { shID: shID },
             success: function (data) {
-                console.log(data);
-                if (data) {
-                    // Update shareholder details
+                console.log("AJAX success, data received:", data); // Debug log
+                if (data && data.Payments) {
                     $('#SHName').text(data.Shareholder.SHName);
                     $('#SHNum').text(data.Shareholder.ShareNum);
                     $('#SHRegion').text(data.Shareholder.Region);
@@ -302,37 +369,35 @@
                     $('#SHHouseNo').text(data.Shareholder.HouseNo);
                     $('#SHPhoneNo').text(data.Shareholder.PhoneNo);
 
-                    // Populate the payments table
                     var tbody = $('#paymentsTableBody');
-                    tbody.empty(); // Clear the previous content
+                    tbody.empty();
                     $.each(data.Payments, function (index, payment) {
                         var row = `<tr>
                             <td class="border p-2"><input type="checkbox" name="selectedPayments" value="${payment.PayID}" class="form-checkbox" /></td>
                             <td class="border p-2">${payment.PayID}</td>
                             <td class="border p-2">${payment.SHName}</td>
                             <td class="border p-2">${payment.PaymentMode}</td>
-                            <td class="border p-2">${payment.Branch}</td>
                             <td class="border p-2">${payment.PaidAmount}</td>
-                            <td class="border p-2">${payment.BlockedAmount}</td>
-                            <td class="border p-2">${payment.ReferenceNum}</td>
                             <td class="border p-2">${payment.PaymentDate}</td>
+                            <td class="border p-2">${payment.Branch}</td>
                         </tr>`;
                         tbody.append(row);
                     });
-
-                    // Update the preview section
+                    $('#statusMessage').text('Payments loaded successfully');
                     updatePreview();
+                } else {
+                    $('#statusMessage').text('No payments found for this shareholder');
                 }
             },
-            error: function () {
-                console.error('Error fetching payments');
+            error: function (xhr, status, error) {
+                console.error("AJAX error:", status, error); // Debug log
+                $('#statusMessage').text('Error loading payments. Please try again.');
             }
         });
     }
 
-    // Update the preview section with selected payments
     function updatePreview() {
-        var selectedShID = $('#seachable-select').val();
+        var selectedShID = $('#ShID').val();
         var selectedPayIDs = [];
         $('input[name="selectedPayments"]:checked').each(function () {
             selectedPayIDs.push($(this).val());
@@ -346,7 +411,7 @@
                 data: { payIDs: selectedPayIDs, shID: selectedShID },
                 success: function (data) {
                     var tbody = $('#paymentsTableBody2');
-                    tbody.empty(); // Clear previous content
+                    tbody.empty();
 
                     let totalShares = 0;
                     let totalPaidAmount = 0;
@@ -357,17 +422,14 @@
                                 `<tr>
                                     <td class="p-2">${payment.PaymentDate}</td>
                                     <td class="p-2">${payment.PayID}</td>
-                                    <td class="p-2">${payment.ReferenceNum}</td>
                                     <td class="p-2">${payment.NoofShares}</td>
                                     <td class="p-2">${payment.PaidAmount}</td>
                                 </tr>`
                             );
-
                             totalShares += parseInt(payment.NoofShares, 10) || 0;
                             totalPaidAmount += parseFloat(payment.PaidAmount) || 0;
                         });
-
-                        $('#totalNumberOfShares').text(totalShares);
+                        $('#totalNumberOfShares').text(totalPaidAmount.toFixed(2) / 100);
                         $('#totalPaidUpAmount').text(totalPaidAmount.toFixed(2));
                     } else {
                         tbody.append('<tr><td colspan="5">No payment details available.</td></tr>');
@@ -387,6 +449,8 @@
     }
 </script>
 
+
+
 <script>
     $(document).ready(function () {
         // Select All Checkbox
@@ -398,12 +462,26 @@
         });
 
         // Handle individual checkbox changes
+        // Handle individual checkbox changes
         $(document).on('change', 'input[name="selectedPayments"]', function () {
             if (!$(this).prop('checked')) {
                 $('#selectAll').prop('checked', false);
             }
             var allChecked = $('input[name="selectedPayments"]').length === $('input[name="selectedPayments"]:checked').length;
             $('#selectAll').prop('checked', allChecked);
+
+            // Add status message updates
+            var checkedCount = $('input[name="selectedPayments"]:checked').length;
+            var totalCount = $('input[name="selectedPayments"]').length;
+
+            if (checkedCount === 0) {
+                $('#statusMessage').text('No payments selected');
+            } else if (checkedCount === totalCount) {
+                $('#statusMessage').text('All payments selected');
+            } else {
+                $('#statusMessage').text(`${checkedCount} of ${totalCount} payments selected`);
+            }
+
             updatePreview();
         });
     });

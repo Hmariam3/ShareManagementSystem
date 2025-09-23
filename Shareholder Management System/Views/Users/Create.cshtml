@@ -1,150 +1,455 @@
-﻿﻿@model Shareholder_Management_System.Models.User
+﻿@model Shareholder_Management_System.Models.User
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create User";
 }
 
-<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
-<link href="~/css/tailwind.min.css" rel="stylesheet" type="text/css" media="screen" />
+<style>
+    :root {
+        --primary-color: #00ADEF;
+        --primary-dark: #0095d1;
+        --bg-dark: #1a1f2d;
+        --bg-card: #242837;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --border-color: #374151;
+        --input-bg: #1e2233;
+        --input-border: #374151;
+        --input-focus: #00ADEF;
+    }
 
-<!-- Add Select2 CSS -->
-<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
-<!-- DataTables CSS -->
-<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
-<script src="~/js/jquery-3.6.0.min.js"></script>
-<script src="~/js/jquery.dataTables.min.js"></script>
-<script src="~/js/jquery.min.js"></script>
-<script src="~/js/select2.min.js"></script>
-<script src="~/js/alpine.js"></script>
-<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+    .main-container {
+        min-height: calc(100vh - 60px); /* Adjust based on your layout's header height */
+        background: var(--bg-dark);
+        margin: -15px; /* Counteract layout padding */
+        padding: 2rem;
+        color: var(--text-primary);
+    }
 
-<!-- Modal Structure -->
-@if (TempData["Message"] != null)
-{
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-        @TempData["Message"]
+    .page-header {
+        background: linear-gradient(135deg, rgba(0, 173, 239, 0.2) 0%, rgba(0, 86, 179, 0.2) 100%);
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(0, 173, 239, 0.1);
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+    }
+
+    .content-card {
+        background: var(--bg-card);
+        border-radius: 15px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: var(--text-primary);
+        background-color: var(--input-bg);
+        border: 1px solid var(--input-border);
+        border-radius: 0.5rem;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .form-control:focus {
+            border-color: var(--input-focus);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 173, 239, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        margin-top: 0.25rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .search-item {
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        color: var(--text-primary);
+        transition: all 0.2s;
+    }
+
+        .search-item:hover {
+            background: rgba(0, 173, 239, 0.1);
+        }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1.5;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease-in-out;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 173, 239, 0.2);
+        }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+    }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .alert-success {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .validation-message {
+        color: #ef4444;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    .readonly {
+        background-color: rgba(0, 0, 0, 0.2);
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--bg-dark);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+    }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+    @@media (max-width: 768px) {
+        .main-container {
+            padding: 1rem;
+        }
+
+        .page-header {
+            padding: 1.5rem;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="main-container">
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["Message"]</span>
+        </div>
+    }
+
+    <div class="page-header">
+        <h1 class="page-title">Create New User</h1>
+        <p class="page-subtitle">Add a new user to the system with specific roles and permissions</p>
     </div>
-}
 
-<div class="bg-white shadow-md rounded-lg overflow-hidden panel">
-    <div class="user-form-container bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto mt-10 panel">
-        @using (Html.BeginForm())
-        {
-            @Html.AntiForgeryToken()
+    <div class="content-card">
+        <div class="card-header">
+            <h2 class="card-title">User Information</h2>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to List
+            </a>
+        </div>
 
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-dark dark:text-white-light mb-4" padding: 15px; border-radius: 8px;">
-                    Create User Account
-                </h2>
-                @Html.ValidationSummary(true, "", new { @class = "text-red-500 mb-4" })
-            </div>
+        <div class="card-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "validation-message" })
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.FullName, new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
-                    @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" } })
-                    @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-red-500 text-sm" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.UserName, new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
-                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" } })
-                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-red-500 text-sm" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Password, new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { type = "password", @class = "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-red-500 text-sm" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Role, new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
-                    @Html.DropDownListFor(model => model.Role,
-                        new SelectList(new List<SelectListItem>
-                        {
-                            new SelectListItem { Text = "Administrator", Value = "Administrator" },
-                            new SelectListItem { Text = "Initiator", Value = "Initiator" },
-                            new SelectListItem { Text = "Authorizer", Value = "Authorizer" }
-                        }, "Value", "Text"),
-                        "Select Role",
-                        new { @class = "form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" })
-                    @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-red-500 text-sm" })
-                </div>
-
-                <div class="form-group col-span-2">
-                    @Html.LabelFor(model => model.Branch, "Branch", new { @class = "block dark:text-white-light text-sm font-semibold mb-2" })
-
-                    <div style="position: relative;">
-                        <input type="text" id="branch-search" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50" placeholder="Search for a branch..." />
-
-                        <div id="branch-results" class="mt-2"></div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fullname-search">Full Name</label>
+                        <div style="position: relative;">
+                            <input type="text" id="fullname-search" class="form-control" placeholder="Search by display name..." />
+                            <div id="fullname-results" class="search-results"></div>
+                        </div>
+                        @Html.HiddenFor(model => model.FullName, new { @id = "FullName" })
+                        @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "validation-message" })
                     </div>
 
-                    @Html.HiddenFor(model => model.Branch, new { @id = "Branch" }) <!-- Hidden input for storing selected branch ID -->
+                    <div class="form-group">
+                        <label for="UserName">Username</label>
+                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control readonly", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "validation-message" })
+                    </div>
 
-                    @Html.ValidationMessageFor(model => model.Branch, "", new { @class = "text-red-500 text-sm" })
+                    @Html.HiddenFor(model => model.Password, new { @value = "123456" })
+
+                    <div class="form-group">
+                        <label for="Role">Role</label>
+                        @Html.DropDownListFor(model => model.Role,
+                            new SelectList(new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "SuperAdmin", Value = "SuperAdmin" },
+                                new SelectListItem { Text = "SuperUser", Value = "SuperUser" },
+                                new SelectListItem { Text = "Administrator", Value = "Administrator" },
+                                new SelectListItem { Text = "Initiator", Value = "Initiator" },
+                                new SelectListItem { Text = "Authorizer", Value = "Authorizer" }
+                            }, "Value", "Text"),
+                            "Select Role",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Role, "", new { @class = "validation-message" })
+                    </div>
+
+                    <div class="form-group">
+                        <label for="branch-search">Branch</label>
+                        <div style="position: relative;">
+                            <input type="text" id="branch-search" class="form-control" placeholder="Search for a branch..." />
+                            <div id="branch-results" class="search-results"></div>
+                        </div>
+                        @Html.HiddenFor(model => model.Branch, new { @id = "Branch" })
+                        @Html.ValidationMessageFor(model => model.Branch, "", new { @class = "validation-message" })
+                    </div>
                 </div>
-            </div>
-            <!-- Save Button and Back Link -->
-            <div style="display: flex; justify-content: center; align-items: center; margin-top: 10px;">
-                <button type="submit"
-                        style="background-color: #00ADEF; color: white; display: block; visibility: visible; position: relative; z-index: 10; border-radius: 0.375rem; font-size: 0.875rem; padding: 0.625rem 2rem; width: 200px;"
-                        class="hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                    <i class="fas fa-plus mr-2"></i> Create
-                </button>
-            </div>
-            <div class="flex justify-between items-center mt-8" style="display: flex; justify-content: center; align-items: center; margin-bottom: 10px;">
-                <a href="@Url.Action("Index")" class="flex text-sm text-blue-500 hover:text-blue-800 font-semibold">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>Back to List
-                </a>
-            </div>
-        }
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        Create User
+                    </button>
+                </div>
+            }
+        </div>
     </div>
 </div>
-<script>
-    
-                   $(document).ready(function() {
-                    $('#branch-search').on('keyup', function() {
-                        var query = $(this).val();
 
-                        if (query.length > 2) { // Start searching after 3 characters
-                            $.ajax({
-                                url: '@Url.Action("SearchBranches", "Users")',
-                                type: 'GET',
-                                data: { searchTerm: query },
-                                success: function(data) {
-                                    $('#branch-results').empty();
-                                    if (data.length > 0) {
-                                        $.each(data, function(index, branch) {
-                                            $('#branch-results').append('<div class="branch-item" data-id="' + branch.Value + '">' + branch.Text + '</div>');
-                                        });
-                                    } else {
-                                        $('#branch-results').append('<div>No branches found</div>');
-                                    }
-                                },
-                                error: function() {
-                                    $('#branch-results').empty().append('<div>Error retrieving branches</div>');
-                                }
+<script>
+    $(document).ready(function () {
+        // LDAP FullName search
+        $('#fullname-search').on('keyup', function () {
+            var query = $(this).val();
+            if (query.length > 2) {
+                $.ajax({
+                    url: '@Url.Action("SuggestDisplayNames", "Login")',
+                    type: 'GET',
+                    data: { term: query },
+                    success: function (data) {
+                        $('#fullname-results').empty();
+                        if (data.success && data.suggestions.length > 0) {
+                            $.each(data.suggestions, function (index, name) {
+                                $('#fullname-results').append('<div class="search-item" data-name="' + name + '">' + name + '</div>');
                             });
                         } else {
-                            $('#branch-results').empty();
+                            $('#fullname-results').append('<div class="search-item">No users found</div>');
                         }
-                    });
-
-                // Handle branch selection
-                $(document).on('click', '.branch-item', function() {
-                    var branchId = $(this).data('id');
-                    var branchName = $(this).text();
-                    $('#branch-search').val(branchName); // Set the input value
-                    $('#branch-results').empty(); // Clear results
-                    $('#Branch').val(branchId); // Set the hidden input value for submission
+                    },
+                    error: function () {
+                        $('#fullname-results').empty().append('<div class="search-item">Error retrieving users</div>');
+                    }
                 });
-            });
+            } else {
+                $('#fullname-results').empty();
+            }
+        });
+
+        // Handle FullName selection
+        $(document).on('click', '.search-item', function () {
+            var displayName = $(this).data('name');
+            if (displayName) {
+                $.ajax({
+                    url: '@Url.Action("GetUserByDisplayName", "Login")',
+                    type: 'GET',
+                    data: { displayName: displayName },
+                    success: function (data) {
+                        if (data.success) {
+                            $('#fullname-search').val(data.user.DisplayName);
+                            $('#FullName').val(data.user.DisplayName);
+                            $('#UserName').val(data.user.UserName);
+                            $('#fullname-results').empty();
+                        } else {
+                            $('#fullname-results').empty().append('<div class="search-item">' + data.message + '</div>');
+                        }
+                    },
+                    error: function () {
+                        $('#fullname-results').empty().append('<div class="search-item">Error retrieving user details</div>');
+                    }
+                });
+            }
+        });
+
+        // Branch search
+        $('#branch-search').on('keyup', function () {
+            var query = $(this).val();
+            if (query.length > 2) {
+                $.ajax({
+                    url: '@Url.Action("SearchBranches", "Users")',
+                    type: 'GET',
+                    data: { searchTerm: query },
+                    success: function (data) {
+                        $('#branch-results').empty();
+                        if (data.length > 0) {
+                            $.each(data, function (index, branch) {
+                                $('#branch-results').append('<div class="search-item" data-id="' + branch.Value + '">' + branch.Text + '</div>');
+                            });
+                        } else {
+                            $('#branch-results').append('<div class="search-item">No branches found</div>');
+                        }
+                    },
+                    error: function () {
+                        $('#branch-results').empty().append('<div class="search-item">Error retrieving branches</div>');
+                    }
+                });
+            } else {
+                $('#branch-results').empty();
+            }
+        });
+
+        // Handle Branch selection
+        $(document).on('click', '#branch-results .search-item', function () {
+            var branchId = $(this).data('id');
+            var branchName = $(this).text();
+            if (branchId) {
+                $('#branch-search').val(branchName);
+                $('#Branch').val(branchId);
+                $('#branch-results').empty();
+            }
+        });
+
+        // Close search results when clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.form-group').length) {
+                $('.search-results').empty();
+            }
+        });
+    });
 </script>
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}

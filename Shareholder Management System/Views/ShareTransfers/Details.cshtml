@@ -87,16 +87,17 @@
                     <div class="w-full lg:w-1/2 xl:w-1/3">
                         <div class="mb-2 flex justify-between">
                             <span>Number of Shares Transferred:</span>
-                            <span>@Html.DisplayFor(model => model.NumSharesTransferred)</span>
+                            <span>@(Model.NumSharesTransferred.HasValue ? Model.NumSharesTransferred.Value.ToString("N0") : "0")</span>
                         </div>
                         <div class="mb-2 flex justify-between">
                             <span>Amount Per Share:</span>
-                            <span>@Html.DisplayFor(model => model.AmountPerShare)</span>
+                            <span>@(Model.AmountPerShare.HasValue ? Model.AmountPerShare.Value.ToString("N2") : "0.00")</span>
                         </div>
                         <div class="mb-2 flex justify-between">
                             <span>Paid Amount for Transfer:</span>
-                            <span>@Html.DisplayFor(model => model.PaidAmountForTransfer)</span>
+                            <span>@(Model.PaidAmountForTransfer.HasValue ? Model.PaidAmountForTransfer.Value.ToString("N2") : "0.00")</span>
                         </div>
+
                     </div>
                     <div class="w-full lg:w-1/2 xl:w-1/3">
                         <div class="mb-2 flex justify-between">

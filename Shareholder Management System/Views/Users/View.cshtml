@@ -17,7 +17,9 @@
             <div class="dark:text-white-light font-semibold">@Html.DisplayFor(model => model.User.FullName)</div>
             <div class="dark:text-white-light font-semibold">@Html.DisplayFor(model => model.User.UserName)</div>
             <div class="dark:text-white-light font-semibold">@Html.DisplayFor(model => model.User.Branch1.BranchName)</div>
-            <div class="dark:text-white-light font-semibold">Created Date: @Model.User.CreatedDate.ToString("dd/MM/yyyy")</div>
+            <div class="dark:text-white-light font-semibold">
+                Created Date: @(Model.User.CreatedDate.HasValue ? Model.User.CreatedDate.Value.ToString("dd/MM/yyyy") : "N/A")
+            </div>
         </div>
     </div>
 
@@ -29,7 +31,7 @@
         <div class="text-gray-600">
             <div class="font-semibold dark:text-white-light">Last Changed By:</div>
             <div class="font-semibold dark:text-white-light">Performed By: @Model.PerformedBy</div>
-            <div class="font-semibold dark:text-white-light">Action Performed: <span class="badge rounded-full bg-info/20 text-success hover:top-0">@Model.ActionType</span> </div>
+            <div class="font-semibold dark:text-white-light">Action Performed: <span class="badge rounded-full bg-info/20 text-success hover:top-0">@Model.ActionType</span></div>
             <div class="font-semibold dark:text-white-light">Transaction Date: @Model.TransactionDate.ToString("dd/MM/yyyy")</div>
         </div>
     }
@@ -64,18 +66,16 @@
         <div>
             <div class="mb-4">
                 <span class="dark:text-white-light font-semibold">Created Date:</span>
-                <span class="dark:text-white-light">@Html.Raw(Model.User.CreatedDate.ToString("dd/MM/yyyy"))</span>
+                <span class="dark:text-white-light">
+                    @(Model.User.CreatedDate.HasValue ? Model.User.CreatedDate.Value.ToString("dd/MM/yyyy") : "N/A")
+                </span>
             </div>
             <div class="mb-4">
                 <span class="dark:text-white-light font-semibold">Status:</span>
-                @if (Model.User.Status == true)
-                {
-                    <span class="badge rounded-full bg-success/20 text-success hover:top-0">Active</span>
-                }
-                else
-                {
-                    <span class="badge rounded-full bg-danger/20 text-danger hover:top-0">Inactive</span>
-                }
+                <span class="badge rounded-full hover:top-0"
+                      class="@(Model.User.Status.HasValue && Model.User.Status.Value ? "bg-success/20 text-success" : "bg-danger/20 text-danger")">
+                    @(Model.User.Status.HasValue ? (Model.User.Status.Value ? "Active" : "Inactive") : "Unknown")
+                </span>
             </div>
         </div>
     </div>
@@ -87,18 +87,13 @@
                 int sessionId = 0;
                 if (Session["ID"] != null)
                 {
-                    // Check if the session value is already an integer
                     if (Session["ID"] is int id)
                     {
                         sessionId = id;
                     }
-                    else
+                    else if (int.TryParse(Session["ID"].ToString(), out int result))
                     {
-                        // If the session value is not an integer, try to convert it
-                        if (int.TryParse(Session["ID"].ToString(), out int result))
-                        {
-                            sessionId = result;
-                        }
+                        sessionId = result;
                     }
                 }
                 string encryptedId = TripleDESEncryptionHelper.Encrypt(sessionId.ToString());

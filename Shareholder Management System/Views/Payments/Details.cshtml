@@ -54,7 +54,7 @@
                             </div>
                             <div class="mb-2 flex justify-between">
                                 <span>Paid Amount:</span>
-                                <span>@Html.DisplayFor(model => model.PaidAmount)</span>
+                                <span>@String.Format("{0:N2}", Model.PaidAmount)</span>
                             </div>
                             <div class="mb-2 flex justify-between">
                                 <span>Source of funds:</span>
@@ -97,10 +97,13 @@
                                 <span>@Html.DisplayFor(model => model.Branch1.BranchName)</span>
                             </div>
                             <div class="mb-2 flex justify-between">
-                                <span>Authorization Status:</span>
-                                <span>@Html.DisplayFor(model => model.PaymentAuthorizationStatus)</span>
+                                <span>Created By:</span>
+                                <span>@Html.DisplayFor(model => model.User.FullName)</span>
                             </div>
-
+                            <div class="mb-2 flex justify-between">
+                                <span>Authorized By:</span>
+                                <span>@Html.DisplayFor(model => model.User1.FullName)</span>
+                            </div>
 
                         </div>
                     </div>
@@ -108,6 +111,10 @@
                         <div class="mb-2 flex justify-between">
                             <span>Creation Date:</span>
                             <span>@Html.DisplayFor(model => model.CreationDate)</span>
+                        </div>
+                        <div class="mb-2 flex justify-between">
+                            <span>Authorization Status:</span>
+                            <span>@Html.DisplayFor(model => model.PaymentAuthorizationStatus)</span>
                         </div>
                         <div class="mb-2 flex justify-between">
                             <span>Authorization Date:</span>
@@ -121,9 +128,9 @@
             <div class="w-full flex justify-between mt-6">
                 @if (Model.PaymentAuthorizationStatus == "Pending" || Model.PaymentAuthorizationStatus == "Rejected")
                 {
-                    @Html.ActionLink("Edit", "Edit", new { id = Model.PayID }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Edit", "Edit", new { id = Model.PayID }, new { @class = "btn btn-primary" })
                 }
-                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-success px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white" })
+                @*@Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-success px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white" })*@
             </div>
         </div>
     </div>
@@ -131,105 +138,105 @@
 
 <!-- Payment Mode -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.PaymentMode, "Payment Mode", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.PaymentMode)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.PaymentMode, "Payment Mode", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.PaymentMode)
+    </div>
+</div>*@
 
 <!-- Paid Amount -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.PaidAmount, "Paid Amount", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.PaidAmount)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.PaidAmount, "Paid Amount", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.PaidAmount)
+    </div>
+</div>*@
 
 <!-- Blocked Amount -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.BlockedAmount, "Blocked Amount", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.BlockedAmount)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.BlockedAmount, "Blocked Amount", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.BlockedAmount)
+    </div>
+</div>*@
 
 <!-- Reference Number -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.ReferenceNum, "Reference Number", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.ReferenceNum)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.ReferenceNum, "Reference Number", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.ReferenceNum)
+    </div>
+</div>*@
 
 <!-- Payment Date -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.PaymentDate, "Payment Date", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.PaymentDate)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.PaymentDate, "Payment Date", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.PaymentDate)
+    </div>
+</div>*@
 
 <!-- Creation Date -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.CreationDate, "Creation Date", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.CreationDate)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.CreationDate, "Creation Date", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.CreationDate)
+    </div>
+</div>*@
 
 <!-- Payment Authorization Status -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.PaymentAuthorizationStatus, "Authorization Status", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.PaymentAuthorizationStatus, "Authorization Status", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
+    </div>
+</div>*@
 
 <!-- Authorization Date -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.AuthorizationDate, "Authorization Date", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.AuthorizationDate)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.AuthorizationDate, "Authorization Date", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.AuthorizationDate)
+    </div>
+</div>*@
 
 <!-- Remarks -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.Remark, "Remarks", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.Remark)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.Remark, "Remarks", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.Remark)
+    </div>
+</div>*@
 
 <!-- Branch Code -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.Branch1.BranchCode, "Branch Code", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.Branch1.BranchCode)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.Branch1.BranchCode, "Branch Code", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.Branch1.BranchCode)
+    </div>
+</div>*@
 
 <!-- Document Name -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.Document.DocName, "Document", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.Document.DocName)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.Document.DocName, "Document", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.Document.DocName)
+    </div>
+</div>*@
 
 <!-- Shareholder ID -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.Shareholder.ShareID, "Shareholder ID", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.Shareholder.ShareID)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.Shareholder.ShareID, "Shareholder ID", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.Shareholder.ShareID)
+    </div>
+</div>*@
 
 <!-- Subscription Status -->
 @*<div class="mb-5 flex">
-        @Html.LabelFor(model => model.Subscribtion.SubStatus, "Subscription Status", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
-        <div class="w-2/3">
-            @Html.DisplayFor(model => model.Subscribtion.SubStatus)
-        </div>
-    </div>*@
+    @Html.LabelFor(model => model.Subscribtion.SubStatus, "Subscription Status", htmlAttributes: new { @class = "mb-0 w-1/3 ltr:mr-2 rtl:ml-2" })
+    <div class="w-2/3">
+        @Html.DisplayFor(model => model.Subscribtion.SubStatus)
+    </div>
+</div>*@
 

@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Permission>
+
+@{
+    ViewBag.Title = "Permissions";
+}
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<link href="~/css/tailwind.min.css" rel="stylesheet" type="text/css" media="screen" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+
+<div class="bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-hidden panel">
+    <div class="p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-0">Permissions Management</h2>
+            <div class="flex space-x-3">
+                @*<a href="@Url.Action("Create")" class="btn btn-primary text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 px-4 py-2 rounded-md flex items-center transition-colors duration-200">
+                        <i class="fas fa-plus mr-2"></i> Create New
+                    </a>*@
+                <a href="@Url.Action("Upload")" class="btn btn-primary text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 px-4 py-2 rounded-md flex items-center transition-colors duration-200">
+                    <i class="fas fa-upload mr-2"></i> Upload Excel
+                </a>
+            </div>
+        </div>
+
+        @if (TempData["Message"] != null)
+        {
+            <div class="bg-green-100 dark:bg-green-800 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-200 px-4 py-3 rounded-md mb-6" role="alert">
+                @TempData["Message"]
+            </div>
+        }
+
+        <!-- Filter Section -->
+        <div class="mb-6">
+            <label for="roleFilter" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Filter by Role</label>
+            @Html.DropDownList("roleFilter", (SelectList)ViewBag.RoleName, new { @class = "form-select w-full sm:w-64 rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 transition-colors duration-200" })
+        </div>
+
+        <!-- Table Container -->
+        <div id="permissionsTableContainer" class="overflow-x-auto">
+            @Html.Partial("_PermissionsTable", Model)
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#roleFilter').change(function () {
+                var roleName = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("Filter", "Permissions")',
+                    type: 'POST',
+                    data: { roleName: roleName },
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRF-Token', $('input[name="__RequestVerificationToken"]').val());
+                    },
+                    success: function (data) {
+                        $('#permissionsTableContainer').html(data);
+                    },
+                    error: function () {
+                        alert('Error loading permissions. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+}

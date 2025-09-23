@@ -1,0 +1,338 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
+
+@{
+    ViewBag.Title = "View All Subscriptions";
+}
+@{
+    var userRole = Session["Roles"]?.ToString();
+}
+
+<link href="~/Scripts/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
+<script src="~/Scripts/datatables/datatables.min.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<!-- Include SweetAlert Library -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/sweetalert2.min.css">
+<script src="~/js/sweetalert.js"></script>
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+<link href="~/css/tailwind.min.css" rel="stylesheet" />
+<!-- CSS Includes -->
+<link rel="stylesheet" href="~/css/all.min.css" />
+<link rel="stylesheet" href="~/css/select2.min.css" />
+<link rel="stylesheet" href="~/css/jquery.dataTables.min.css" />
+
+<style>
+
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px;
+        width: 100%;
+        flex-grow: 1;
+    }
+
+    .panel {
+        width: 100%;
+        max-width: 1400px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .success-message {
+        color: green;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table.dataTable {
+        width: 100% !important;
+    }
+
+    /* Responsive design for smaller screens */
+    @@media (max-width: 768px) {
+        .btn-group {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 200px;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="panel">
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <div class="success-message">
+                @ViewBag.SuccessMessage
+            </div>
+        }
+
+        <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+            <h5 class="text-lg font-semibold dark:text-white-light uppercase" style="padding:7px;">View All Subscriptions</h5>
+        </div>
+
+        <form method="get" action="@Url.Action("Viewall", "Subscribtions")" class="mt-2" id="filterForm">
+            <div class="flex items-center gap-4 flex-wrap">
+                <div class="w-full max-w-md">
+                    <select name="shId" id="searchable-select" class="form-select block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="">Select a Shareholder</option>
+                        @if (ViewBag.SelectedShId != null)
+                        {
+                            <option value="@ViewBag.SelectedShId" selected>@ViewBag.SelectedShName</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white">Filter</button>
+                <a href="@Url.Action("Viewall", "Subscribtions")" class="btn btn-secondary px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded text-white">Clear Filter</a>
+                @*@if (Model.Any())
+                    {
+                        <a href="@Url.Action("ExportSubscriptionsToExcel", "Subscribtions", new { shId = ViewBag.SelectedShId })" class="btn btn-primary px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white">
+                            Export to Excel
+                        </a>
+                    }*@
+            </div>
+        </form>
+
+        <div class="table-responsive mt-6">
+            <table id="subscriptionTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Shareholder Name</th>
+                        <th>Subscription ID</th>
+                        <th>Number of Shares</th>
+                        <th>Subscription Date</th>
+                        <th>Paid Subscription</th>
+                        <th>UnPaid Subscription</th>
+                        <th>Payment</th>
+                        <th>Premium</th>
+                        <th>Payment Due Date</th>
+
+                        <th>Authorization Status</th>
+                        <th>Branch</th>
+                        <th>Created By</th>
+                        <th>Approved By</th>
+                        <th>Remark</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="subscriptionTableBody">
+                    @foreach (var subscription in Model)
+                    {
+                        <tr>
+                            <td>@(subscription.Shareholder?.FullNameEng ?? "N/A") / @(subscription.Shareholder?.ShareID ?? "N/A")</td>
+                            <td>@subscription.SubID</td>
+                            <td>@subscription.SubNumShares</td>
+                            <td>@(subscription.SubDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                            <td>@String.Format("{0:N0} ETB", subscription.PaidSubscription)</td>
+                            <td>@String.Format("{0:N0} ETB", subscription.UnpaidSubscription)</td>
+
+                            <td>@subscription.SubStatus</td>
+                            <td>@String.Format("{0:N0} ETB", subscription.Premium ?? 0)</td>
+
+
+                            <td>@(subscription.PaymentDueDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                            @*<td>@subscription.SubAuthorizationStatus</td>*@
+                            <td class="border border-gray-300 text-center">
+                                @if (@subscription.SubAuthorizationStatus == "Approved")
+                                {
+                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-green-700">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                        @Html.DisplayFor(modelItem => @subscription.SubAuthorizationStatus)
+                                    </span>
+                                }
+                                else if (@subscription.SubAuthorizationStatus == "Pending")
+                                {
+                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-yellow-700">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+                                        </svg>
+                                        @Html.DisplayFor(modelItem => @subscription.SubAuthorizationStatus)
+                                    </span>
+                                }
+                                else if (@subscription.SubAuthorizationStatus == "Rejected")
+                                {
+                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-red-700">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                        </svg>
+                                        @Html.DisplayFor(modelItem => @subscription.SubAuthorizationStatus)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                        <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-yellow-700">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                        </svg>
+                                        @Html.DisplayFor(modelItem => @subscription.SubAuthorizationStatus)
+                                    </span>
+                                }
+                            </td>
+
+                            <td>@(subscription.Branch1?.BranchName ?? "N/A")</td>
+                            <td>@(subscription.User?.UserName ?? "N/A")</td>
+                            <td>@(subscription.User1?.UserName ?? "N/A")</td>
+                            <td>@(string.IsNullOrEmpty(subscription.Remark) ? "N/A" : subscription.Remark)</td>
+                            <td class="border border-gray-300 px-4 py-2">
+                                <div class="flex space-x-2">
+                                    @if (subscription.SubAuthorizationStatus != "Approved" && subscription.SubAuthorizationStatus != "Transfered" && userRole == "Initiator")
+                                    {
+                                        <a href="@Url.Action("Edit", new { id = subscription.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded" title="Edit this item">
+
+                                            <svg fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 stroke-width="2"
+                                                 stroke="white"
+                                                 class="w-4 h-4 text-red-700">
+                                                <path stroke-linecap="round"
+                                                      stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            </svg>
+
+                                        </a>
+
+                                        <a href="@Url.Action("Delete", new { id = subscription.SubID })" class="btn btn-danger px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded" title="Delete">
+                                            <svg fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 stroke-width="2"
+                                                 stroke="white"
+                                                 class="w-4 h-4 text-red-700">
+                                                <path stroke-linecap="round"
+                                                      stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                            </svg>
+
+                                        </a>
+                                    }
+                                    <a href="@Url.Action("Details", new { id = subscription.SubID })" class="btn btn-success px-4 py-2 text-white bg-green-500 hover:bg-green-600 rounded" title="View Details">
+                                        <svg fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke-width="2"
+                                             stroke="white"
+                                             class="w-4 h-4 text-red-700">
+                                            <path stroke-linecap="round"
+                                                  stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                                        </svg>
+
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize Select2 with AJAX
+
+        @if (ViewBag.SuccessMessage != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.SuccessMessage))',
+                confirmButtonColor: '#16a34a', // Matches green color (tailwind green-600)
+                confirmButtonText: 'OK'
+            });
+            </text>
+        }
+
+        $('#searchable-select').select2({
+            placeholder: "Select a Shareholder",
+            allowClear: true,
+            minimumInputLength: 3,
+            ajax: {
+                url: '@Url.Action("SearchShareholders", "Subscribtions")',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term || '',
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.items.map(function (item) {
+                            return {
+                                id: item.id,
+                                text: item.text
+                            };
+                        }),
+                        pagination: {
+                            more: data.hasMore
+                        }
+                    };
+                },
+                cache: true
+            }
+        });
+
+        // Pre-select shareholder if shId is provided
+        @if (ViewBag.SelectedShId != null)
+        {
+            <text>
+            $('#searchable-select').val('@ViewBag.SelectedShId').trigger('change');
+            </text>
+        }
+
+        // Initialize DataTable if there are subscriptions
+        if ($('#subscriptionTableBody tr').length > 0) {
+            $('#subscriptionTable').DataTable({
+                pageLength: 5,
+                lengthMenu: [5, 10, 20, 50],
+                searchable: true,
+                firstLast: true,
+                firstText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                lastText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                prevText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                nextText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                labels: { perPage: '{select}' },
+                layout: { top: '{search}', bottom: '{info}{select}{pager}' }
+            });
+        }
+    });
+</script>

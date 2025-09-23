@@ -1,25 +1,120 @@
 ﻿@model IEnumerable<Shareholder_Management_System.Models.Certificate>
+
 @{
-    /**/
+    ViewBag.Title = "Certificates";
 
-    ViewBag.Title = "Index";
+    string GetStatusClass(string status)
+    {
+        switch (status)
+        {
+            case "Approved": return "badge-outline-success";
+            case "Pending": return "badge-outline-warning";
+            case "Rejected": return "badge-outline-danger";
+            case "Revoked": return "badge-outline-danger";
+            default: return "";
+        }
+    }
+
+    string FormatDate(string date)
+    {
+        if (string.IsNullOrWhiteSpace(date))
+        {
+            return "";
+        }
+
+        if (date.StartsWith("/Date(") && date.EndsWith(")/"))
+        {
+            try
+            {
+                var timestamp = long.Parse(System.Text.RegularExpressions.Regex.Match(date, @"\d+").Value);
+                var dt = DateTimeOffset.FromUnixTimeMilliseconds(timestamp).DateTime;
+                return dt.ToString("dd/MM/yyyy");
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        if (DateTime.TryParse(date, out var parsedDate))
+        {
+            return parsedDate.ToString("dd/MM/yyyy");
+        }
+
+        if (System.Text.RegularExpressions.Regex.IsMatch(date, @"^\d{2}/\d{2}/\d{4}$") ||
+            System.Text.RegularExpressions.Regex.IsMatch(date, @"^\d{4}-\d{2}-\d{2}"))
+        {
+            if (DateTime.TryParseExact(date, new[] { "dd/MM/yyyy", "yyyy-MM-dd" },
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out parsedDate))
+            {
+                return parsedDate.ToString("dd/MM/yyyy");
+            }
+        }
+
+        return "";
+    }
 }
-
-
 
 <script src="~/Scripts/JS/simple-datatables.js"></script>
 <script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
-<script defer="" src="~/Scripts/JS/popper.min.js"></script>
-<script defer="" src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
-<script defer="" src="~/Scripts/JS/sweetalert.min.js"></script>
+<script src="~/Scripts/JS/popper.min.js"></script>
+<script src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/Scripts/select2/js/select2.full.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
+<link href="~/css/select2.min.css" rel="stylesheet" />
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+<div class="animate__animated p-4">
+    @*<div class="panel mb-4">
+            <div id="statusMessage" style="margin-bottom: 10px; color: #333; font-weight: bold;">
+                @if (ViewBag.ModelStateErrors != null && ViewBag.ModelStateErrors.Count > 0)
+                {
+                    <span class="alert-danger">@string.Join("; ", (List<string>)ViewBag.ModelStateErrors)</span>
+                }
+            </div>
 
+            <form id="filterForm" class="flex gap-4 flex-wrap" action="@Url.Action("Index", "Certificates")" method="get">
+                <div class="flex-1 min-w-[200px]">
+                    <label for="ShIDSelect">Shareholder</label>
+                    <select id="ShIDSelect" name="ShID" class="form-control"></select>
+                    <input type="hidden" id="selectedShID" value="@(Request.QueryString["ShID"] ?? ViewBag.SelectedShID)" />
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <button type="button" id="resetFilter" class="btn btn-secondary ml-2">Reset</button>
+                </div>
+            </form>
+        </div>*@
+    <div class="panel mb-6 ">
+        <label for="horizontalEmail" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">
+            Search For Shareholder
+        </label>
+        <form method="get" action="@Url.Action("Index", "Certificates")" class="!mt-6" id="filterForm">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 !mt-6">
 
-<div class="animate__animated p-4" :@class="[$store.app.animation]">
-    <!-- start main content section -->
+                <div class="!mt-6">
+                    <label for="shid">Via FullName (Eng) OR Shareholder ID </label>
+
+                    <select name="shId" id="ShIDSelect" class="form-select">
+                        <option value="">Select a Shareholder</option>
+                        @if (ViewBag.SelectedShId != null)
+                        {
+                            <option value="@ViewBag.SelectedShId" selected>@ViewBag.SelectedShName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="!mt-6">
+                    <label for="">Actions</label>
+                    <div class="flex items-center gap-4 flex-wrap sm:flex-row ">
+                        <button type="submit" id="filterBtn" class="btn btn-primary">Filter</button>
+                        <button type="button" id="clearBtn" class="btn btn-secondary">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
     <div x-data="multipleTable">
         <div class="panel mt-1">
             <h5 class="mb-5 text-lg font-semibold dark:text-white-light md:absolute md:top-[25px] md:mb-0">Certificates</h5>
@@ -29,12 +124,10 @@
                         <th>CertNum</th>
                         <th>ShareID</th>
                         <th>FullNameEng</th>
-                        <th>FullNameAfanOromo</th>
                         <th>SHCategory</th>
                         <th>BeginingSerial</th>
                         <th>EndingSerial</th>
-                        <th>PaymentIDs</th>
-
+                        <th>TotalPaidAmount</th>
                         <th>CreatedBy</th>
                         <th>Status</th>
                         <th>CertGenerationDate</th>
@@ -42,154 +135,454 @@
                         <th>Action</th>
                     </tr>
                 </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="12" class="text-center text-gray-500">Please select a shareholder to view certificates.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@(item.CertNum ?? "")</td>
+                                <td>@(item.Shareholder != null ? item.Shareholder.ShareID.ToString() : "")</td>
+                                <td>@(item.Shareholder != null ? item.Shareholder.FullNameEng : "")</td>
+                                <td>@(item.Shareholder != null ? item.Shareholder.SHCategory : "")</td>
+                                <td>@(item.BeginingSerial?.ToString() ?? "")</td>
+                                <td>@(item.EndingSerial?.ToString() ?? "")</td>
+                                <td>@(item.TotalPaidupAmount.HasValue ? item.TotalPaidupAmount.Value.ToString("N0") : "")</td>
+                                <td>@(item.User != null ? item.User.FullName : "")</td>
+                                <td><span class="badge @(GetStatusClass(item.CertAuthorizationStatus))">@(item.CertAuthorizationStatus ?? "")</span></td>
+                                <td>@FormatDate(item.CertGenerationDate?.ToString())</td>
+                                <td>@(item.Remark ?? "")</td>
+                                <td>
+                                    @if (item.CertAuthorizationStatus == "Approved" && item.RevokeStatus != "Revoked")
+                                    {
+                                        <div class="flex gap-4 items-center">
+                                            <a href="@Url.Action("Revoke", "Certificates", new { id = item.CertID })" class="text-danger revoke-link" title="Revoke Certificate" data-cert-id="@item.CertID" data-cert-num="@item.CertNum">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                                    <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </a>
+                                            <a href="@Url.Action("Details", new { id = item.CertID })" class="text-success">
+
+                                                <svg width="24" height="24" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                                    <path d="M17 9C17 9.55229 16.5523 10 16 10C15.4477 10 15 9.55229 15 9C15 8.44772 15.4477 8 16 8C16.5523 8 17 8.44772 17 9Z" fill="#2684FC" />
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9451 0.250001H11.0549C12.4225 0.24998 13.5248 0.249963 14.3918 0.366524C15.2919 0.48754 16.0497 0.746434 16.6517 1.34835C17.3916 2.08833 17.6205 3.07517 17.7012 4.29943C17.9462 4.31578 18.1763 4.33755 18.3918 4.36652C19.2919 4.48754 20.0497 4.74643 20.6517 5.34835C21.2536 5.95027 21.5125 6.70814 21.6335 7.60825C21.75 8.47522 21.75 9.57754 21.75 10.9451V11.0549C21.75 12.4225 21.75 13.5248 21.6335 14.3918C21.5125 15.2919 21.2536 16.0497 20.6517 16.6517C19.9117 17.3916 18.9248 17.6205 17.7006 17.7012C17.6842 17.9462 17.6625 18.1763 17.6335 18.3918C17.5125 19.2919 17.2536 20.0497 16.6517 20.6517C16.0497 21.2536 15.2919 21.5125 14.3918 21.6335C13.5248 21.75 12.4225 21.75 11.0549 21.75H10.9451C9.57754 21.75 8.47522 21.75 7.60825 21.6335C6.70814 21.5125 5.95027 21.2536 5.34835 20.6517C4.74643 20.0497 4.48754 19.2919 4.36652 18.3918C4.33755 18.1763 4.31578 17.9462 4.29942 17.7012C3.07517 17.6205 2.08833 17.3916 1.34835 16.6517C0.746434 16.0497 0.48754 15.2919 0.366524 14.3918C0.249963 13.5248 0.24998 12.4225 0.250001 11.0549V10.9451C0.24998 9.57754 0.249963 8.47522 0.366524 7.60825C0.48754 6.70814 0.746434 5.95027 1.34835 5.34835C1.95027 4.74643 2.70814 4.48754 3.60825 4.36652C3.82374 4.33755 4.05377 4.31578 4.29879 4.29943C4.37952 3.07517 4.60837 2.08833 5.34835 1.34835C5.95027 0.746434 6.70814 0.48754 7.60825 0.366524C8.47522 0.249963 9.57754 0.24998 10.9451 0.250001ZM5.80714 4.25295C6.16406 4.24999 6.54313 4.24999 6.94512 4.25H15.0549C15.4569 4.24999 15.8359 4.24999 16.1929 4.25295C16.1109 3.23209 15.9265 2.74452 15.591 2.40901C15.3142 2.13225 14.9257 1.9518 14.1919 1.85315C13.4365 1.75159 12.4354 1.75 11 1.75C9.56458 1.75 8.56347 1.75159 7.80812 1.85315C7.07434 1.9518 6.68577 2.13225 6.40901 2.40901C6.0735 2.74452 5.88909 3.23209 5.80714 4.25295ZM4.25294 16.1929C4.24999 15.8359 4.24999 15.4569 4.25 15.0549L4.25 13.75H4C3.58579 13.75 3.25 13.4142 3.25 13C3.25 12.5858 3.58579 12.25 4 12.25H18C18.4142 12.25 18.75 12.5858 18.75 13C18.75 13.4142 18.4142 13.75 18 13.75H17.75V15.0549C17.75 15.4569 17.75 15.8359 17.7471 16.1929C18.7679 16.1109 19.2555 15.9265 19.591 15.591C19.8678 15.3142 20.0482 14.9257 20.1469 14.1919C20.2484 13.4365 20.25 12.4354 20.25 11C20.25 9.56458 20.2484 8.56347 20.1469 7.80812C20.0482 7.07435 19.8678 6.68577 19.591 6.40901C19.3142 6.13225 18.9257 5.9518 18.1919 5.85315C17.4365 5.75159 16.4354 5.75 15 5.75H7C5.56458 5.75 4.56347 5.75159 3.80812 5.85315C3.07435 5.9518 2.68577 6.13225 2.40901 6.40901C2.13225 6.68577 1.9518 7.07435 1.85315 7.80812C1.75159 8.56347 1.75 9.56458 1.75 11C1.75 12.4354 1.75159 13.4365 1.85315 14.1919C1.9518 14.9257 2.13225 15.3142 2.40901 15.591C2.74452 15.9265 3.23209 16.1109 4.25294 16.1929ZM16.25 13.75H5.75V15C5.75 16.4354 5.75159 17.4365 5.85315 18.1919C5.9518 18.9257 6.13225 19.3142 6.40901 19.591C6.68577 19.8678 7.07435 20.0482 7.80812 20.1469C8.56347 20.2484 9.56458 20.25 11 20.25C12.4354 20.25 13.4365 20.2484 14.1919 20.1469C14.9257 20.0482 15.3142 19.8678 15.591 19.591C15.8678 19.3142 16.0482 18.9257 16.1469 18.1919C16.2484 17.4365 16.25 16.4354 16.25 15V13.75ZM4.25 9C4.25 8.58579 4.58579 8.25 5 8.25H8C8.41421 8.25 8.75 8.58579 8.75 9C8.75 9.41421 8.41421 9.75 8 9.75H5C4.58579 9.75 4.25 9.41421 4.25 9ZM7.25 15.8049C7.25 15.3907 7.58579 15.0549 8 15.0549H14C14.4142 15.0549 14.75 15.3907 14.75 15.8049C14.75 16.2191 14.4142 16.5549 14 16.5549H8C7.58579 16.5549 7.25 16.2191 7.25 15.8049ZM7.25 18.3049C7.25 17.8907 7.58579 17.5549 8 17.5549H12C12.4142 17.5549 12.75 17.8907 12.75 18.3049C12.75 18.7191 12.4142 19.0549 12 19.0549H8C7.58579 19.0549 7.25 18.7191 7.25 18.3049Z" fill="#2684FC" />
+                                                </svg>
+
+                                            </a>
+                                        </div>
+                                    }
+                                    else if (item.CertAuthorizationStatus == "Pending")
+                                    {
+                                        <a href="@Url.Action("Edit", "Certificates", new { id = item.CertID })" class="hover:text-info" title="Edit Certificate">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                                <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                                                <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
+                                                <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
+                                            </svg>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
             </table>
-
         </div>
-
     </div>
-</div>
+    <script>
+    $(document).ready(function () {
+        @if (ViewBag.ErrorMessage != null)
+        {
+<text>
+                Swal.fire({
+                    toast: true,
+                    position: 'top',
+                    icon: 'error',
+                    title: '@ViewBag.ErrorMessage',
+                    showConfirmButton: false,
+                    timer: 5000,
+                    padding: '10px 20px'
+                });
+</text>
+        }
+        // Initialize Select2 with AJAX
+        $('#ShIDSelect').select2({
+            placeholder: "Select a Shareholder",
+            allowClear: true,
+            width: '100%',
+            minimumInputLength: 3,
+            ajax: {
+                url: '@Url.Action("SearchShareholders", "Certificates")',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { term: params.term };
+                },
+                processResults: function (data) {
+                    return { results: data.results };
+                },
+                cache: true
+            }
+        });
+        // Function to update button states
+        function updateButtonStates() {
+            var hasSelection = !!$('#ShIDSelect').val();
+            var hasShareID = !!$('#shareID').val().trim();
+            var enableButtons = hasSelection || hasShareID;
+            $('#clearBtn').prop('disabled', !enableButtons);
+            $('#filterBtn').prop('disabled', !enableButtons);
+        }
 
-@*<script>
+        // Store shareID when a shareholder is selected
+        $('#ShIDSelect').on('select2:select', function (e) {
+            var data = e.params.data;
+            $('#shareID').val(data.shareID || '');
+            updateButtonStates();
+        });
+
+        // Clear shareID when dropdown is cleared
+        $('#ShIDSelect').on('select2:clear', function () {
+            $('#shareID').val('');
+            updateButtonStates();
+        });
+
+        // Update buttons when shareID input changes
+        $('#shareID').on('input', function () {
+            updateButtonStates();
+        });
+
+        // Clear button click
+        $('#clearBtn').click(function () {
+            $('#ShIDSelect').val(null).trigger('change'); // Clear Select2
+            $('#shareID').val(''); // Clear shareID input
+            updateButtonStates();
+            $('#filterForm').submit(); // Submit form
+        });
+
+        // Initial button state
+        updateButtonStates();
+
+    });
+    </script>
+    <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('multipleTable', () => ({
                 init() {
-                    // Ensure SimpleDatatables is initialized after the DOM is ready
-                    const dataTable1 = new simpleDatatables.DataTable('#myTable1');
-                    const dataTable2 = new simpleDatatables.DataTable('#myTable2');
+                    console.log('Alpine multipleTable component initialized');
                 }
-            }))
-        })
-    </script>*@
+            }));
+        });
+        let bypassValidation = false;
 
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('multipleTable', () => ({
-            datatable1: null,
-            init() {
-                this.datatable1 = new simpleDatatables.DataTable('#myTable1', {
-                    data: {
-                        headings: [
-                            'CertNum',
-                            'ShareID',
-                            'FullNameEng',
-                            'FullNameAfanOromo',
-                            'SHCategory',
-                            'BeginingSerial',
-                            'EndingSerial',
-                            'PaymentIDs',
+        $(document).ready(function () {
+            // Log URL for debugging
+            console.log('Current URL:', window.location.href);
 
-                            'CreateddBy',
-                            'Status',
-                            'CertGenerationDate',
-                            'Remark',
-                            'Action'
-                        ],
-                       data: [
-    @foreach (var item in Model)
-    {
-
-<text>
-    [
-        "@item.CertNum", // CertNum
-        "@item.Shareholder.ShareID", // Shareholder.ShareID
-        "@item.Shareholder.FullNameEng", // FullNameEng
-        "@item.Shareholder.FullNameAfanOromo", // FullNameAfanOromo
-        "@item.Shareholder.SHCategory", // SHCategory
-        "@item.BeginingSerial", // BeginingSerial
-        "@item.EndingSerial", // EndingSerial
-        "@item.PaymentIDs", // PaymentIDs
-        "@item.User.FullName", // DeliveredBy
-                               ` @{
-            string statusClass;
-            if (item.CertAuthorizationStatus == "Approved")
-            {
-                statusClass = "badge-outline-success";
-            }
-            else if (item.CertAuthorizationStatus == "Pending")
-            {
-                statusClass = "badge-outline-warning";
-            }
-            else if (item.CertAuthorizationStatus == "Rejected")
-            {
-                statusClass = "badge-outline-danger";
-            }
-            else
-            {
-                statusClass = ""; // Default class if none of the conditions are met
-            }
-            <span class="badge @statusClass">@item.CertAuthorizationStatus</span>
-            }`,
-        "@(item.CertGenerationDate.HasValue ? item.CertGenerationDate.Value.ToString("yyyy-MM-dd") : "")", // CertGenerationDate
-        "@item.Remark", // Remark
-        `<div class="flex gap-4 items-center">
-@if ( item.CertAuthorizationStatus == "Approved") {
-<a href="@Url.Action("Details", new { id = item.CertID })"  class="text-success" >
-
-                <svg width="24" height="24" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
-                <path d="M17 9C17 9.55229 16.5523 10 16 10C15.4477 10 15 9.55229 15 9C15 8.44772 15.4477 8 16 8C16.5523 8 17 8.44772 17 9Z" fill="#2684FC"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.9451 0.250001H11.0549C12.4225 0.24998 13.5248 0.249963 14.3918 0.366524C15.2919 0.48754 16.0497 0.746434 16.6517 1.34835C17.3916 2.08833 17.6205 3.07517 17.7012 4.29943C17.9462 4.31578 18.1763 4.33755 18.3918 4.36652C19.2919 4.48754 20.0497 4.74643 20.6517 5.34835C21.2536 5.95027 21.5125 6.70814 21.6335 7.60825C21.75 8.47522 21.75 9.57754 21.75 10.9451V11.0549C21.75 12.4225 21.75 13.5248 21.6335 14.3918C21.5125 15.2919 21.2536 16.0497 20.6517 16.6517C19.9117 17.3916 18.9248 17.6205 17.7006 17.7012C17.6842 17.9462 17.6625 18.1763 17.6335 18.3918C17.5125 19.2919 17.2536 20.0497 16.6517 20.6517C16.0497 21.2536 15.2919 21.5125 14.3918 21.6335C13.5248 21.75 12.4225 21.75 11.0549 21.75H10.9451C9.57754 21.75 8.47522 21.75 7.60825 21.6335C6.70814 21.5125 5.95027 21.2536 5.34835 20.6517C4.74643 20.0497 4.48754 19.2919 4.36652 18.3918C4.33755 18.1763 4.31578 17.9462 4.29942 17.7012C3.07517 17.6205 2.08833 17.3916 1.34835 16.6517C0.746434 16.0497 0.48754 15.2919 0.366524 14.3918C0.249963 13.5248 0.24998 12.4225 0.250001 11.0549V10.9451C0.24998 9.57754 0.249963 8.47522 0.366524 7.60825C0.48754 6.70814 0.746434 5.95027 1.34835 5.34835C1.95027 4.74643 2.70814 4.48754 3.60825 4.36652C3.82374 4.33755 4.05377 4.31578 4.29879 4.29943C4.37952 3.07517 4.60837 2.08833 5.34835 1.34835C5.95027 0.746434 6.70814 0.48754 7.60825 0.366524C8.47522 0.249963 9.57754 0.24998 10.9451 0.250001ZM5.80714 4.25295C6.16406 4.24999 6.54313 4.24999 6.94512 4.25H15.0549C15.4569 4.24999 15.8359 4.24999 16.1929 4.25295C16.1109 3.23209 15.9265 2.74452 15.591 2.40901C15.3142 2.13225 14.9257 1.9518 14.1919 1.85315C13.4365 1.75159 12.4354 1.75 11 1.75C9.56458 1.75 8.56347 1.75159 7.80812 1.85315C7.07434 1.9518 6.68577 2.13225 6.40901 2.40901C6.0735 2.74452 5.88909 3.23209 5.80714 4.25295ZM4.25294 16.1929C4.24999 15.8359 4.24999 15.4569 4.25 15.0549L4.25 13.75H4C3.58579 13.75 3.25 13.4142 3.25 13C3.25 12.5858 3.58579 12.25 4 12.25H18C18.4142 12.25 18.75 12.5858 18.75 13C18.75 13.4142 18.4142 13.75 18 13.75H17.75V15.0549C17.75 15.4569 17.75 15.8359 17.7471 16.1929C18.7679 16.1109 19.2555 15.9265 19.591 15.591C19.8678 15.3142 20.0482 14.9257 20.1469 14.1919C20.2484 13.4365 20.25 12.4354 20.25 11C20.25 9.56458 20.2484 8.56347 20.1469 7.80812C20.0482 7.07435 19.8678 6.68577 19.591 6.40901C19.3142 6.13225 18.9257 5.9518 18.1919 5.85315C17.4365 5.75159 16.4354 5.75 15 5.75H7C5.56458 5.75 4.56347 5.75159 3.80812 5.85315C3.07435 5.9518 2.68577 6.13225 2.40901 6.40901C2.13225 6.68577 1.9518 7.07435 1.85315 7.80812C1.75159 8.56347 1.75 9.56458 1.75 11C1.75 12.4354 1.75159 13.4365 1.85315 14.1919C1.9518 14.9257 2.13225 15.3142 2.40901 15.591C2.74452 15.9265 3.23209 16.1109 4.25294 16.1929ZM16.25 13.75H5.75V15C5.75 16.4354 5.75159 17.4365 5.85315 18.1919C5.9518 18.9257 6.13225 19.3142 6.40901 19.591C6.68577 19.8678 7.07435 20.0482 7.80812 20.1469C8.56347 20.2484 9.56458 20.25 11 20.25C12.4354 20.25 13.4365 20.2484 14.1919 20.1469C14.9257 20.0482 15.3142 19.8678 15.591 19.591C15.8678 19.3142 16.0482 18.9257 16.1469 18.1919C16.2484 17.4365 16.25 16.4354 16.25 15V13.75ZM4.25 9C4.25 8.58579 4.58579 8.25 5 8.25H8C8.41421 8.25 8.75 8.58579 8.75 9C8.75 9.41421 8.41421 9.75 8 9.75H5C4.58579 9.75 4.25 9.41421 4.25 9ZM7.25 15.8049C7.25 15.3907 7.58579 15.0549 8 15.0549H14C14.4142 15.0549 14.75 15.3907 14.75 15.8049C14.75 16.2191 14.4142 16.5549 14 16.5549H8C7.58579 16.5549 7.25 16.2191 7.25 15.8049ZM7.25 18.3049C7.25 17.8907 7.58579 17.5549 8 17.5549H12C12.4142 17.5549 12.75 17.8907 12.75 18.3049C12.75 18.7191 12.4142 19.0549 12 19.0549H8C7.58579 19.0549 7.25 18.7191 7.25 18.3049Z" fill="#2684FC"/>
-                </svg>
-
-        </a>
-}
-else {
-    <a href="@Url.Action("Edit", new { id = item.CertID })" class="hover:text-info">
-                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
-                                                            <!-- SVG content for Edit (pencil icon) -->
-                                                            <path opacity="0.5" d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
-                                                            <path d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z" stroke="currentColor" stroke-width="1.5"></path>
-                                                            <path opacity="0.5" d="M16.6522 3.45508C16.6522 3.45508 16.7333 4.83381 17.9499 6.05034C19.1664 7.26687 20.5451 7.34797 20.5451 7.34797M10.1002 15.5876L8.4126 13.9" stroke="currentColor" stroke-width="1.5"></path>
-                                                        </svg>
-                                                    </a>
-               <a href="@Url.Action("Delete", new { id = item.CertID })" class="text-danger">
-                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
-                                                            <!-- SVG content for Delete (trash icon) -->
-                                                            <path d="M3 6H5H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                            <path d="M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                            <path d="M10 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                            <path d="M14 11V17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                        </svg>
-                                   </a> }
-
-</div> `
-
-
-],
-</text>
-
-    }
-]
-
-   },
-   searchable: true,
-   perPage: 10,
-   columns: [
-                        //{ select: 10, render: (data) => this.formatDate(data) }, // DeliveryDate column
-                       // { select: 11, render: (data) => this.formatDate(data) }, // CertGenerationDate column
-                    ],
-                    firstLast: true,
-                    labels: {
-                        perPage: '{select}',
+            // Initialize Select2
+            @*$('#ShIDSelect').select2({
+                placeholder: "Select a Shareholder",
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: '@Url.Action("GetShareholders", "Certificates")',
+                    type: 'GET',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            searchTerm: params.term || ''
+                        };
                     },
-                    layout: {
-                        top: '{search}',
-                        bottom: '{info}{select}{pager}',
+                    processResults: function (data) {
+                        console.log('GetShareholders AJAX response:', data);
+                        var shID = $('#selectedShID').val();
+                        return {
+                            results: data.map(item => ({
+                                id: item.id,
+                                text: item.text,
+                                selected: item.id == shID
+                            }))
+                        };
                     },
+                    cache: true
+                },
+                minimumInputLength: 0
+            });*@
+
+            @*// Pre-select ShID if present
+            var shID = $('#selectedShID').val();
+            console.log('Initial ShID from hidden input:', shID);
+            if (shID && shID !== '0' && shID !== '' && !isNaN(shID) && !shID.includes(',')) {
+                console.log('Pre-selecting ShID:', shID);
+                $.ajax({
+                    url: '@Url.Action("GetShareholders", "Certificates")',
+                    type: 'GET',
+                    data: { searchTerm: shID },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log('GetShareholders success for ShID:', shID, 'Response:', data);
+                        var shareholder = data.find(item => item.id == shID);
+                        if (shareholder) {
+                            var option = new Option(shareholder.text, shareholder.id, true, true);
+                            $('#ShIDSelect').append(option).trigger('change');
+                            $('#selectedShID').val(shareholder.id);
+                            //$('#statusMessage').text('Shareholder loaded successfully.');
+                        } else {
+                            console.warn('No shareholder found for ShID:', shID);
+                            $('#ShIDSelect').val(null).trigger('change');
+                            $('#selectedShID').val('');
+                            $('#statusMessage').text('No shareholder found for ID ' + shID + '.');
+                            Swal.fire({
+                                title: "Warning",
+                                text: `No shareholder found for ID ${shID}.`,
+                                icon: "warning",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('GetShareholders AJAX error for ShID:', shID, 'Status:', status, 'Error:', error, 'Response:', xhr.responseText);
+                        $('#ShIDSelect').val(null).trigger('change');
+                        $('#selectedShID').val('');
+                        $('#statusMessage').text('Error loading shareholder data. Please try again.');
+                        Swal.fire({
+                            title: "Error",
+                            text: "Failed to load shareholder data. Please try again.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
                 });
-            },
-            formatDate(date) {
-                if (date) {
-                    const dt = new Date(date);
-                    const month = dt.getMonth() + 1 < 10 ? '0' + (dt.getMonth() + 1) : dt.getMonth() + 1;
-                    const day = dt.getDate() < 10 ? '0' + dt.getDate() : dt.getDate();
-                    return day + '/' + month + '/' + dt.getFullYear();
+            } else {
+
+                $('#ShIDSelect').val(null).trigger('change');
+                $('#selectedShID').val('');
+                //$('#statusMessage').text('Please select a shareholder to filter certificates.');
+                //if (shID && (shID === '0' || isNaN(shID) || shID.includes(','))) {
+                //    console.warn('Invalid ShID format:', shID);
+                //    $('#statusMessage').text('Invalid shareholder ID: ' + shID);
+                //    Swal.fire({
+                //        title: "Warning",
+                //        text: `Invalid shareholder ID: ${shID}. Please select a valid shareholder.`,
+                //        icon: "warning",
+                //        confirmButtonText: "OK"
+                //    });
+                //}
+            }*@
+
+            // Handle dropdown change
+            $('#ShIDSelect').on('change', function () {
+                var selectedValue = $(this).val();
+                console.log('ShIDSelect changed to:', selectedValue);
+                $('#selectedShID').val(selectedValue || '');
+               // $('#statusMessage').text(selectedValue ? 'Shareholder selected.' : 'Please select a shareholder.');
+            });
+
+            // Handle form submission
+            $('#filterForm').on('submit', function (e) {
+                if (bypassValidation) {
+                    console.log('Bypassing validation on reset.');
+                    bypassValidation = false; // reset flag
+                    return true; // allow form to submit
                 }
-                return '';
+
+                var selectedValue = $('#ShIDSelect').val();
+                console.log('Form submitted with ShID:', selectedValue);
+                $('#selectedShID').val(selectedValue || '');
+
+                if (!selectedValue || isNaN(selectedValue) || selectedValue.includes(',')) {
+                    console.warn('Invalid ShID submitted:', selectedValue);
+                   // $('#statusMessage').text('Invalid shareholder ID: ' + (selectedValue || 'none') + '. Please select a valid shareholder.');
+                    Swal.fire({
+                        title: "Warning",
+                        text: `Invalid shareholder ID: ${selectedValue || 'none'}. Please select a valid shareholder.`,
+                        icon: "warning",
+                        confirmButtonText: "OK"
+                    });
+                    e.preventDefault(); // Prevent form submission for invalid ShID
+                }
+            });
+
+
+            // Reset filter
+          // Reset filter
+               $('#resetFilter').on('click', function () {
+                    console.log('Resetting filter');
+                    bypassValidation = true; // allow form submission even if ShID is empty
+                    $('#ShIDSelect').val(null).trigger('change');
+                    $('#selectedShID').val('');
+                    $('#statusMessage').text('Filter reset. Please select a shareholder.');
+                    $('#filterForm').submit(); // Trigger form submit
+                });
+
+
+            // Initialize DataTable
+            if ($('#myTable1 tbody tr:not(.no-data)').length > 0) {
+                let datatable = null;
+                if (typeof simpleDatatables !== 'undefined') {
+                    console.log('SimpleDatatables loaded, version:', simpleDatatables.version || 'unknown');
+                    try {
+                        datatable = new simpleDatatables.DataTable('#myTable1', {
+                            searchable: true,
+                            perPage: 10,
+                            firstLast: true,
+                            labels: { perPage: '{select}' },
+                            layout: { top: '{search}', bottom: '{info}{select}{pager}' }
+                        });
+                        console.log('DataTable initialized');
+                    } catch (e) {
+                        console.error('DataTable initialization error:', e);
+                        $('#statusMessage').text('Error initializing table. Please refresh the page.');
+                    }
+                } else {
+                    console.warn('SimpleDatatables not loaded');
+                    $('#statusMessage').text('Table library not loaded. Please refresh the page.');
+                    Swal.fire({
+                        title: "Error",
+                        text: "Table library not loaded. Please refresh the page.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
             }
-        }));
-    });
-</script>
 
+            // SweetAlert for revoke links
+            function setupSweetAlert() {
+                console.log('Setting up SweetAlert for revoke links');
+                $('.revoke-link').each(function () {
+                    const url = $(this).attr('href');
+                    const certNum = $(this).data('cert-num');
+                    $(this).off('click').on('click', function (e) {
+                        e.preventDefault();
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: `You are about to revoke certificate #${certNum}. This action cannot be undone.`,
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Revoke",
+                            cancelButtonText: "Cancel",
+                            buttonsStyling: false,
+                            customClass: {
+                                confirmButton: 'btn btn-danger',
+                                cancelButton: 'btn btn-secondary'
+                            }
+                        }).then(result => {
+                            if (result.isConfirmed) {
+                                console.log('Revoking certificate #', certNum);
+                                window.location.href = url;
+                            } else {
+                                console.log('Revoke cancelled for certificate #', certNum);
+                            }
+                        }).catch(err => {
+                            console.error('SweetAlert error:', err);
+                            if (confirm(`Are you sure you want to revoke certificate #${certNum}? This action cannot be undone.`)) {
+                                console.log('Revoking certificate #', certNum, 'via confirm');
+                                window.location.href = url;
+                            }
+                        });
+                    });
+                });
+            }
 
+            setupSweetAlert();
+        });
+    </script>
 
+    <style>
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 10px;
+            border-radius: 4px;
+        }
 
+        .alert-danger {
+            background-color: #f2dede;
+            color: #a94442;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .badge-outline-success {
+            background-color: transparent;
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+
+        .badge-outline-warning {
+            background-color: transparent;
+            border: 1px solid #ffc107;
+            color: #ffc107;
+        }
+
+        .badge-outline-danger {
+            background-color: transparent;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+
+        .flex.gap-4 {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-danger {
+            background-color: #dc3545 !important;
+            color: #fff !important;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .table-bordered {
+            border: 1px solid #ddd;
+        }
+
+            .table-bordered th, .table-bordered td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+        .table-compact th, .table-compact td {
+            padding: 5px;
+        }
+
+        #statusMessage {
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</div>

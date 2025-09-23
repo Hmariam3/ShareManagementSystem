@@ -1,4 +1,4 @@
-﻿﻿@model Shareholder_Management_System.Models.User
+﻿@model Shareholder_Management_System.Models.User
 
 @{
     ViewBag.Title = "Edit";
@@ -32,13 +32,13 @@
                 <div>
                     <div class="form-group mb-4">
                         @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "block text-gray-700 text-sm font-bold mb-2" })
-                        @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" } })
+                        @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-red-500 text-sm" })
                     </div>
 
                     <div class="form-group mb-4">
                         @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "block text-gray-700 text-sm font-bold mb-2" })
-                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" } })
+                        @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-input mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50", @readonly = "readonly" } })
                         @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-red-500 text-sm" })
                     </div>
 
@@ -55,6 +55,8 @@
                         @Html.DropDownListFor(model => model.Role,
                             new SelectList(new List<SelectListItem>
                             {
+                                new SelectListItem { Text = "SuperAdmin", Value = "SuperAdmin" },
+                                new SelectListItem { Text = "SuperUser", Value = "SuperUser" },
                                 new SelectListItem { Text = "Administrator", Value = "Administrator" },
                                 new SelectListItem { Text = "Initiator", Value = "Initiator" },
                                 new SelectListItem { Text = "Authorizer", Value = "Authorizer" }
@@ -101,9 +103,7 @@
 
                         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-red-500 text-sm" })
                     </div>
-
                 </div>
-
             </div>
 
             <!-- Save Button and Back Link -->
@@ -125,7 +125,6 @@
         </div>
     }
 </div>
-
 
 <script>
     $(document).ready(function () {

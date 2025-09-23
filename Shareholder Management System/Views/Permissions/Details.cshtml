@@ -1,0 +1,55 @@
+﻿@model Shareholder_Management_System.Models.Permission
+
+@{
+    ViewBag.Title = "Permission Details";
+}
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/userRole/css/all.min.css" />
+<link href="~/css/tailwind.min.css" rel="stylesheet" type="text/css" media="screen" />
+
+<div class="bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-hidden panel">
+    <div class="p-6 sm:p-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Permission Details</h2>
+
+        @if (Model == null)
+        {
+            <div class="bg-red-100 dark:bg-red-800 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-200 px-4 py-3 rounded-md mb-6" role="alert">
+                Permission not found.
+            </div>
+        }
+        else
+        {
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+                <div>
+                    <dt class="text-sm font-semibold text-gray-700 dark:text-gray-200">Role</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">@Html.DisplayFor(model => model.role_name)</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-semibold text-gray-700 dark:text-gray-200">Permission Family</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">@Html.DisplayFor(model => model.perm_family)</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-semibold text-gray-700 dark:text-gray-200">Permission Name</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">@Html.DisplayFor(model => model.perm_name)</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-semibold text-gray-700 dark:text-gray-200">Controller</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">@Html.DisplayFor(model => model.perm_controller)</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-semibold text-gray-700 dark:text-gray-200">Action</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">@Html.DisplayFor(model => model.perm_action)</dd>
+                </div>
+            </dl>
+
+            <div class="flex justify-center space-x-4 mt-8">
+                <a href="@Url.Action("Edit", new { id = Model.perm_id })" class="btn btn-primary text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 px-6 py-2 rounded-md flex items-center transition-colors duration-200">
+                    <i class="fas fa-edit mr-2"></i> Edit
+                </a>
+                <a href="@Url.Action("Index")" class="btn bg-gray-500 text-white hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 px-6 py-2 rounded-md flex items-center transition-colors duration-200">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to List
+                </a>
+            </div>
+        }
+    </div>
+</div>

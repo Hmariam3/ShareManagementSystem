@@ -26,32 +26,40 @@
                     <div class="flex flex-wrap space-x-4">
                         <!-- Branch Filter -->
                         <div class="flex flex-col">
-                            <label for="branch" class="block text-sm font-medium text-gray-700">Branch</label>
-                            <input type="text" id="branch" name="branch" placeholder="Search Branch..." class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["branch"]" />
+                            <label for="branch" class="block text-sm font-medium dark:text-white-light">Branch</label>
+                            <select id="branch" name="branch" class="form-select dark:bg-[#1b2e4b] dark:text-white-light" style="width: 200px;" @(ViewBag.Branches == null || ((List<string>)ViewBag.Branches).Count == 0 ? "disabled" : "")>
+                                <option value="">All Branches</option>
+                                @foreach (var b in ViewBag.Branches as List<string>)
+                                {
+                                    <option value="@b" @(Request.QueryString["branch"] == b ? "selected" : "")>@b</option>
+                                }
+                            </select>
                         </div>
-
                         <!-- User Name Filter -->
                         <div class="flex flex-col">
-                            <label for="userName" class="block text-sm font-medium text-gray-700">User Name</label>
-                            <input type="text" id="userName" name="userName" placeholder="Search User Name..." class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["userName"]" />
+                            <label for="userName" class="block text-sm font-medium dark:text-white-light">User Name</label>
+                            <select id="userName" name="userName" class="form-select dark:bg-[#1b2e4b] dark:text-white-light" style="width: 200px;" @(ViewBag.Users == null || ((List<string>)ViewBag.Users).Count == 0 ? "disabled" : "")>
+                                <option value="">All Users</option>
+                                @foreach (var u in ViewBag.Users as List<string>)
+                                {
+                                    <option value="@u" @(Request.QueryString["userName"] == u ? "selected" : "")>@u</option>
+                                }
+                            </select>
                         </div>
-
                         <!-- Table Name Filter -->
                         <div class="flex flex-col">
-                            <label for="tableName" class="block text-sm font-medium text-gray-700">Table Name</label>
-                            <input type="text" id="tableName" name="tableName" placeholder="Search Table Name..." class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["tableName"]" />
+                            <label for="tableName" class="block text-sm font-medium dark:text-white-light">Table Name</label>
+                            <input type="text" id="tableName" name="tableName" placeholder="Search Table Name..." class="form-input bg-white dark:bg-[#1b2e4b] dark:text-white-light h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["tableName"]" />
                         </div>
-
                         <!-- Start Date Filter -->
                         <div class="flex flex-col">
-                            <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
-                            <input type="date" id="startDate" name="startDate" class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["startDate"]" />
+                            <label for="startDate" class="block text-sm font-medium dark:text-white-light">Start Date</label>
+                            <input type="date" id="startDate" name="startDate" class="form-input bg-white dark:bg-[#1b2e4b] dark:text-white-light h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["startDate"]" />
                         </div>
-
                         <!-- End Date Filter -->
                         <div class="flex flex-col">
-                            <label for="endDate" class="block text-sm font-medium text-gray-700">End Date</label>
-                            <input type="date" id="endDate" name="endDate" class="form-input bg-white h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["endDate"]" />
+                            <label for="endDate" class="block text-sm font-medium dark:text-white-light">End Date</label>
+                            <input type="date" id="endDate" name="endDate" class="form-input bg-white dark:bg-[#1b2e4b] dark:text-white-light h-full p-2 border border-gray-300 rounded-md" value="@Request.QueryString["endDate"]" />
                         </div>
                     </div>
 
@@ -70,36 +78,78 @@
                 </form>
 
                 <!-- Display Filtered Data -->
-                <div class="table-responsive mt-4">
-                    <table class="table table-bordered table-striped table-hover">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Message</th>
-                                <th>Action Type</th>
-                                <th>Transaction ID</th>
-                                <th>Table Name</th>
-                                <th>Performer Branch</th>
-                                <th>Transaction Date</th>
-                                <th>Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
+                @if (Model.Any())
+                {
+                    <div class="table-responsive mt-4" style="max-height: 600px; overflow-y: auto; margin: 20px 0;">
+                        <table id="auditLogTable" class="table table-bordered table-striped table-hover dark:bg-[#1b2e4b] dark:text-white-light">
+                            <thead class="thead-dark">
                                 <tr>
-                                    <td>@Html.DisplayFor(modelItem => item.Message)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.ActionType)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.TransactionID)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.TableName)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.PerformerBranch)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.TransactionDate)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.User.FullName)</td>
+                                    <th>Message</th>
+                                    <th>Action Type</th>
+                                    <th>Transaction ID</th>
+                                    <th>Table Name</th>
+                                    <th>Performer Branch</th>
+                                    <th>Transaction Date</th>
+                                    <th>Name</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.Message)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.ActionType)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.TransactionID)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.TableName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.PerformerBranch)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.TransactionDate)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.User.FullName)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            $('#auditLogTable').DataTable();
+                            $('#branch').select2({
+                                placeholder: 'All Branches',
+                                allowClear: true,
+                                width: 'resolve'
+                            });
+                            $('#userName').select2({
+                                placeholder: 'All Users',
+                                allowClear: true,
+                                width: 'resolve'
+                            });
+                        });
+                    </script>
+                }
+                else if (Request.QueryString.Count > 0)
+                {
+                    <div class="mt-6 text-center text-gray-500 dark:text-white-light">No audit logs found for the selected filter(s).</div>
+                }
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/Scripts/JS/select2.min.js"></script>
+    <link rel="stylesheet" href="~/Content/CSS/select2.min.css" />
+    <script>
+        $(document).ready(function () {
+            $('#auditLogTable').DataTable();
+            $('#branch').select2({
+                placeholder: 'All Branches',
+                allowClear: true,
+                width: 'resolve'
+            });
+            $('#userName').select2({
+                placeholder: 'All Users',
+                allowClear: true,
+                width: 'resolve'
+            });
+        });
+    </script>
+}

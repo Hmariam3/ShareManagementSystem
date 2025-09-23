@@ -5,43 +5,41 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Shareholder_Management_System.Models;
 
 namespace Shareholder_Management_System.Controllers
 {
-    public class DocumentsController : Controller
+    public class DocumentsController : BaseController
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
         public List<Document> GetDocumentsFromDatabase(string ShID, string ShareID, string branch)
         {
-            // Initial query with includes for related User and other necessary tables
-            IQueryable<Document> query = db.Documents.Include(d => d.Shareholder);  // Assuming 'User' relates to the Shareholder
 
-            // Convert Shareholder ID to int (assuming it is stored as an int)
+            IQueryable<Document> query = db.Documents.Include(d => d.Shareholder);
+
             int shareholderId;
             if (int.TryParse(ShID, out shareholderId))
             {
-                // Filter documents where Document's ShID matches the provided ShID (Shareholder ID)
+
                 query = query.Where(d => d.ShID == shareholderId && d.ShID != null);
             }
 
-            // Further filtering based on ShareID or branch if necessary
             if (!string.IsNullOrEmpty(ShareID))
             {
-                // Assuming the ShareID is another identifier you want to use for filtering
+
                 query = query.Where(d => d.Shareholder.ShID.ToString() == ShareID);
             }
 
             if (!string.IsNullOrEmpty(branch))
             {
-                // Filter documents based on branch if provided
+
                 query = query.Where(d => d.Shareholder.Branch.Equals(branch));
             }
 
-            // Return the final filtered list of documents
             return query.ToList();
         }
 
@@ -50,30 +48,29 @@ namespace Shareholder_Management_System.Controllers
         {
             IEnumerable<Document> documents = new List<Document>();
 
-            /*var shareholders = GetDocumentsFromDatabase(ShID, shareID, branch);*/ // Fetch shareholders from a database or service
             var shareholders = db.Documents.Select(s => new SelectListItem
             {
-                Value = s.ShID.ToString(), // ShID as value
-                Text = s.Shareholder.FullNameEng // FullNameEng as text
+                Value = s.ShID.ToString(),
+                Text = s.Shareholder.FullNameEng + " (" + s.Shareholder.ShareID + ")"
             }).ToList();
             shareholders.Insert(0, new SelectListItem
             {
-                Value = "", // Null value for the default option
-                Text = "Select a Shareholder" // Text for the default option
+                Value = "",
+                Text = "Select a Shareholder",
             });
 
             ViewBag.Shareholders = shareholders;
-            // Ensure model is also set if needed
+
 
             if (String.IsNullOrEmpty(ShID) && String.IsNullOrEmpty(shareID))
             {
                 documents = db.Documents.Where(s => s.ShID == 199999999);
-                // Pass the list of shareholders to ViewBag
+
             }
             else
             {
                 int shID = int.Parse(ShID);
-                // Fetch proxies by ShID (Full Name or Dropdown Selected)
+
                 documents = db.Documents.Where(p => p.ShID == shID).ToList();
             }
 
@@ -112,7 +109,6 @@ namespace Shareholder_Management_System.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-
         public int Create(Document document, HttpPostedFileBase uploadedFile, int? transfreeID = null)
         {
             if (ModelState.IsValid)
@@ -123,49 +119,48 @@ namespace Shareholder_Management_System.Controllers
                     var transfer = db.ShareTransfers.Find(document.ShID);
                     var proxies = db.Proxies.Find(document.ProxyID);
 
-                    // Generate a base file name using Shareholder.FullNameEng based on document type
+                    string sanitizedFullNameEng = SanitizeFileName(shareholder.FullNameEng);
+
                     string baseFileName;
                     var fileExtension = Path.GetExtension(uploadedFile.FileName);
 
                     switch (document.DocType)
                     {
                         case "ShareholderAgreement":
-                            baseFileName = $"{shareholder.FullNameEng}_ShareholderAgreement";
+                            baseFileName = $"{sanitizedFullNameEng}_ShareholderAgreement";
                             break;
                         case "ShareholderID":
-                            baseFileName = $"{shareholder.FullNameEng}_ID";
+                            baseFileName = $"{sanitizedFullNameEng}_ID";
                             break;
                         case "ShBlockLetter":
-                            baseFileName = $"{shareholder.FullNameEng}_ShBlockLetter";
+                            baseFileName = $"{sanitizedFullNameEng}_ShBlockLetter";
                             break;
                         case "ShUnBlockLetter":
-                            baseFileName = $"{shareholder.FullNameEng}_ShUnBlockLetter";
+                            baseFileName = $"{sanitizedFullNameEng}_ShUnBlockLetter";
                             break;
                         case "ProxyID":
-                            baseFileName = $"{shareholder.FullNameEng}_ProxyID";
+                            baseFileName = $"{sanitizedFullNameEng}_ProxyID";
                             break;
                         case "DeligationLetter":
-                            baseFileName = $"{shareholder.FullNameEng}_DelegationLetter";
+                            baseFileName = $"{sanitizedFullNameEng}_DelegationLetter";
                             break;
                         case "Payment Slip":
-                            baseFileName = $"{shareholder.FullNameEng}_PaymentSlip";
+                            baseFileName = $"{sanitizedFullNameEng}_PaymentSlip";
                             break;
                         case "Blocking Document":
-                            baseFileName = $"{shareholder.FullNameEng}_BlockingDocument";
+                            baseFileName = $"{sanitizedFullNameEng}_BlockingDocument";
                             break;
                         case "Transfer Document":
                             var shareholder1 = db.Shareholders.Find(transfreeID);
-                            baseFileName = $"{shareholder.FullNameEng}_{shareholder1.FullNameEng}_Transfer Document";
+                            string sanitizedTransfreeFullNameEng = SanitizeFileName(shareholder1.FullNameEng);
+                            baseFileName = $"{sanitizedFullNameEng}_{sanitizedTransfreeFullNameEng}_TransferDocument";
                             break;
                         default:
                             throw new Exception("Invalid document type.");
                     }
 
-                    // Define the base folder
                     string baseFolder = Server.MapPath("~/Documents/");
 
-
-                    // Define the path based on the document type
                     string folderPath = "";
                     switch (document.DocType)
                     {
@@ -194,24 +189,20 @@ namespace Shareholder_Management_System.Controllers
                             folderPath = Path.Combine(baseFolder, "Blocking", "Blocking Document");
                             break;
                         case "Transfer Document":
-
                             folderPath = Path.Combine(baseFolder, "Transfer", "Transfer Document");
                             break;
                         default:
                             throw new Exception("Invalid document type.");
                     }
 
-                    // Ensure the folder exists, if not create it
                     if (!Directory.Exists(folderPath))
                     {
                         Directory.CreateDirectory(folderPath);
                     }
 
-                    // Initialize the final file name
                     string fileName = $"{baseFileName}{fileExtension}";
                     string filePath = Path.Combine(folderPath, fileName);
 
-                    // Check if the file exists and append a number if necessary
                     int counter = 1;
                     while (System.IO.File.Exists(filePath))
                     {
@@ -220,29 +211,44 @@ namespace Shareholder_Management_System.Controllers
                         counter++;
                     }
 
-                    // Save the file to the specified path
                     uploadedFile.SaveAs(filePath);
 
-                    // Set the file path and name in the document model
                     document.DocPath = $"~/{folderPath.Replace(Server.MapPath("~/"), "").Replace("\\", "/")}/{fileName}";
                     document.DocName = fileName;
 
                     document.CreatedDate = DateTime.Now;
-                    // Add the document to the database
+
                     db.Documents.Add(document);
                     db.SaveChanges();
 
-                    // Return the ID of the newly created document
                     return document.DocID;
                 }
                 else
                 {
-                    throw new Exception("No   was uploaded.");
+                    throw new Exception("No file was uploaded.");
                 }
             }
 
-            // If the model state is invalid, return -1 to indicate an error
             return -1;
+        }
+
+        //private string SanitizedFileName(string fileName)
+        //{
+        //    if (string.IsNullOrEmpty(fileName))
+        //    {
+        //        return "Unknown";
+        //    }
+
+        //    // Replace '/' with '_' and remove other invalid filename characters
+        //    string sanitized = fileName.Replace("/", "_");
+        //    return string.Join("_", sanitized.Split(Path.GetInvalidFileNameChars(), StringSplitOptions.RemoveEmptyEntries));
+        //}
+
+        private string SanitizeFileName(string fileName)
+        {
+            string sanitized = fileName.Replace("/", "_");
+            Regex invalidCharsRegex = new Regex($"[{Regex.Escape(new string(Path.GetInvalidFileNameChars()))}]");
+            return invalidCharsRegex.Replace(fileName, "_");
         }
 
 
@@ -265,7 +271,7 @@ namespace Shareholder_Management_System.Controllers
             return View(documents);
 
         }
-        
+
         public JsonResult GetDocumentPath(int id)
         {
             // Retrieve the document from the database using the document ID
@@ -277,24 +283,21 @@ namespace Shareholder_Management_System.Controllers
                 return Json(new { success = false, message = "Document not found." }, JsonRequestBehavior.AllowGet);
             }
 
-            // Construct the URL path (relative to the web root) to access the file
             string webFilePath = Url.Content(document.DocPath);
 
-            // Return the file path as a URL
             return Json(new { success = true, filePath = webFilePath }, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetDocumentStatsByType(string docType)
         {
-            // Get documents based on the DocType
+
             var documents = db.Documents.Where(d => d.DocType == docType);
 
             var docCount = documents.Count();
             long totalSizeInBytes = 0;
 
-            // Loop through each document and sum up the sizes
             foreach (var doc in documents)
             {
-                string filePath = doc.DocPath; // Ensure you have the correct path stored in the DocPath field
+                string filePath = doc.DocPath;
 
                 if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
                 {
@@ -324,7 +327,7 @@ namespace Shareholder_Management_System.Controllers
             try
             {
                 var documents = db.Documents
-                    .Where(d => d.DocType == doctype) // Filter by the provided doctype
+                    .Where(d => d.DocType == doctype)
                     .Select(d => new
                     {
                         DocumentId = d.DocID,
@@ -435,11 +438,10 @@ namespace Shareholder_Management_System.Controllers
             // Check if the file exists on the server
             if (!System.IO.File.Exists(filePath))
             {
-                // If the file does not exist, return a 404 error
+
                 return HttpNotFound();
             }
 
-            // Get the file name (you can use document.DocName if you want to return the unique file name)
             string fileName = Path.GetFileName(filePath);
 
             // Return the file as a downloadable response

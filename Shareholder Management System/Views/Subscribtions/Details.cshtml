@@ -114,12 +114,12 @@
             <div class="xl:w-1/3 sm:w-1/2 lg:w-2/5">
                 <div class="mb-2 flex w-full items-center justify-between">
                     <div class="text-gray-900 dark:text-white">Num of Subscribed Shares :</div>
-                    <div><p class="text-green-600 dark:text-green-400 text-lg">@Model.SubNumShares</p></div>
+                    <div><p class="text-green-600 dark:text-green-400 text-lg">@(Model.SubNumShares.HasValue ? Model.SubNumShares.Value.ToString("N0") : "0")</p></div>
                 </div>
 
                 <div class="mb-2 flex w-full items-center justify-between">
                     <div class="text-gray-900 dark:text-white">Paid Amount :</div>
-                    <div><p class="text-green-600 dark:text-green-400 text-lg">@Model.PaidSubscription</p></div>
+                    <div><p class="text-green-600 dark:text-green-400 text-lg">@(Model.PaidSubscription.HasValue ? Model.PaidSubscription.Value.ToString("N2") : "0.00")</p></div>
                 </div>
 
                 <div class="mb-2 flex w-full items-center justify-between">
@@ -134,14 +134,14 @@
                 <div class="mb-2 flex w-full items-center justify-between">
                     <div class="text-gray-900 dark:text-white">Subscribed Amount</div>
                     <div>
-                        <p class="text-green-600 dark:text-green-400 text-lg">@Model.SubAmount</p>
+                        <p class="text-green-600 dark:text-green-400 text-lg">@(Model.SubAmount.HasValue ? Model.SubAmount.Value.ToString("N2") : "0.00")</p>
                     </div>
                 </div>
 
                 <div class="mb-2 flex w-full items-center justify-between">
                     <div class="text-gray-900 dark:text-white">UnPaid Amount:</div>
                     <div>
-                        <p class="text-green-600 dark:text-green-400 text-lg">@Model.UnpaidSubscription</p>
+                        <p class="text-green-600 dark:text-green-400 text-lg">@(Model.UnpaidSubscription.HasValue ? Model.UnpaidSubscription.Value.ToString("N2") : "0.00")</p>
                     </div>
                 </div>
 
@@ -205,8 +205,8 @@
 
         </div>
     </div>
-    <div class="mt-8 text-right">
+    @*<div class="mt-8 text-right">
         <a href="@Url.Action("Index")" class="btn btn-primary w-32">Back to List</a>
-    </div>
+    </div>*@
 </div>
 

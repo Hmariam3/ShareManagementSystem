@@ -1,4 +1,4 @@
-﻿﻿@model IEnumerable<Shareholder_Management_System.Models.User>
+﻿@model IEnumerable<Shareholder_Management_System.Models.User>
 
 @{
     ViewBag.Title = "Index";
@@ -81,65 +81,65 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                <tr class="hover:bg-gray-50">
-                    <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.FullName) </td>
-                    <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.UserName) </td>
-                    <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.Role) </td>
-                    <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.CreatedDate) </td>
-                    <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.Branch1.BranchName) </td>
-                    <td class="px-5 py-4 border-b border-gray-200 text-sm">
-                        @if (item.Status.GetValueOrDefault())
-                        {
-                            <span class="badge rounded-full bg-info/20 text-success hover:top-0">Active</span>
-                        }
-                        else
-                        {
-                            <span class="badge rounded-full bg-danger/20 text-danger hover:top-0">Inactive</span>
-                        }
-                    </td>
-
-                    <td>
-                        <div class="flex space-x-4">
-                            @{
-                                string encryptedId = TripleDESEncryptionHelper.Encrypt(item.UID.ToString());
-                            }
-                            <a href="@Url.Action("Edit", new { id = encryptedId })" class="text-blue-500 hover:text-blue-700" title="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3.536-3.536a1.5 1.5 0 112.121 2.122L11 13m1-1L9 15l-2 2m2-2l3 3 5-5-2.828-2.828a1.5 1.5 0 00-2.122 0L11 11z" />
-                                </svg>
-                            </a>
-                            <a href="@Url.Action("Details", new { id = encryptedId })" class="text-cyan-500 hover:text-cyan-700" title="Details">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M19 12c0-3.866-3.134-7-7-7S5 8.134 5 12s3.134 7 7 7 7-3.134 7-7z" />
-                                </svg>
-                            </a>
-                            <a href="javascript:void(0);" onclick="confirmResetPassword('@Url.Action("Reset", new { id = encryptedId })')" class="text-red-500 hover:text-red-700" title="Reset Password">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3a4 4 0 00-4 4v5H5a2 2 0 00-2 2v5a2 2 0 002 2h14a2 2 0 002-2v-5a2 2 0 00-2-2h-3V7a4 4 0 00-8 0v5h8" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 15v2a2 2 0 004 0v-2" />
-                                </svg>
-                            </a>
-                            @if (item.Status == false)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.FullName) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.UserName) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.Role) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.CreatedDate) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm"> @Html.DisplayFor(modelItem => item.Branch1.BranchName) </td>
+                        <td class="px-5 py-4 border-b border-gray-200 text-sm">
+                            @if (item.Status.GetValueOrDefault())
                             {
-                                <a href="javascript:void(0);" onclick="confirmActive('@Url.Action("Activate", new { id = encryptedId })')" class="text-red-500 hover:text-red-700" title="Activate Account">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="green" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                        <circle cx="12" cy="12" r="9" stroke="green" stroke-width="2" fill="none" />
-                                    </svg>
-                                </a>
+                                <span class="badge rounded-full bg-info/20 text-success hover:top-0">Active</span>
                             }
                             else
                             {
-                                <a href="javascript:void(0);" onclick="confirmInactive('@Url.Action("Inactivate", new { id = encryptedId })')" class="text-red-500 hover:text-red-700" title="Inactivate Account">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="red" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                        <circle cx="12" cy="12" r="9" stroke="red" stroke-width="2" fill="none" />
+                                <span class="badge rounded-full bg-danger/20 text-danger hover:top-0">Inactive</span>
+                            }
+                        </td>
+
+                        <td>
+                            <div class="flex space-x-4">
+                                @{
+                                    string encryptedId = TripleDESEncryptionHelper.Encrypt(item.UID.ToString());
+                                }
+                                <a href="@Url.Action("Edit", new { id = encryptedId })" class="text-blue-500 hover:text-blue-700" title="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536M9 11l3.536-3.536a1.5 1.5 0 112.121 2.122L11 13m1-1L9 15l-2 2m2-2l3 3 5-5-2.828-2.828a1.5 1.5 0 00-2.122 0L11 11z" />
                                     </svg>
                                 </a>
-                            }
-                        </div>
-                    </td>
-                </tr>
+                                <a href="@Url.Action("Details", new { id = encryptedId })" class="text-cyan-500 hover:text-cyan-700" title="Details">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M19 12c0-3.866-3.134-7-7-7S5 8.134 5 12s3.134 7 7 7 7-3.134 7-7z" />
+                                    </svg>
+                                </a>
+                                @*<a href="javascript:void(0);" onclick="confirmResetPassword('@Url.Action("Reset", new { id = encryptedId })')" class="text-red-500 hover:text-red-700" title="Reset Password">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3a4 4 0 00-4 4v5H5a2 2 0 00-2 2v5a2 2 0 002 2h14a2 2 0 002-2v-5a2 2 0 00-2-2h-3V7a4 4 0 00-8 0v5h8" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 15v2a2 2 0 004 0v-2" />
+                                        </svg>
+                                    </a>*@
+                                @if (item.Status == false)
+                                {
+                                    <a href="javascript:void(0);" onclick="confirmActive('@Url.Action("Activate", new { id = encryptedId })')" class="text-red-500 hover:text-red-700" title="Activate Account">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="green" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                            <circle cx="12" cy="12" r="9" stroke="green" stroke-width="2" fill="none" />
+                                        </svg>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="javascript:void(0);" onclick="confirmInactive('@Url.Action("Inactivate", new { id = encryptedId })')" class="text-red-500 hover:text-red-700" title="Inactivate Account">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="red" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            <circle cx="12" cy="12" r="9" stroke="red" stroke-width="2" fill="none" />
+                                        </svg>
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>

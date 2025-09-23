@@ -10,7 +10,7 @@ using Shareholder_Management_System.Models;
 
 namespace Shareholder_Management_System.Controllers
 {
-    public class Branches1Controller : Controller
+    public class Branches1Controller : BaseController
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 

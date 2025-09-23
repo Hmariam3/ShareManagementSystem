@@ -13,15 +13,106 @@ using Newtonsoft.Json; // For JsonConvert
 
 namespace Shareholder_Management_System.Controllers
 {
-    public class ShareholdersController : Controller
+    public class ShareholdersController : BaseController
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
         // GET: Shareholders
-        public ActionResult Index()
+        public ActionResult Index(int? shId)
         {
-            var shareholders = db.Shareholders.Include(s => s.Branch1).Include(s => s.User).Include(s => s.User1);
-            return View(shareholders.ToList());
+            Shareholder shareholder = null;
+
+            if (!shId.HasValue)
+            {
+                // No shareholder selected; show SweetAlert in view
+                return View(new Shareholder());
+            }
+
+            if (shId.HasValue)
+            {
+                // Find shareholder by ShID
+                shareholder = db.Shareholders
+                    .Include(s => s.Branch1)
+                    .Include(s => s.User)
+                    .Include(s => s.User1)
+                    .Include(s => s.ShareTransfers)
+                    .Include(s => s.ShareTransfers1)
+                    .FirstOrDefault(s => s.ShID == shId.Value);
+            }
+
+            if (shareholder == null)
+            {
+                // Shareholder not found; show SweetAlert in view
+                ViewBag.ErrorMessage = "No such shareholder found.";
+                return View(new Shareholder());
+            }
+
+            // Set ViewBag for pre-selecting dropdown and shareID input
+            ViewBag.SelectedShId = shareholder.ShID;
+            ViewBag.SelectedShName = shareholder.FullNameEng + " (" + shareholder.ShareID + ")";
+            ViewBag.ShareID = shareholder.ShareID;
+
+            // Merge transfer history
+            var mergedTransfers = shareholder.ShareTransfers
+                .Select(st => new
+                {
+                    TransferID = st.TransferID,
+                    Transferror = st.Shareholder?.FullNameEng ?? "N/A",
+                    Transferee = st.Shareholder1?.FullNameEng ?? "N/A",
+                    TransferReason = st.TransferReason,
+                    NumSharesTransferred = st.NumSharesTransferred,
+                    AmountPerShare = st.AmountPerShare,
+                    PaidAmountForTransfer = st.PaidAmountForTransfer,
+                    DividenedFor = st.DividenedFor,
+                    Status = st.TransferAuthorizationStatus,
+                    TransferDate = st.TransferDate.HasValue ? st.TransferDate.Value.ToString("yyyy-MM-dd") : "",
+                    CreatedBy = st.User?.FullName ?? "N/A"
+                })
+                .Union(shareholder.ShareTransfers1
+                    .Select(st1 => new
+                    {
+                        TransferID = st1.TransferID,
+                        Transferror = st1.Shareholder?.FullNameEng ?? "N/A",
+                        Transferee = st1.Shareholder1?.FullNameEng ?? "N/A",
+                        TransferReason = st1.TransferReason,
+                        NumSharesTransferred = st1.NumSharesTransferred,
+                        AmountPerShare = st1.AmountPerShare,
+                        PaidAmountForTransfer = st1.PaidAmountForTransfer,
+                        DividenedFor = st1.DividenedFor,
+                        Status = st1.TransferAuthorizationStatus,
+                        TransferDate = st1.TransferDate.HasValue ? st1.TransferDate.Value.ToString("yyyy-MM-dd") : "",
+                        CreatedBy = st1.User?.FullName ?? "N/A"
+                    }))
+                .ToList();
+
+            ViewBag.MergedTransfers = mergedTransfers;
+
+            return View(shareholder);
+        }
+
+        public ActionResult SearchShareholders(string term)
+        {
+            try
+            {
+                var shareholders = db.Shareholders
+               .Where(s => string.IsNullOrEmpty(term) ||
+                           s.FullNameEng.ToLower().StartsWith(term.ToLower()) ||
+                           s.ShareID.ToLower().StartsWith(term.ToLower()))
+               .Select(s => new
+               {
+                   id = s.ShID,
+                   text = s.FullNameEng + " (" + s.ShareID + ")",
+                   shareID = s.ShareID
+               })
+               .Take(500) // Limit results per search for performance
+               .ToList();
+
+                return Json(new { results = shareholders }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
         }
 
         // GET: Shareholders/Details/5
@@ -95,43 +186,29 @@ namespace Shareholder_Management_System.Controllers
         }
         private string GenerateNextShareholderID()
         {
-            // Get the last Shareholder ID from the database
             var lastShareholder = db.Shareholders
-                .OrderByDescending(s => s.ShID) // Order by the primary key (ShID)
+                .OrderByDescending(s => s.ShID)
                 .FirstOrDefault();
 
-            if (lastShareholder == null || string.IsNullOrEmpty(lastShareholder.ShareID))
+            string lastID = lastShareholder?.ShareID;
+
+            if (string.IsNullOrEmpty(lastID) || lastID.Length != 7 || !lastID.All(char.IsDigit))
             {
-                // If no shareholders exist or ShareID is empty, start with SH0001
-                return "SH000001";
+                return "0000001";
             }
 
-            // Extract the numeric part of the last Shareholder ID
-            string lastID = lastShareholder.ShareID;
-
-            // Ensure the ShareID starts with "SH" and has at least 2 characters
-            if (!lastID.StartsWith("SH") || lastID.Length < 2)
+            if (int.TryParse(lastID, out int number))
             {
-                // If the last ID is invalid, start with SH0001
-                return "SH000001";
+                number++;
+                return number.ToString("D7");
+
             }
 
-            // Extract the numeric part (remove "SH")
-            string numericPart = lastID.Substring(2);
-
-            // Try to parse the numeric part as an integer
-            if (int.TryParse(numericPart, out int number))
-            {
-                number++; // Increment the number
-                return $"SH{number.ToString().PadLeft(6, '0')}"; // Format as SH000X
-            }
-
-            // If parsing fails, start with SH0001
-            return "SH000001";
+            return "0000001";
         }
 
         [HttpPost]
-   
+
         public ActionResult Create(Shareholder shareholder, HttpPostedFileBase shFile1, HttpPostedFileBase shFile)
         {
             int userId = Convert.ToInt32(Session["ID"]);
@@ -167,8 +244,7 @@ namespace Shareholder_Management_System.Controllers
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Birthdate is required to calculate Age.";
-                    return View(shareholder);
+                    shareholder.Age = 0;
                 }
                 // Basic shareholder setup
                 shareholder.ShareID = GenerateNextShareholderID();
@@ -185,12 +261,24 @@ namespace Shareholder_Management_System.Controllers
                     try
                     {
 
+                        // 50 MB max size per file
+                        const int MaxContentLength = 2 * 1024 * 1024; // 50 MB in bytes
+
+                        if (shFile.ContentLength > MaxContentLength || shFile1.ContentLength > MaxContentLength)
+                        {
+                            TempData["ErrorMessage"] = "The file must not exceed  2MB.";
+                            return View(shareholder);
+                        }
+
                         var isShareIDTaken = db.Shareholders.Any(s => s.ShareID == shareholder.ShareID);
                         if (isShareIDTaken)
                         {
                             TempData["ErrorMessage"] = "Shareholder ID is already taken, so please check it again.";
                             return View(shareholder);
                         }
+
+
+
 
                         db.Shareholders.Add(shareholder);
                         db.SaveChanges();
@@ -225,7 +313,7 @@ namespace Shareholder_Management_System.Controllers
 
                         int documentId = documentsController.Create(document, shFile);
                         int kebeleId = documentsController.Create(kebele, shFile1);
-                        
+
                         // Update ShDocument fields
                         shareholder.ShDocument = documentId;
                         shareholder.KebeleID = kebeleId;
@@ -270,7 +358,7 @@ namespace Shareholder_Management_System.Controllers
 
 
             // Re-assign ViewBags if the model state is invalid or error occurs
-          
+
 
             return View(shareholder);
         }
@@ -334,8 +422,7 @@ namespace Shareholder_Management_System.Controllers
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Birthdate is required to calculate Age.";
-                    return View(shareholder);
+                    shareholder.Age = 0; 
                 }
                 shareholder.Branch = branchId;
                 shareholder.CreatedBy = userId;
@@ -363,7 +450,7 @@ namespace Shareholder_Management_System.Controllers
                 // Combine all error messages into a single string, separated by line breaks
                 TempData["ErrorMessage"] = string.Join("<br>", errorMessages);
 
-                
+
             }
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
@@ -731,7 +818,7 @@ namespace Shareholder_Management_System.Controllers
                         kebeleDocument.DocAuthorizationDate = DateTime.Now;
                         db.Entry(kebeleDocument).State = EntityState.Modified;
                     }
-                } 
+                }
                 else
                 {
                     int docID = shareholder.PendingDoc ?? 0;
@@ -752,7 +839,8 @@ namespace Shareholder_Management_System.Controllers
                 {
                     shareholder.Status = "Active";
                 }
-                else if(shareholder.Status.Equals("UnBlocked")) {
+                else if (shareholder.Status.Equals("UnBlocked"))
+                {
                     shareholder.Status = "Blocked";
                 }
                 shareholder.Authorizer = userId;

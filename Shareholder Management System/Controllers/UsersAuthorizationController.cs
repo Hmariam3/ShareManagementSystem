@@ -10,6 +10,7 @@ using Shareholder_Management_System.Models;
 using Shareholder_Management_System.commons;
 using System.Web.Security;
 using Shareholder_Management_System.ViewModel;
+using System.DirectoryServices;
 
 namespace Shareholder_Management_System.Controllers
 {
@@ -18,91 +19,78 @@ namespace Shareholder_Management_System.Controllers
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
         private PasswordHash _passwordHasher;
 
+        private readonly string LdapUrl = "LDAP://10.1.72.10";
+        //private readonly string LdapServiceUsername = "danielgd";
+        //private readonly string LdapServicePassword = "Dan@59112116#Gela";
+
         public UsersAuthorizationController()
         {
             _passwordHasher = new PasswordHash();
         }
 
+        // GET: UsersAuthorization/Login
         [HttpGet]
         public ActionResult Login()
         {
             return View();
         }
 
+        // POST: UsersAuthorization/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(User userData)
         {
-            var checkUser = db.Users
-                            .FirstOrDefault(x => x.UserName.Equals(userData.UserName));
-
-            if (checkUser != null && checkUser.Status != false)
+            if (userData == null || string.IsNullOrWhiteSpace(userData.UserName) || string.IsNullOrWhiteSpace(userData.Password))
             {
-                var passwordHash = new PasswordHasher();
-                var passwordHasher = new PasswordHash();
+                TempData["errormessage"] = "Username and password are required.";
+                return View(userData);
+            }
 
-                // Verify the entered password against the hashed password stored in the database
-                string userHashed = passwordHasher.HashPassword(userData.Password);
-                //var passwordVerificationResult = passwordHash.VerifyHashedPassword(checkUser.Password, userHashed);
-                if (userHashed.Equals(checkUser.Password))
+            // Check if user exists in the database
+            var checkUser = db.Users
+                             .Include(u => u.Branch1)
+                             .FirstOrDefault(x => x.UserName.Equals(userData.UserName, StringComparison.OrdinalIgnoreCase));
+
+            if (checkUser == null)
+            {
+                TempData["errormessage"] = "Account does not exist for the user.";
+                return View(userData);
+            }
+
+            if (checkUser.Status == false)
+            {
+                TempData["errormessage"] = "Account is inactive. Please contact the administrator.";
+                return View(userData);
+            }
+
+            try
+            {
+                // Authenticate against LDAP
+                using (var entry = new DirectoryEntry(LdapUrl, userData.UserName, userData.Password))
                 {
-                    if (string.IsNullOrEmpty(checkUser.UID.ToString()))
-                    {
-                        // Handle this case if necessary
-                    }
+                    // Trigger LDAP bind to verify credentials
+                    object nativeObject = entry.NativeObject;
 
-                    //if (checkUser.IsFirstLogin != false)
-                    //{
-                    //    TempData["Username"] = checkUser.UserName; // Pass the username to the password change view
-                    //    TempData["UserID"] = checkUser.UID; // Pass the user ID to the password change view
-                    //    return RedirectToAction("ChangePassword");
-                    //}
-
-
-                    if (checkUser.IsFirstLogin == true)
-                    {
-                        // Redirect to password reset form
-                        TempData["UserId"] = checkUser.UID;
-                        return RedirectToAction("PasswordReset");
-                    }
-
+                    // Set session variables
                     Session["ID"] = checkUser.UID.ToString();
                     Session["FullName"] = checkUser.FullName;
                     Session["Username"] = checkUser.UserName;
                     Session["Branch"] = checkUser.Branch;
                     Session["Roles"] = checkUser.Role;
-                    //Session["BranchName"] = checkUser.Branch1.BranchName;
-                    if (checkUser != null)
-                    {
-                        if (checkUser.Branch1 != null)
-                        {
-                            Session["BranchName"] = checkUser.Branch1.BranchName;
-                        }
-                        else
-                        {
+                    Session["BranchName"] = checkUser.Branch1?.BranchName ?? "Unknown";
 
-                        }
-                    }
-                    else
-                    {
-                    }
-
+                    // Update active status
                     checkUser.activeStatus = true;
                     db.SaveChanges();
 
-
                     return RedirectToAction("Index", "Home");
                 }
-                else
-                {
-                    TempData["errormessage"] = "Wrong Password. Please try again.";
-                }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["errormessage"] = "Wrong Username or Password. Please try again.";
+                TempData["errormessage"] = "LDAP authentication failed: " + ex.Message;
+                return View(userData);
             }
-            return View();
         }
 
         [HttpGet]

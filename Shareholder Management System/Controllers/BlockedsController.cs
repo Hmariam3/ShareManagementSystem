@@ -11,7 +11,7 @@ using Shareholder_Management_System.Models;
 
 namespace Share_Management_System.Controllers
 {
-    public class BlockedsController : Controller
+    public class BlockedsController : BaseController
     {
         private Shareholder_Management_SystemEntities1 db = new Shareholder_Management_SystemEntities1();
 
@@ -99,6 +99,42 @@ namespace Share_Management_System.Controllers
         {
             PopulateDropdowns();
             return View();
+        }
+
+        [HttpGet]
+        public JsonResult SearchShareholders(string term, int page = 1)
+        {
+            const int pageSize = 10;
+            var query = db.Shareholders
+                .Where(s => s.Status == "Active" && s.AuthorizationStatus == "Approved");
+
+            if (!string.IsNullOrEmpty(term))
+            {
+                var searchTerm = term.ToLower().Trim();
+                query = query.Where(s =>
+                    //s.FullNameEng.ToLower().Contains(searchTerm) ||
+                    //s.ShareID.ToLower().Contains(searchTerm));
+                    s.FullNameEng.ToLower().StartsWith(term.ToLower()) ||
+                           s.ShareID.ToLower().StartsWith(term.ToLower()));
+            }
+
+            var total = query.Count();
+            var shareholders = query
+                .OrderBy(s => s.FullNameEng)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(s => new
+                {
+                    id = s.ShID,
+                    text = s.FullNameEng + " ( " + s.ShareID + " ) "
+                })
+                .ToList();
+
+            return Json(new
+            {
+                items = shareholders,
+                hasMore = total > page * pageSize
+            }, JsonRequestBehavior.AllowGet);
         }
 
         // POST: Blockeds/Create

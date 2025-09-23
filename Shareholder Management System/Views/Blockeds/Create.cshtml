@@ -6,8 +6,8 @@
 
 <!-- Add Select2 CSS -->
 <link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
-<script src="~/js/jquery-3.6.0.min.js"></script>
-<script src="~/js/jquery.min.js"></script>
+@*<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.min.js"></script>*@
 <script src="~/js/select2.min.js"></script>
 <script src="~/js/alpine.js"></script>
 <script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
@@ -15,48 +15,44 @@
 @using (Html.BeginForm("Create", "Blockeds", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="animate__animated p-3" :class="[$store.app.animation]">
+        <div x-data="form">
 
-    <div class="container">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="animate__animated p-3" :class="[$store.app.animation]">
-            <div x-data="form" style="margin-left:107px;">
-                <div class="grid grid-cols-1" style="width: 80%">
-                    <!-- Header -->
-                    <div class="flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-                        <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Blocking Payment Form</h5>
-                    </div>
+            <div class="flex items-center justify-between"
+                 style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+                <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Blocking Payment Form</h5>
+            </div>
 
-                    <div class="panel">
-                        <!-- Section Title -->
-                        <div class="mb-5 flex items-center justify-between">
-                            <h5 class="text-lg font-semibold dark:text-white-light">Selection of Payment to be Blocked</h5>
-                        </div>
+            <div class="grid grid-cols-1 gap-6 pt-5">
+                <div class="panel">
 
-                        <div class="row">
-                            <!-- Column 1 -->
-                            <div class="col-md-6">
-                                <div class="form-horizontal">
-                                    <!-- Shareholder Dropdown -->
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.ShID, "ShID", htmlAttributes: new { @class = "block text-gray-700 text-sm font-bold mb-2" })
-                                        @Html.DropDownList(
-                                            "ShID",
-                                            (SelectList)ViewBag.ShID,
-                                            "Select a Share Holder",
-                                            new {
-                                                @class = "form-select mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50",
-                                                id = "ShID"
-                                            }
-                                        )
-                                        @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-sm" })
+                    <div class="row">
+                        <!-- Column 1 -->
+                        <div class="col-md-6">
+                            <div class="form-horizontal">
+                                <div class="mb-5">
+                                    <label for="ShID" class="block dark:text-white-light text-sm font-semibold mb-2">Share Holder</label>
+                                    <select id="ShID" name="ShID" class="form-select block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                                        <option value="">Select Shareholder</option>
+                                        @if (ViewBag.SelectedShId != null)
+                                        {
+                                            <option value="@ViewBag.SelectedShId" selected>@ViewBag.SelectedShName</option>
+                                        }
+                                    </select>
+                                    @Html.ValidationMessageFor(model => model.ShID, "", new { @class = "text-red-500 text-xs mt-1" })
+                                    <span class="text-danger" id="shareholderError"></span>
+                                </div>
+
+                                <!-- Payments Table -->
+                                <div class="panel">
+                                    <div class="mb-5 flex items-center justify-between">
+                                        <h5 class="text-lg font-semibold dark:text-white-light">Available Payments</h5>
                                     </div>
-
-                                    <!-- Payments Table -->
-                                    <div>
-                                        <h5>Available Payments</h5>
-                                        <div class="table-wrapper">
-                                            <table class="table table-bordered" id="paymentsTable">
-                                                <thead>
+                                    <div class="mb-5">
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                            <table id="paymentsTable">
+                                                <thead style="position: sticky; top: 0; background-color: #f3f4f6; z-index: 1;">
                                                     <tr>
                                                         <th>Select</th>
                                                         <th>PayID</th>
@@ -65,94 +61,81 @@
                                                         <th>Blocked Amount</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    <!-- Payment rows will be dynamically added -->
-                                                </tbody>
+                                                <tbody></tbody>
                                             </table>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <style>
-                                        .table-wrapper {
-                                            max-height: 300px; /* Set desired height */
-                                            overflow-y: auto;
-                                            border: 1px solid #ddd; /* Optional: To make the scrollbar more distinct */
-                                        }
-                                    </style>
-
-                                    
-
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mt-4">
                                     <!-- Blocked Amount -->
-                                    @Html.LabelFor(model => model.BlockedAmount, htmlAttributes: new { @class = "control-label" })
-                                    <div class="form-group">
-                                        @Html.EditorFor(model => model.BlockedAmount, new { htmlAttributes = new { @class = "form-input", id = "BlockedAmount" } })
+
+                                    <div class="col-md-10">
+                                        <label>Blocked Amount</label>
+                                        @Html.EditorFor(model => model.BlockedAmount, new { htmlAttributes = new { @class = "form-input", id = "BlockedAmount", required = "reqiured" } })
                                         <span id="blockedAmountError" class="text-danger"></span>
                                         @Html.ValidationMessageFor(model => model.BlockedAmount, "", new { @class = "text-danger" })
                                     </div>
 
                                     <!-- Blocking Organ -->
-                                    @Html.LabelFor(model => model.BlockingOrgan, htmlAttributes: new { @class = "control-label" })
-                                    <div class="form-group">
+
+                                    <div class="col-md-10">
+                                        <label>Blocking Organ</label>
                                         @Html.EditorFor(model => model.BlockingOrgan, new { htmlAttributes = new { @class = "form-input" } })
                                         @Html.ValidationMessageFor(model => model.BlockingOrgan, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                            </div>
 
-                            <!-- Column 2 -->
-                            <div class="col-md-6">
-                                <div class="form-horizontal">
                                     <!-- RefNum -->
-                                    @Html.LabelFor(model => model.RefNum, htmlAttributes: new { @class = "control-label" })
-                                    <div class="form-group">
+
+                                    <div class="col-md-10">
+                                        <label>Reference Number</label>
                                         @Html.EditorFor(model => model.RefNum, new { htmlAttributes = new { @class = "form-input" } })
                                         @Html.ValidationMessageFor(model => model.RefNum, "", new { @class = "text-danger" })
                                     </div>
-
-                                    <!-- Reason -->
-                                    @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
-                                    <div class="form-group">
+                                </div>
+                                <br />
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mt-4">
+                                    <div class="mb-5">
+                                        <label>Upload Document <span style="color:red">*</span></label>
+                                        <div class="custom-file-container" data-upload-id="myFirstImage">
+                                            <div class="custom-file-container__image-preview">
+                                                <input type="file"
+                                                       class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
+                                                       accept="*" name="uploadedFile" required>
+                                                <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <label>Reason</label>
                                         @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-input" } })
                                         @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
                                     </div>
 
                                     <!-- Remark -->
-                                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label" })
-                                    <div class="form-group">
+                                    <div class="col-md-10">
+                                        <label>Remark</label>
                                         @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input" } })
                                         @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Submit and Back to List -->
-                        <div class="form-group text-center mt-4">
-                            <div class="d-flex justify-content-center align-items-center">
-                                <div class="custom-file-container" data-upload-id="myFirstImage">
-                                    <label class="custom-file-container__custom-file">
-                                        <input type="file" class="custom-file-container__custom-file__custom-file-input" accept="*" name="uploadedFile">
-                                        <span class="custom-file-container__custom-file__custom-file-control"></span>
-                                    </label>
-                                    <div>
-                                        @Html.ValidationMessage("uploadedFile", null, new { @class = "text-danger" })
-                                    </div>
-                                    <div class="custom-file-container__image-preview"></div>
-                                </div>
-                                <div class="me-3">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                                <div>
-                                    @Html.ActionLink("Back to List", "Index")
                                 </div>
                             </div>
                         </div>
 
                     </div>
+                    <!-- Submit and Back to List -->
+                    <div class="form-group text-center mt-4">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="me-3">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Hidden field to store selected PayID -->
     <input type="hidden" id="SelectedPayID" name="PayID" />
@@ -170,11 +153,40 @@
 <!-- Initialize Select2 -->
 <script type="text/javascript">
     $(document).ready(function () {
-        // Initialize Select2 on #ShID
+
+      // Initialize Select2 for shareholder dropdown
         $('#ShID').select2({
-            placeholder: 'Select a Share Holder',
-            allowClear: true
-        });
+        placeholder: "Select a Shareholder",
+        allowClear: true,
+        width: '100%',
+        minimumInputLength: 3,
+        ajax: {
+            url: '@Url.Action("SearchShareholders", "Blockeds")',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: data.items.map(function (item) {
+                        return {
+                            id: item.id,
+                            text: item.text
+                        };
+                    }),
+                    pagination: {
+                        more: data.hasMore
+                    }
+                };
+            },
+            cache: true
+        }
+    });
     });
 </script>
 
@@ -196,7 +208,7 @@
 
                         $.each(data, function (index, payment) {
                             var row = '<tr>' +
-                                '<td><input type="radio" name="selectedPayment" value="' + payment.PayID + '" data-paid-amount="' + payment.PaidAmount + '" data-blocked-amount="' + payment.BlockedAmount + '" data-auth-status="' + payment.PaymentAuthorizationStatus + '"></td>' +
+                                '<td><input class="form-radio text-blue-400" type="radio" name="selectedPayment" value="' + payment.PayID + '" data-paid-amount="' + payment.PaidAmount + '" data-blocked-amount="' + payment.BlockedAmount + '" data-auth-status="' + payment.PaymentAuthorizationStatus + '"></td>' +
                                 '<td>' + payment.PayID + '</td>' +
                                 '<td>' + payment.PaymentMode + '</td>' +
                                 '<td>' + payment.PaidAmount + '</td>' +
@@ -227,7 +239,7 @@
                 var authStatus = selectedPayment.data('auth-status');
 
                 //Check if the payment is null
-               
+
 
                 // Check if payment is pending
                 if (authStatus === "Pending") {

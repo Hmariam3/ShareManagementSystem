@@ -174,6 +174,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
@@ -288,6 +289,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Commons\PasswordHash.cs" />
     <Compile Include="Controllers\AuditLogsController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BlockedsController.cs" />
     <Compile Include="Controllers\Branches1Controller.cs" />
     <Compile Include="Controllers\CertificatesController.cs" />
@@ -295,8 +297,10 @@
     <Compile Include="Controllers\DividenedDetailsController.cs" />
     <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PasswordHasher.cs" />
     <Compile Include="Controllers\PaymentsController.cs" />
+    <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProxiesController.cs" />
     <Compile Include="Controllers\ShareholdersController.cs" />
     <Compile Include="Controllers\ShareTransfersController.cs" />
@@ -330,8 +334,19 @@
     <Compile Include="Models\Document.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Nationaliteis.cs" />
+    <Compile Include="Models\Migration_Errors.cs">
+      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Nationality.cs">
+      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Payment.cs">
+      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Payment_Staging.cs">
+      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Permission.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Proxy.cs">
@@ -362,6 +377,7 @@
     <Compile Include="Models\ShareTransfer.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ShareTransferViewModel.cs" />
     <Compile Include="Models\ShCategory.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
@@ -369,6 +385,10 @@
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Subscribtion.cs">
+      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SubscriptionViewModel.cs" />
+    <Compile Include="Models\Subscription_Staging.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs">
@@ -521,6 +541,7 @@
     <Content Include="Models\Shareholder_Management_System.edmx.diagram">
       <DependentUpon>Shareholder_Management_System.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -670,7 +691,7 @@
     <Content Include="Views\Subscribtions\Filter.cshtml" />
     <Content Include="Views\Subscribtions\_AddonsubscriptionsList.cshtml" />
     <Content Include="Views\Subscribtions\_SubscriptionsList.cshtml" />
-    <Content Include="Views\Subscribtions\AddSubscriprion.cshtml" />
+    <Content Include="Views\Subscribtions\AddSubscription.cshtml" />
     <Content Include="Views\Subscribtions\Authorize.cshtml" />
     <Content Include="Views\Subscribtions\Compiledsubs.cshtml" />
     <Content Include="Views\Proxies\Create.cshtml" />
@@ -741,10 +762,24 @@
     <Content Include="Views\Branches1\Details.cshtml" />
     <Content Include="Views\Branches1\Edit.cshtml" />
     <Content Include="Views\Branches1\Index.cshtml" />
+    <Content Include="Views\Subscribtions\Viewall.cshtml" />
+    <Content Include="Views\Subscribtions\OverDueSubscription.cshtml" />
+    <Content Include="Views\Certificates\Revoke.cshtml" />
+    <Content Include="Views\Permissions\Create.cshtml" />
+    <Content Include="Views\Permissions\Delete.cshtml" />
+    <Content Include="Views\Permissions\Details.cshtml" />
+    <Content Include="Views\Permissions\Edit.cshtml" />
+    <Content Include="Views\Permissions\Index.cshtml" />
+    <Content Include="Views\Permissions\Upload.cshtml" />
+    <Content Include="Views\Permissions\_PermissionsTable.cshtml" />
+    <Content Include="Views\Payments\DailyTransactions.cshtml" />
+    <Content Include="Views\Subscribtions\UpdateDuedate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="UploadedFiles\" />
+    <Folder Include="Views\Base\" />
+    <Folder Include="Views\Login\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

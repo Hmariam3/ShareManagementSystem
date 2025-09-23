@@ -6,10 +6,12 @@
 
     var proxy = ViewBag.NewProxy as Shareholder_Management_System.Models.Proxy;
     var shareholder = ViewBag.Shareholder as Shareholder_Management_System.Models.Shareholder;
-    
+
 
 }
-
+@{
+    var userRole = Session["Roles"]?.ToString();
+}
 <link rel="stylesheet" type="text/css" href="~/Content/CSS/select2.min.css">
 <script src="~/Scripts/JS/select2.min.js"></script>
 <script src="~/Scripts/JS/simple-datatables.js"></script>
@@ -25,25 +27,27 @@
             @using (Html.BeginForm("Index", "Proxies", FormMethod.Get))
             {
                 @Html.AntiForgeryToken()
-                <div class="flex sm:flex-row flex-col text-center">
-                    <label for="horizontalEmail" class="mb-0 sm:w-1/4 sm:ltr:mr-2 rtl:ml-2">
-                        Search For Shareholder using one option
-                    </label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="col-span-1">
-                            <label for="shid">Via FullName (Eng) OR</label>
-                            @Html.DropDownList("ShID",
-                                new SelectList((IEnumerable<SelectListItem>)ViewBag.Shareholders, "Value", "Text"),
-                                htmlAttributes: new { id = "searchable-select", @class = "form-select w-full" }
-                            )
-                        </div>
-                        <div class="col-span-1">
-                            <label for="shareID">Via Shareholder ID</label>
-                            <input id="shareID" name="shareID" type="text" placeholder="Enter shareID and hit enter"
-                                   class="form-input w-full" value="@ViewBag.ShareID" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 !mt-6">
+
+                    <div class="!mt-6">
+                        <label for="shid">Via FullName (Eng) OR Shareholder ID </label>
+
+                        <select name="shId" id="searchable-select" class="form-select">
+                            <option value="">Select a Shareholder</option>
+                            @if (ViewBag.SelectedShId != null)
+                            {
+                                <option value="@ViewBag.SelectedShId" selected>@ViewBag.SelectedShName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="!mt-6">
+                        <label for="shareID">Actions</label>
+                        <div class="flex items-center gap-4 flex-wrap sm:flex-row">
+                            <button type="submit" id="filterBtn" class="btn btn-primary">Filter</button>
+                            <button type="button" id="clearBtn" class="btn btn-secondary">Clear</button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mx-3">Search</button>
                 </div>
 
             }
@@ -170,185 +174,201 @@
                         <h5 class="text-lg font-semibold dark:text-white-light">Proxy Lists</h5>
                         <div class="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
                             <div class="flex gap-3">
-                                <div x-data="modal">
-                                    <button type="button" class="btn btn-primary" @@click="toggle" style="@(ViewBag.Shareholder == null ? "display:none;" : "")">
-                                        <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             class="h-5 w-5 ltr:mr-2 rtl:ml-2">
-                                            <circle cx="10" cy="6" r="4" stroke="currentColor"
-                                                    stroke-width="1.5"></circle>
-                                            <path opacity="0.5"
-                                                  d="M18 17.5C18 19.9853 18 22 10 22C2 22 2 19.9853 2 17.5C2 15.0147 5.58172 13 10 13C14.4183 13 18 15.0147 18 17.5Z"
-                                                  stroke="currentColor" stroke-width="1.5"></path>
-                                            <path d="M21 10H19M19 10H17M19 10L19 8M19 10L19 12"
-                                                  stroke="currentColor" stroke-width="1.5"
-                                                  stroke-linecap="round">
-                                            </path>
-                                        </svg>
-                                        Add Proxy
-                                    </button>
-
-                                    <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60"
-                                         :class="open && '!block'">
-                                        <div class="flex min-h-screen items-start justify-center px-4"
-                                             @@click.self="open = false">
-                                            <div x-show="open" x-transition="" x-transition.duration.300=""
-                                                 class="panel w-full max-w-5xl my-8 overflow-hidden rounded-lg border-0 py-1 px-4">
-                                                <div class="flex items-center justify-between p-5 text-lg font-semibold dark:text-white">
-                                                    <div>
-                                                        Add Proxy For
-                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
-                                                            <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                        </svg>
-                                                        @if (shareholder != null)
-                                                        {
-                                                            @shareholder.FullNameEng
-                                                        }
-                                                    </div>
-                                                    <button type="button" @@click="toggle"
-                                                            class="text-white-dark hover:text-dark">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24px"
-                                                             height="24px" viewbox="0 0 24 24" fill="none"
-                                                             stroke="currentColor" stroke-width="1.5"
-                                                             stroke-linecap="round" stroke-linejoin="round"
-                                                             class="h-6 w-6">
-                                                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                                                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-
-                                                <div>
-                                                    @using (Html.BeginForm("Create", "Proxies", FormMethod.Post, new { id = "createProxyForm", enctype = "multipart/form-data" }))
-                                                    {
-                                                        @Html.AntiForgeryToken()
-                                                    <div class="form-section">
-                                                        <h2>
+                                @if (userRole == "Initiator" || userRole == "Administrator" || userRole == "SuperAdmin")
+                                {
+                                    <div x-data="modal">
+                                        <button type="button" class="btn btn-primary" @@click="toggle" style="@(ViewBag.Shareholder == null ? "display:none;" : "")">
+                                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                                <circle cx="10" cy="6" r="4" stroke="currentColor"
+                                                        stroke-width="1.5"></circle>
+                                                <path opacity="0.5"
+                                                      d="M18 17.5C18 19.9853 18 22 10 22C2 22 2 19.9853 2 17.5C2 15.0147 5.58172 13 10 13C14.4183 13 18 15.0147 18 17.5Z"
+                                                      stroke="currentColor" stroke-width="1.5"></path>
+                                                <path d="M21 10H19M19 10H17M19 10L19 8M19 10L19 12"
+                                                      stroke="currentColor" stroke-width="1.5"
+                                                      stroke-linecap="round">
+                                                </path>
+                                            </svg>
+                                            Add Proxy
+                                        </button>
+                                        <div class="fixed inset-0 z-[999] hidden overflow-y-auto bg-[black]/60"
+                                             :class="open && '!block'">
+                                            <div class="flex min-h-screen items-start justify-center px-4"
+                                                 @@click.self="open = false">
+                                                <div x-show="open" x-transition="" x-transition.duration.300=""
+                                                     class="panel w-full max-w-5xl my-8 overflow-hidden rounded-lg border-0 py-1 px-4">
+                                                    <div class="flex items-center justify-between p-5 text-lg font-semibold dark:text-white">
+                                                        <div>
+                                                            Add Proxy For
                                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
                                                                 <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                             </svg>
-                                                            <span class="list-text">Basic Information</span>
-                                                        </h2>
-
-                                                        @if (shareholder != null)
-                                                        {
-                                                            @*@Html.Hidden("ShID", new { Name = "proxy.ShID" })*@
-                                                            @Html.HiddenFor(model => proxy.ShID, new { Value = proxy.ShID ?? shareholder.ShID })
-                                                        }
-                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
-                                                            <div class="!mt-2">
-                                                                @Html.LabelFor(model => proxy.FullName, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.FullName, new { htmlAttributes = new { @class = "form-input", @placeholder = "Full Name In English *" } })
-                                                                @Html.ValidationMessageFor(model => proxy.FullName, "", new { @class = "text-danger" })
-                                                            </div>
-                                                            <div class="!mt-2">
-                                                                @Html.LabelFor(model => proxy.Gender, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.DropDownListFor(model => proxy.Gender, new List<SelectListItem>
-                                                                {
-                                                                    new SelectListItem { Text = "Male", Value = "Male" },
-                                                                    new SelectListItem { Text = "Female", Value = "Female" }
-                                                                }, "Select Gender", new { @class = "form-input", @placeholder = "Gender" })
-                                                                @Html.ValidationMessageFor(model => proxy.Gender, "", new { @class = "text-danger" })
-                                                            </div>
+                                                            @if (shareholder != null)
+                                                            {
+                                                                @shareholder.FullNameEng
+                                                            }
                                                         </div>
-                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
-                                                            <div>
-                                                                @Html.LabelFor(model => proxy.BirthDate, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.BirthDate, new { htmlAttributes = new { @class = "form-input", @type = "date", @placeholder = "Enter Birth Date" } })
-                                                                @Html.ValidationMessageFor(model => proxy.BirthDate, "", new { @class = "text-danger" })
-                                                            </div>
-                                                            <div>
-                                                                @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
-
-                                                                @Html.DropDownListFor(
-                                                                    model => proxy.Nationality, // Bind to the Nationality property in your model
-                                                                    (SelectList)ViewBag.Nationality, // Use the SelectList from ViewBag
-                                                                    "Select Nationality", // Default option text
-                                                                    new { @class = "form-input", id = "searchable-select1" } // HTML attributes
-                                                                )
-
-                                                                @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
-                                                            <div>
-                                                                @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Primary Mobile Number *" } })
-                                                                @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
-                                                            </div>
-                                                            <div>
-                                                                @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
-                                                                @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Additional Mobile Number" } })
-                                                                @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
-                                                            </div>
-                                                        </div>
-                                                        <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            <div>
-                                                                <label for="startDate" class="text-white-dark">Start Date * </label>
-                                                                @Html.EditorFor(model => proxy.StartDate, new
-                                                                {
-                                                                    htmlAttributes = new
-                                                                    {
-                                                                        id = "startDate",
-                                                                        @class = "form-input",
-                                                                        @type = "date", // Ensure the input is of type "date"
-                                                                        @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
-                                                                    }
-                                                                })
-                                                                @Html.ValidationMessageFor(model => proxy.StartDate, "", new { @class = "text-danger" })
-                                                            </div>
-
-                                                            <div>
-                                                                <label for="endDate" class="text-white-dark">End Date </label>
-                                                                @Html.EditorFor(model => proxy.EndDate, new
-                                                           {
-                                                               htmlAttributes = new
-                                                               {
-                                                                   id = "endDate",
-                                                                   @class = "form-input",
-                                                                   @type = "date", // Ensuring the input is of type "date"
-                                                                   @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
-                                                               }
-                                                           })
-                                                            </div>
-                                                        </fieldset>
+                                                        <button type="button" @@click="toggle"
+                                                                class="text-white-dark hover:text-dark">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24px"
+                                                                 height="24px" viewbox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="1.5"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="h-6 w-6">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
                                                     </div>
 
-                                                        <div class="!mt-2">
+                                                    <div>
+                                                        @using (Html.BeginForm("Create", "Proxies", FormMethod.Post, new { id = "createProxyForm", enctype = "multipart/form-data" }))
+                                                        {
+                                                            @Html.AntiForgeryToken()
                                                             <div class="form-section">
                                                                 <h2>
                                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
-                                                                        <path d="M4 12H20M20 12L14 2M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                                     </svg>
-                                                                    <span class="list-text">Address Information</span>
+                                                                    <span class="list-text">Basic Information</span>
                                                                 </h2>
-                                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 !mt-2">
-                                                                    <div>
-                                                                        @Html.LabelFor(model => proxy.Region, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => proxy.Region, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Region" } })
-                                                                        @Html.ValidationMessageFor(model => proxy.Region, "", new { @class = "text-danger" })
+
+                                                                @if (shareholder != null)
+                                                                {
+                                                                    @*@Html.Hidden("ShID", new { Name = "proxy.ShID" })*@
+                                                                    @Html.HiddenFor(model => proxy.ShID, new { Value = proxy.ShID ?? shareholder.ShID })
+                                                                }
+                                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                                    <div class="!mt-2">
+                                                                        @Html.LabelFor(model => proxy.FullName, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => proxy.FullName, new { htmlAttributes = new { @class = "form-input", @placeholder = "Full Name In English *" } })
+                                                                        @Html.ValidationMessageFor(model => proxy.FullName, "", new { @class = "text-danger" })
                                                                     </div>
-                                                                    <div>
-                                                                        @Html.LabelFor(model => proxy.Zone, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => proxy.Zone, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter zone" } })
-                                                                        @Html.ValidationMessageFor(model => proxy.Zone, "", new { @class = "text-danger" })
-                                                                    </div>
-                                                                </div>
-                                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 !mt-2">
-                                                                    <div>
-                                                                        @Html.LabelFor(model => proxy.City, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => proxy.City, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter City" } })
-                                                                        @Html.ValidationMessageFor(model => proxy.City, "", new { @class = "text-danger" })
-                                                                    </div>
-                                                                    <div>
-                                                                        @Html.LabelFor(model => proxy.Subcity, htmlAttributes: new { @class = "control-label" })
-                                                                        @Html.EditorFor(model => proxy.Subcity, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Sub-City" } })
-                                                                        @Html.ValidationMessageFor(model => proxy.Subcity, "", new { @class = "text-danger" })
+                                                                    <div class="!mt-2">
+                                                                        @Html.LabelFor(model => proxy.Gender, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.DropDownListFor(model => proxy.Gender, new List<SelectListItem>
+                                                                        {
+                                                                            new SelectListItem { Text = "Male", Value = "Male" },
+                                                                            new SelectListItem { Text = "Female", Value = "Female" }
+                                                                        }, "Select Gender", new { @class = "form-input", @placeholder = "Gender" })
+                                                                        @Html.ValidationMessageFor(model => proxy.Gender, "", new { @class = "text-danger" })
                                                                     </div>
                                                                 </div>
+                                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 !mt-6">
+                                                                    <div>
+                                                                        @Html.LabelFor(model => proxy.BirthDate, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => proxy.BirthDate, new { htmlAttributes = new { @class = "form-input", @type = "date", @placeholder = "Birth Date", @max = DateTime.Now.ToString("yyyy-MM-dd") } })
+                                                                        @Html.ValidationMessageFor(model => proxy.BirthDate, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                    <div>
+                                                                        <!-- Adjust the width as needed -->
+                                                                        @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.DropDownListFor(
+                                                                            model => proxy.Nationality,
+                                                                            (SelectList)ViewBag.Nationality,
+                                                                            "Select Nationality",
+                                                                            new { @class = "form-input", id = "searchable-select1", style = "width: 350px;" } // Adjust width as needed
+                                                                        )
+
+
+                                                                        @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                @Html.HiddenFor(model => shareholder.SHCategory, new { id = "SHCategory" })
+
+                                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                                    <div id="departmentField">
+                                                                        @Html.LabelFor(model => proxy.Department, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => proxy.Department, new { htmlAttributes = new { @class = "form-input", @placeholder = "Delegated person department" } })
+                                                                        @Html.ValidationMessageFor(model => proxy.Department, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                    <div id="positionField">
+                                                                        @Html.LabelFor(model => proxy.Position, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => proxy.Position, new { htmlAttributes = new { @class = "form-input", @placeholder = "Delegated person Position" } })
+                                                                        @Html.ValidationMessageFor(model => proxy.Position, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                                    <div>
+                                                                        @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Primary Mobile Number *" } })
+                                                                        @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                    <div>
+                                                                        @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Additional Mobile Number" } })
+                                                                        @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                    <div>
+                                                                        <label for="startDate" class="text-white-dark">Start Date * </label>
+                                                                        @Html.EditorFor(model => proxy.StartDate, new
+                                                                        {
+                                                                            htmlAttributes = new
+                                                                            {
+                                                                                id = "startDate",
+                                                                                @class = "form-input",
+                                                                                @type = "date", // Ensure the input is of type "date"
+                                                                                @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
+                                                                            }
+                                                                        })
+                                                                        @Html.ValidationMessageFor(model => proxy.StartDate, "", new { @class = "text-danger" })
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <label for="endDate" class="text-white-dark">End Date </label>
+                                                                        @Html.EditorFor(model => proxy.EndDate, new
+                                                                   {
+                                                                       htmlAttributes = new
+                                                                       {
+                                                                           id = "endDate",
+                                                                           @class = "form-input",
+                                                                           @type = "date", // Ensuring the input is of type "date"
+                                                                           @min = DateTime.Now.ToString("yyyy-MM-dd") // Set the minimum date to today
+                                                                       }
+                                                                   })
+                                                                    </div>
+                                                                </fieldset>
+                                                            </div>
+
+                                                            <div class="!mt-2">
+                                                                <div class="form-section">
+                                                                    <h2>
+                                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
+                                                                            <path d="M4 12H20M20 12L14 2M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        </svg>
+                                                                        <span class="list-text">Address Information</span>
+                                                                    </h2>
+                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 !mt-2">
+                                                                        <div>
+                                                                            @Html.LabelFor(model => proxy.Region, htmlAttributes: new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => proxy.Region, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Region" } })
+                                                                            @Html.ValidationMessageFor(model => proxy.Region, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                        <div>
+                                                                            @Html.LabelFor(model => proxy.Zone, htmlAttributes: new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => proxy.Zone, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter zone" } })
+                                                                            @Html.ValidationMessageFor(model => proxy.Zone, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 !mt-2">
+                                                                        <div>
+                                                                            @Html.LabelFor(model => proxy.City, htmlAttributes: new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => proxy.City, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter City" } })
+                                                                            @Html.ValidationMessageFor(model => proxy.City, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                        <div>
+                                                                            @Html.LabelFor(model => proxy.Subcity, htmlAttributes: new { @class = "control-label" })
+                                                                            @Html.EditorFor(model => proxy.Subcity, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Sub-City" } })
+                                                                            @Html.ValidationMessageFor(model => proxy.Subcity, "", new { @class = "text-danger" })
+                                                                        </div>
+                                                                    </div>
                                                                     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 !mt-2">
-                                                                 
+
                                                                         <div>
                                                                             @Html.LabelFor(model => proxy.Woreda, htmlAttributes: new { @class = "control-label" })
                                                                             @Html.EditorFor(model => proxy.Woreda, new { htmlAttributes = new { @class = "form-input", @placeholder = "Enter Woreda" } })
@@ -370,37 +390,38 @@
 
                                                             </div>
 
-                                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 sm:grid-cols-2  gap-4 !mt-2 ">
-                                                            <div>
-                                                                <label for="shFile">Attach Delegation Letter *</label>
-                                                                <input id="shFile" type="file" name="proxyFile" accept="application/pdf"
-                                                                       class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                                                                       required />
-                                                                <span class="text-danger" id="fileError"></span>
+                                                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 sm:grid-cols-2  gap-4 !mt-2 ">
+                                                                <div>
+                                                                    <label for="shFile">Attach Delegation Letter *</label>
+                                                                    <input id="shFile" type="file" name="proxyFile" accept="application/pdf"
+                                                                           class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
+                                                                           required />
+                                                                    <span class="text-danger" id="fileError"></span>
+                                                                </div>
+                                                                <div>
+                                                                    <label for="kebele">Identification Document</label>
+                                                                    <input id="kebele" type="file" name="kebeleID" accept="application/pdf"
+                                                                           class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
+                                                                           required />
+                                                                    <span class="text-danger" id="fileError"></span>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <label for="kebele">Identification Document</label>
-                                                                <input id="kebele" type="file" name="kebeleID" accept="application/pdf"
-                                                                       class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary"
-                                                                       required />
-                                                                <span class="text-danger" id="fileError"></span>
-                                                            </div>
-                                                        </div>
 
-                                                        <div class="!mt-2">
-                                                            <span class="text-danger text-[11px] inline-block">* Required Fields so please fill all required fields</span>
-                                                        </div>
-                                                        <div class="flex justify-end items-center mt-8">
-                                                            <button type="button" class="btn btn-outline-danger" @@click="toggle">Discard</button>
-                                                            <button type="submit" id="submitProxyForm" class="btn btn-primary ltr:ml-4 rtl:mr-4">Save</button>
-                                                        </div>
+                                                            <div class="!mt-2">
+                                                                <span class="text-danger text-[11px] inline-block">* Required Fields so please fill all required fields</span>
+                                                            </div>
+                                                            <div class="flex justify-end items-center mt-8">
+                                                                <button type="button" class="btn btn-outline-danger" @@click="toggle">Discard</button>
+                                                                <button type="submit" id="submitProxyForm" class="btn btn-primary ltr:ml-4 rtl:mr-4">Save</button>
+                                                            </div>
                                                         }
                                                     </div>
 
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
 
                             </div>
                         </div>
@@ -522,70 +543,81 @@
 
                                                 @Html.HiddenFor(model => proxy.ProxyID, new { @id = "proxyId" })
                                                 @Html.HiddenFor(model => proxy.ShID, new { @id = "shId" })
-                                            <div class="form-section">
-                                                <h2>
-                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
-                                                        <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                    </svg>
-                                                    <span class="list-text">Basic Information</span>
-                                                </h2>
+                                                <div class="form-section">
+                                                    <h2>
+                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline h-4 w-4 text-primary ltr:mr-2 rtl:ml-2 rtl:rotate-180">
+                                                            <path d="M4 12H20M20 12L14 6M20 12L14 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        <span class="list-text">Basic Information</span>
+                                                    </h2>
 
-                                                <div class="!mt-2">
-                                                    @Html.LabelFor(model => proxy.FullName, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => proxy.FullName, new { htmlAttributes = new { @class = "form-input", id = "FullName", } })
-                                                    @Html.ValidationMessageFor(model => proxy.FullName, "", new { @class = "text-danger" })
-                                                </div>
-                                                <div class="!mt-2">
-                                                    @Html.LabelFor(model => proxy.Gender, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => proxy.Gender, new { htmlAttributes = new { @class = "form-input", id = "Gender", } })
-                                                    @Html.ValidationMessageFor(model => proxy.Gender, "", new { @class = "text-danger" })
-                                                </div>
-
-                                                <div class="!mt-2">
-                                                    @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => proxy.Nationality, new { htmlAttributes = new { @class = "form-input", id = "Gender", } })
-                                                    @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
-                                                </div>
-
-                                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
-                                                    <div>
-                                                        @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", id = "PhoneNo", type = "number" } })
-                                                        @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
+                                                    <div class="!mt-2">
+                                                        @Html.LabelFor(model => proxy.FullName, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => proxy.FullName, new { htmlAttributes = new { @class = "form-input", id = "FullName", } })
+                                                        @Html.ValidationMessageFor(model => proxy.FullName, "", new { @class = "text-danger" })
                                                     </div>
-                                                    <div>
-                                                        @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", id = "PhoneNo2", type = "number" } })
-                                                        @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
+                                                    <div class="!mt-2">
+                                                        @Html.LabelFor(model => proxy.Gender, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => proxy.Gender, new { htmlAttributes = new { @class = "form-input", id = "Gender", } })
+                                                        @Html.ValidationMessageFor(model => proxy.Gender, "", new { @class = "text-danger" })
                                                     </div>
-                                                </div>
-                                                <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label for="startDate" class="text-white-dark">Start Date </label>
-                                                        @Html.EditorFor(model => proxy.StartDate, new
-                                                        {
-                                                            htmlAttributes = new
+
+                                                    <div class="!mt-2">
+                                                        @Html.LabelFor(model => proxy.Nationality, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => proxy.Nationality, new { htmlAttributes = new { @class = "form-input", id = "Gender", } })
+                                                        @Html.ValidationMessageFor(model => proxy.Nationality, "", new { @class = "text-danger" })
+                                                    </div>
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                        <div>
+                                                            @Html.LabelFor(model => proxy.Department, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.EditorFor(model => proxy.Department, new { htmlAttributes = new { @class = "form-input", id = "department" } })
+                                                            @Html.ValidationMessageFor(model => proxy.Department, "", new { @class = "text-danger" })
+                                                        </div>
+                                                        <div>
+                                                            @Html.LabelFor(model => proxy.Position, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.EditorFor(model => proxy.Position, new { htmlAttributes = new { @class = "form-input", id = "Position" } })
+                                                            @Html.ValidationMessageFor(model => proxy.Position, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 !mt-2">
+                                                        <div>
+                                                            @Html.LabelFor(model => proxy.PhoneNo, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.EditorFor(model => proxy.PhoneNo, new { htmlAttributes = new { @class = "form-input", id = "PhoneNo", type = "number" } })
+                                                            @Html.ValidationMessageFor(model => proxy.PhoneNo, "", new { @class = "text-danger" })
+                                                        </div>
+                                                        <div>
+                                                            @Html.LabelFor(model => proxy.PhoneNo2, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.EditorFor(model => proxy.PhoneNo2, new { htmlAttributes = new { @class = "form-input", id = "PhoneNo2", type = "number" } })
+                                                            @Html.ValidationMessageFor(model => proxy.PhoneNo2, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <label for="startDate" class="text-white-dark">Start Date </label>
+                                                            @Html.EditorFor(model => proxy.StartDate, new
                                                             {
-                                                                id = "StartDate",
-                                                                @class = "form-input",
-                                                                @type = "date" // Ensure the input is of type "date"
-                                                            }
-                                                        })
-                                                    </div>
-                                                    <div>
-                                                        <label for="endDate" class="text-white-dark">End Date </label>
-                                                        @Html.EditorFor(model => proxy.EndDate, new
-                                                        {
-                                                            htmlAttributes = new
+                                                                htmlAttributes = new
+                                                                {
+                                                                    id = "StartDate",
+                                                                    @class = "form-input",
+                                                                    @type = "date" // Ensure the input is of type "date"
+                                                                }
+                                                            })
+                                                        </div>
+                                                        <div>
+                                                            <label for="endDate" class="text-white-dark">End Date </label>
+                                                            @Html.EditorFor(model => proxy.EndDate, new
                                                             {
-                                                                id = "EndDate",
-                                                                @class = "form-input",
-                                                                @type = "date" // Ensure the input is of type "date"
-                                                            }
-                                                        })
-                                                    </div>
-                                                </fieldset>
-                                            </div>
+                                                                htmlAttributes = new
+                                                                {
+                                                                    id = "EndDate",
+                                                                    @class = "form-input",
+                                                                    @type = "date" // Ensure the input is of type "date"
+                                                                }
+                                                            })
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
                                                 <div class="!mt-2">
                                                     <div class="form-section">
                                                         <h2>
@@ -689,42 +721,64 @@
 
 
 <script>
-    
+
     $(document).ready(function () {
-        $('#searchable-select1').select2({
+       $('#searchable-select').select2({
             placeholder: "Select a Shareholder",
             allowClear: true,
-            width: 'resolve', // Ensures the dropdown inherits the container's width
-            matcher: function (params, data) {
-                if ($.trim(params.term) === '') {
-                    return data;
-                }
-
-                // Match against each part of the search term
-                const terms = params.term.toLowerCase().split(' ');
-                const text = data.text.toLowerCase();
-
-                return terms.every(term => text.includes(term)) ? data : null;
+            width: '100%',
+            minimumInputLength: 3,
+            ajax: {
+                url: '@Url.Action("SearchShareholders", "Shareholders")',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return { term: params.term };
+                },
+                processResults: function (data) {
+                    return { results: data.results };
+                },
+                cache: true
             }
         });
 
-        // Initialize Select2 with custom search handling
-        $('#searchable-select').select2({
-            placeholder: "Select a Shareholder",
-            allowClear: true,
-            width: 'resolve', // Ensures the dropdown inherits the container's width
-            matcher: function (params, data) {
-                if ($.trim(params.term) === '') {
-                    return data;
-                }
+        // Function to update button states
+        function updateButtonStates() {
+            var hasSelection = !!$('#searchable-select').val();
+            var hasShareID = !!$('#shareID').val().trim();
+            var enableButtons = hasSelection || hasShareID;
+            $('#clearBtn').prop('disabled', !enableButtons);
+            $('#filterBtn').prop('disabled', !enableButtons);
+        }
 
-                // Match against each part of the search term
-                const terms = params.term.toLowerCase().split(' ');
-                const text = data.text.toLowerCase();
-
-                return terms.every(term => text.includes(term)) ? data : null;
-            }
+        // Store shareID when a shareholder is selected
+        $('#searchable-select').on('select2:select', function (e) {
+            var data = e.params.data;
+            $('#shareID').val(data.shareID || '');
+            updateButtonStates();
         });
+
+        // Clear shareID when dropdown is cleared
+        $('#searchable-select').on('select2:clear', function () {
+            $('#shareID').val('');
+            updateButtonStates();
+        });
+
+        // Update buttons when shareID input changes
+        $('#shareID').on('input', function () {
+            updateButtonStates();
+        });
+
+        // Clear button click
+        $('#clearBtn').click(function () {
+            $('#searchable-select').val(null).trigger('change'); // Clear Select2
+            $('#shareID').val(''); // Clear shareID input
+            updateButtonStates();
+            $('#filterForm').submit(); // Submit form
+        });
+
+        // Initial button state
+        updateButtonStates();
 
 
         $("#createProxyForm").validate({
@@ -901,7 +955,7 @@
                 let maxSizeInBytes = 2 * 1024 * 1024;
 
                 if (file.size > maxSizeInBytes) {
-                    fileErrorContainer.text("File size must be less than 2MB.");
+                    fileErrorContainer.text("File size must be less than 2 MB.");
                 } else if (!$("#createProxyForm").valid()) {
                     return;
                 } else {
@@ -910,10 +964,46 @@
             }
         });
 
+
+    });
+    $('#submitProxyForm').on('click', function (e) {
+        e.preventDefault();
+        let fileInput = $('#kebele')[0];
+        let fileErrorContainer = $("#fileError");
+
+        // Clear any previous file error message
+        fileErrorContainer.html('');
+
+        // Check if file is selected and is under 2MB
+        if (fileInput.files.length === 0) {
+            fileErrorContainer.text("File is required.");
+        } else {
+            let file = fileInput.files[0];
+            let maxSizeInBytes = 2 * 1024 * 1024;
+
+            if (file.size > maxSizeInBytes) {
+                fileErrorContainer.text("File size must be less than 2 MB.");
+            } else if (!$("#createProxyForm").valid()) {
+                return;
+            } else {
+                $("#createProxyForm").submit();
+            }
+        }
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const shCategory = document.getElementById('SHCategory').value;
+        const restrictedCategories = ['Individual', 'Individual (Foreigners)', 'Individual (Staff)'];
 
+        if (restrictedCategories.includes(shCategory)) {
+            // Hide the Department and Position fields
+            document.getElementById('departmentField').style.display = 'none';
+            document.getElementById('positionField').style.display = 'none';
+        }
+    });
+</script>
 <script>
 
 // main section
@@ -926,6 +1016,8 @@ document.addEventListener('alpine:init', () => {
             { name: 'Gender', hidden: true },
             { name: 'Age', hidden: true },
             { name: 'Birth Date', hidden: true },
+            { name: 'Position', hidden: true },
+            { name: 'Birth Department', hidden: true },
             { name: 'Proxy Status', hidden: true },
             { name: 'Authorization Status', hidden: false },
             { name: 'Nationality', hidden: true },
@@ -972,6 +1064,7 @@ document.addEventListener('alpine:init', () => {
         editModalOpen: false,
         activateProxyModal: false,
         editProxyDocumentModal: false,
+        userRole: '@(Session["Roles"]?.ToString() ?? "")',
 
         init() {
             let headers = this.columns.map((col) => {
@@ -990,6 +1083,8 @@ document.addEventListener('alpine:init', () => {
                                 "@item.Gender",
                                 "@item.Age",
                                 "@item.BirthDate",
+                                "@item.Department",
+                                "@item.Position",
                                 "@item.ProxyStatus",  // Pass ProxyID for use in JavaScript
                                 "@item.ProxyAuthorizationStatus", // ProxyAuthorizationStatus
                                 "@item.Nationality", // Nationality
@@ -1020,9 +1115,9 @@ document.addEventListener('alpine:init', () => {
                 perPage: 15,
                 perPageSelect: [10, 20, 30, 50, 100],
                 columns: [
-                    { select: 5, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
+                    { select: 7, render: (data, cell, row) => this.formatStatus(data) }, // Format the status
                     {
-                        select: 6, // Selecting the 3rd column (as index starts from 0)
+                        select: 8, // Selecting the 3rd column (as index starts from 0)
                         render: function (data, cell, row) {
                             let styleClass = '';
                             if (data == 'Approved') {
@@ -1038,63 +1133,78 @@ document.addEventListener('alpine:init', () => {
                             return '<span class="badge ' + styleClass + '">' + data + '</span>';
                         },
                     },
-                    {
-                        select: 24,
-                        sortable: false,
-                        render: function (data, cell, row) {
-                            const status = row.cells[2].data.toLowerCase();
-                            let detailsUrl = '@Url.Action("Details", "Proxies", new { id = "__ID__" })'.replace("__ID__", data);
-                            return `<div class="flex gap-4 items-center">
-                                <a href="${detailsUrl}" class="hover:text-primary" x-tooltip="Details">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
-                                        <path d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z" stroke="currentColor" stroke-width="1.5"></path>
-                                        <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
-                                    </svg>
-                                </a>
-                                <button type="button" class="hover:text-secondary" @@click="openEditModal(${data})" x-tooltip="Edit Proxy">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
-                                        <path
-                                            opacity="0.5"
-                                            d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                        ></path>
-                                        <path
-                                            d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                        ></path>
-                                    </svg>
-                                </button>
 
-                                ${status === 'inactive'
-                                ? `<button type="button" class="hover:text-success" @@click="activateProxy(${data})" x-tooltip="Activate Proxy">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                                            <path fill="currentColor" fill-rule="evenodd" d="M6.75 8a5.25 5.25 0 0 1 10.335-1.313a.75.75 0 0 0 1.452-.374A6.75 6.75 0 0 0 5.25 8v1.303q-.34.023-.642.064c-.9.12-1.658.38-2.26.981c-.602.602-.86 1.36-.981 2.26c-.117.867-.117 1.97-.117 3.337v.11c0 1.367 0 2.47.117 3.337c.12.9.38 1.658.981 2.26c.602.602 1.36.86 2.26.982c.867.116 1.97.116 3.337.116h8.11c1.367 0 2.47 0 3.337-.116c.9-.122 1.658-.38 2.26-.982s.86-1.36.982-2.26c.116-.867.116-1.97.116-3.337v-.11c0-1.367 0-2.47-.116-3.337c-.122-.9-.38-1.658-.982-2.26s-1.36-.86-2.26-.981c-.867-.117-1.97-.117-3.337-.117h-8.11q-.634 0-1.195.003zm-3.341 3.409c.277-.277.665-.457 1.4-.556c.754-.101 1.756-.103 3.191-.103h8c1.435 0 2.436.002 3.192.103c.734.099 1.122.28 1.399.556c.277.277.457.665.556 1.4c.101.755.103 1.756.103 3.191s-.002 2.436-.103 3.192c-.099.734-.28 1.122-.556 1.399c-.277.277-.665.457-1.4.556c-.755.101-1.756.103-3.191.103H8c-1.435 0-2.437-.002-3.192-.103c-.734-.099-1.122-.28-1.399-.556c-.277-.277-.457-.665-.556-1.4c-.101-.755-.103-1.756-.103-3.191s.002-2.437.103-3.192c.099-.734.28-1.122.556-1.399" clip-rule="evenodd"/></svg>
-                                    </button>`
-                                : `<button type="button" class="hover:text-danger" @@click="deActivateProxy(${data})" x-tooltip="Deactivate Proxy">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><g fill="none" stroke="currentColor"><path stroke-width="1.5" d="M2 16c0-2.828 0-4.243.879-5.121C3.757 10 5.172 10 8 10h8c2.828 0 4.243 0 5.121.879C22 11.757 22 13.172 22 16s0 4.243-.879 5.121C20.243 22 18.828 22 16 22H8c-2.828 0-4.243 0-5.121-.879C2 20.243 2 18.828 2 16Z"/><path stroke-linecap="round" stroke-width="1.5" d="M6 10V8a6 6 0 1 1 12 0v2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h.009m3.982 0H12m3.991 0H16"/></g></svg>
-                                    </button>`}
-                                <div x-data="dropdown" @@click.outside="open = false" class="dropdown" x-tooltip="Change Document">
-                                    <button class="btn dropdown-toggle rounded-none border-0 p-0 text-black shadow-none hover:text-primary dark:text-white-dark dark:hover:text-primary" @@click="toggle">
-                                        <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-70">
-                                            <circle cx="5" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
-                                            <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
-                                            <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
+                    {
+                        select: 26,
+                        sortable: false,
+                        render: (data, cell, row) => {
+                            const status = row.cells[7].data.toLowerCase();
+                            let detailsUrl = '@Url.Action("Details", "Proxies", new { id = "__ID__" })'.replace("__ID__", data);
+                            let buttons = `
+                                <div class="flex gap-4 items-center">
+                                    <a href="${detailsUrl}" class="hover:text-primary" x-tooltip="Details">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5">
+                                            <path d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z" stroke="currentColor" stroke-width="1.5"></path>
+                                            <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                        </svg>
+                                    </a>
+                            `;
+                            
+                            if (this.userRole === 'Initiator' || this.userRole === 'Administrator' || this.userRole === 'SuperAdmin') {
+                                buttons += `
+                                    <button type="button" class="hover:text-secondary" @@click="openEditModal(${data})" x-tooltip="Edit Proxy">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5">
+                                            <path
+                                                opacity="0.5"
+                                                d="M22 10.5V12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2H13.5"
+                                                stroke="currentColor"
+                                                stroke-width="1.5"
+                                                stroke-linecap="round"
+                                            ></path>
+                                            <path
+                                                d="M17.3009 2.80624L16.652 3.45506L10.6872 9.41993C10.2832 9.82394 10.0812 10.0259 9.90743 10.2487C9.70249 10.5114 9.52679 10.7957 9.38344 11.0965C9.26191 11.3515 9.17157 11.6225 8.99089 12.1646L8.41242 13.9L8.03811 15.0229C7.9492 15.2897 8.01862 15.5837 8.21744 15.7826C8.41626 15.9814 8.71035 16.0508 8.97709 15.9619L10.1 15.5876L11.8354 15.0091C12.3775 14.8284 12.6485 14.7381 12.9035 14.6166C13.2043 14.4732 13.4886 14.2975 13.7513 14.0926C13.9741 13.9188 14.1761 13.7168 14.5801 13.3128L20.5449 7.34795L21.1938 6.69914C22.2687 5.62415 22.2687 3.88124 21.1938 2.80624C20.1188 1.73125 18.3759 1.73125 17.3009 2.80624Z"
+                                                stroke="currentColor"
+                                                stroke-width="1.5"
+                                            ></path>
                                         </svg>
                                     </button>
-                                    <ul x-cloak="" x-show="open" x-transition="" x-transition.duration.300ms="" class="bottom-full !mt-0 mb-1 whitespace-nowrap ltr:left-0 rtl:right-0">
-                                        <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'ProxyID')">Change ID</a></li>
-                                        <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'DeligationLetter')">Change Delg Letter</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-`;
+                                    ${status === 'inactive'
+                                        ? `<button type="button" class="hover:text-success" @@click="activateProxy(${data})" x-tooltip="Activate Proxy">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                                <path fill="currentColor" fill-rule="evenodd" d="M6.75 8a5.25 5.25 0 0 1 10.335-1.313a.75.75 0 0 0 1.452-.374A6.75 6.75 0 0 0 5.25 8v1.303q-.34.023-.642.064c-.9.12-1.658.38-2.26.981c-.602.602-.86 1.36-.981 2.26c-.117.867-.117 1.97-.117 3.337v.11c0 1.367 0 2.47.117 3.337c.12.9.38 1.658.981 2.26c.602.602 1.36.86 2.26.982c.867.116 1.97.116 3.337.116h8.11c1.367 0 2.47 0 3.337-.116c.9-.122 1.658-.38 2.26-.982s.86-1.36.982-2.26c.116-.867.116-1.97.116-3.337v-.11c0-1.367 0-2.47-.116-3.337c-.122-.9-.38-1.658-.982-2.26s-1.36-.86-2.26-.981c-.867-.117-1.97-.117-3.337-.117h-8.11q-.634 0-1.195.003zm-3.341 3.409c.277-.277.665-.457 1.4-.556c.754-.101 1.756-.103 3.191-.103h8c1.435 0 2.436.002 3.192.103c.734.099 1.122.28 1.399.556c.277.277.457.665.556 1.4c.101.755.103 1.756.103 3.191s-.002 2.436-.103 3.192c-.099.734-.28 1.122-.556 1.399c-.277.277-.665.457-1.4.556c-.755.101-1.756.103-3.191.103H8c-1.435 0-2.437-.002-3.192-.103c-.734-.099-1.122-.28-1.399-.556c-.277-.277-.457-.665-.556-1.4c-.101-.755-.103-1.756-.103-3.191s.002-2.437.103-3.192c.099-.734.28-1.122.556-1.399" clip-rule="evenodd"/>
+                                            </svg>
+                                        </button>`
+                                        : `<button type="button" class="hover:text-danger" @@click="deActivateProxy(${data})" x-tooltip="Deactivate Proxy">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                                <g fill="none" stroke="currentColor">
+                                                    <path stroke-width="1.5" d="M2 16c0-2.828 0-4.243.879-5.121C3.757 10 5.172 10 8 10h8c2.828 0 4.243 0 5.121.879C22 11.757 22 13.172 22 16s0 4.243-.879 5.121C20.243 22 18.828 22 16 22H8c-2.828 0-4.243 0-5.121-.879C2 20.243 2 18.828 2 16Z"/>
+                                                    <path stroke-linecap="round" stroke-width="1.5" d="M6 10V8a6 6 0 1 1 12 0v2"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h.009m3.982 0H12m3.991 0H16"/>
+                                                </g>
+                                            </svg>
+                                        </button>`}
+                                    <div x-data="dropdown" @@click.outside="open = false" class="dropdown" x-tooltip="Change Document">
+                                        <button class="btn dropdown-toggle rounded-none border-0 p-0 text-black shadow-none hover:text-primary dark:text-white-dark dark:hover:text-primary" @@click="toggle">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-70">
+                                                <circle cx="5" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
+                                                <circle opacity="0.5" cx="12" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
+                                                <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.5"></circle>
+                                            </svg>
+                                        </button>
+                                        <ul x-cloak x-show="open" x-transition x-transition.duration.300ms class="bottom-full !mt-0 mb-1 whitespace-nowrap ltr:left-0 rtl:right-0">
+                                            <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'ProxyID')">Change ID</a></li>
+                                            <li><a href="javascript:;" @@click="editProxyDocument(${data}, 'DeligationLetter')">Change Delg Letter</a></li>
+                                        </ul>
+                                    </div>
+                                `;
+                            }
+                            buttons += `</div>`;
+                            return buttons;
                         },
                     },
+
                     {
-                        select: 25,
+                        select: 27,
                         sortable: false,
                         render: function (data, cell, row) {
                             return `<div class="flex gap-4 items-center">
@@ -1114,7 +1224,7 @@ document.addEventListener('alpine:init', () => {
                         },
                     },
                     {
-                        select: 26,
+                        select: 28,
                         sortable: false,
                         render: function (data, cell, row) {
 
@@ -1296,7 +1406,7 @@ document.addEventListener('alpine:init', () => {
             .then(data => {
                 if (data.success) {
                     showMessage(data.message, 'success');
-                    
+
                     this.editProxyDocumentModal = false;
                     setTimeout(() => {
                         location.reload();
@@ -1328,6 +1438,7 @@ document.addEventListener('alpine:init', () => {
                         $('#Age').val(data.FullName);
                         $('#Birth Date').val(data.FullName);
                         $('#Gender').val(data.Gender);
+                        $('#Department').val(data.position);
                         $('#Nationality').val(data.Nationality);
                         $('#PhoneNo').val(data.PhoneNo);
                         $('#PhoneNo2').val(data.PhoneNo2);
@@ -1389,7 +1500,7 @@ async function deActivateProxy(proxyID) {
                 } else {
                     // Show error message
                     showMessage(data.message, 'error');
-                    
+
                 }
             })
                 .catch(error => {

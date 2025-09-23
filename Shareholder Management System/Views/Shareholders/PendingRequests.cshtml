@@ -1227,7 +1227,7 @@
                     {
                         id: @item.ShID,
                         shareid: "@item.ShareID",
-                        shDocument: @item.ShDocument,
+                        shDocument: @(item.ShDocument != null ? item.ShDocument : 0),
                         fullNameEng: "@item.FullNameEng",
                         fullNameAfanOromo: "@item.FullNameAfanOromo",
                         fullNameAmharic: "@item.FullNameAmharic",
@@ -1442,7 +1442,7 @@
                         shareid: "@item.Shareholder.ShareID",
                         shareName: "@item.Shareholder.FullNameEng",
                         shCategory: "@item.Shareholder.SHCategory",
-                        shDocument: @item.ProxyDocument,
+                        shDocument: @(item.ProxyDocument != null ? item.ProxyDocument : 0),
                         fullName: "@item.FullName",
                         status: "@item.ProxyStatus",
                         nationality: "@item.Nationality",

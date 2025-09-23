@@ -1,0 +1,362 @@
+﻿@model Shareholder_Management_System.Models.Certificate
+@{
+    ViewBag.Title = "SplitPayment";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/CSS/nice-select2.css">
+<link href="~/css/select2.min.css" rel="stylesheet" />
+<script src="~/Scripts/select2/js/select2.full.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
+<link href="~/css/select2.min.css" rel="stylesheet" />
+<script src="~/Scripts/JS/nice-select2.js"></script>
+
+
+<div x-data="form">
+    @using (Html.BeginForm("SplitPayment", "Certificates", FormMethod.Post, new { id = "splitForm" }))
+    {
+        @Html.AntiForgeryToken()
+       
+        <div class="grid grid-cols-2 gap-6 pt-5 lg:grid-cols-2">
+            <div class="panel">
+                <div class="mb-4">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </div>
+                <div class="mb-5 flex items-center justify-between">
+                    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Split Certificate</h5>
+                </div>
+                <!-- Shareholder Dropdown -->
+                <div x-data="search">
+                    <label for="shid">Shareholder</label>
+                    @Html.DropDownList("ShID",
+                        ViewBag.Shareholders as IEnumerable<SelectListItem>,
+                        "Select shareholder",
+                        new { @id = "seachable-select", required = "required", @class = "form-input" })
+
+                </div>
+                @Html.HiddenFor(model => model.ShID, new { @id = "ShID" })
+
+                <!-- Table for Payments -->
+                <label style="margin: 20px 0;">Payments</label>
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto; margin: 20px 0;">
+                    <table class="table-auto w-full border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="border p-2"></th>
+                                <th class="border p-2">Payment ID</th>
+                                <th class="border p-2">Shareholder Name</th>
+                                <th class="border p-2">Payment Mode</th>
+                                <th class="border p-2">Branch</th>
+                                <th class="border p-2">Paid Amount</th>
+                                <th class="border p-2">Blocked Amount</th>
+                                <th class="border p-2">Reference Number</th>
+                                <th class="border p-2">Payment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody">
+                            <!-- Dynamic content filled by Ajax -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="mb-5 flex items-center justify-between">
+                    <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Split Certificate</h5>
+                </div>
+                <div class="mb-5">
+                    <label>Remaining Certificate</label>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="control-label">Remaining Amount</label>
+                            <input type="number" id="remainingAmount" class="form-input" readonly>
+                        </div>
+                        <div>
+                            <label class="control-label">Remaining Beginning Serial</label>
+                            <input type="number" id="remainingBeginSerial" class="form-input" readonly>
+                        </div>
+                        <div>
+                            <label class="control-label">Remaining Ending Serial</label>
+                            <input type="number" id="remainingEndSerial" class="form-input" readonly>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="addSplit" class="btn btn-secondary mt-2">+ Add Another</button>
+                <div class="mt-4">
+                    <!-- Labels as Headers -->
+                    <div class="grid grid-cols-4 gap-2 bg-gray-100 p-2 border-b border-gray-300">
+                        <div>
+                            <label class="control-label font-semibold">Requested Amount</label>
+                        </div>
+                        <div>
+                            <label class="control-label font-semibold">New Beginning Serial</label>
+                        </div>
+                        <div>
+                            <label class="control-label font-semibold">New Ending Serial</label>
+                        </div>
+                        <div>
+                            <label class="control-label font-semibold">Action</label>
+                        </div>
+                    </div>
+                    <!-- Scrollable container for inputs -->
+                    <div id="splitCertificates" style="max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-top: none; padding: 10px;">
+                        <!-- Dynamic split sections will be appended here -->
+                    </div>
+                </div>
+
+
+                <!-- Remark -->
+                <div class="mb-5">
+                    @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(model => model.Remark, new { @class = "form-input" })
+                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-6" style="background:#00adef;">Split</button>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/select2/js/select2.full.js"></script>
+    <input type="hidden" id="selectedShID" value="@ViewBag.SelectedShID" />
+    <script>
+    $(document).ready(function () {
+        let baseSerial = 0; // Store the last ending serial from the server
+
+        $('#seachable-select').select2({
+            placeholder: "Select a Shareholder",
+            allowClear: true,
+            width: '100%',
+            matcher: function (params, data) {
+                if ($.trim(params.term) === '') return data;
+                const terms = params.term.toLowerCase().split(' ');
+                const text = data.text.toLowerCase();
+                return terms.every(term => text.includes(term)) ? data : null;
+            }
+        });
+        var selectedShID = $('#selectedShID').val();
+        $('#seachable-select').change(function () {
+            var selectedValue = $(this).val();
+            $('#paymentsTableBody').empty();
+            $('#splitCertificates').empty();
+            $("#remainingAmount").val('');
+            $("#remainingBeginSerial").val('');
+            $("#remainingEndSerial").val('');
+            if (selectedValue) {
+                fetchPayments(selectedValue);
+            }
+        });
+
+        function fetchPayments(shID) {
+            $.ajax({
+                url: '@Url.Action("GetPaymentsByShID", "Certificates")',
+                type: 'GET',
+                data: { shID: shID },
+                beforeSend: function () {
+                    $('#paymentsTableBody').html('<tr><td colspan="9">Loading...</td></tr>');
+                },
+                success: function (data) {
+                    populatePaymentsTable(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching payments:', error);
+                    $('#paymentsTableBody').html('<tr><td colspan="9">Error loading payments.</td></tr>');
+                }
+            });
+        }
+
+        function populatePaymentsTable(data) {
+            var tbody = $('#paymentsTableBody');
+            tbody.empty();
+            if (data && data.Payments && data.Payments.length > 0) {
+                $.each(data.Payments, function (index, payment) {
+                    var row = `<tr data-amount="${payment.PaidAmount}">
+                        <td class="border p-2"><input type="radio" id="SelectedPayID_${payment.PayID}" class="form-radio" name="SelectedPayID" value="${payment.PayID}" /></td>
+                        <td class="border p-2">${payment.PayID}</td>
+                        <td class="border p-2">${payment.SHName || 'N/A'}</td>
+                        <td class="border p-2">${payment.PaymentMode || 'N/A'}</td>
+                        <td class="border p-2">${payment.Branch || 'N/A'}</td>
+                        <td class="border p-2">${payment.PaidAmount}</td>
+                        <td class="border p-2">${payment.BlockedAmount || '0'}</td>
+                        <td class="border p-2">${payment.ReferenceNum || 'N/A'}</td>
+                        <td class="border p-2">${payment.PaymentDate || 'N/A'}</td>
+                    </tr>`;
+                    tbody.append(row);
+                });
+            } else {
+                tbody.append('<tr><td colspan="9">No payments found.</td></tr>');
+            }
+        }
+
+        function fetchLastEndingSerial(callback) {
+            $.ajax({
+                url: '@Url.Action("GetLastEndingSerial", "Certificates")',
+                type: 'GET',
+                success: function (data) {
+                    console.log("Last Ending Serial:", data.lastEndingSerial);
+                    callback(parseInt(data.lastEndingSerial, 10) || 0);
+                },
+                error: function () {
+                    console.error('Error fetching last ending serial, defaulting to 0');
+                    callback(0);
+                }
+            });
+        }
+
+        $(document).on("change", "input[name='SelectedPayID']", function () {
+            var selectedRow = $(this).closest("tr");
+            var paidAmount = parseFloat(selectedRow.data("amount")) || 0;
+            $("#remainingAmount").val(paidAmount.toFixed(2)).data("initial", paidAmount);
+            $("#splitCertificates").empty();
+            fetchLastEndingSerial(function (lastSerial) {
+                baseSerial = lastSerial; // Set the base serial once
+                var shares = Math.floor(paidAmount / 100);
+                $("#remainingBeginSerial").val(baseSerial + 1);
+                $("#remainingEndSerial").val(baseSerial + shares);
+                updateSerialNumbers();
+            });
+        });
+
+        $("#addSplit").click(function () {
+            var remaining = parseFloat($("#remainingAmount").val()) || 0;
+            if (remaining <= 0) {
+                alert("No remaining amount available to split.");
+                return;
+            }
+
+            var splitSection = `
+                <div class="grid grid-cols-4 gap-2 mt-2 split-section">
+                    <div>
+                        
+                        <input type="number" name="requestedAmounts[]" class="form-input requestedAmount" placeholder="Enter amount" min="0" step="0.01">
+                    </div>
+                    <div>
+                       
+                        <input type="number" name="newBeginSerials[]" class="form-input newBeginSerial" readonly>
+                    </div>
+                    <div>
+                       
+                        <input type="number" name="newEndSerials[]" class="form-input newEndSerial" readonly>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="button" class="removeSplit btn btn-danger w-full">Remove</button>
+                    </div>
+                </div>`;
+            $("#splitCertificates").append(splitSection);
+            updateSerialNumbers();
+        });
+
+        $(document).on("click", ".removeSplit", function () {
+            $(this).closest(".split-section").remove();
+            updateSerialNumbers();
+        });
+
+        $(document).on("input", ".requestedAmount", function () {
+            var value = parseFloat($(this).val()) || 0;
+            if (value < 0) {
+                $(this).val(0);
+                alert("Requested amount cannot be negative");
+            }
+            updateSerialNumbers();
+        });
+
+        function updateSerialNumbers() {
+            var initialAmount = parseFloat($("#remainingAmount").data("initial")) || 0;
+            var totalRequested = 0;
+            var currentSerial = baseSerial + 1; // Start from the fixed base serial
+            var allFilled = true;
+
+            $(".split-section").each(function () {
+                var $requestedAmount = $(this).find(".requestedAmount");
+                var $beginSerial = $(this).find(".newBeginSerial");
+                var $endSerial = $(this).find(".newEndSerial");
+
+                var amount = parseFloat($requestedAmount.val()) || 0;
+                totalRequested += amount;
+                if ($requestedAmount.val().trim() === "") allFilled = false;
+
+                if (amount > 0) {
+                    var shares = Math.floor(amount / 100);
+                    $beginSerial.val(currentSerial);
+                    $endSerial.val(currentSerial + shares - 1);
+                    currentSerial += shares;
+                } else {
+                    $beginSerial.val('');
+                    $endSerial.val('');
+                }
+            });
+
+            var remaining = initialAmount - totalRequested;
+            if (remaining < 0) {
+                alert("Requested amounts exceed the available amount.");
+                $("#remainingAmount").val(0);
+                $("#remainingBeginSerial").val('');
+                $("#remainingEndSerial").val('');
+                $("#addSplit").prop("disabled", true);
+                return;
+            }
+
+            $("#remainingAmount").val(remaining.toFixed(2));
+            if (remaining > 0) {
+                var remainingShares = Math.floor(remaining / 100);
+                $("#remainingBeginSerial").val(currentSerial);
+                $("#remainingEndSerial").val(currentSerial + remainingShares - 1);
+            } else {
+                $("#remainingBeginSerial").val('');
+                $("#remainingEndSerial").val('');
+            }
+
+            $("#addSplit").prop("disabled", remaining === 0 || !allFilled);
+        }
+
+        $("#splitForm").submit(function (e) {
+            var selectedPayment = $("input[name='SelectedPayID']:checked").val();
+            var requestedAmounts = $(".requestedAmount").map(function () {
+                return parseFloat($(this).val()) || 0;
+            }).get();
+            var remainingAmount = parseFloat($("#remainingAmount").val()) || 0;
+
+            if (!selectedPayment) {
+                e.preventDefault();
+                alert("Please select a payment.");
+                return false;
+            }
+
+            if ($(".split-section").length === 0) {
+                e.preventDefault();
+                alert("Please add at least one split certificate.");
+                return false;
+            }
+
+            if (requestedAmounts.some(val => val <= 0)) {
+                e.preventDefault();
+                alert("All requested amounts must be greater than zero.");
+                return false;
+            }
+
+            if (remainingAmount < 0) {
+                e.preventDefault();
+                alert("Remaining amount cannot be negative.");
+                return false;
+            }
+
+            if (!confirm("Are you sure you want to split this payment?")) {
+                e.preventDefault();
+                return false;
+            }
+
+            console.log("Form data:", {
+                SelectedPayID: selectedPayment,
+                requestedAmounts: requestedAmounts,
+                newBeginSerials: $(".newBeginSerial").map(function () { return $(this).val(); }).get(),
+                newEndSerials: $(".newEndSerial").map(function () { return $(this).val(); }).get(),
+                remainingAmount: remainingAmount
+            });
+            return true;
+        });
+    });
+    </script>
+}

@@ -1,0 +1,155 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Payment>
+@{
+    ViewBag.Title = "Daily Transactions";
+}
+<link href="~/css/jquery-1.13.4.dataTables.min.css" rel="stylesheet" />
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <div>
+        <div class="space-y-6">
+            <div class="panel">
+                <div class="mb-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="mb-5 w-full">
+                            <h5 class="text-lg font-semibold dark:text-white-light">Daily Transactions</h5>
+                            <!-- Date & Branch Filter Form -->
+                            <form method="get" action="@Url.Action("DailyTransactions", "Payments")" class="mt-2" id="dateBranchFilterForm">
+                                <div class="flex items-center gap-4 flex-wrap">
+                                    <div>
+                                        <input type="date" name="date" id="daily-date-picker" class="form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-[#1b2e4b] dark:text-white-light" value="@ViewBag.SelectedDate" max="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                                    </div>
+                                    @*<div>
+                                            <select name="branchId" class="form-select">
+                                                <option value="">All Branches</option>
+                                                @foreach (var branch in ViewBag.Branches)
+                                                {
+                                                    <option value="@branch.ID" @(ViewBag.SelectedBranch != null && (int)ViewBag.SelectedBranch == branch.ID ? "selected" : "")>@branch.BranchName</option>
+                                                }
+                                            </select>
+                                        </div>*@
+                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                    <a href="@Url.Action("DailyTransactions", "Payments")" class="btn btn-secondary">Today</a>
+                                    <button type="submit" name="export" value="true" class="btn btn-success">Export to Excel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Summary Section -->
+                    <div class="mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="p-4 bg-white rounded shadow dark:bg-[#1b2e4b] dark:text-white-light">
+                                <div class="font-bold">Total Payments</div>
+                                <div>@ViewBag.TotalPayments</div>
+                            </div>
+                            <div class="p-4 bg-white rounded shadow dark:bg-[#1b2e4b] dark:text-white-light">
+                                <div class="font-bold">Total Amount</div>
+                                <div>@String.Format("{0:N2}", ViewBag.TotalAmount)</div>
+                            </div>
+                            <div class="p-4 bg-white rounded shadow dark:bg-[#1b2e4b] dark:text-white-light">
+                                <div class="font-bold">Approved</div>
+                                <div>@ViewBag.ApprovedPayments (@String.Format("{0:N2}", ViewBag.ApprovedAmount))</div>
+                            </div>
+                            <div class="p-4 bg-white rounded shadow dark:bg-[#1b2e4b] dark:text-white-light">
+                                <div class="font-bold">Pending</div>
+                                <div>@ViewBag.PendingPayments (@String.Format("{0:N2}", ViewBag.PendingAmount))</div>
+                            </div>
+                            <div class="p-4 bg-white rounded shadow dark:bg-[#1b2e4b] dark:text-white-light">
+                                <div class="font-bold">Rejected</div>
+                                <div>@ViewBag.RejectedPayments (@String.Format("{0:N2}", ViewBag.RejectedAmount))</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-4">
+                        @if (!Model.Any())
+                        {
+                            <p class="text-center text-gray-500">No transactions found for the selected date and branch.</p>
+                        }
+                        else
+                        {
+                            <table id="paymentTable" class="table-hover display nowrap" style="width:100%;">
+                                <thead class="whitespace-nowrap">
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Share ID</th>
+                                        <th>Payment Date</th>
+                                        <th>District</th>
+                                        <th>Branch Name</th>
+                                        <th>Creation Date</th>
+                                        <th>Paid Amount</th>
+                                        <th>Reference Num</th>
+                                        <th>Mode of Payment</th>
+                                        <th>Blocked Amount</th>
+                                        <th>Transfered Amount</th>
+                                        <th>Status</th>
+                                        <th>Remark</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="paymentTableBody">
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.Shareholder.FullNameEng)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Shareholder.ShareID)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Branch1.SubProcess)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Branch1.BranchName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.CreationDate)</td>
+                                            <td>@(item.PaidAmount.HasValue ? item.PaidAmount.Value.ToString("N2") : "0.00")</td>
+                                            <td>@Html.DisplayFor(modelItem => item.ReferenceNum)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.PaymentMode)</td>
+                                            <td>@(item.BlockedAmount.HasValue ? item.BlockedAmount.Value.ToString("N2") : "0.00")</td>
+                                            <td>@(item.TransferAmount.HasValue ? item.TransferAmount.Value.ToString("N2") : "0.00")</td>
+                                            <td>
+                                                @{
+                                                    string statusClass;
+                                                    if (item.PaymentAuthorizationStatus == "Approved")
+                                                    {
+                                                        statusClass = "badge-outline-success";
+                                                    }
+                                                    else if (item.PaymentAuthorizationStatus == "Pending")
+                                                    {
+                                                        statusClass = "badge-outline-warning";
+                                                    }
+                                                    else if (item.PaymentAuthorizationStatus == "Rejected")
+                                                    {
+                                                        statusClass = "badge-outline-danger";
+                                                    }
+                                                    else
+                                                    {
+                                                        statusClass = "";
+                                                    }
+                                                }
+                                                <span class="badge @statusClass">@item.PaymentAuthorizationStatus</span>
+                                            </td>
+                                            <td>@Html.DisplayFor(modelItem => item.Remark)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        if ($('#paymentTableBody tr').length > 0) {
+            $('#paymentTable').DataTable({
+                pageLength: 5,
+                lengthMenu: [5, 10, 20, 50],
+                searchable: true,
+                firstLast: true,
+                firstText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                lastText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                prevText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                nextText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                labels: { perPage: '{select}' },
+                layout: { top: '{search}', bottom: '{info}{select}{pager}' }
+            });
+        }
+    });
+</script>

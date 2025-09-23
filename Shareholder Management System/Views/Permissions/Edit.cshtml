@@ -1,0 +1,73 @@
+﻿@model Shareholder_Management_System.Models.Permission
+
+@{
+    ViewBag.Title = "Edit Permission";
+}
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/userRole/css/all.min.css" />
+<link href="~/css/tailwind.min.css" rel="stylesheet" type="text/css" media="screen" />
+
+<div class="bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-hidden panel">
+    <div class="p-6 sm:p-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Edit Permission</h2>
+
+        @using (Html.BeginForm("Edit", "Permissions", FormMethod.Post, new { @class = "space-y-6" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.perm_id)
+
+            @Html.ValidationSummary(true, "", new { @class = "text-red-500 dark:text-red-400 text-sm bg-red-100 dark:bg-red-800 p-4 rounded-md" })
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Role Name -->
+                <div>
+                    <label for="role_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Role</label>
+                    @Html.DropDownListFor(model => model.role_name, (SelectList)ViewBag.RoleName, "Select Role", new { @class = "form-select w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 transition-colors duration-200" })
+                    @Html.ValidationMessageFor(model => model.role_name, "", new { @class = "text-red-500 dark:text-red-400 text-sm mt-1" })
+                </div>
+
+                <!-- Permission Family -->
+                <div>
+                    <label for="perm_family" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Permission Family</label>
+                    @Html.DropDownListFor(model => model.perm_family, new SelectList(new[] { "User Management", "Transfer", "Subscription", "Payment", "Shareholder", "Block", "Certificate" }, Model.perm_family), "Select Family", new { @class = "form-select w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 transition-colors duration-200" })
+                    @Html.ValidationMessageFor(model => model.perm_family, "", new { @class = "text-red-500 dark:text-red-400 text-sm mt-1" })
+                </div>
+
+                <!-- Permission Name -->
+                <div>
+                    <label for="perm_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Permission Name</label>
+                    @Html.EditorFor(model => model.perm_name, new { htmlAttributes = new { @class = "form-input w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 transition-colors duration-200" } })
+                    @Html.ValidationMessageFor(model => model.perm_name, "", new { @class = "text-red-500 dark:text-red-400 text-sm mt-1" })
+                </div>
+
+                <!-- Controller -->
+                <div>
+                    <label for="perm_controller" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Controller</label>
+                    @Html.DropDownListFor(model => model.perm_controller, new SelectList(new[] { "Users", "Permissions", "Shareholders", "Transactions", "Certificates" }, Model.perm_controller), "Select Controller", new { @class = "form-select w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 transition-colors duration-200" })
+                    @Html.ValidationMessageFor(model => model.perm_controller, "", new { @class = "text-red-500 dark:text-red-400 text-sm mt-1" })
+                </div>
+
+                <!-- Action -->
+                <div>
+                    <label for="perm_action" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Action</label>
+                    @Html.EditorFor(model => model.perm_action, new { htmlAttributes = new { @class = "form-input w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-[#00ADEF] focus:ring focus:ring-[#00ADEF] focus:ring-opacity-50 transition-colors duration-200" } })
+                    @Html.ValidationMessageFor(model => model.perm_action, "", new { @class = "text-red-500 dark:text-red-400 text-sm mt-1" })
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-center space-x-4 mt-8">
+                <button type="submit" class="btn btn-primary text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 px-6 py-2 rounded-md flex items-center transition-colors duration-200">
+                    <i class="fas fa-save mr-2"></i> Save
+                </button>
+                <a href="@Url.Action("Index")" class="btn bg-gray-500 text-white hover:bg-gray-600 dark:bg-gray-600 dark:hover:bg-gray-500 px-6 py-2 rounded-md flex items-center transition-colors duration-200">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to List
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

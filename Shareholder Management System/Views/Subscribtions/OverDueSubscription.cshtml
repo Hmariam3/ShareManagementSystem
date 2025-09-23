@@ -1,0 +1,357 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.Subscribtion>
+
+@{
+    ViewBag.Title = "View All Subscriptions";
+}
+
+<link href="~/Scripts/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
+<script src="~/Scripts/datatables/datatables.min.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<!-- Include SweetAlert Library -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/sweetalert2.min.css">
+<script src="~/js/sweetalert.js"></script>
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+<link href="~/css/tailwind.min.css" rel="stylesheet" />
+<!-- CSS Includes -->
+<link rel="stylesheet" href="~/css/all.min.css" />
+<link rel="stylesheet" href="~/css/select2.min.css" />
+<link rel="stylesheet" href="~/css/jquery.dataTables.min.css" />
+
+<style>
+
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px;
+        width: 100%;
+        flex-grow: 1;
+    }
+
+    .panel {
+        width: 100%;
+        max-width: 1500px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+    .select2-container {
+        width: 100% !important;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .success-message {
+        color: green;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table.dataTable {
+        width: 100% !important;
+    }
+
+    /* Responsive design for smaller screens */
+    @@media (max-width: 768px) {
+        .btn-group {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            width: 100%;
+            max-width: 200px;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="panel">
+        @*@if (ViewBag.SuccessMessage != null)
+            {
+                <div class="success-message">
+                    @ViewBag.SuccessMessage
+                </div>
+            }*@
+
+        <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+            <h5 class="text-lg font-semibold dark:text-white-light uppercase" style="padding:7px;">Over Due Subscriptions</h5>
+        </div>
+
+        <form method="get" action="@Url.Action("OverDueSubscription", "Subscribtions")" class="mt-2" id="filterForm">
+            <div class="flex items-center gap-4 flex-wrap">
+                <div class="w-full max-w-md">
+                    <select name="shId" id="searchable-select" class="form-select block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="">Select a Shareholder</option>
+                        @if (ViewBag.SelectedShId != null)
+                        {
+                            <option value="@ViewBag.SelectedShId" selected>@ViewBag.SelectedShName</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white">Filter</button>
+                <a href="@Url.Action("OverDueSubscription", "Subscribtions")" class="btn btn-secondary px-4 py-2 bg-gray-500 hover:bg-gray-600 rounded text-white">Clear Filter</a>
+
+            </div>
+        </form>
+        <!-- Admin Action Button -->
+        @if (Session["Roles"] != null && Session["Roles"].Equals("Administrator"))
+        {
+            <div class="mt-6 bg-red-50 border border-red-200 p-4 rounded-md">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                    @using (Html.BeginForm("UpdateOverdueSubscriptions", "Subscribtions", FormMethod.Post))
+                    {
+                        <button type="submit"
+                                class="flex items-center inline-block px-6 py-3 text-white font-semibold text-sm uppercase rounded-md shadow-lg focus:outline-none focus:ring-2 focus:ring-opacity-50 transition duration-150 ease-in-out"
+                                style="background-color: #ff0000; hover:bg: #008bb5; focus:ring-color: #00ADEF;" title="Click to mark all overdue subscriptions as paid and unpaid = 0. This action cannot be undone."
+                                onclick="return confirm('Are you sure you want to mark all overdue subscriptions as paid?');">
+
+                            Update Overdue Subs
+                        </button>
+
+                    }
+                    <p class="text-sm text-red-700"><strong>⚠️ Don’t click before the due date is reached.</strong></p>
+                </div>
+            </div>
+        }
+
+
+        <div class="table-responsive mt-6">
+            <table id="subscriptionTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Shareholder Name</th>
+                        <th>Subscription ID</th>
+                        <th>Number of Shares</th>
+                        <th>Subscription Date</th>
+                        <th>Paid Subscription</th>
+                        <th>UnPaid Subscription</th>
+                        <th>Payment</th>
+                        <th>Premium</th>
+                        <th>Payment Due Date</th>
+
+                        <th>Authorization Status</th>
+                        <th>Branch</th>
+                        <th>Created By</th>
+                        <th>Approved By</th>
+                        <th>Remark</th>
+                        @if (Session["Roles"]?.ToString() == "Administrator" || Session["Roles"]?.ToString() == "SuperAdmin" || Session["Roles"]?.ToString() == "SuperUser")
+                        {
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">If Overdue</th>
+                        }
+
+                    </tr>
+                </thead>
+                <tbody id="subscriptionTableBody">
+                    @foreach (var subscription in Model)
+                    {
+                    <tr>
+                        <td>@(subscription.Shareholder?.FullNameEng ?? "N/A") / @(subscription.Shareholder?.ShareID ?? "N/A")</td>
+                        <td>@subscription.SubID</td>
+                        <td>@subscription.SubNumShares</td>
+                        <td>@(subscription.SubDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                        <td>@String.Format("{0:N0} ETB", subscription.PaidSubscription)</td>
+                        <td>@String.Format("{0:N0} ETB", subscription.UnpaidSubscription)</td>
+                        <td>@subscription.SubStatus</td>
+                        <td>@String.Format("{0:N0} ETB", subscription.Premium ?? 0)</td>
+                        <td>@(subscription.PaymentDueDate?.ToString("yyyy-MM-dd") ?? "")</td>
+                        @*<td>@subscription.SubAuthorizationStatus</td>*@
+                        <td class="border border-gray-300 text-center">
+                            @if (@subscription.SubAuthorizationStatus == "Approved")
+                            {
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-green-700 bg-green-200 rounded-full">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-green-700">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => @subscription.SubAuthorizationStatus)
+                                </span>
+                            }
+                            else if (@subscription.SubAuthorizationStatus == "Pending")
+                            {
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-yellow-700">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"></path>
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => @subscription.SubAuthorizationStatus)
+                                </span>
+                            }
+                            else if (@subscription.SubAuthorizationStatus == "Rejected")
+                            {
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-red-700 bg-red-200 rounded-full">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-red-700">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => @subscription.SubAuthorizationStatus)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-semibold text-yellow-700 bg-yellow-200 rounded-full">
+                                    <svg fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-4 h-4 text-yellow-700">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                                    </svg>
+                                    @Html.DisplayFor(modelItem => @subscription.SubAuthorizationStatus)
+                                </span>
+                            }
+                        </td>
+
+                        <td>@(subscription.Branch1?.BranchName ?? "N/A")</td>
+                        <td>@(subscription.User?.UserName ?? "N/A")</td>
+                        <td>@(subscription.User1?.UserName ?? "N/A")</td>
+                        <td>@(string.IsNullOrEmpty(subscription.Remark) ? "N/A" : subscription.Remark)</td>
+                        @if (Session["Roles"]?.ToString() == "Administrator" || Session["Roles"]?.ToString() == "SuperAdmin" || Session["Roles"]?.ToString() == "SuperUser")
+                        {
+                            <td class="px-4 py-3 text-center">
+                                @if (subscription.PaymentDueDate.HasValue && subscription.PaymentDueDate.Value < DateTime.Now && subscription.UnpaidSubscription > 0)
+                                {
+                                    <button type="button"
+                                            onclick="markAsPaid(@subscription.SubID)"
+                                            class="text-red-600 hover:text-red-600 hover:scale-110 transition-transform duration-300 ease-in-out relative group p-3 rounded-lg"
+                                            title="Click to mark as paid">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke-width="2"
+                                             stroke="currentColor"
+                                             class="w-10 h-10">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m-6 6h6" />
+                                        </svg>
+                                        <span class="absolute bottom-full mb-3 left-1/2 transform -translate-x-1/2 text-sm text-white bg-gray-800 rounded py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                                            Click to mark as paid
+                                        </span>
+                                    </button>
+                                }
+                            </td>
+                        }
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize Select2 with AJAX
+
+            @if (ViewBag.SuccessMessage != null)
+        {
+            <text>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '@Html.Raw(HttpUtility.JavaScriptStringEncode(ViewBag.SuccessMessage))',
+                confirmButtonColor: '#16a34a', // Matches green color (tailwind green-600)
+                confirmButtonText: 'OK'
+            });
+            </text>
+        }
+
+        $('#searchable-select').select2({
+            placeholder: "Select a Shareholder",
+            allowClear: true,
+            minimumInputLength: 3,
+            ajax: {
+                url: '@Url.Action("SearchShareholders", "Subscribtions")',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term || '',
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.items.map(function (item) {
+                            return {
+                                id: item.id,
+                                text: item.text
+                            };
+                        }),
+                        pagination: {
+                            more: data.hasMore
+                        }
+                    };
+                },
+                cache: true
+            }
+        });
+
+        // Pre-select shareholder if shId is provided
+        @if (ViewBag.SelectedShId != null)
+        {
+            <text>
+            $('#searchable-select').val('@ViewBag.SelectedShId').trigger('change');
+            </text>
+        }
+
+        // Initialize DataTable if there are subscriptions
+        if ($('#subscriptionTableBody tr').length > 0) {
+            $('#subscriptionTable').DataTable({
+                pageLength: 5,
+                lengthMenu: [5, 10, 20, 50],
+                searchable: true,
+                firstLast: true,
+                firstText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                lastText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                prevText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                nextText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"><path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+                labels: { perPage: '{select}' },
+                layout: { top: '{search}', bottom: '{info}{select}{pager}' }
+            });
+        }
+    });
+</script>
+
+<script>
+            function markAsPaid(subId) {
+                if (confirm("Are you sure you want to mark this as fully paid?")) {
+                    $.ajax({
+                        url: '@Url.Action("UpdateOverdueSubscriptionss", "Subscribtions")',
+                        type: 'POST',
+                        data: { id: subId },
+                        success: function (response) {
+                            if (response && response.message) {
+                                alert(response.message);
+                            } else {
+                                alert("Marked as paid successfully.");
+                            }
+                            location.reload();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                            alert("Something went wrong!");
+                        }
+                    });
+                }
+            }
+</script>
