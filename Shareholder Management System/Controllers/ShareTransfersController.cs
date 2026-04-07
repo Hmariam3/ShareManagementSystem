@@ -929,7 +929,7 @@ namespace Shareholder_Management_System.Controllers
                             PaidAmount = shareTransfer.PaidAmountForTransfer,
                             ReferenceNum = payment.ReferenceNum,
                             PaymentTransferFrom = shareTransfer.TransferrorShID,
-                            PaymentDate = shareTransfer.TransferDate,
+                            PaymentDate = payment.PaymentDate,
                             CreatedBy = shareTransfer.CreatedBy,
                             PaymentAuthorizationStatus = "Approved",
                             PaymentAuthorizer = AuthorizerId,

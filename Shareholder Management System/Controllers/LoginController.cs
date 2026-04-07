@@ -21,8 +21,8 @@ namespace Shareholder_Management_System.Controllers
     public class LoginController : Controller
     {
         // Move these to web.config for better security
-        private readonly string LdapServiceUsername = "danielgd";
-        private readonly string LdapServicePassword = "Dan@59112116#Gela";
+        private readonly string LdapServiceUsername = "noreply";
+        private readonly string LdapServicePassword = "N0rep1y7ujm<KI*";
         private readonly string LdapUrl = "LDAP://10.1.72.10";
 
         [HttpGet]

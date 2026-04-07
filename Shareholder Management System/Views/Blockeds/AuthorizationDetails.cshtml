@@ -3,189 +3,234 @@
 @{
     ViewBag.Title = "Authorization Details";
 }
+<script src="~/Scripts/JS/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<div class="container flex justify-center" style="padding: 20px;">
-    <div class="form-container" style="width: 100%; max-width: 800px; margin-top: 20px; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@Html.HiddenFor(model => model.BlockID)
+
+<div class="main-container min-h-screen text-black dark:text-white-dark" :class="[$store.app.navbar]">
+    <div class="animate__animated p-6" :class="[$store.app.animation]">
+        <div class="text-2xl font-extrabold uppercase mb-4">Blocked Payment Details</div>
+
+        <!-- Show Approve/Reject buttons only if Status == Pending -->
+        @if (Model.BlockedAuthorizationStatus?.Equals("Pending", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            <div class="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
+
+                <!-- Approve Form -->
+                <form id="approveForm" data-url="@Url.Action("ConfirmBlockApproval", "Blockeds")" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="BlockID" value="@Model.BlockID" />
+                    <input type="hidden" name="PayID" value="@Model.PayID" />
+                    <input type="hidden" name="BlockedAmount" value="@Model.BlockedAmount" />
+                    <button type="button" onclick="showAlert('approve')" class="btn btn-success gap-2 mt-6">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                        </svg>
+                        Approve
+                    </button>
+                </form>
+
+                <!-- Reject Form -->
+                <form id="rejectForm" data-url="@Url.Action("ConfirmBlockReject", "Blockeds")" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="BlockID" value="@Model.BlockID" />
+                    <input type="hidden" name="Reason" id="rejectionReason" />
+                    <button type="button" onclick="showAlert('reject')" class="btn btn-danger mt-6">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                            <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                        </svg>
+                        Reject
+                    </button>
+                </form>
+            </div>
+        }
+
         <div class="panel">
-            <div class="flex items-center justify-between"
-                 style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color: white; border-radius: 8px 8px 0 0; padding: 15px;">
-                <h5 class="text-lg font-semibold" style="margin: 0;">Payment to be blocked approval</h5>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" style="padding: 20px;">
-                <!-- Left Column -->
-                <div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Shareholder.ShareID)</dt>
-                        <dd>@Html.DisplayFor(model => model.Shareholder.ShareID)</dd>
+            <!-- Shareholder Details -->
+            <div class="section mb-6">
+                <h2 class="text-lg font-semibold">Shareholder Details</h2>
+                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div class="flex flex-wrap justify-between gap-4 px-4">
+                    <div class="w-full lg:w-1/2 xl:w-1/4">
+                        <div class="px-4 ltr:text-left rtl:text-left">
+                            <div class="mb-2 flex justify-between">
+                                <span>Shareholder Fullname:</span>
+                                <span>@Html.DisplayFor(model => model.Shareholder.FullNameEng)</span>
+                            </div>
+                            <div class="mb-2 flex justify-between">
+                                <span>Shareholder ID:</span>
+                                <span>@Html.DisplayFor(model => model.Shareholder.ShareID)</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Shareholder.FullNameEng)</dt>
-                        <dd>@Html.DisplayFor(model => model.Shareholder.FullNameEng)</dd>
-                    </div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.BlockedAmount)</dt>
-                        <dd>@Html.DisplayFor(model => model.BlockedAmount)</dd>
-                    </div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.BlockingOrgan)</dt>
-                        <dd>@Html.DisplayFor(model => model.BlockingOrgan)</dd>
-                    </div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.DateBlocked)</dt>
-                        <dd>@Html.DisplayFor(model => model.DateBlocked)</dd>
-                    </div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.RefNum)</dt>
-                        <dd>@Html.DisplayFor(model => model.RefNum)</dd>
-                    </div>
-
-                </div>
-
-                <!-- Right Column -->
-                <div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Reason)</dt>
-                        <dd>@Html.DisplayFor(model => model.Reason)</dd>
-                    </div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.BlockedAuthorizationStatus)</dt>
-                        <dd>@Html.DisplayFor(model => model.BlockedAuthorizationStatus)</dd>
-                    </div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.AuthorizationDate)</dt>
-                        <dd>@Html.DisplayFor(model => model.AuthorizationDate)</dd>
-                    </div>
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Remark)</dt>
-                        <dd>@Html.DisplayFor(model => model.Remark)</dd>
-                    </div>
-                    @*<div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Document.DocName)</dt>
-                        <dd>@Html.DisplayFor(model => model.Document.DocName)</dd>
-                    </div>*@
-                    <div class="form-group">
-                        <dt class="font-semibold">@Html.DisplayNameFor(model => model.Payment.PaymentMode)</dt>
-                        <dd>@Html.DisplayFor(model => model.Payment.PaymentMode)</dd>
+                    <div class="px-4 ltr:text-right rtl:text-right">
+                        @if (Model.BlockingDoc != null)
+                        {
+                            <button type="button" class="hover:text-secondary btn btn-primary" onclick="openDocumentInNewTab(@Model.BlockingDoc)">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                    <path opacity="0.5" d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z" stroke="currentColor" stroke-width="1.5"></path>
+                                    <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                                </svg>
+                                Blocking Document
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
 
-            <!-- Buttons -->
-            <div class="text-center" style="padding: 20px; border-top: 1px solid #f0f0f0;">
-                <button type="button"
-                        onclick="approveRecord(@Model.BlockID, @Model.PayID, @Model.BlockedAmount)"
-                        style="padding: 12px 25px; background-color: #00bcd4; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); transition: 0.3s;">
-                    Approve
-                </button>
+            <!-- Blocking Details -->
+            <div class="section mb-6">
+                <h2 class="text-lg font-semibold">Blocking Details</h2>
+                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div class="flex flex-wrap justify-between gap-4 px-4">
+                    <div class="w-full lg:w-1/3 xl:w-1/2">
+                        <div class="px-4 ltr:text-left rtl:text-left">
+                            <div class="mb-2 flex justify-between">
+                                <span>Blocked Amount:</span>
+                                <span>@Html.DisplayFor(model => model.BlockedAmount)</span>
+                            </div>
+                            <div class="mb-2 flex justify-between">
+                                <span>Blocking Organ:</span>
+                                <span>@Html.DisplayFor(model => model.BlockingOrgan)</span>
+                            </div>
+                            <div class="mb-2 flex justify-between">
+                                <span>Date Blocked:</span>
+                                <span>@Html.DisplayFor(model => model.DateBlocked)</span>
+                            </div>
+                            <div class="mb-2 flex justify-between">
+                                <span>Payment Mode:</span>
+                                <span>@Html.DisplayFor(model => model.Payment.PaymentMode)</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <button type="button"
-                        onclick="rejectRecord(@Model.BlockID)"
-                        style="display: inline-block; padding: 12px 25px; background-color: #f44336; color: white; border: none; border-radius: 5px; text-decoration: none; cursor: pointer; margin: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); transition: 0.3s;">
-                    Reject
-                </button>
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="px-4 ltr:text-right rtl:text-right">
+                            <div class="mb-2 flex justify-between">
+                                <span>Reference Number:</span>
+                                <span>@Html.DisplayFor(model => model.RefNum)</span>
+                            </div>
+                            <div class="mb-2 flex justify-between">
+                                <span>Reason:</span>
+                                <span>@Html.DisplayFor(model => model.Reason)</span>
+                            </div>
+                            <div class="mb-2 flex justify-between">
+                                <span>Remark:</span>
+                                <span>@Html.DisplayFor(model => model.Remark)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                <a href="@Url.Action("FilterPending")"
-                   style="display: inline-block; padding: 12px 25px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; text-decoration: none; cursor: pointer; margin: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); transition: 0.3s;">
-                    Back to List
-                </a>
+            <!-- Authorization Information -->
+            <div class="section mb-6">
+                <h2 class="text-lg font-semibold">Authorization Information</h2>
+                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                <div class="flex flex-wrap justify-between gap-4 px-4">
+                    <div class="w-full lg:w-1/3 xl:w-1/2">
+                        <div class="px-4 ltr:text-left rtl:text-left">
+                            <div class="mb-2 flex justify-between">
+                                <span>Authorization Status:</span>
+                                <span>@Html.DisplayFor(model => model.BlockedAuthorizationStatus)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/2 xl:w-1/3">
+                        <div class="px-4 ltr:text-right rtl:text-right">
+                            <div class="mb-2 flex justify-between">
+                                <span>Authorization Date:</span>
+                                <span>@Html.DisplayFor(model => model.AuthorizationDate)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function approveRecord(blockId, payId, blockedAmount) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to approve this record!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#00bcd4',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, approve it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '@Url.Action("ConfirmBlockApproval", "Blockeds")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        BlockID: blockId,
-                        PayID: payId,
-                        BlockedAmount: blockedAmount
-                    }),
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                title: 'Approved!',
-                                text: 'Your record has been approved.',
-                                icon: 'success'
-                            }).then(() => {
-                            window.location.href = '@Url.Action("Index", "Blockeds")'; // Redirect to Index page
-                            });
-                        } else {
-                            Swal.fire('Error!', response.message, 'error');
-                        }
-                    },
-                    error: function () {
-                        Swal.fire('Error!', 'An unexpected error occurred.', 'error');
-                    }
-                });
-            }
-        });
-    }
+    async function showAlert(action) {
+        const form = document.getElementById(action === 'approve' ? 'approveForm' : 'rejectForm');
+        const url = form.getAttribute('data-url');
+        const formData = new FormData(form);
 
-
-    function rejectRecord(blockId) {
-    Swal.fire({
-        title: 'Reject Record',
-        text: "Please provide the reason for rejection:",
-        input: 'textarea',
-        inputPlaceholder: 'Enter reason here...',
-        inputAttributes: {
-            'aria-label': 'Reason for rejection'
-        },
-        showCancelButton: true,
-        confirmButtonColor: '#f44336',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Reject',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed && result.value) {
-            const rejectionReason = result.value; // Get the input value
-            $.ajax({
-                url: '@Url.Action("ConfirmBlockReject", "Blockeds")',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    BlockID: blockId,
-                    Reason: rejectionReason
-                }),
-                success: function (response) {
-    if (response.success) {
-        Swal.fire({
-            title: 'Rejected!',
-            text: 'The record has been rejected.',
-            icon: 'success'
-        }).then(() => {
-            window.location.href = '@Url.Action("Index", "Blockeds")'; // Redirect to Index page
-        });
-    } else {
-        Swal.fire('Error!', response.message, 'error');
-    }
-},
-
-                error: function () {
-                    Swal.fire('Error!', 'An unexpected error occurred.', 'error');
-                }
+        if (action === 'reject') {
+            // Ask for reason
+            const { value: reason, isConfirmed } = await Swal.fire({
+                title: 'Reject Record',
+                input: 'textarea',
+                inputPlaceholder: 'Enter reason for rejection...',
+                showCancelButton: true,
+                confirmButtonText: 'Reject',
+                confirmButtonColor: '#dc3545'
             });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-            Swal.fire('Cancelled', 'The rejection was cancelled.', 'info');
+            if (!isConfirmed || !reason) return;
+            formData.set('Reason', reason);
         }
-    });
-}
 
+        const confirmText = action === 'approve' ? 'Approve' : 'Reject';
+        const confirmColor = action === 'approve' ? '#28a745' : '#dc3545';
+        const actionText = action === 'approve' ? 'authorize this blocked payment' : 'reject this blocked payment';
+
+        const result = await Swal.fire({
+            title: `Are you sure?`,
+            text: `You are about to ${actionText}.`,
+            icon: action === 'approve' ? 'success' : 'warning',
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: confirmColor,
+            cancelButtonColor: '#6c757d'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.success) {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message || 'Operation completed successfully!'
+                    });
+                    window.location.href = '@Url.Action("Index", "Blockeds")';
+                } else {
+                    Swal.fire('Error', data.message || 'Operation failed.', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'An unexpected error occurred.', 'error');
+            }
+        }
+    }
+
+    function openDocumentInNewTab(documentId) {
+        if (!documentId) {
+            return swal("Warning", "Document ID is missing!", "warning");
+        }
+
+        fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const documentUrl = window.location.origin + data.filePath;
+                    window.open(documentUrl, '_blank', 'width=800,height=600');
+                } else {
+                    swal("Error", data.message || "Failed to retrieve document path.", "error");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                swal("Error", "An error occurred while trying to fetch the document.", "error");
+            });
+    }
 </script>

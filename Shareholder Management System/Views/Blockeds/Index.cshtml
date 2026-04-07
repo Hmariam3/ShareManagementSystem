@@ -79,36 +79,36 @@
         <text>
         [
             `@if (item.BlockedAuthorizationStatus == "Pending"|| item.BlockedAuthorizationStatus == "Rejected")
-            {
-    <span style="display: inline-block; padding: 10px 20px; color: gray; background-color: #d3d3d3; border: none; border-radius: 5px; text-decoration: none; cursor: not-allowed;"
-          title="Action not allowed for pending status">
-        Release
-    </span>
-}
-else
-{
-    <a href="@Url.Action("Details", new { id = item.BlockID })"
-       style="display: inline-block; padding: 10px 20px; color: black; background-color: #1698de; border: none; border-radius: 5px; text-decoration: none;">
-        Release
-    </a>
-}
+                    {
+            <span style="display: inline-block; padding: 10px 20px; color: gray; background-color: #d3d3d3; border: none; border-radius: 5px; text-decoration: none; cursor: not-allowed;"
+                  title="Action not allowed for pending status">
+                Release
+            </span>
+        }
+        else
+        {
+            <a href="@Url.Action("Details", new { id = item.BlockID })"
+               style="display: inline-block; padding: 10px 20px; color: white; background-color: #1698de; border: none; border-radius: 5px; text-decoration: none;">
+                Release
+            </a>
+        }
 
-`, `@if (item.BlockedAuthorizationStatus == "Approved")
-{
-    <span style="display: inline-block; padding: 10px 20px; color: gray; background-color: #d3d3d3; border: none; border-radius: 5px; text-decoration: none; cursor: not-allowed;"
-          title="Action not allowed for Approved status">
-        Edit
-    </span>
-}
-else
-{
-    <a href="@Url.Action("Edit", new { id = item.BlockID })"
-       style="display: inline-block; padding: 10px 20px; color: black; background-color: #1698de; border: none; border-radius: 5px; text-decoration: none;">
-        Edit
-    </a>
-}
+        `, `@if (item.BlockedAuthorizationStatus == "Approved")
+        {
+            <span style="display: inline-block; padding: 10px 20px; color: gray; background-color: #d3d3d3; border: none; border-radius: 5px; text-decoration: none; cursor: not-allowed;"
+                  title="Action not allowed for Approved status">
+                Edit
+            </span>
+        }
+        else
+        {
+            <a href="@Url.Action("Edit", new { id = item.BlockID })"
+               style="display: inline-block; padding: 10px 20px; color: white; background-color: #1698de; border: none; border-radius: 5px; text-decoration: none;">
+                Edit
+            </a>
+        }
 
-`,
+        `,
             "@item.BlockID",
             "@item.Shareholder.ShareID",
             "@item.Shareholder.FullNameEng",

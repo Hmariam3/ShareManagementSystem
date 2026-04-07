@@ -17,31 +17,31 @@
             <!-- Approve Form -->
             @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post, new { id = "approveForm" }))
             {
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="action" value="approve" />
-            <input type="hidden" name="id" value="@Model.PayID" />
-            <button type="button" onclick="showAlert('approve')" class="btn btn-success gap-2 mt-6">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
-                    <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
-                </svg>
-                Approve
-            </button>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="action" value="approve" />
+                <input type="hidden" name="id" value="@Model.PayID" />
+                <button type="button" onclick="showAlert('approve')" class="btn btn-success gap-2 mt-6">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                    </svg>
+                    Approve
+                </button>
             }
 
             <!-- Reject Form -->
             @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post, new { id = "rejectForm" }))
             {
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="action" value="reject" />
-            <input type="hidden" name="id" value="@Model.PayID" />
-            <button type="button" onclick="showAlert('reject')" class="btn btn-danger mt-6">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
-                    <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
-                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
-                </svg>
-                Reject
-            </button>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="action" value="reject" />
+                <input type="hidden" name="id" value="@Model.PayID" />
+                <button type="button" onclick="showAlert('reject')" class="btn btn-danger mt-6">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                        <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                    </svg>
+                    Reject
+                </button>
             }
         </div>
 
@@ -67,357 +67,169 @@
                             </div>
                         </div>
                     </div>
+                    <div class="px-4 ltr:text-right rtl:text-right">
+                        <button type="button" class="hover:text-secondary btn btn-primary" @@click="openDocumentInNewTab(@Model.PaymentSlip)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <path opacity="0.5"
+                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                            </svg> Payment Slip.
+                        </button>
+                    </div>
                 </div>
+
+                <!-- Payment Details -->
+                <div class="section mb-6">
+                    <h2 class="text-lg font-semibold">Payment Details</h2>
+                    <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <div class="flex flex-wrap justify-between gap-4 px-4">
+                        <div class="w-full lg:w-1/3 xl:w-1/2">
+                            <div class="px-4 ltr:text-left rtl:text-left">
+                                <div class="mb-2 flex justify-between">
+                                    <span>Payment ID:</span>
+                                    <span>@Html.DisplayFor(model => model.PayID)</span>
+                                </div>
+                                <div class="mb-2 flex justify-between">
+                                    <span>Payment Mode:</span>
+                                    <span>@Html.DisplayFor(model => model.PaymentMode)</span>
+                                </div>
+                                <div class="mb-2 flex justify-between">
+                                    <span>Paid Amount:</span>
+                                    <span>@Html.DisplayFor(model => model.PaidAmount)</span>
+                                </div>
+                                <div class="mb-2 flex justify-between">
+                                    <span>Source of funds:</span>
+                                    <span>@Html.DisplayFor(model => model.SourceOfFunds)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full lg:w-1/2 xl:w-1/3">
+                            <div class="px-4 ltr:text-right rtl:text-right">
+                                <div class="mb-2 flex justify-between">
+                                    <span>Reference Number:</span>
+                                    <span>@Html.DisplayFor(model => model.ReferenceNum)</span>
+                                </div>
+                                <div class="mb-2 flex justify-between">
+                                    <span>Payment Date:</span>
+                                    <span>@Html.DisplayFor(model => model.PaymentDate)</span>
+                                </div>
+                                <div class="mb-2 flex justify-between">
+                                    <span>Blocked Amount:</span>
+                                    <span>@Html.DisplayFor(model => model.BlockedAmount)</span>
+                                </div>
+                                <div class="mb-2 flex justify-between">
+                                    <span>Remarks:</span>
+                                    <span>@Html.DisplayFor(model => model.Remark)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Authorization Information -->
+                <div class="section mb-6">
+                    <h2 class="text-lg font-semibold">Authorization Information</h2>
+                    <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <div class="flex flex-wrap justify-between gap-4 px-4">
+                        <div class="w-full lg:w-1/3 xl:w-1/2">
+                            <div class="px-4 ltr:text-left rtl:text-left">
+                                <div class="mb-2 flex justify-between">
+                                    <span> Branch Name:</span>
+                                    <span>@Html.DisplayFor(model => model.Branch1.BranchName)</span>
+                                </div>
+                                <div class="mb-2 flex justify-between">
+                                    <span>Authorization Status:</span>
+                                    <span>@Html.DisplayFor(model => model.PaymentAuthorizationStatus)</span>
+                                </div>
+                                <div class="mb-2 flex justify-between">
+                                    <span>Authorized By:</span>
+                                    <span>@Html.DisplayFor(model => model.User1.FullName)</span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="w-full lg:w-1/2 xl:w-1/3">
+                            <div class="mb-2 flex justify-between">
+                                <span>Created By:</span>
+                                <span>@Html.DisplayFor(model => model.User.FullName)</span>
+                            </div>
+                            <div class="mb-2 flex justify-between">
+                                <span>Creation Date:</span>
+                                <span>@Html.DisplayFor(model => model.CreationDate)</span>
+                            </div>
+                            <div class="mb-2 flex justify-between">
+                                <span>Authorization Date:</span>
+                                <span>@Html.DisplayFor(model => model.AuthorizationDate)</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
-            <!-- Payment Details -->
-            <div class="section mb-6">
-                <h2 class="text-lg font-semibold">Payment Details</h2>
-                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
-                <div class="flex flex-wrap justify-between gap-4 px-4">
-                    <div class="w-full lg:w-1/3 xl:w-1/2">
-                        <div class="px-4 ltr:text-left rtl:text-left">
-                            <div class="mb-2 flex justify-between">
-                                <span>Payment ID:</span>
-                                <span>@Html.DisplayFor(model => model.PayID)</span>
-                            </div>
-                            <div class="mb-2 flex justify-between">
-                                <span>Payment Mode:</span>
-                                <span>@Html.DisplayFor(model => model.PaymentMode)</span>
-                            </div>
-                            <div class="mb-2 flex justify-between">
-                                <span>Paid Amount:</span>
-                                <span>@Html.DisplayFor(model => model.PaidAmount)</span>
-                            </div>
-                            <div class="mb-2 flex justify-between">
-                                <span>Source of funds:</span>
-                                <span>@Html.DisplayFor(model => model.SourceOfFunds)</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="w-full lg:w-1/2 xl:w-1/3">
-                        <div class="px-4 ltr:text-right rtl:text-right">
-                            <div class="mb-2 flex justify-between">
-                                <span>Reference Number:</span>
-                                <span>@Html.DisplayFor(model => model.ReferenceNum)</span>
-                            </div>
-                            <div class="mb-2 flex justify-between">
-                                <span>Payment Date:</span>
-                                <span>@Html.DisplayFor(model => model.PaymentDate)</span>
-                            </div>
-                            <div class="mb-2 flex justify-between">
-                                <span>Blocked Amount:</span>
-                                <span>@Html.DisplayFor(model => model.BlockedAmount)</span>
-                            </div>
-                            <div class="mb-2 flex justify-between">
-                                <span>Remarks:</span>
-                                <span>@Html.DisplayFor(model => model.Remark)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Authorization Information -->
-            <div class="section mb-6">
-                <h2 class="text-lg font-semibold">Authorization Information</h2>
-                <hr class="my-4 border-[#e0e6ed] dark:border-[#1b2e4b]">
-                <div class="flex flex-wrap justify-between gap-4 px-4">
-                    <div class="w-full lg:w-1/3 xl:w-1/2">
-                        <div class="px-4 ltr:text-left rtl:text-left">
-                            <div class="mb-2 flex justify-between">
-                                <span> Branch Name:</span>
-                                <span>@Html.DisplayFor(model => model.Branch1.BranchName)</span>
-                            </div>
-                            <div class="mb-2 flex justify-between">
-                                <span>Authorization Status:</span>
-                                <span>@Html.DisplayFor(model => model.PaymentAuthorizationStatus)</span>
-                            </div>
-
-
-                        </div>
-                    </div>
-                    <div class="w-full lg:w-1/2 xl:w-1/3">
-                        <div class="mb-2 flex justify-between">
-                            <span>Creation Date:</span>
-                            <span>@Html.DisplayFor(model => model.CreationDate)</span>
-                        </div>
-                        <div class="mb-2 flex justify-between">
-                            <span>Authorization Date:</span>
-                            <span>@Html.DisplayFor(model => model.AuthorizationDate)</span>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-
-
-
-            @*<p>
-                @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post))
-                {
-                @Html.AntiForgeryToken()
-                <div class="flex justify-center mt-5">
-                    <div>
-                        <div class="flex justify-between">
-                            @if (Model.PaymentAuthorizationStatus == "Approved")
-                            {
-                            <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
-                            }
-                            else
-                            {
-                            <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
-                            }
-                        </div>
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between" style="margin-left:5px">
-                            @if (Model.PaymentAuthorizationStatus == "Rejected")
-                            {
-                            <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
-                            <button type="submit" class="btn btn-danger mt-6" disabled>Approved</button>
-                            }
-                            else
-                            {
-                            <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                <a href="@Url.Action(" Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
-                    Back To List
-                </a>
-                }
-            </p>*@
 
         </div>
-
-
-
     </div>
-</div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    async function showAlert(action) {
-        // Determine action-specific text and styles
-        let actionText = action === 'approve' ? 'authorize this payment' : 'reject this payment';
-        let confirmText = action === 'approve' ? 'Authorize' : 'Reject';
-        let confirmButtonColor = action === 'approve' ? '#28a745' : '#dc3545'; // Green for authorize, red for reject
-        let iconType = action === 'approve' ? 'success' : 'warning'; // Success for approve, warning for reject
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        // Show SweetAlert confirmation dialog
-        await Swal.fire({
-            title: `Are you sure?`,
-            text: `You are about to ${actionText}.`,
-            icon: iconType,
-            showCancelButton: true,
-            confirmButtonText: confirmText,
-            cancelButtonText: 'Cancel',
-            confirmButtonColor: confirmButtonColor,
-            cancelButtonColor: '#6c757d', // Gray for cancel
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Submit the correct form based on action
-                if (action === 'approve') {
-                    document.getElementById('approveForm').submit();
-                } else if (action === 'reject') {
-                    document.getElementById('rejectForm').submit();
+    <script>
+        async function showAlert(action) {
+            // Determine action-specific text and styles
+            let actionText = action === 'approve' ? 'authorize this payment' : 'reject this payment';
+            let confirmText = action === 'approve' ? 'Authorize' : 'Reject';
+            let confirmButtonColor = action === 'approve' ? '#28a745' : '#dc3545'; // Green for authorize, red for reject
+            let iconType = action === 'approve' ? 'success' : 'warning'; // Success for approve, warning for reject
+
+            // Show SweetAlert confirmation dialog
+            await Swal.fire({
+                title: `Are you sure?`,
+                text: `You are about to ${actionText}.`,
+                icon: iconType,
+                showCancelButton: true,
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: confirmButtonColor,
+                cancelButtonColor: '#6c757d', // Gray for cancel
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the correct form based on action
+                    if (action === 'approve') {
+                        document.getElementById('approveForm').submit();
+                    } else if (action === 'reject') {
+                        document.getElementById('rejectForm').submit();
+                    }
                 }
+            });
+        }
+    </script>
+
+    <script>
+        function openDocumentInNewTab(documentId) {
+            console.log("Document ID:", documentId);
+            if (documentId) {
+                // Make an AJAX request to fetch the document path
+                fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Construct a full URL to open in a new tab
+                            const documentUrl = window.location.origin + data.filePath;
+                            window.open(documentUrl, '_blank', 'width=800,height=600');
+                        } else {
+                            swal("Error", data.message || "Failed to retrieve document path.", "error");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching document path:", error);
+                        swal("Error", "An error occurred while trying to fetch the document.", "error");
+                    });
+            } else {
+                swal("Warning", "Document ID is missing!", "warning");
             }
-        });
-    }
-</script>
+        }
+    </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*<h2>Authorize</h2>
-
-<div>
-    <h4>Payment</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentMode)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaymentMode)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PaidAmount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaidAmount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.BlockedAmount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.BlockedAmount)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ReferenceNum)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ReferenceNum)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaymentDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreationDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreationDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PaymentAuthorizationStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PaymentAuthorizationStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorizationDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AuthorizationDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Remark)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Remark)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Branch1.BranchCode)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Branch1.BranchCode)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Document.DocName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Document.DocName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder.ShareID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Shareholder1.ShareID)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Shareholder1.ShareID)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Subscribtion.SubStatus)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Subscribtion.SubStatus)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User.FullName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.User1.FullName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.User1.FullName)
-        </dd>
-
-    </dl>
-</div>
-<p>
-    @using (Html.BeginForm("Authorize", "Payments", FormMethod.Post))
-    {
-    @Html.AntiForgeryToken()
-    <div class="flex justify-center mt-5">
-        <div>
-            <div class="flex justify-between">
-                @if (Model.PaymentAuthorizationStatus == "Approved")
-                {
-                <button type="submit" class="btn btn-primary mt-6" disabled>Authorize</button>
-                }
-                else
-                {
-                <button type="submit" name="action" value="approve" class="btn btn-primary mt-6">Authorize</button>
-                }
-            </div>
-        </div>
-
-        <div>
-            <div class="flex justify-between" style="margin-left:5px">
-                @if (Model.PaymentAuthorizationStatus == "Rejected")
-                {
-                <button type="submit" class="btn btn-danger mt-6" disabled>Reject</button>
-                }
-                else
-                {
-                <button type="submit" name="action" value="reject" class="btn btn-danger mt-6">Reject</button>
-                }
-            </div>
-        </div>
-    </div>
-
-    <a href="@Url.Action(" Index")" class="btn btn-success px-4 py-2 mt-5 text-white bg-green-500 hover:bg-green-600 rounded">
-        Back To List
-    </a>
-    }
-</p>*@

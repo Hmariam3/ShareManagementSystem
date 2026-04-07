@@ -9,34 +9,38 @@
     <div class="animate__animated p-6" :class="[$store.app.animation]">
         <div class="text-2xl font-extrabold uppercase mb-4">Transfer Details</div>
 
-        <div class="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
+        @if (Model.TransferAuthorizationStatus == "Pending")
+        {
+            <div class="mb-6 flex flex-wrap items-center justify-center gap-4 lg:justify-end">
 
-            <!-- Approve Button -->
-            <form id="approveForm" action="@Url.Action("Approve", "ShareTransfers" )" method="post" style="display:inline;">
-                <input type="hidden" name="id" value="@Model.TransferID" />
-                <button type="button" class="btn btn-success gap-2" onclick="showAlert('approve')">
-                    <!-- Checkmark Icon for Approve -->
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
-                        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
-                    </svg>
-                    Approve
-                </button>
-            </form>
+                <!-- Approve Button -->
+                <form id="approveForm" action="@Url.Action("Approve", "ShareTransfers")" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@Model.TransferID" />
+                    <button type="button" class="btn btn-success gap-2" onclick="showAlert('approve')">
+                        <!-- Checkmark Icon for Approve -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                        </svg>
+                        Approve
+                    </button>
+                </form>
 
-            <!-- Reject Button -->
-            <form id="rejectForm" action="@Url.Action("Reject", "ShareTransfers" )" method="post" style="display:inline;">
-                <input type="hidden" name="id" value="@Model.TransferID" />
-                <button type="button" class="btn btn-danger gap-2" onclick="showAlert('reject')">
-                    <!-- Cross Icon for Reject -->
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
-                        <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
-                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
-                    </svg>
-                    Reject
-                </button>
-            </form>
-        </div>
+                <!-- Reject Button -->
+                <form id="rejectForm" action="@Url.Action("Reject", "ShareTransfers")" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@Model.TransferID" />
+                    <button type="button" class="btn btn-danger gap-2" onclick="showAlert('reject')">
+                        <!-- Cross Icon for Reject -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                            <path d="M15 9L9 15M9 9l6 6" stroke="white" stroke-width="1.5" stroke-linecap="round" />
+                            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                        </svg>
+                        Reject
+                    </button>
+                </form>
+            </div>
+        }
+
 
 
         <div class="panel">
@@ -59,7 +63,18 @@
                             <span>@Html.DisplayFor(model => model.Shareholder1.FullNameEng)</span>
                         </div>
                     </div>
+                    <div class="px-4 ltr:text-right rtl:text-right">
+                        <button type="button" class="hover:text-secondary btn btn-primary" @@click="openDocumentInNewTab(@Model.TransferDoc)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 shrink-0 ltr:mr-1.5 rtl:ml-1.5">
+                                <path opacity="0.5"
+                                      d="M3.27489 15.2957C2.42496 14.1915 2 13.6394 2 12C2 10.3606 2.42496 9.80853 3.27489 8.70433C4.97196 6.49956 7.81811 4 12 4C16.1819 4 19.028 6.49956 20.7251 8.70433C21.575 9.80853 22 10.3606 22 12C22 13.6394 21.575 14.1915 20.7251 15.2957C19.028 17.5004 16.1819 20 12 20C7.81811 20 4.97196 17.5004 3.27489 15.2957Z"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="1.5"></path>
+                            </svg> Transfer Doc.
+                        </button>
+                    </div>
                 </div>
+
             </div>
 
             <!-- Transfer Details -->
@@ -197,5 +212,31 @@
             }
         });
     }
+</script>
+
+<script>
+        function openDocumentInNewTab(documentId) {
+            console.log("Document ID:", documentId);
+            if (documentId) {
+                // Make an AJAX request to fetch the document path
+                fetch('@Url.Action("GetDocumentPath", "Documents", new { id = "__id__" })'.replace('__id__', documentId))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Construct a full URL to open in a new tab
+                            const documentUrl = window.location.origin + data.filePath;
+                            window.open(documentUrl, '_blank', 'width=800,height=600');
+                        } else {
+                            swal("Error", data.message || "Failed to retrieve document path.", "error");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching document path:", error);
+                        swal("Error", "An error occurred while trying to fetch the document.", "error");
+                    });
+            } else {
+                swal("Warning", "Document ID is missing!", "warning");
+            }
+        }
 </script>
 

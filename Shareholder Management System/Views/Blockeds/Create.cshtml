@@ -207,15 +207,22 @@
                         paymentsTableBody.empty(); // Clear current table rows
 
                         $.each(data, function (index, payment) {
+                            // Helper function to replace null or undefined with '-'
+                            function safe(value) {
+                                return value == null ? '-' : value;
+                            }
+
                             var row = '<tr>' +
-                                '<td><input class="form-radio text-blue-400" type="radio" name="selectedPayment" value="' + payment.PayID + '" data-paid-amount="' + payment.PaidAmount + '" data-blocked-amount="' + payment.BlockedAmount + '" data-auth-status="' + payment.PaymentAuthorizationStatus + '"></td>' +
-                                '<td>' + payment.PayID + '</td>' +
-                                '<td>' + payment.PaymentMode + '</td>' +
-                                '<td>' + payment.PaidAmount + '</td>' +
-                                '<td>' + payment.BlockedAmount + '</td>' +
+                                '<td><input class="form-radio text-blue-400" type="radio" name="selectedPayment" value="' + safe(payment.PayID) + '" data-paid-amount="' + safe(payment.PaidAmount) + '" data-blocked-amount="' + safe(payment.BlockedAmount) + '" data-auth-status="' + safe(payment.PaymentAuthorizationStatus) + '"></td>' +
+                                '<td>' + safe(payment.PayID) + '</td>' +
+                                '<td>' + safe(payment.PaymentMode) + '</td>' +
+                                '<td>' + safe(payment.PaidAmount) + '</td>' +
+                                '<td>' + safe(payment.BlockedAmount) + '</td>' +
                                 '</tr>';
+
                             paymentsTableBody.append(row);
                         });
+
                     },
                     error: function (xhr, status, error) {
                         console.error("Error fetching payments:", status, error);

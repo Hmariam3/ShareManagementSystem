@@ -4,126 +4,216 @@
     ViewBag.Title = "Edit";
 }
 
-@using (Html.BeginForm())
+<link href="~/Scripts/select2/css/select2.min.css" rel="stylesheet" />
+<link href="~/Scripts/datatables/datatables.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/select2/js/select2.min.js"></script>
+<script src="~/Scripts/datatables/datatables.min.js"></script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/all.min.css" />
+<!-- Include SweetAlert Library -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/sweetalert2.min.css">
+<script src="~/js/sweetalert.js"></script>
+<!-- Add Select2 CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/select2.min.css" />
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.11.5.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="~/css/jquery-1.13.4.dataTables.min.css" />
+<script src="~/js/jquery-3.6.0.min.js"></script>
+<script src="~/js/jquery.dataTables.min.js"></script>
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/select2.min.js"></script>
+<script src="~/js/alpine.js"></script>
+<script src="~/js/jquery-1.11.5.dataTables.min.js"></script>
+<link href="~/css/tailwind.min.css" rel="stylesheet" />
+<!-- CSS Includes -->
+<link rel="stylesheet" href="~/css/all.min.css" />
+<link rel="stylesheet" href="~/css/select2.min.css" />
+<link rel="stylesheet" href="~/css/jquery.dataTables.min.css" />
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .panel {
+        width: 1200px;
+        max-width: 1000px;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+
+<!-- Pop-up Modal -->
+@if (TempData["SuccessMessage"] != null || TempData["ErrorMessage"] != null)
 {
-    @Html.AntiForgeryToken()
-
-    <div class="container flex justify-center">
-        <div class="form-container" style="width: 100%; max-width: 800px; margin-top: 20px;">
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.BlockID)
-
-            <div class="col-span-2">
-                <div class="panel">
-                    <div class="flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
-                        <h5 class="text-lg font-semibold" style="padding:7px;">Edit Blocked Details</h5>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Left Column -->
-                        <div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ShID, "Shareholder ID", htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.DisplayFor(model => model.ShID, new { htmlAttributes = new { @class = "form-control" } })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.PayID, "Payment ID", htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.DisplayFor(model => model.PayID, new { htmlAttributes = new { @class = "form-control" } })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.BlockedAmount, htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.EditorFor(model => model.BlockedAmount, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.BlockedAmount, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.BlockingOrgan, htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.EditorFor(model => model.BlockingOrgan, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.BlockingOrgan, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.DateBlocked, htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.DisplayFor(model => model.DateBlocked, new { htmlAttributes = new { @class = "form-control" } })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.RefNum, htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.EditorFor(model => model.RefNum, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.RefNum, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Column -->
-                        <div>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.BlockingDoc, "Blocking Document", htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.DisplayFor(model => model.BlockingDoc, new { htmlAttributes = new { @class = "form-control" } })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.BlockedAuthorizationStatus, htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.DisplayFor(model => model.BlockedAuthorizationStatus, new { htmlAttributes = new { @class = "form-control" } })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.AuthorizationDate, htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.DisplayFor(model => model.AuthorizationDate, new { htmlAttributes = new { @class = "form-control" } })
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.Remark, htmlAttributes: new { @class = "control-label" })
-                                <div>
-                                    @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="text-center mt-3">
-                                @Html.ActionLink("Back to List", "Index")
-                            </div>
-                        </div>
-                    </div>
+    <div id="popup-message" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md text-center">
+            <!-- Success Message -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="mb-4 p-4 text-green-800 bg-green-200 rounded">
+                    <p class="text-lg font-semibold">@TempData["SuccessMessage"]</p>
                 </div>
-            </div>
+            }
 
-            <!-- Submit Button -->
-            <div class="form-group text-center mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            <!-- Error Message -->
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="mb-4 p-4 text-red-800 bg-red-200 rounded">
+                    <p class="text-lg font-semibold">@TempData["ErrorMessage"]</p>
+                </div>
+            }
+
+            <!-- Close Button -->
+            <button id="close-popup" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Close
+            </button>
         </div>
     </div>
 }
 
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="grid grid-cols-1 gap-6 mt-5">
+            <div class="panel">
+                <div class="mb-5 flex items-center justify-between" style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
+                    <h5 class="text-lg font-semibold dark:text-white-light uppercase" style="padding:7px;">Edit Blocked Details</h5>
+                </div>
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.BlockID)
+
+                <div class="flex flex-wrap mb-5">
+                    <div class="flex-1 mr-2">
+                        <label>Shareholder ID</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.ShID, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" } })
+                        </div>
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label>Payment ID</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.PayID, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" } })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap mb-5">
+                    <div class="flex-1 mr-2">
+                        <label>Blocked Amount <span style="color:red">*</span></label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.BlockedAmount, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @placeholder = "Enter Blocked Amount" } })
+                            @Html.ValidationMessageFor(model => model.BlockedAmount, "", new { @class = "text-red-500 text-xs mt-1" })
+                        </div>
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label>Blocking Organ <span style="color:red">*</span></label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.BlockingOrgan, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @placeholder = "Enter Blocking Organ" } })
+                            @Html.ValidationMessageFor(model => model.BlockingOrgan, "", new { @class = "text-red-500 text-xs mt-1" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap mb-5">
+                    <div class="flex-1 mr-2">
+                        <label>Date Blocked</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.DateBlocked, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" } })
+                        </div>
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label>Reference Number <span style="color:red">*</span></label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.RefNum, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @placeholder = "Enter Reference Number" } })
+                            @Html.ValidationMessageFor(model => model.RefNum, "", new { @class = "text-red-500 text-xs mt-1" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap mb-5">
+                    <div class="flex-1 mr-2">
+                        <label>Blocking Document</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.BlockingDoc, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" } })
+                        </div>
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label>Reason <span style="color:red">*</span></label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @placeholder = "Enter Reason" } })
+                            @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-red-500 text-xs mt-1" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap mb-5">
+                    <div class="flex-1 mr-2">
+                        <label>Blocked Authorization Status</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.BlockedAuthorizationStatus, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" } })
+                        </div>
+                    </div>
+
+                    <div class="flex-1 ml-2">
+                        <label>Authorization Date</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(model => model.AuthorizationDate, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" } })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-5">
+                    <label>Remark</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Remark, new { htmlAttributes = new { @class = "form-input border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500", @placeholder = "Enter Remark" } })
+                        @Html.ValidationMessageFor(model => model.Remark, "", new { @class = "text-red-500 text-xs mt-1" })
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary mt-6 mx-auto">Save</button>
+            </div>
+        </div>
+    }
+</div>
+
 @section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Handle popup close button
+            $('#close-popup').on('click', function () {
+                $('#popup-message').hide();
+            });
+
+            // Automatically hide the popup after 5 seconds
+            if ($('#popup-message').length) {
+                setTimeout(function () {
+                    $('#popup-message').hide();
+                }, 1000);
+            }
+        });
+    </script>
     @Scripts.Render("~/bundles/jqueryval")
 }
