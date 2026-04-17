@@ -259,7 +259,6 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-/Shareholder Management System/Models
 /package-lock.json
 /package.json
 /Shareholder Management System/UploadedFiles

