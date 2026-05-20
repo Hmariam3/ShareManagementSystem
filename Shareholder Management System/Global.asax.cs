@@ -19,9 +19,25 @@ namespace Shareholder_Management_System
         }
         protected void Application_BeginRequest()
         {
+            HttpContext.Current.Items["RequestStartTime"] = DateTime.UtcNow;
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
             Response.Cache.SetExpires(DateTime.UtcNow.AddHours(-1));
             Response.Cache.SetNoStore();
+        }
+
+        protected void Application_EndRequest()
+        {
+            var context = HttpContext.Current;
+
+            var start = (DateTime)context.Items["RequestStartTime"];
+            var duration = DateTime.UtcNow - start;
+
+            var endpoint = context.Request.Url.AbsolutePath;
+            var method = context.Request.HttpMethod;
+            var status = context.Response.StatusCode.ToString();
+
+            AppMetrics.HttpRequests.WithLabels(method, endpoint, status).Inc();
+            AppMetrics.HttpRequestDuration.WithLabels(endpoint).Observe(duration.TotalSeconds);
         }
     }
 }

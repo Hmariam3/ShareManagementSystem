@@ -1,5 +1,4 @@
-﻿﻿
-@if (Session["ID"] == null)
+﻿@if (Session["ID"] == null)
 {
     Session.Abandon();
     Response.Redirect("~/UsersAuthorization/Login");
@@ -202,57 +201,57 @@
                         }
 
 
-                            <h2>
-                                <li class="menu nav-item">
-                                    <button type="button"
-                                            class="nav-link group"
-                                            :class="{'active' : activeDropdown === 'Shareholder'}"
-                                            @@click="activeDropdown === 'Shareholder' ? activeDropdown = null : activeDropdown = 'Shareholder'">
-                                        <div class="flex items-center">
-                                            <i class="fa-thin fa-users-between-lines"></i>
-                                            <svg viewBox="0 0 640 512">
-                                                <path d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192l42.7 0c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0L21.3 320C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7l42.7 0C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3l-213.3 0zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352l117.3 0C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7l-330.7 0c-14.7 0-26.7-11.9-26.7-26.7z"
-                                                      fill="white" />
-                                            </svg>
+                        <h2>
+                            <li class="menu nav-item">
+                                <button type="button"
+                                        class="nav-link group"
+                                        :class="{'active' : activeDropdown === 'Shareholder'}"
+                                        @@click="activeDropdown === 'Shareholder' ? activeDropdown = null : activeDropdown = 'Shareholder'">
+                                    <div class="flex items-center">
+                                        <i class="fa-thin fa-users-between-lines"></i>
+                                        <svg viewBox="0 0 640 512">
+                                            <path d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192l42.7 0c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0L21.3 320C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7l42.7 0C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3l-213.3 0zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352l117.3 0C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7l-330.7 0c-14.7 0-26.7-11.9-26.7-26.7z"
+                                                  fill="white" />
+                                        </svg>
 
-                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Shareholder Mgnt</span>
-                                        </div>
-                                        <div class="rtl:rotate-180"
-                                             :class="{'!rotate-90' : activeDropdown === 'Shareholder'}">
-                                            <svg width="16"
-                                                 height="16"
-                                                 viewbox="0 0 24 24"
-                                                 fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M9 5L15 12L9 19"
-                                                      stroke="currentColor"
-                                                      stroke-width="1.5"
-                                                      stroke-linecap="round"
-                                                      stroke-linejoin="round"></path>
-                                            </svg>
-                                        </div>
-                                    </button>
-                                    <ul x-cloak=""
-                                        x-show="activeDropdown === 'Shareholder'"
-                                        x-collapse=""
-                                        class="sub-menu text-white">
+                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Shareholder Mgnt</span>
+                                    </div>
+                                    <div class="rtl:rotate-180"
+                                         :class="{'!rotate-90' : activeDropdown === 'Shareholder'}">
+                                        <svg width="16"
+                                             height="16"
+                                             viewbox="0 0 24 24"
+                                             fill="none"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M9 5L15 12L9 19"
+                                                  stroke="currentColor"
+                                                  stroke-width="1.5"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"></path>
+                                        </svg>
+                                    </div>
+                                </button>
+                                <ul x-cloak=""
+                                    x-show="activeDropdown === 'Shareholder'"
+                                    x-collapse=""
+                                    class="sub-menu text-white">
 
-                                        @if (userRole == "Initiator" || userRole == "Administrator" || userRole == "SuperAdmin")
-                                        {
-                                            <li>
-                                                @Html.ActionLink("Shareholder Reg", "Create", "Shareholders")
-                                            </li>
-                                        }
+                                    @if (userRole == "Initiator" || userRole == "Administrator" || userRole == "SuperAdmin")
+                                    {
                                         <li>
-                                            @Html.ActionLink("Shareholder Info", "Index", "Shareholders")
+                                            @Html.ActionLink("Shareholder Reg", "Create", "Shareholders")
                                         </li>
-                                        <li>
-                                            @Html.ActionLink("Proxy Info", "Index", "Proxies")
-                                        </li>
-                                    </ul>
-                                </li>
-                            </h2>
-                        
+                                    }
+                                    <li>
+                                        @Html.ActionLink("Shareholder Info", "Index", "Shareholders")
+                                    </li>
+                                    <li>
+                                        @Html.ActionLink("Proxy Info", "Index", "Proxies")
+                                    </li>
+                                </ul>
+                            </li>
+                        </h2>
+
 
 
 
@@ -270,415 +269,421 @@
                             <span>Transactions</span>
                         </h2>
 
-                            <li class="nav-item">
-                                <ul>
-                                            <li class="menu nav-item">
-                                                <button type="button"
-                                                        class="nav-link group"
-                                                        :class="{'active' : activeDropdown === 'Subscription'}"
-                                                        @@click="activeDropdown === 'Subscription' ? activeDropdown = null : activeDropdown = 'Subscription'">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <li class="nav-item">
+                            <ul>
+                                <li class="menu nav-item">
+                                    <button type="button"
+                                            class="nav-link group"
+                                            :class="{'active' : activeDropdown === 'Subscription'}"
+                                            @@click="activeDropdown === 'Subscription' ? activeDropdown = null : activeDropdown = 'Subscription'">
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 
-                                                            <path d="M502.3 190.8l-211.8 211.8c-15 15-41 15-56 0L9.7 190.8C3.5 184.7 0 176.4 0 167.4V96c0-35.3 28.7-64 64-64h384c35.3 0 64 28.7 64 64v71.4c0 9-3.5 17.3-9.7 23.4zM448 48H64c-26.5 0-48 21.5-48 48v71.4L251.3 364.6c4.7 4.7 12.3 4.7 17 0L496 167.4V96c0-26.5-21.5-48-48-48zm8 320H56c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h400c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64z"
-                                                                  fill="white" />
-                                                        </svg>
+                                                <path d="M502.3 190.8l-211.8 211.8c-15 15-41 15-56 0L9.7 190.8C3.5 184.7 0 176.4 0 167.4V96c0-35.3 28.7-64 64-64h384c35.3 0 64 28.7 64 64v71.4c0 9-3.5 17.3-9.7 23.4zM448 48H64c-26.5 0-48 21.5-48 48v71.4L251.3 364.6c4.7 4.7 12.3 4.7 17 0L496 167.4V96c0-26.5-21.5-48-48-48zm8 320H56c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h400c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64z"
+                                                      fill="white" />
+                                            </svg>
 
-                                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Subscription</span>
-                                                    </div>
-                                                    <div class="rtl:rotate-180"
-                                                         :class="{'!rotate-90' : activeDropdown === 'Subscription'}">
-                                                        <svg width="16"
-                                                             height="16"
-                                                             viewbox="0 0 24 24"
-                                                             fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M9 5L15 12L9 19"
-                                                                  stroke="currentColor"
-                                                                  stroke-width="1.5"
-                                                                  stroke-linecap="round"
-                                                                  stroke-linejoin="round"></path>
-                                                        </svg>
-                                                    </div>
-                                                </button>
-                                                <ul x-cloak=""
-                                                    x-show="activeDropdown === 'Subscription'"
-                                                    x-collapse=""
-                                                    class="sub-menu text-white">
-                                                    @if (userRole == "Initiator" || userRole == "SuperAdmin")
-                                                    {
-                                                        <li>
-                                                            <a href="~/Subscribtions/Create">Create Subscription</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="~/Subscribtions/AddSubscription">Add On Subscription</a>
-                                                        </li>
-                                                    }
-                                                    <li>
-                                                        <a href="~/Subscribtions/Viewall">View Subscription</a>
-                                                    </li>
-                                                    @*<li>
-            <a href="~/Subscribtions/PendingSubscription">Manage Subscription</a>
-        </li>*@
-                                                    @*<li>
-            <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
-        </li>*@
-                                                    @if (userRole == "SuperUser" || userRole == "SuperAdmin")
-                                                    {
-                                                        <li>
-                                                            <a href="~/Subscribtions/UpdateDuedate">Update All Due Dates</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="~/Subscribtions/OverDueSubscription">Over Due Subscription</a>
-                                                        </li>
-                                                    }
-                                                    </ul>
+                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Subscription</span>
+                                        </div>
+                                        <div class="rtl:rotate-180"
+                                             :class="{'!rotate-90' : activeDropdown === 'Subscription'}">
+                                            <svg width="16"
+                                                 height="16"
+                                                 viewbox="0 0 24 24"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 5L15 12L9 19"
+                                                      stroke="currentColor"
+                                                      stroke-width="1.5"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"></path>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                    <ul x-cloak=""
+                                        x-show="activeDropdown === 'Subscription'"
+                                        x-collapse=""
+                                        class="sub-menu text-white">
+                                        @if (userRole == "Initiator" || userRole == "SuperAdmin")
+                                        {
+                                            <li>
+                                                <a href="~/Subscribtions/Create">Create Subscription</a>
                                             </li>
-                                            <li class="menu nav-item">
-                                                <button type="button"
-                                                        class="nav-link group"
-                                                        :class="{'active' : activeDropdown === 'Payment'}"
-                                                        @@click="activeDropdown === 'Payment' ? activeDropdown = null : activeDropdown = 'Payment'">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-
-                                                            <path d="M0 144v-16C0 57.3 57.3 0 128 0h320c70.7 0 128 57.3 128 128v16H0zm0 64h576v240c0 70.7-57.3 128-128 128H128C57.3 512 0 454.7 0 384V208zm96 96a16 16 0 1 1 32 0 16 16 0 1 1-32 0zm320 64a16 16 0 1 1 32 0 16 16 0 1 1-32 0zm-96 0a16 16 0 1 1 32 0 16 16 0 1 1-32 0z"
-                                                                  fill="white" />
-                                                        </svg>
-
-                                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Payment</span>
-                                                    </div>
-                                                    <div class="rtl:rotate-180"
-                                                         :class="{'!rotate-90' : activeDropdown === 'Payment'}">
-                                                        <svg width="16"
-                                                             height="16"
-                                                             viewbox="0 0 24 24"
-                                                             fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M9 5L15 12L9 19"
-                                                                  stroke="currentColor"
-                                                                  stroke-width="1.5"
-                                                                  stroke-linecap="round"
-                                                                  stroke-linejoin="round"></path>
-                                                        </svg>
-                                                    </div>
-                                                </button>
-                                                <ul x-cloak=""
-                                                    x-show="activeDropdown === 'Payment'"
-                                                    x-collapse=""
-                                                    class="sub-menu text-white">
-                                                    @if (userRole == "Initiator" || userRole == "SuperAdmin")
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink("Create Payment", "Create", "Payments")
-                                                        </li>
-                                                    }
-                                                    <li>
-                                                        @Html.ActionLink("View Payment", "Index", "Payments")
-                                                    </li>
-                                                    <li>
-                                                        @Html.ActionLink("Daily Transactions", "DailyTransactions", "Payments")
-                                                    </li>
-                                                    @*<li>
-                                                            @Html.ActionLink("Manage Payment", "FilterPending", "Payments")
-                                                      </li>*@
-                                                </ul>
+                                            <li>
+                                                <a href="~/Subscribtions/AddSubscription">Add On Subscription</a>
                                             </li>
-                                            <li class="menu nav-item">
-                                                <button type="button"
-                                                        class="nav-link group"
-                                                        :class="{'active' : activeDropdown === 'Transfer'}"
-                                                        @@click="activeDropdown === 'Transfer' ? activeDropdown = null : activeDropdown = 'Transfer'">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-
-                                                            <path d="M624 224h-80v-80c0-13.3-10.7-24-24-24s-24 10.7-24 24v80h-80c-13.3 0-24 10.7-24 24s10.7 24 24 24h80v80c0 13.3 10.7 24 24 24s24-10.7 24-24v-80h80c13.3 0 24-10.7 24-24s-10.7-24-24-24zm-345.4 64.3l-94.3 80.1c-6.7 5.7-15.8 7.1-23.8 3.7s-12.8-11.6-12.8-20.1v-48H80c-44.2 0-80-35.8-80-80s35.8-80 80-80h64v-48c0-8.6 5-16.4 12.8-20.1s17.1-2 23.8 3.7l94.3 80.1c10.7 9.1 10.7 25.1 0 34.2z"
-                                                                  fill="white" />
-                                                        </svg>
-
-                                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Transfer</span>
-                                                    </div>
-                                                    <div class="rtl:rotate-180"
-                                                         :class="{'!rotate-90' : activeDropdown === 'Transfer'}">
-                                                        <svg width="16"
-                                                             height="16"
-                                                             viewbox="0 0 24 24"
-                                                             fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M9 5L15 12L9 19"
-                                                                  stroke="currentColor"
-                                                                  stroke-width="1.5"
-                                                                  stroke-linecap="round"
-                                                                  stroke-linejoin="round"></path>
-                                                        </svg>
-                                                    </div>
-                                                </button>
-                                                <ul x-cloak=""
-                                                    x-show="activeDropdown === 'Transfer'"
-                                                    x-collapse=""
-                                                    class="sub-menu text-white">
-                                                    @if (userRole == "Initiator" || userRole == "SuperAdmin")
-                                                    {
-                                                        <li>
-                                                            @Html.ActionLink("Create Transfer", "Create", "ShareTransfers")
-                                                        </li>
-                                                    }
-                                                        <li>
-                                                            @Html.ActionLink("View Transfer", "Index", "ShareTransfers")
-                                                        </li>
-                                                        @*<li>
-                                                            @Html.ActionLink("Authorize Transfer", "Authorize", "ShareTransfers")
-                                                        </li>*@
-                                                </ul>
-                                            </li>
-                                        
-
+                                        }
+                                        <li>
+                                            <a href="~/Subscribtions/Viewall">View Subscription</a>
+                                        </li>
+                                        @*<li>
+                                                <a href="~/Subscribtions/PendingSubscription">Manage Subscription</a>
+                                            </li>*@
+                                        @*<li>
+                                                <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
+                                            </li>*@
                                         @if (userRole == "SuperUser" || userRole == "SuperAdmin")
                                         {
-                                            <li class="menu nav-item">
-                                                <button type="button"
-                                                        class="nav-link group"
-                                                        :class="{'active' : activeDropdown === 'Block'}"
-                                                        @@click="activeDropdown === 'Block' ? activeDropdown = null : activeDropdown = 'Block'">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-
-                                                            <path d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
-                                                                  fill="white" />
-                                                        </svg>
-
-
-                                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Block</span>
-                                                    </div>
-                                                    <div class="rtl:rotate-180"
-                                                         :class="{'!rotate-90' : activeDropdown === 'Block'}">
-                                                        <svg width="16"
-                                                             height="16"
-                                                             viewbox="0 0 24 24"
-                                                             fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M9 5L15 12L9 19"
-                                                                  stroke="currentColor"
-                                                                  stroke-width="1.5"
-                                                                  stroke-linecap="round"
-                                                                  stroke-linejoin="round"></path>
-                                                        </svg>
-                                                    </div>
-                                                </button>
-                                                <ul x-cloak=""
-                                                    x-show="activeDropdown === 'Block'"
-                                                    x-collapse=""
-                                                    class="sub-menu text-white">
-                                                    <li>
-                                                        @Html.ActionLink("Block Payment", "Create", "Blockeds")
-                                                    </li>
-                                                    <li>
-                                                        @Html.ActionLink("View Block", "Index", "Blockeds")
-                                                    </li>
-                                                    @*<li>
-                                                        @Html.ActionLink("Manage Block", "FilterPending", "Blockeds")
-                                                    </li>*@
-                                                </ul>
+                                            <li>
+                                                <a href="~/Subscribtions/UpdateDuedate">Update All Due Dates</a>
                                             </li>
-
-                                            <li class="menu nav-item">
-                                                <button type="button"
-                                                        class="nav-link group"
-                                                        :class="{'active' : activeDropdown === 'Certficate'}"
-                                                        @@click="activeDropdown === 'Certficate' ? activeDropdown = null : activeDropdown = 'Certficate'">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-
-                                                            <path d="M497.9 368.1l-46.6-46.6V192c0-8.844-7.156-16-16-16h-42.94l-56-112C330.1 54.72 321.3 48 311.1 48H200c-9.312 0-18.16 6.719-21.41 16L122.6 176H80c-8.844 0-16 7.156-16 16v129.5l-46.63 46.63C6.156 375.6 0 386.3 0 398.1V496c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-56h256v56c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-97.03C512 386.3 505.8 375.6 497.9 368.1zM212.3 96h87.38l36 72h-159.4L212.3 96zM64 403.3l32-32V288h320v83.31l32 32V480h-64v-56c0-8.844-7.156-16-16-16H144c-8.844 0-16 7.156-16 16v56H64V403.3z"
-                                                                  fill="white" />
-                                                        </svg>
-
-                                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Certificate</span>
-
-                                                    </div>
-                                                    <div class="rtl:rotate-180"
-                                                         :class="{'!rotate-90' : activeDropdown === 'Certficate'}">
-                                                        <svg width="16"
-                                                             height="16"
-                                                             viewbox="0 0 24 24"
-                                                             fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M9 5L15 12L9 19"
-                                                                  stroke="currentColor"
-                                                                  stroke-width="1.5"
-                                                                  stroke-linecap="round"
-                                                                  stroke-linejoin="round"></path>
-                                                        </svg>
-                                                    </div>
-                                                </button>
-                                                <ul x-cloak=""
-                                                    x-show="activeDropdown === 'Certficate'"
-                                                    x-collapse=""
-                                                    class="sub-menu text-white">
-
-                                                    <li>
-                                                        @Html.ActionLink("Order Certificate", "Create", "Certificates")
-                                                    </li>
-                                                    <li>
-                                                        @Html.ActionLink("View Certificate ", "Index", "Certificates")
-                                                    </li>
-                                                    @*<li>
-                                                        @Html.ActionLink("Manage Certificate", "FilterPending", "Certificates")
-                                                    </li>*@
-
-                                                </ul>
+                                            <li>
+                                                <a href="~/Subscribtions/OverDueSubscription">Over Due Subscription</a>
                                             </li>
-                                            <h2>
-                                                <li class="menu nav-item">
-                                                    <button type="button"
-                                                            class="nav-link group"
-                                                            :class="{'active' : activeDropdown === 'Document'}"
-                                                            @@click="activeDropdown === 'Document' ? activeDropdown = null : activeDropdown = 'Document'">
-                                                        <div class="flex items-center">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="menu nav-item">
+                                    <button type="button"
+                                            class="nav-link group"
+                                            :class="{'active' : activeDropdown === 'Payment'}"
+                                            @@click="activeDropdown === 'Payment' ? activeDropdown = null : activeDropdown = 'Payment'">
+                                        <div class="flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
 
-                                                                <path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
-                                                                      fill="white" />
-                                                            </svg>
+                                                <path d="M0 144v-16C0 57.3 57.3 0 128 0h320c70.7 0 128 57.3 128 128v16H0zm0 64h576v240c0 70.7-57.3 128-128 128H128C57.3 512 0 454.7 0 384V208zm96 96a16 16 0 1 1 32 0 16 16 0 1 1-32 0zm320 64a16 16 0 1 1 32 0 16 16 0 1 1-32 0zm-96 0a16 16 0 1 1 32 0 16 16 0 1 1-32 0z"
+                                                      fill="white" />
+                                            </svg>
 
-                                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Document Management</span>
+                                            <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Payment</span>
+                                        </div>
+                                        <div class="rtl:rotate-180"
+                                             :class="{'!rotate-90' : activeDropdown === 'Payment'}">
+                                            <svg width="16"
+                                                 height="16"
+                                                 viewbox="0 0 24 24"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9 5L15 12L9 19"
+                                                      stroke="currentColor"
+                                                      stroke-width="1.5"
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"></path>
+                                            </svg>
+                                        </div>
+                                    </button>
+                                    <ul x-cloak=""
+                                        x-show="activeDropdown === 'Payment'"
+                                        x-collapse=""
+                                        class="sub-menu text-white">
+                                        @if (userRole == "Initiator" || userRole == "SuperAdmin")
+                                        {
+                                            <li>
+                                                @Html.ActionLink("Create Payment", "Create", "Payments")
+                                            </li>
+                                        }
+                                        <li>
+                                            @Html.ActionLink("View Payment", "Index", "Payments")
+                                        </li>
+                                        @if (userRole == "Initiator" || userRole == "SuperAdmin" || userRole == "Authorizer" || userRole == "SuperUser")
+                                        {
+                                            <li>
+                                                @Html.ActionLink("Daily Transactions", "DailyTransactions", "Payments")
+                                            </li>
+                                        }
+                                        @*<li>
+                                                  @Html.ActionLink("Manage Payment", "FilterPending", "Payments")
+                                            </li>*@
+                                    </ul>
+                                </li>
+                                @if (userRole == "SuperUser" || userRole == "SuperAdmin" || userRole == "Initiator")
+                                {
+                                    <li class="menu nav-item">
+                                        <button type="button"
+                                                class="nav-link group"
+                                                :class="{'active' : activeDropdown === 'Transfer'}"
+                                                @@click="activeDropdown === 'Transfer' ? activeDropdown = null : activeDropdown = 'Transfer'">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
 
-                                                        </div>
-                                                        <div class="rtl:rotate-180"
-                                                             :class="{'!rotate-90' : activeDropdown === 'Document'}">
-                                                            <svg width="16"
-                                                                 height="16"
-                                                                 viewbox="0 0 24 24"
-                                                                 fill="none"
-                                                                 xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M9 5L15 12L9 19"
-                                                                      stroke="currentColor"
-                                                                      stroke-width="1.5"
-                                                                      stroke-linecap="round" v
-                                                                      stroke-linejoin="round"></path>
-                                                            </svg>
-                                                        </div>
-                                                    </button>
-                                                    <ul x-cloak=""
-                                                        x-show="activeDropdown === 'Document'"
-                                                        x-collapse=""
-                                                        class="sub-menu text-white">
-                                                        <li>
-                                                            @Html.ActionLink("View Document", "Index", "Documents")
-                                                        </li>
-                                                        <li>
-                                                            @Html.ActionLink("Document Category", "Create", "Documents")
-                                                        </li>
+                                                    <path d="M624 224h-80v-80c0-13.3-10.7-24-24-24s-24 10.7-24 24v80h-80c-13.3 0-24 10.7-24 24s10.7 24 24 24h80v80c0 13.3 10.7 24 24 24s24-10.7 24-24v-80h80c13.3 0 24-10.7 24-24s-10.7-24-24-24zm-345.4 64.3l-94.3 80.1c-6.7 5.7-15.8 7.1-23.8 3.7s-12.8-11.6-12.8-20.1v-48H80c-44.2 0-80-35.8-80-80s35.8-80 80-80h64v-48c0-8.6 5-16.4 12.8-20.1s17.1-2 23.8 3.7l94.3 80.1c10.7 9.1 10.7 25.1 0 34.2z"
+                                                          fill="white" />
+                                                </svg>
 
-                                                    </ul>
+                                                <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Transfer</span>
+                                            </div>
+                                            <div class="rtl:rotate-180"
+                                                 :class="{'!rotate-90' : activeDropdown === 'Transfer'}">
+                                                <svg width="16"
+                                                     height="16"
+                                                     viewbox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 5L15 12L9 19"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"
+                                                          stroke-linecap="round"
+                                                          stroke-linejoin="round"></path>
+                                                </svg>
+                                            </div>
+                                        </button>
+
+                                        <ul x-cloak=""
+                                            x-show="activeDropdown === 'Transfer'"
+                                            x-collapse=""
+                                            class="sub-menu text-white">
+                                            @if (userRole == "Initiator" || userRole == "SuperAdmin")
+                                            {
+                                                <li>
+                                                    @Html.ActionLink("Create Transfer", "Create", "ShareTransfers")
+                                                </li>
+                                            }
+                                            <li>
+                                                @Html.ActionLink("View Transfer", "Index", "ShareTransfers")
+                                            </li>
+                                            @*<li>
+                                                    @Html.ActionLink("Authorize Transfer", "Authorize", "ShareTransfers")
+                                                </li>*@
+                                        </ul>
+                                    </li>
+                                }
+
+                                @if (userRole == "SuperUser" || userRole == "SuperAdmin")
+                                {
+                                    <li class="menu nav-item">
+                                        <button type="button"
+                                                class="nav-link group"
+                                                :class="{'active' : activeDropdown === 'Block'}"
+                                                @@click="activeDropdown === 'Block' ? activeDropdown = null : activeDropdown = 'Block'">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+                                                    <path d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
+                                                          fill="white" />
+                                                </svg>
+
+
+                                                <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Block</span>
+                                            </div>
+                                            <div class="rtl:rotate-180"
+                                                 :class="{'!rotate-90' : activeDropdown === 'Block'}">
+                                                <svg width="16"
+                                                     height="16"
+                                                     viewbox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 5L15 12L9 19"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"
+                                                          stroke-linecap="round"
+                                                          stroke-linejoin="round"></path>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                        <ul x-cloak=""
+                                            x-show="activeDropdown === 'Block'"
+                                            x-collapse=""
+                                            class="sub-menu text-white">
+                                            <li>
+                                                @Html.ActionLink("Block Payment", "Create", "Blockeds")
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("View Block", "Index", "Blockeds")
+                                            </li>
+                                            @*<li>
+                                                    @Html.ActionLink("Manage Block", "FilterPending", "Blockeds")
+                                                </li>*@
+                                        </ul>
+                                    </li>
+
+                                    <li class="menu nav-item">
+                                        <button type="button"
+                                                class="nav-link group"
+                                                :class="{'active' : activeDropdown === 'Certficate'}"
+                                                @@click="activeDropdown === 'Certficate' ? activeDropdown = null : activeDropdown = 'Certficate'">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+                                                    <path d="M497.9 368.1l-46.6-46.6V192c0-8.844-7.156-16-16-16h-42.94l-56-112C330.1 54.72 321.3 48 311.1 48H200c-9.312 0-18.16 6.719-21.41 16L122.6 176H80c-8.844 0-16 7.156-16 16v129.5l-46.63 46.63C6.156 375.6 0 386.3 0 398.1V496c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-56h256v56c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-97.03C512 386.3 505.8 375.6 497.9 368.1zM212.3 96h87.38l36 72h-159.4L212.3 96zM64 403.3l32-32V288h320v83.31l32 32V480h-64v-56c0-8.844-7.156-16-16-16H144c-8.844 0-16 7.156-16 16v56H64V403.3z"
+                                                          fill="white" />
+                                                </svg>
+
+                                                <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Certificate</span>
+
+                                            </div>
+                                            <div class="rtl:rotate-180"
+                                                 :class="{'!rotate-90' : activeDropdown === 'Certficate'}">
+                                                <svg width="16"
+                                                     height="16"
+                                                     viewbox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 5L15 12L9 19"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"
+                                                          stroke-linecap="round"
+                                                          stroke-linejoin="round"></path>
+                                                </svg>
+                                            </div>
+                                        </button>
+                                        <ul x-cloak=""
+                                            x-show="activeDropdown === 'Certficate'"
+                                            x-collapse=""
+                                            class="sub-menu text-white">
+
+                                            <li>
+                                                @Html.ActionLink("Order Certificate", "Create", "Certificates")
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("View Certificate ", "Index", "Certificates")
+                                            </li>
+                                            @*<li>
+                                                    @Html.ActionLink("Manage Certificate", "FilterPending", "Certificates")
+                                                </li>*@
+
+                                        </ul>
+                                    </li>
+                                    <h2>
+                                        <li class="menu nav-item">
+                                            <button type="button"
+                                                    class="nav-link group"
+                                                    :class="{'active' : activeDropdown === 'Document'}"
+                                                    @@click="activeDropdown === 'Document' ? activeDropdown = null : activeDropdown = 'Document'">
+                                                <div class="flex items-center">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+
+                                                        <path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+                                                              fill="white" />
+                                                    </svg>
+
+                                                    <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Document Management</span>
+
+                                                </div>
+                                                <div class="rtl:rotate-180"
+                                                     :class="{'!rotate-90' : activeDropdown === 'Document'}">
+                                                    <svg width="16"
+                                                         height="16"
+                                                         viewbox="0 0 24 24"
+                                                         fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M9 5L15 12L9 19"
+                                                              stroke="currentColor"
+                                                              stroke-width="1.5"
+                                                              stroke-linecap="round" v
+                                                              stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </div>
+                                            </button>
+                                            <ul x-cloak=""
+                                                x-show="activeDropdown === 'Document'"
+                                                x-collapse=""
+                                                class="sub-menu text-white">
+                                                <li>
+                                                    @Html.ActionLink("View Document", "Index", "Documents")
+                                                </li>
+                                                <li>
+                                                    @Html.ActionLink("Document Category", "Create", "Documents")
                                                 </li>
 
-                                            </h2>
-                                        }
+                                            </ul>
+                                        </li>
 
-                                        @if (userRole == "Authorizer" || userRole == "SuperAdmin" || userRole == "SuperUser")
-                                        {
-                                            <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
-                                                <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </h2>
+                                }
+
+                                @if (userRole == "Authorizer" || userRole == "SuperAdmin" || userRole == "SuperUser")
+                                {
+                                    <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+                                        <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                        <span>Requests</span>
+                                    </h2>
+
+                                    <li class="menu nav-item  ">
+                                        <a :href="'@Url.Action("PendingRequests", "Shareholders")'" class="nav-link group">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><path fill="white" d="M16 2.906a5.945 5.945 0 0 0-5.938 5.938c0 1.945.907 3.324 1.657 4.375c.75 1.05 1.281 1.773 1.281 2.812v3.188L4.781 21.03L4 21.188V26h1v1c0 .574.254 1.117.656 1.469c.403.351.918.531 1.438.531h17.812c.52 0 1.035-.18 1.438-.531A1.97 1.97 0 0 0 27 27v-1h1v-4.813l-.781-.156L19 19.22v-3.19c0-1.039.531-1.761 1.281-2.812s1.657-2.43 1.657-4.375A5.945 5.945 0 0 0 16 2.906m0 2a3.91 3.91 0 0 1 3.938 3.938c0 1.351-.555 2.199-1.282 3.219C17.93 13.082 17 14.284 17 16.03V19h-2v-2.969c0-1.746-.93-2.949-1.656-3.968c-.727-1.02-1.281-1.868-1.281-3.22A3.91 3.91 0 0 1 16 4.907zM14 21h4l8 1.781V24H6v-1.219zm-7 5h18v.969c-.012.008-.027.031-.094.031H7.094c-.067 0-.082-.023-.094-.031z" /></svg>
+                                                <span class="text-black ltr:pl-3 rtl:pr-3 text-white">Pending Requests</span>
+                                                @Html.Action("GetPendingRequestsCount", "Shareholders")
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
+                                @if (userRole == "SuperUser" || userRole == "SuperAdmin")
+                                {
+                                    <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+                                        <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                        <span>Dividend</span>
+                                    </h2>
+
+                                    <li class="menu nav-item">
+                                        <button type="button"
+                                                class="nav-link group"
+                                                :class="{'active' : activeDropdown === 'DividendInfo'}"
+                                                @@click="activeDropdown === 'DividendInfo' ? activeDropdown = null : activeDropdown = 'DividendInfo'">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+
+                                                    <path d="M497.9 368.1l-46.6-46.6V192c0-8.844-7.156-16-16-16h-42.94l-56-112C330.1 54.72 321.3 48 311.1 48H200c-9.312 0-18.16 6.719-21.41 16L122.6 176H80c-8.844 0-16 7.156-16 16v129.5l-46.63 46.63C6.156 375.6 0 386.3 0 398.1V496c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-56h256v56c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-97.03C512 386.3 505.8 375.6 497.9 368.1zM212.3 96h87.38l36 72h-159.4L212.3 96zM64 403.3l32-32V288h320v83.31l32 32V480h-64v-56c0-8.844-7.156-16-16-16H144c-8.844 0-16 7.156-16 16v56H64V403.3z"
+                                                          fill="white" />
                                                 </svg>
-                                                <span>Requests</span>
-                                            </h2>
 
-                                            <li class="menu nav-item  ">
-                                                <a :href="'@Url.Action("PendingRequests", "Shareholders")'" class="nav-link group">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32"><path fill="white" d="M16 2.906a5.945 5.945 0 0 0-5.938 5.938c0 1.945.907 3.324 1.657 4.375c.75 1.05 1.281 1.773 1.281 2.812v3.188L4.781 21.03L4 21.188V26h1v1c0 .574.254 1.117.656 1.469c.403.351.918.531 1.438.531h17.812c.52 0 1.035-.18 1.438-.531A1.97 1.97 0 0 0 27 27v-1h1v-4.813l-.781-.156L19 19.22v-3.19c0-1.039.531-1.761 1.281-2.812s1.657-2.43 1.657-4.375A5.945 5.945 0 0 0 16 2.906m0 2a3.91 3.91 0 0 1 3.938 3.938c0 1.351-.555 2.199-1.282 3.219C17.93 13.082 17 14.284 17 16.03V19h-2v-2.969c0-1.746-.93-2.949-1.656-3.968c-.727-1.02-1.281-1.868-1.281-3.22A3.91 3.91 0 0 1 16 4.907zM14 21h4l8 1.781V24H6v-1.219zm-7 5h18v.969c-.012.008-.027.031-.094.031H7.094c-.067 0-.082-.023-.094-.031z" /></svg>
-                                                        <span class="text-black ltr:pl-3 rtl:pr-3 text-white">Pending Requests</span>
-                                                        @Html.Action("GetPendingRequestsCount", "Shareholders")
-                                                    </div>
-                                                </a>
-                                            </li>
-                                        }
-                                        @if (userRole == "SuperUser" || userRole == "SuperAdmin")
-                                        {
-                                            <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
-                                                <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Dividend Information</span>
+
+                                            </div>
+                                            <div class="rtl:rotate-180"
+                                                 :class="{'!rotate-90' : activeDropdown === 'DividendInfo'}">
+                                                <svg width="16"
+                                                     height="16"
+                                                     viewbox="0 0 24 24"
+                                                     fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9 5L15 12L9 19"
+                                                          stroke="currentColor"
+                                                          stroke-width="1.5"
+                                                          stroke-linecap="round"
+                                                          stroke-linejoin="round"></path>
                                                 </svg>
-                                                <span>Dividend</span>
-                                            </h2>
-
-                                            <li class="menu nav-item">
-                                                <button type="button"
-                                                        class="nav-link group"
-                                                        :class="{'active' : activeDropdown === 'DividendInfo'}"
-                                                        @@click="activeDropdown === 'DividendInfo' ? activeDropdown = null : activeDropdown = 'DividendInfo'">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-
-                                                            <path d="M497.9 368.1l-46.6-46.6V192c0-8.844-7.156-16-16-16h-42.94l-56-112C330.1 54.72 321.3 48 311.1 48H200c-9.312 0-18.16 6.719-21.41 16L122.6 176H80c-8.844 0-16 7.156-16 16v129.5l-46.63 46.63C6.156 375.6 0 386.3 0 398.1V496c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-56h256v56c0 8.844 7.156 16 16 16h96c8.844 0 16-7.156 16-16v-97.03C512 386.3 505.8 375.6 497.9 368.1zM212.3 96h87.38l36 72h-159.4L212.3 96zM64 403.3l32-32V288h320v83.31l32 32V480h-64v-56c0-8.844-7.156-16-16-16H144c-8.844 0-16 7.156-16 16v56H64V403.3z"
-                                                                  fill="white" />
-                                                        </svg>
-
-                                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Dividend Information</span>
-
-                                                    </div>
-                                                    <div class="rtl:rotate-180"
-                                                         :class="{'!rotate-90' : activeDropdown === 'DividendInfo'}">
-                                                        <svg width="16"
-                                                             height="16"
-                                                             viewbox="0 0 24 24"
-                                                             fill="none"
-                                                             xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M9 5L15 12L9 19"
-                                                                  stroke="currentColor"
-                                                                  stroke-width="1.5"
-                                                                  stroke-linecap="round"
-                                                                  stroke-linejoin="round"></path>
-                                                        </svg>
-                                                    </div>
-                                                </button>
-                                                <ul x-cloak=""
-                                                    x-show="activeDropdown === 'DividendInfo'"
-                                                    x-collapse=""
-                                                    class="sub-menu text-white">
-                                                    <li>
-                                                        @Html.ActionLink("Dividend", "Index", "Dividends")
-                                                    </li>
-                                                    <li>
-                                                        @Html.ActionLink("Dividend Simulation", "Index", "SimulationDivideneds")
-                                                    </li>
-                                                    <li>
-                                                        @Html.ActionLink("Dividend Details", "Index", "DividenedDetails")
-                                                    </li>
-                                                </ul>
+                                            </div>
+                                        </button>
+                                        <ul x-cloak=""
+                                            x-show="activeDropdown === 'DividendInfo'"
+                                            x-collapse=""
+                                            class="sub-menu text-white">
+                                            <li>
+                                                @Html.ActionLink("Dividend", "Index", "Dividends")
                                             </li>
-                                        }
-                                        @if (userRole == "Administrator")
-                                        {
-                                            <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
-                                                <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            <li>
+                                                @Html.ActionLink("Dividend Simulation", "Index", "SimulationDivideneds")
+                                            </li>
+                                            <li>
+                                                @Html.ActionLink("Dividend Details", "Index", "DividenedDetails")
+                                            </li>
+                                        </ul>
+                                    </li>
+                                }
+                                @if (userRole == "Administrator" || userRole == "SuperAdmin")
+                                {
+                                    <h2 class="-mx-4 mb-1 flex items-center bg-white-light/30 py-3 px-7 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+                                        <svg class="hidden h-5 w-4 flex-none" viewbox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                        <span>Log</span>
+                                    </h2>
+
+                                    <li class="menu nav-item">
+                                        <a href="@Url.Action("RecordLog", "AuditLogs")"
+                                           class="nav-link group"
+                                           :class="{'active' : activeDropdown === 'Certficate'}"
+                                           @@click="activeDropdown === '' ? activeDropdown = null : activeDropdown = ''">
+                                            <div class="flex items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+                                                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h.01M4 6h.01M4 18h.01M8 18h2m-2-6h2M8 6h2m4 0h6m-6 6h6m-6 6h6" />
                                                 </svg>
-                                                <span>Log</span>
-                                            </h2>
+                                                <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Record Log</span>
+                                            </div>
+                                            <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'Certficate'}"></div>
+                                        </a>
+                                    </li>
+                                }
+                                </h2>
+                            </ul>
+                        </li>
 
-                                            <li class="menu nav-item">
-                                                <a href="@Url.Action("RecordLog", "AuditLogs")"
-                                                   class="nav-link group"
-                                                   :class="{'active' : activeDropdown === 'Certficate'}"
-                                                   @@click="activeDropdown === '' ? activeDropdown = null : activeDropdown = ''">
-                                                    <div class="flex items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-                                                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h.01M4 6h.01M4 18h.01M8 18h2m-2-6h2M8 6h2m4 0h6m-6 6h6m-6 6h6" />
-                                                        </svg>
-                                                        <span class="text-white ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">Record Log</span>
-                                                    </div>
-                                                    <div class="rtl:rotate-180" :class="{'!rotate-90' : activeDropdown === 'Certficate'}"></div>
-                                                </a>
-                                            </li>
-                                        }
-                                        </h2>
-                                    </ul>
-                            </li>
-
-                        </ul>
+                    </ul>
                 </div>
             </nav>
         </div>
@@ -972,30 +977,30 @@
                                     }
 
                                     <li>
-                                            @{
-                                                string encryptedId = TripleDESEncryptionHelper.Encrypt(sessionId.ToString());
-                                            }
-                                            <a href="@Url.Action("Profile", "Users", new { id = encryptedId })"
-                                               class="dark:hover:text-white">
-                                                <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
-                                                     width="18"
-                                                     height="18"
-                                                     viewBox="0 0 24 24"
-                                                     fill="none"
-                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <circle cx="12"
-                                                            cy="6"
-                                                            r="4"
-                                                            stroke="currentColor"
-                                                            stroke-width="1.5"></circle>
-                                                    <path opacity="0.5"
-                                                          d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
-                                                          stroke="currentColor"
-                                                          stroke-width="1.5"></path>
-                                                </svg>
-                                                Profile
-                                            </a>
-                                        </li>
+                                        @{
+                                            string encryptedId = TripleDESEncryptionHelper.Encrypt(sessionId.ToString());
+                                        }
+                                        <a href="@Url.Action("Profile", "Users", new { id = encryptedId })"
+                                           class="dark:hover:text-white">
+                                            <svg class="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2"
+                                                 width="18"
+                                                 height="18"
+                                                 viewBox="0 0 24 24"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="12"
+                                                        cy="6"
+                                                        r="4"
+                                                        stroke="currentColor"
+                                                        stroke-width="1.5"></circle>
+                                                <path opacity="0.5"
+                                                      d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"
+                                                      stroke="currentColor"
+                                                      stroke-width="1.5"></path>
+                                            </svg>
+                                            Profile
+                                        </a>
+                                    </li>
 
                                     </li>
                                     @*<li>
