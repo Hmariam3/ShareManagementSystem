@@ -214,6 +214,7 @@ namespace Shareholder_Management_System.Controllers
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
 
+            TrimShareholderStrings(shareholder); 
 
             ViewBag.Branch = new SelectList(db.Branches, "ID", "BranchCode", shareholder.Branch);
             ViewBag.CreatedBy = new SelectList(db.Users, "UID", "FullName", shareholder.CreatedBy);
@@ -362,6 +363,25 @@ namespace Shareholder_Management_System.Controllers
 
             return View(shareholder);
         }
+        private void TrimShareholderStrings(Shareholder shareholder)
+        {
+            if (shareholder == null)
+                return;
+
+            var stringProperties = typeof(Shareholder)
+                .GetProperties()
+                .Where(p => p.PropertyType == typeof(string) && p.CanRead && p.CanWrite);
+
+            foreach (var property in stringProperties)
+            {
+                var currentValue = (string)property.GetValue(shareholder);
+
+                if (currentValue != null)
+                {
+                    property.SetValue(shareholder, currentValue.Trim());
+                }
+            }
+        }
         private int CalculateAge(DateTime birthdate)
         {
             int age = DateTime.Now.Year - birthdate.Year;
@@ -409,7 +429,7 @@ namespace Shareholder_Management_System.Controllers
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
 
-
+            TrimShareholderStrings(shareholder);
 
             if (ModelState.IsValid)
             {
@@ -466,7 +486,8 @@ namespace Shareholder_Management_System.Controllers
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
-
+            type = type.Trim();
+            reason = reason.Trim();
 
             if (shFile == null || shFile.ContentLength == 0)
             {
@@ -519,7 +540,7 @@ namespace Shareholder_Management_System.Controllers
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
-
+            reason = reason.Trim();
 
             if (shFile == null || shFile.ContentLength == 0)
             {
@@ -572,6 +593,7 @@ namespace Shareholder_Management_System.Controllers
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
+            reason = reason.Trim();
 
             if (shFile == null || shFile.ContentLength == 0)
             {
@@ -788,6 +810,8 @@ namespace Shareholder_Management_System.Controllers
         [HttpPost]
         public ActionResult Reject(int id, string remark)
         {
+            remark = remark.Trim();
+
             var shareholder = db.Shareholders.Find(id);
             if (shareholder != null)
             {

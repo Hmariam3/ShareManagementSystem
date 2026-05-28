@@ -85,6 +85,8 @@ namespace Shareholder_Management_System.Controllers
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
+            reason = reason.Trim();
+            type = type.Trim();
             var proxy = db.Proxies.Find(proxyID);
 
             if (proxyFile == null || proxyFile.ContentLength == 0)
@@ -135,7 +137,7 @@ namespace Shareholder_Management_System.Controllers
         {
             int userId = Convert.ToInt32(Session["ID"]);
             int branchId = Convert.ToInt32(Session["Branch"]);
-
+            reason = reason.Trim();
             if (proxyFile == null || proxyFile.ContentLength == 0)
             {
                 return Json(new { success = false, message = "File is required." });
@@ -609,6 +611,7 @@ namespace Shareholder_Management_System.Controllers
         [HttpPost]
         public ActionResult Reject(int id, string remark)
         {
+            remark = remark.Trim();
             var proxy = db.Proxies.Find(id);
             if (proxy != null)
             {

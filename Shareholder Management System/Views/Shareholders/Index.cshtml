@@ -1978,16 +1978,15 @@ document.addEventListener('alpine:init', () => {
                         {
                             <text>
                             [
-                                "@item.BlockID", // FullName
-                                "@item.PayID", // ProxyAuthorizationStatus
-                                "@(item.BlockedAmount.HasValue ? item.BlockedAmount.Value.ToString("N2") : "0.00")",  // Pass ProxyID for use in JavaScript
-                                "@item.Reason", // ProxyAuthorizationStatus
-                                "@item.BlockingOrgan", // ProxyAuthorizationStatus
+                                "@item.BlockID",
+                                "@item.PayID",
+                                "@(item.BlockedAmount.HasValue ? item.BlockedAmount.Value.ToString("N2") : "0.00")",
+                                "@item.Reason",
+                                "@item.BlockingOrgan",
                                 "@item.BlockedAuthorizationStatus",
-                                @((item.DateBlocked.HasValue) ? item.DateBlocked.Value.ToString("yyyy-MM-dd") : "") // AuthorizedDate
-                                "@(item.User != null ? item.User.FullName : "N/A")", // User.FullName
-                                "@item.BlockID", // FullName
-
+                                "@((item.DateBlocked.HasValue) ? item.DateBlocked.Value.ToString("yyyy-MM-dd") : "")",
+                                "@(item.User != null ? item.User.FullName : "N/A")",
+                                "@item.BlockID",
                             ],
                             </text>
                         }
