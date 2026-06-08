@@ -42,7 +42,7 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="animate__animated p-3" :class="[$store.app.animation]">
         <!-- Start main content section -->
-        <div x-data="form">
+        <div x-data="{}">
             <div class="flex items-center justify-between"
                  style="background: linear-gradient(to right, #0e1726 2%, #00adef 98%); color:white;">
                 <h5 class="text-lg font-semibold dark:text-white-light" style="padding:7px;">Share Transfer Form</h5>
@@ -267,115 +267,21 @@
 
 
 <script type="text/javascript">
-    // Move initialization to window.load to ensure DOM and scripts are fully loaded
-    $(window).on('load', function () {
-        console.log('Window loaded. Initializing Select2 for TransferrorShID and TransfareeShID.');
+    $(document).ready(function () {
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery is not loaded');
+            return;
+        }
 
-        //// Check if jQuery and Select2 are available
-        //if (typeof jQuery === 'undefined') {
-        //    console.error('jQuery is not loaded. Check script inclusion.');
-        //    return;
-        //}
-        //if (typeof $.fn.select2 === 'undefined') {
-        //    console.error('Select2 is not loaded. Check script inclusion.');
-        //    return;
-        //}
-        //console.log('jQuery version:', jQuery.fn.jquery, 'Select2 available:', !!$.fn.select2);
-
-        //// Verify TransferrorShID element exists
-        //if ($('#TransferrorShID').length === 0) {
-        //    console.error('TransferrorShID element not found in DOM.');
-        //    return;
-        //}
-        //console.log('TransferrorShID element found:', $('#TransferrorShID'));
+    // Use setTimeout to ensure this runs AFTER any global theme scripts that might auto-initialize Select2
+    setTimeout(function() {
 
         // Remove any existing Select2 instances to prevent overrides
-        //$('#TransferrorShID, #TransfareeShID').each(function () {
-        //    if ($(this).data('select2')) {
-        //        console.warn('Destroying existing Select2 instance on', this.id);
-        //        $(this).select2('destroy');
-        //    }
-        //});
-
-        // Initialize TransferrorShID
-        @*$('#TransferrorShID').select2({
-            placeholder: "Select a Shareholder",
-            allowClear: true,
-            width: '100%',
-            minimumInputLength: 3,
-            ajax: {
-                url: '@Url.Action("SearchShareholders", "ShareTransfers")',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    var term = params.term || '';
-                    console.log('TransferrorShID AJAX request: term=', term);
-                    return { term: term };
-                },
-                processResults: function (data) {
-                    console.log('TransferrorShID AJAX response:', data);
-                    if (!data || !data.results) {
-                        console.error('Invalid TransferrorShID response format:', data);
-                        return { results: [] };
-                    }
-                    return { results: data.results };
-                },
-                error: function (xhr, status, error) {
-                    console.error('TransferrorShID AJAX error:', status, error, xhr.responseText);
-                    return { results: [] };
-                },
-                cache: true
+        $('#TransferrorShID, #TransfareeShID').each(function () {
+            if ($(this).data('select2') || $(this).hasClass('select2-hidden-accessible')) {
+                $(this).select2('destroy');
             }
-        }).on('select2:open', function () {
-            console.log('TransferrorShID dropdown opened. Minimum input length should be 3.');
-        }).on('select2:select', function () {
-            console.log('TransferrorShID selected:', $(this).val());
         });
-
-        // Initialize TransfareeShID
-        $('#TransfareeShID').select2({
-            placeholder: "Select a Shareholder",
-            allowClear: true,
-            width: '100%',
-            minimumInputLength: 3,
-            ajax: {
-                url: '@Url.Action("SearchShareholders", "ShareTransfers")',
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    var term = params.term || '';
-                    var transferrorId = $('#TransferrorShID').val() || '';
-                    console.log('TransfareeShID AJAX request: term=', term, 'transferrorId=', transferrorId);
-                    return { term: term, transferrorId: transferrorId };
-                },
-                processResults: function (data) {
-                    console.log('TransfareeShID AJAX response:', data);
-                    if (!data || !data.results) {
-                        console.error('Invalid TransfareeShID response format:', data);
-                        return { results: [] };
-                    }
-                    return { results: data.results };
-                },
-                error: function (xhr, status, error) {
-                    console.error('TransfareeShID AJAX error:', status, error, xhr.responseText);
-                    return { results: [] };
-                },
-                cache: true
-            }
-        }).on('select2:open', function () {
-            console.log('TransfareeShID dropdown opened. Minimum input length should be 3.');
-        });*@
-
-
-
-
-if (typeof jQuery === 'undefined') {
-        console.error('jQuery is not loaded');
-        return;
-    }
-
-    // Log Select2 version
-    console.log('Select2 version:', $.fn.select2.version);
 
     // Initialize TransferrorShID
     $('#TransferrorShID').select2({
@@ -394,6 +300,14 @@ if (typeof jQuery === 'undefined') {
                 };
             },
             processResults: function (data, params) {
+                if (data.error) {
+                    console.error('Server error during search:', data.error);
+                    return { results: [] };
+                }
+                if (!data || !data.items) {
+                    console.error('Invalid response format:', data);
+                    return { results: [] };
+                }
                 params.page = params.page || 1;
                 return {
                     results: data.items.map(function (item) {
@@ -406,6 +320,11 @@ if (typeof jQuery === 'undefined') {
                         more: data.hasMore
                     }
                 };
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                if (textStatus !== 'abort') {
+                    console.error("TransferrorShID AJAX Error:", textStatus, errorThrown, jqXHR.responseText);
+                }
             },
             cache: true
         }
@@ -424,11 +343,19 @@ if (typeof jQuery === 'undefined') {
             data: function (params) {
                 return {
                     term: params.term || '',
-                    transferrorId: $('#TransferrorShID').val() || '',
+                    transferrorId: $('#TransferrorShID').val() || null,
                     page: params.page || 1
                 };
             },
             processResults: function (data, params) {
+                if (data.error) {
+                    console.error('Server error during search:', data.error);
+                    return { results: [] };
+                }
+                if (!data || !data.items) {
+                    console.error('Invalid response format:', data);
+                    return { results: [] };
+                }
                 params.page = params.page || 1;
                 return {
                     results: data.items.map(function (item) {
@@ -445,6 +372,8 @@ if (typeof jQuery === 'undefined') {
             cache: true
         }
     });
+
+    }, 500); // 500ms delay to beat theme scripts
         //// Monitor for external overrides
         //setTimeout(function () {
         //    var options = $('#TransferrorShID').data('select2') ? $('#TransferrorShID').data('select2').options.options : null;
@@ -500,7 +429,6 @@ if (typeof jQuery === 'undefined') {
 
         // TransferrorShID change handler
         $('#TransferrorShID').on('select2:select', function () {
-            console.log('TransferrorShID selected:', $(this).val());
             resetFormStateForTransferror();
             var shareholderId = $(this).val();
             var isFullTransfer = $('#transferCategoryDropdown').val() === 'Full Transfer' && $('#transferTypeFull').prop('checked');
@@ -509,7 +437,6 @@ if (typeof jQuery === 'undefined') {
                 type: 'GET',
                 data: { shareholderId: shareholderId },
                 success: function (data) {
-                    console.log('GetShareholderData response:', data);
                     $.each(data.subscriptions, function (index, subscription) {
                         $('#subscriptionsTable tbody').append(`
                             <tr>
