@@ -17,6 +17,8 @@ namespace Shareholder_Management_System.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
+            this.AddOnSubs = new HashSet<AddOnSub>();
+            this.AddOnSubs1 = new HashSet<AddOnSub>();
             this.AuditLogs = new HashSet<AuditLog>();
             this.Blockeds = new HashSet<Blocked>();
             this.Blockeds1 = new HashSet<Blocked>();
@@ -53,6 +55,10 @@ namespace Shareholder_Management_System.Models
         public Nullable<bool> IsFirstLogin { get; set; }
         public Nullable<bool> activeStatus { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AddOnSub> AddOnSubs { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AddOnSub> AddOnSubs1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AuditLog> AuditLogs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -310,18 +310,21 @@
                                                 <a href="~/Subscribtions/Create">Create Subscription</a>
                                             </li>
                                             <li>
-                                                <a href="~/Subscribtions/AddSubscription">Add On Subscription</a>
+                                                <a href="~/AddOnSubs/Create">Add On Subscription</a>
+                                            </li>
+                                            <li>
+                                                <a href="~/AddOnSubs/Index">View Add On Subscription</a>
                                             </li>
                                         }
                                         <li>
                                             <a href="~/Subscribtions/Viewall">View Subscription</a>
                                         </li>
                                         @*<li>
-                                                <a href="~/Subscribtions/PendingSubscription">Manage Subscription</a>
-                                            </li>*@
+            <a href="~/Subscribtions/PendingSubscription">Manage Subscription</a>
+        </li>*@
                                         @*<li>
-                                                <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
-                                            </li>*@
+            <a href="~/Subscribtions/Compiledsubs">Compiled Subscription</a>
+        </li>*@
                                         @if (userRole == "SuperUser" || userRole == "SuperAdmin")
                                         {
                                             <li>

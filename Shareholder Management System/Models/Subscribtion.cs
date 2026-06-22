@@ -17,6 +17,7 @@ namespace Shareholder_Management_System.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Subscribtion()
         {
+            this.AddOnSubs = new HashSet<AddOnSub>();
             this.DividenedDetails = new HashSet<DividenedDetail>();
             this.Payments = new HashSet<Payment>();
             this.SimulationDivideneds = new HashSet<SimulationDividened>();
@@ -40,6 +41,8 @@ namespace Shareholder_Management_System.Models
         public string Remark { get; set; }
         public Nullable<int> Branch { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AddOnSub> AddOnSubs { get; set; }
         public virtual Branch Branch1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DividenedDetail> DividenedDetails { get; set; }

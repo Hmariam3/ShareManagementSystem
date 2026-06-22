@@ -5,6 +5,21 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="ShareManagementSystemDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AddOnSub">
+          <Key>
+            <PropertyRef Name="add_id" />
+          </Key>
+          <Property Name="add_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="shareid" Type="int" />
+          <Property Name="subid" Type="int" />
+          <Property Name="No_of_share" Type="int" />
+          <Property Name="amount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="status" Type="nvarchar(max)" />
+          <Property Name="createddate" Type="date" />
+          <Property Name="createdby" Type="int" />
+          <Property Name="authorizer" Type="int" />
+          <Property Name="authorizationdate" Type="date" />
+        </EntityType>
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -406,6 +421,54 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
           <Property Name="IsFirstLogin" Type="bit" />
           <Property Name="activeStatus" Type="bit" />
         </EntityType>
+        <Association Name="FK_AddOnSub_Shareholder">
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
+          <End Role="AddOnSub" Type="Self.AddOnSub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shareholder">
+              <PropertyRef Name="ShID" />
+            </Principal>
+            <Dependent Role="AddOnSub">
+              <PropertyRef Name="shareid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddOnSub_Subscribtion">
+          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="0..1" />
+          <End Role="AddOnSub" Type="Self.AddOnSub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subscribtion">
+              <PropertyRef Name="SubID" />
+            </Principal>
+            <Dependent Role="AddOnSub">
+              <PropertyRef Name="subid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddOnSub_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="AddOnSub" Type="Self.AddOnSub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UID" />
+            </Principal>
+            <Dependent Role="AddOnSub">
+              <PropertyRef Name="createdby" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddOnSub_User1">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="AddOnSub" Type="Self.AddOnSub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UID" />
+            </Principal>
+            <Dependent Role="AddOnSub">
+              <PropertyRef Name="authorizer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AuditLog_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="AuditLog" Type="Self.AuditLog" Multiplicity="*" />
@@ -1067,6 +1130,7 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="ShareManagementSystemDBModelStoreContainer">
+          <EntitySet Name="AddOnSub" EntityType="Self.AddOnSub" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AuditLog" EntityType="Self.AuditLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Blocked" EntityType="Self.Blocked" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Branch" EntityType="Self.Branch" Schema="dbo" store:Type="Tables" />
@@ -1130,6 +1194,22 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
     [Subscription_Staging].[TempID] AS [TempID]
     FROM [dbo].[Subscription_Staging] AS [Subscription_Staging]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_AddOnSub_Shareholder" Association="Self.FK_AddOnSub_Shareholder">
+            <End Role="Shareholder" EntitySet="Shareholder" />
+            <End Role="AddOnSub" EntitySet="AddOnSub" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddOnSub_Subscribtion" Association="Self.FK_AddOnSub_Subscribtion">
+            <End Role="Subscribtion" EntitySet="Subscribtion" />
+            <End Role="AddOnSub" EntitySet="AddOnSub" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddOnSub_User" Association="Self.FK_AddOnSub_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="AddOnSub" EntitySet="AddOnSub" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddOnSub_User1" Association="Self.FK_AddOnSub_User1">
+            <End Role="User" EntitySet="User" />
+            <End Role="AddOnSub" EntitySet="AddOnSub" />
+          </AssociationSet>
           <AssociationSet Name="FK_AuditLog_User" Association="Self.FK_AuditLog_User">
             <End Role="User" EntitySet="User" />
             <End Role="AuditLog" EntitySet="AuditLog" />
@@ -1356,6 +1436,25 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ShareManagementSystemDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AddOnSub">
+          <Key>
+            <PropertyRef Name="add_id" />
+          </Key>
+          <Property Name="add_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="shareid" Type="Int32" />
+          <Property Name="subid" Type="Int32" />
+          <Property Name="No_of_share" Type="Int32" />
+          <Property Name="amount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="createddate" Type="DateTime" Precision="0" />
+          <Property Name="createdby" Type="Int32" />
+          <Property Name="authorizer" Type="Int32" />
+          <Property Name="authorizationdate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Shareholder" Relationship="Self.FK_AddOnSub_Shareholder" FromRole="AddOnSub" ToRole="Shareholder" />
+          <NavigationProperty Name="Subscribtion" Relationship="Self.FK_AddOnSub_Subscribtion" FromRole="AddOnSub" ToRole="Subscribtion" />
+          <NavigationProperty Name="User" Relationship="Self.FK_AddOnSub_User" FromRole="AddOnSub" ToRole="User" />
+          <NavigationProperty Name="User1" Relationship="Self.FK_AddOnSub_User1" FromRole="AddOnSub" ToRole="User" />
+        </EntityType>
         <EntityType Name="AuditLog">
           <Key>
             <PropertyRef Name="LogID" />
@@ -1661,6 +1760,7 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
           <Property Name="ShDocument" Type="Int32" />
           <Property Name="KebeleID" Type="Int32" />
           <Property Name="PendingDoc" Type="Int32" />
+          <NavigationProperty Name="AddOnSubs" Relationship="Self.FK_AddOnSub_Shareholder" FromRole="Shareholder" ToRole="AddOnSub" />
           <NavigationProperty Name="Blockeds" Relationship="Self.FK_Blocked_Shareholder" FromRole="Shareholder" ToRole="Blocked" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_Shareholder_Branch" FromRole="Shareholder" ToRole="Branch" />
           <NavigationProperty Name="Certificates" Relationship="Self.FK_Certificate_Shareholder" FromRole="Shareholder" ToRole="Certificate" />
@@ -1767,6 +1867,7 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
           <Property Name="AuthorizedDate" Type="DateTime" Precision="0" />
           <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Branch" Type="Int32" />
+          <NavigationProperty Name="AddOnSubs" Relationship="Self.FK_AddOnSub_Subscribtion" FromRole="Subscribtion" ToRole="AddOnSub" />
           <NavigationProperty Name="Branch1" Relationship="Self.FK_Subscribtion_Branch" FromRole="Subscribtion" ToRole="Branch" />
           <NavigationProperty Name="DividenedDetails" Relationship="Self.FK_Dividened_Detail_Subscription" FromRole="Subscribtion" ToRole="DividenedDetail" />
           <NavigationProperty Name="Payments" Relationship="Self.FK_Payment_Subscribtion" FromRole="Subscribtion" ToRole="Payment" />
@@ -1791,6 +1892,8 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
           <Property Name="Locked" Type="Int32" />
           <Property Name="IsFirstLogin" Type="Boolean" />
           <Property Name="activeStatus" Type="Boolean" />
+          <NavigationProperty Name="AddOnSubs" Relationship="Self.FK_AddOnSub_User" FromRole="User" ToRole="AddOnSub" />
+          <NavigationProperty Name="AddOnSubs1" Relationship="Self.FK_AddOnSub_User1" FromRole="User" ToRole="AddOnSub" />
           <NavigationProperty Name="AuditLogs" Relationship="Self.FK_AuditLog_User" FromRole="User" ToRole="AuditLog" />
           <NavigationProperty Name="Blockeds" Relationship="Self.FK_Blocked_User" FromRole="User" ToRole="Blocked" />
           <NavigationProperty Name="Blockeds1" Relationship="Self.FK_Blocked_User1" FromRole="User" ToRole="Blocked" />
@@ -1863,6 +1966,54 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
           <Property Name="Branch" Type="Int32" />
           <Property Name="TempID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
+        <Association Name="FK_AddOnSub_Shareholder">
+          <End Role="Shareholder" Type="Self.Shareholder" Multiplicity="0..1" />
+          <End Role="AddOnSub" Type="Self.AddOnSub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Shareholder">
+              <PropertyRef Name="ShID" />
+            </Principal>
+            <Dependent Role="AddOnSub">
+              <PropertyRef Name="shareid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddOnSub_Subscribtion">
+          <End Role="Subscribtion" Type="Self.Subscribtion" Multiplicity="0..1" />
+          <End Role="AddOnSub" Type="Self.AddOnSub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Subscribtion">
+              <PropertyRef Name="SubID" />
+            </Principal>
+            <Dependent Role="AddOnSub">
+              <PropertyRef Name="subid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddOnSub_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="AddOnSub" Type="Self.AddOnSub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UID" />
+            </Principal>
+            <Dependent Role="AddOnSub">
+              <PropertyRef Name="createdby" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AddOnSub_User1">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="AddOnSub" Type="Self.AddOnSub" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UID" />
+            </Principal>
+            <Dependent Role="AddOnSub">
+              <PropertyRef Name="authorizer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AuditLog_User">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="AuditLog" Type="Self.AuditLog" Multiplicity="*" />
@@ -2524,6 +2675,7 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="Shareholder_Management_SystemEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AddOnSubs" EntityType="Self.AddOnSub" />
           <EntitySet Name="AuditLogs" EntityType="Self.AuditLog" />
           <EntitySet Name="Blockeds" EntityType="Self.Blocked" />
           <EntitySet Name="Branches" EntityType="Self.Branch" />
@@ -2543,6 +2695,22 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="Payment_Staging" EntityType="Self.Payment_Staging" />
           <EntitySet Name="Subscription_Staging" EntityType="Self.Subscription_Staging" />
+          <AssociationSet Name="FK_AddOnSub_Shareholder" Association="Self.FK_AddOnSub_Shareholder">
+            <End Role="Shareholder" EntitySet="Shareholders" />
+            <End Role="AddOnSub" EntitySet="AddOnSubs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddOnSub_Subscribtion" Association="Self.FK_AddOnSub_Subscribtion">
+            <End Role="Subscribtion" EntitySet="Subscribtions" />
+            <End Role="AddOnSub" EntitySet="AddOnSubs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddOnSub_User" Association="Self.FK_AddOnSub_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="AddOnSub" EntitySet="AddOnSubs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AddOnSub_User1" Association="Self.FK_AddOnSub_User1">
+            <End Role="User" EntitySet="Users" />
+            <End Role="AddOnSub" EntitySet="AddOnSubs" />
+          </AssociationSet>
           <AssociationSet Name="FK_AuditLog_User" Association="Self.FK_AuditLog_User">
             <End Role="User" EntitySet="Users" />
             <End Role="AuditLog" EntitySet="AuditLogs" />
@@ -2770,6 +2938,22 @@ warning 6002: The table/view 'ShareManagementSystemDB.dbo.Subscription_Staging' 
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ShareManagementSystemDBModelStoreContainer" CdmEntityContainer="Shareholder_Management_SystemEntities1">
+          <EntitySetMapping Name="AddOnSubs">
+            <EntityTypeMapping TypeName="ShareManagementSystemDBModel.AddOnSub">
+              <MappingFragment StoreEntitySet="AddOnSub">
+                <ScalarProperty Name="add_id" ColumnName="add_id" />
+                <ScalarProperty Name="shareid" ColumnName="shareid" />
+                <ScalarProperty Name="subid" ColumnName="subid" />
+                <ScalarProperty Name="No_of_share" ColumnName="No_of_share" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="createddate" ColumnName="createddate" />
+                <ScalarProperty Name="createdby" ColumnName="createdby" />
+                <ScalarProperty Name="authorizer" ColumnName="authorizer" />
+                <ScalarProperty Name="authorizationdate" ColumnName="authorizationdate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="AuditLogs">
             <EntityTypeMapping TypeName="ShareManagementSystemDBModel.AuditLog">
               <MappingFragment StoreEntitySet="AuditLog">

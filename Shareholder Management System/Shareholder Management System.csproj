@@ -301,6 +301,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Commons\AppMetrics.cs" />
     <Compile Include="Commons\PasswordHash.cs" />
+    <Compile Include="Controllers\AddOnSubsController.cs" />
     <Compile Include="Controllers\AuditLogsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BlockedsController.cs" />
@@ -326,6 +327,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AddOnSub.cs">
+      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ApprovalsViewModel.cs" />
     <Compile Include="Models\AuditLog.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
@@ -346,9 +350,6 @@
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Document.cs">
-      <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Migration_Errors.cs">
       <DependentUpon>Shareholder_Management_System.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Nationality.cs">
@@ -704,9 +705,9 @@
     <Content Include="Views\Subscribtions\Edit.cshtml" />
     <Content Include="Views\Subscribtions\Index.cshtml" />
     <Content Include="Views\Subscribtions\Filter.cshtml" />
-    <Content Include="Views\Subscribtions\_AddonsubscriptionsList.cshtml" />
+    <Content Include="Views\Subscribtions\_AddonsubscriptionsList1.cshtml" />
     <Content Include="Views\Subscribtions\_SubscriptionsList.cshtml" />
-    <Content Include="Views\Subscribtions\AddSubscription.cshtml" />
+    <Content Include="Views\Subscribtions\AddSubscription1.cshtml" />
     <Content Include="Views\Subscribtions\Authorize.cshtml" />
     <Content Include="Views\Subscribtions\Compiledsubs.cshtml" />
     <Content Include="Views\Proxies\Create.cshtml" />
@@ -789,6 +790,13 @@
     <Content Include="Views\Permissions\_PermissionsTable.cshtml" />
     <Content Include="Views\Payments\DailyTransactions.cshtml" />
     <Content Include="Views\Subscribtions\UpdateDuedate.cshtml" />
+    <Content Include="Views\AddOnSubs\Create.cshtml" />
+    <Content Include="Views\AddOnSubs\Delete.cshtml" />
+    <Content Include="Views\AddOnSubs\Details.cshtml" />
+    <Content Include="Views\AddOnSubs\Edit1.cshtml" />
+    <Content Include="Views\AddOnSubs\Index.cshtml" />
+    <Content Include="Views\AddOnSubs\Authorize.cshtml" />
+    <Content Include="Views\AddOnSubs\Authorize_Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

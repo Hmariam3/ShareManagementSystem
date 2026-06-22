@@ -17,6 +17,7 @@ namespace Shareholder_Management_System.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Shareholder()
         {
+            this.AddOnSubs = new HashSet<AddOnSub>();
             this.Blockeds = new HashSet<Blocked>();
             this.Certificates = new HashSet<Certificate>();
             this.DividenedDetails = new HashSet<DividenedDetail>();
@@ -72,6 +73,8 @@ namespace Shareholder_Management_System.Models
         public Nullable<int> KebeleID { get; set; }
         public Nullable<int> PendingDoc { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AddOnSub> AddOnSubs { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Blocked> Blockeds { get; set; }
         public virtual Branch Branch1 { get; set; }

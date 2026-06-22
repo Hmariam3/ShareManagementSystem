@@ -25,6 +25,7 @@ namespace Shareholder_Management_System.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<AddOnSub> AddOnSubs { get; set; }
         public virtual DbSet<AuditLog> AuditLogs { get; set; }
         public virtual DbSet<Blocked> Blockeds { get; set; }
         public virtual DbSet<Branch> Branches { get; set; }
@@ -32,7 +33,6 @@ namespace Shareholder_Management_System.Models
         public virtual DbSet<Dividend> Dividends { get; set; }
         public virtual DbSet<DividenedDetail> DividenedDetails { get; set; }
         public virtual DbSet<Document> Documents { get; set; }
-        public virtual DbSet<Migration_Errors> Migration_Errors { get; set; }
         public virtual DbSet<Nationality> Nationalities { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }

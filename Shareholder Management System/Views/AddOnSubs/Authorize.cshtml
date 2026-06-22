@@ -1,0 +1,146 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.AddOnSub>
+@{
+    ViewBag.Title = "Authorize";
+}
+<script src="~/Scripts/JS/sweetalert.min.js"></script>
+
+@section Scripts {
+    <script>
+        var successMessage = '@TempData["SuccessMessage"]';
+        var errorMessage = '@TempData["ErrorMessage"]';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Approved!',
+                    html: `<p style="font-size: 18px;">${successMessage}</p>`,
+                    confirmButtonText: 'OK',
+                    width: '30rem'
+                });
+            }
+            if (errorMessage) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Rejected!',
+                    html: `<p style="font-size: 18px;">${errorMessage}</p>`,
+                    confirmButtonText: 'OK',
+                    width: '30rem',
+                    showCloseButton: true
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+}
+
+<style>
+    button[title="Approve"]:hover svg,
+    button[title="Reject"]:hover svg {
+        transform: scale(1.5);
+        cursor: pointer;
+    }
+</style>
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <div x-data="basic">
+        <div class="panel mt-6 sticky-column">
+            <h5 class="text-lg font-semibold dark:text-white-light">AddOnSub Authorization Table</h5>
+            <table id="myTable2" class="table-hover whitespace-nowrap"></table>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
+<script defer src="~/Scripts/JS/popper.min.js"></script>
+<script defer src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
+<script defer src="~/Scripts/JS/sweetalert.min.js"></script>
+<script src="assets/js/highlight.min.js"></script>
+<script src="assets/js/alpine-collaspe.min.js"></script>
+<script src="assets/js/alpine-persist.min.js"></script>
+<script defer src="assets/js/alpine-ui.min.js"></script>
+<script defer src="assets/js/alpine-focus.min.js"></script>
+<script defer src="assets/js/alpine.min.js"></script>
+<script src="assets/js/custom.js"></script>
+<script defer src="assets/js/apexcharts.js"></script>
+<script src="assets/js/simple-datatables.js"></script>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('basic', () => ({
+            datatable: null,
+            init() {
+                this.datatable = new simpleDatatables.DataTable('#myTable2', {
+                    data: {
+                        headings: [
+                            'No. of Shares', 'Amount', 'Status', 'Created Date',
+                            'Shareholder', 'Subscription Status', 'Created By', 'Authorized By',
+                            'Authorization Status', 'Take Action'
+                        ],
+                        data: [
+                            @foreach (var item in Model)
+                            {
+                                <text>
+                                [
+                                    "@item.No_of_share",
+                                    "@(item.amount.HasValue ? item.amount.Value.ToString("N2") : "0.00")",
+                                    "@item.status",
+                                    "@(item.createddate.HasValue ? item.createddate.Value.ToString("yyyy-MM-dd HH:mm") : "")",
+                                    "@(item.Shareholder != null ? item.Shareholder.FullNameEng + '(' + item.Shareholder.ShareID + ')' : "")",
+                                    "@(item.Subscribtion != null ? item.Subscribtion.SubStatus : "")",
+                                    "@(item.User != null ? item.User.FullName : "")",
+                                    "@(item.User1 != null ? item.User1.FullName : "")",
+                                    `@if (item.status == "Pending")
+                                        {
+                                            <span class="badge badge-outline-primary" style="font-size: 0.9em; padding: 0.5em 1em;">Pending</span>
+                                        }
+                                        else if (item.status == "Approved")
+                                        {
+                                            <span class="badge badge-outline-success" style="font-size: 0.9em; padding: 0.5em 1em;">Approved</span>
+                                        }
+                                        else if (item.status == "Rejected")
+                                        {
+                                            <span class="badge badge-outline-danger" style="font-size: 0.9em; padding: 0.5em 1em;">Rejected</span>
+                                        }
+                                        `,
+                                    `@if (item.status == "Pending")
+                                        {
+                                            <a href="@Url.Action("Authorize_Details", new { id = item.add_id })" class="btn btn-primary gap-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                    <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                    <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                                </svg>
+                                                Authorize
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("Details", new { id = item.add_id })" class="btn btn-secondary gap-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                                                    <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" fill="none" />
+                                                </svg>
+                                                View
+                                            </a>
+                                        }
+                                        `,
+                                ],
+                                </text>
+                            }
+                        ],
+                    },
+                    searchable: true,
+                    perPage: 10,
+                    perPageSelect: [5, 10, 20, 50],
+                    firstLast: true,
+                    labels: { perPage: '{select}' },
+                    layout: { top: '{search}', bottom: '{info}{select}{pager}' },
+                });
+            },
+        }));
+    });
+</script>

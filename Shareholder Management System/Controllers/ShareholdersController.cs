@@ -652,6 +652,7 @@ namespace Shareholder_Management_System.Controllers
             var subscriptions = db.Subscribtions.Where(sub => sub.SubAuthorizationStatus == "Pending").ToList();
             var payments = db.Payments.Where(pay => pay.PaymentAuthorizationStatus == "Pending").ToList();
             var shareTransfers = db.ShareTransfers.Where(st => st.TransferAuthorizationStatus == "Pending").ToList();
+            var addonsub = db.AddOnSubs.Where(aon => aon.status == "Pending").ToList();
             var blockeds = db.Blockeds.Where(b => b.BlockedAuthorizationStatus == "Pending").ToList();
             var documents = db.Documents.Where(doc => doc.DocAuthorizationStatus == "Pending").ToList();
             var certificates = db.Certificates.Where(c => c.CertAuthorizationStatus == "Pending").ToList();
@@ -664,6 +665,7 @@ namespace Shareholder_Management_System.Controllers
                 Subscribtions = subscriptions,
                 Payments = payments,
                 ShareTransfers = shareTransfers,
+                AddOnSub = addonsub,
                 Blockeds = blockeds,
                 Documents = documents,
                 Certificates = certificates
@@ -887,10 +889,11 @@ namespace Shareholder_Management_System.Controllers
             var pendingSubscriptions = db.Subscribtions.Count(sub => sub.SubAuthorizationStatus == "Pending");
             var pendingPayments = db.Payments.Count(pay => pay.PaymentAuthorizationStatus == "Pending");
             var pendingShareTransfers = db.ShareTransfers.Count(st => st.TransferAuthorizationStatus == "Pending");
+            var pendingAddonsub = db.AddOnSubs.Count(aon => aon.status == "Pending");
             var pendingBlockeds = db.Blockeds.Count(b => b.BlockedAuthorizationStatus == "Pending");
             var pendingCertificates = db.Certificates.Count(c => c.CertAuthorizationStatus == "Pending");
 
-            int totalPendingRequests = pendingShareholders + pendingProxies + pendingSubscriptions + pendingPayments + pendingShareTransfers + pendingBlockeds + pendingCertificates;
+            int totalPendingRequests = pendingShareholders + pendingProxies + pendingSubscriptions + pendingPayments + pendingShareTransfers + pendingBlockeds + pendingCertificates + pendingAddonsub;
 
             return PartialView("_PendingRequestsCount", totalPendingRequests);
         }

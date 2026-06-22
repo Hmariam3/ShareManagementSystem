@@ -145,6 +145,25 @@
                     <li>
                         <a href="javascript:;"
                            class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
+                           :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='addonsub' }"
+                           @@click="tab = 'addonsub'">
+                            <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ltr:mr-2 rtl:ml-2">
+                                <path d="M16.1007 13.359L16.5562 12.9062C17.1858 12.2801 18.1672 12.1515 18.9728 12.5894L20.8833 13.628C22.1102 14.2949 22.3806 15.9295 21.4217 16.883L20.0011 18.2954C19.6399 18.6546 19.1917 18.9171 18.6763 18.9651M4.00289 5.74561C3.96765 5.12559 4.25823 4.56668 4.69185 4.13552L6.26145 2.57483C7.13596 1.70529 8.61028 1.83992 9.37326 2.85908L10.6342 4.54348C11.2507 5.36691 11.1841 6.49484 10.4775 7.19738L10.1907 7.48257"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M18.6763 18.9651C17.0469 19.117 13.0622 18.9492 8.8154 14.7266C4.81076 10.7447 4.09308 7.33182 4.00293 5.74561"
+                                      stroke="currentColor" stroke-width="1.5"></path>
+                                <path opacity="0.5"
+                                      d="M16.1007 13.3589C16.1007 13.3589 15.0181 14.4353 12.0631 11.4971C9.10807 8.55886 10.1907 7.48242 10.1907 7.48242"
+                                      stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                            </svg>
+                            AddOn Subscription <span class="badge my-0 bg-danger text-white ltr:ml-4 rtl:mr-4">@Model.AddOnSub.Count()</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;"
+                           class="-mb-[1px] flex items-center border border-transparent p-3.5 py-2 hover:text-danger"
                            :class=" {'!border-white-light !border-b-white text-danger dark:!border-[#191e3a] dark:!border-b-black' : tab==='block' }"
                            @@click="tab = 'block'">
                             <svg width="24" height="24" viewbox="0 0 24 24" fill="none"
@@ -1132,6 +1151,19 @@
                     </div>
 
                 </template>
+                <template x-if="tab === 'addonsub'">
+                    <div class="animate__animated " :class="[$store.app.animation]">
+                        <!-- start main content section -->
+                        <div x-data="addonsub">
+                            <div class="panel mt-2 sticky-column">
+                                <h5 class="text-lg font-semibold dark:text-white-light">Add On Subscription Table</h5>
+                                <table id="myTable2" class="table-hover whitespace-nowrap"></table>
+                            </div>
+                        </div>
+                        <!-- end main content section -->
+                    </div>
+
+                </template>
 
                 <template x-if="tab === 'block'">
 
@@ -1659,6 +1691,7 @@
     </script>
 }
 
+
 <script>
     document.addEventListener('alpine:init', () => {
         // main section
@@ -1823,6 +1856,84 @@
     });
 </script>
 
+
+<!-- Scripts of **Addons** Pending Requests -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('addonsub', () => ({
+            datatable: null,
+            init() {
+                this.datatable = new simpleDatatables.DataTable('#myTable2', {
+                    data: {
+                        headings: [
+                            'No. of Shares', 'Amount', 'Status', 'Created Date',
+                            'Shareholder', 'Subscription Status', 'Created By', 'Authorized By',
+                            'Authorization Status', 'Take Action'
+                        ],
+                        data: [
+                            @foreach (var item in Model.AddOnSub)
+                            {
+                                <text>
+                                [
+                                    "@item.No_of_share",
+                                    "@(item.amount.HasValue ? item.amount.Value.ToString("N2") : "0.00")",
+                                    "@item.status",
+                                    "@(item.createddate.HasValue ? item.createddate.Value.ToString("yyyy-MM-dd HH:mm") : "")",
+                                    "@(item.Shareholder != null ? item.Shareholder.FullNameEng + '(' + item.Shareholder.ShareID + ')' : "")",
+                                    "@(item.Subscribtion != null ? item.Subscribtion.SubStatus : "")",
+                                    "@(item.User != null ? item.User.FullName : "")",
+                                    "@(item.User1 != null ? item.User1.FullName : "")",
+                                    `@if (item.status == "Pending")
+                                        {
+                                            <span class="badge badge-outline-primary" style="font-size: 0.9em; padding: 0.5em 1em;">Pending</span>
+                                        }
+                                        else if (item.status == "Approved")
+                                        {
+                                            <span class="badge badge-outline-success" style="font-size: 0.9em; padding: 0.5em 1em;">Approved</span>
+                                        }
+                                        else if (item.status == "Rejected")
+                                        {
+                                            <span class="badge badge-outline-danger" style="font-size: 0.9em; padding: 0.5em 1em;">Rejected</span>
+                                        }
+                                        `,
+                                    `@if (item.status == "Pending")
+                                        {
+                                            <a href="@Url.Action("Authorize_Details", "AddOnSubs", new { id = item.add_id })" class="btn btn-primary gap-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                    <path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z" stroke="white" stroke-width="1.5" fill="none"></path>
+                                                    <circle cx="8" cy="8" r="1" fill="white"></circle>
+                                                    <path d="M12 13v3" stroke="white" stroke-width="1.5" stroke-linecap="round"></path>
+                                                </svg>
+                                                Authorize
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("Details", "AddOnSubs", new { id = item.add_id })" class="btn btn-secondary gap-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                    <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" fill="none" />
+                                                    <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.5" fill="none" />
+                                                </svg>
+                                                View
+                                            </a>
+                                        }
+                                        `,
+                                ],
+                                </text>
+                            }
+                        ],
+                    },
+                    searchable: true,
+                    perPage: 10,
+                    perPageSelect: [5, 10, 20, 50],
+                    firstLast: true,
+                    labels: { perPage: '{select}' },
+                    layout: { top: '{search}', bottom: '{info}{select}{pager}' },
+                });
+            },
+        }));
+    });
+</script>
 <script>
     async function showAlert(action, event) {
         // Prevent the default link navigation if action is delete

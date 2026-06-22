@@ -1,0 +1,256 @@
+﻿@model IEnumerable<Shareholder_Management_System.Models.AddOnSub>
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    var userRole = Session["Roles"]?.ToString();
+}
+<!-- SweetAlert2 CDN -->
+<script src="~/Scripts/JS/sweetalert.min.js"></script>
+
+@section Scripts {
+    <script>
+        // Store TempData message in a JavaScript variable
+        var successMessage = '@TempData["SuccessMessage"]';
+        document.addEventListener("DOMContentLoaded", function () {
+            // Display success message if it exists
+            if (successMessage) {
+                Swal.fire({
+                    icon: 'success',
+                    html: `<p style="font-size: 18px;">${successMessage}</p>`,
+                    confirmButtonText: 'OK',
+                    width: '30rem' // Adjust modal size
+                });
+            }
+        });
+    </script>
+}
+
+<style>
+    /* Hover effect */
+    button[title="Approve"]:hover svg,
+    button[title="Reject"]:hover svg {
+        transform: scale(1.5);
+        cursor: pointer;
+    }
+
+    .swal2-popup.colored-toast {
+        padding: 15px 20px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+        .swal2-popup.colored-toast.success {
+            background-color: #1abc9c !important; /* Success color */
+            color: white;
+        }
+
+        .swal2-popup.colored-toast.error {
+            background-color: #e74c3c !important; /* Error color */
+            color: white;
+        }
+</style>
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <!-- start main content section -->
+    <div x-data="basic">
+        <div class="panel mt-6 sticky-column">
+            <h5 class="text-lg font-semibold dark:text-white-light">AddOnSub Table</h5>
+            <table id="myTable" class="table-hover whitespace-nowrap"></table>
+        </div>
+    </div>
+    <!-- end main content section -->
+</div>
+
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
+<script defer="" src="~/Scripts/JS/popper.min.js"></script>
+<script defer="" src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
+<script defer="" src="~/Scripts/JS/sweetalert.min.js"></script>
+<script src="assets/js/highlight.min.js"></script>
+<script src="assets/js/alpine-collaspe.min.js"></script>
+<script src="assets/js/alpine-persist.min.js"></script>
+<script defer="" src="assets/js/alpine-ui.min.js"></script>
+<script defer="" src="assets/js/alpine-focus.min.js"></script>
+<script defer="" src="assets/js/alpine.min.js"></script>
+<script src="assets/js/custom.js"></script>
+<script defer="" src="assets/js/apexcharts.js"></script>
+<script src="assets/js/simple-datatables.js"></script>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('scrollToTop', () => ({
+            showTopButton: false,
+            init() {
+                window.onscroll = () => {
+                    this.scrollFunction();
+                };
+            },
+            scrollFunction() {
+                if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                    this.showTopButton = true;
+                } else {
+                    this.showTopButton = false;
+                }
+            },
+            goToTop() {
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            },
+        }));
+
+        Alpine.data('customizer', () => ({
+            showCustomizer: false,
+        }));
+
+        Alpine.data('sidebar', () => ({
+            init() {
+                const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');
+                if (selector) {
+                    selector.classList.add('active');
+                    const ul = selector.closest('ul.sub-menu');
+                    if (ul) {
+                        let ele = ul.closest('li.menu').querySelectorAll('.nav-link');
+                        if (ele) {
+                            ele = ele[0];
+                            setTimeout(() => {
+                                ele.click();
+                            });
+                        }
+                    }
+                }
+            },
+        }));
+
+        Alpine.data('header', () => ({
+            init() {
+                const selector = document.querySelector('ul.horizontal-menu a[href="' + window.location.pathname + '"]');
+                if (selector) {
+                    selector.classList.add('active');
+                    const ul = selector.closest('ul.sub-menu');
+                    if (ul) {
+                        let ele = ul.closest('li.menu').querySelectorAll('.nav-link');
+                        if (ele) {
+                            ele = ele[0];
+                            setTimeout(() => {
+                                ele.classList.add('active');
+                            });
+                        }
+                    }
+                }
+            },
+        }));
+
+        Alpine.data('basic', () => ({
+            datatable: null,
+            init() {
+                this.datatable = new simpleDatatables.DataTable('#myTable', {
+                    data: {
+                        headings: [
+                            'No. of Shares', 'Amount', 'Status', 'Created Date', 'Authorization Date',
+                            'Shareholder', 'Subscription Status', 'Created By', 'Authorized By', 'Actions'
+                        ],
+                    data: [
+                        @foreach (var item in Model)
+                        {
+                            <text>
+                            [
+                                "@item.No_of_share",
+                                "@(item.amount.HasValue ? item.amount.Value.ToString("N2") : "0.00")",
+                                "@item.status",
+                                "@(item.createddate.HasValue ? item.createddate.Value.ToString("yyyy-MM-dd HH:mm") : "")",
+                                "@(item.authorizationdate.HasValue ? item.authorizationdate.Value.ToString("yyyy-MM-dd") : "")",
+                                "@(item.Shareholder != null ? item.Shareholder.ShareID : "")",
+                                "@(item.Subscribtion != null ? item.Subscribtion.SubStatus : "")",
+                                "@(item.User != null ? item.User.FullName : "")",
+                                "@(item.User1 != null ? item.User1.FullName : "")",
+                                `@if ((userRole == "Initiator" || userRole == "Admin") && item.status != "Approved")
+                                {
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        @*<a href="@Url.Action("Edit", new { id = item.add_id })" title="Edit" style="margin-right: 8px;">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-primary">
+                                                <path d="M5 2h8a2 2 0 0 1 2 2v4h4v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="currentColor" opacity="0.1"/>
+                                                <path d="M9 13l6-6 2 2-6 6H9v-2z" fill="currentColor"/>
+                                                <path d="M15 7.5l1.5-1.5 2 2L17 9.5 15 7.5z" fill="currentColor"/>
+                                            </svg>
+                                        </a>*@
+                                        <a href="@Url.Action("Details", new { id = item.add_id })" title="View Details" style="margin-right: 8px;">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                                <path d="M12 4.5C7.26 4.5 3.07 7.28 1 12c2.07 4.72 6.26 7.5 11 7.5s8.93-2.78 11-7.5c-2.07-4.72-6.26-7.5-11-7.5z" stroke="currentColor" stroke-width="1.5" fill="none"></path>
+                                                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                                            </svg>
+                                        </a>
+                                        <form id="deleteForm_@item.add_id" action="@Url.Action("Delete", new { id = item.add_id })" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="button" onclick="showAlert('delete', event, this)" title="Delete">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-danger">
+                                                    <path d="M3 6h18M10 11v6M14 11v6M5 6h14l-1 14H6L5 6zm4-2h6v1H9V4zm5-2H10a1 1 0 0 0-1 1v1H6V3a1 1 0 0 0-1-1z" stroke="red" stroke-width="1.5" fill="none"/>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Details", new { id = item.add_id })" title="View Details">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="h-6 w-6 text-success">
+                                            <path d="M12 4.5C7.26 4.5 3.07 7.28 1 12c2.07 4.72 6.26 7.5 11 7.5s8.93-2.78 11-7.5c-2.07-4.72-6.26-7.5-11-7.5z" stroke="currentColor" stroke-width="1.5" fill="none"></path>
+                                            <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                                        </svg>
+                                    </a>
+                                }
+                                `,
+                            ],
+                            </text>
+                        }
+                    ],
+                    },
+                    searchable: true,
+                    perPage: 10,
+                    perPageSelect: [5, 10, 20, 50],
+                    columns: [],
+                    firstLast: true,
+                    firstText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    lastText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    prevText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    nextText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    },
+                });
+            },
+        }));
+    });
+</script>
+
+<script>
+    async function showAlert(action, event, btn) {
+        if (action === 'delete') {
+            event.preventDefault();
+        }
+        let actionText = action === 'delete' ? 'Delete this AddOnSub' : '';
+        let confirmText = action === 'delete' ? 'Delete' : '';
+
+        new window.Swal({
+            icon: 'warning',
+            text: `You are about to ${actionText}. This action cannot be undone!`,
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#dc3545',
+            padding: '2em',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (action === 'delete') {
+                    // Find the closest form and submit
+                    const form = btn.closest('form');
+                    if (form) form.submit();
+                }
+            }
+        });
+    }
+</script>
