@@ -1,0 +1,89 @@
+@model IEnumerable<Shareholder_Management_System.ViewModel.ShareholderSubscriptionReportViewModel>
+
+@{
+    ViewBag.Title = "Shareholder Subscriptions Report";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="animate__animated p-6" :class="[$store.app.animation]">
+    <div x-data="basic">
+        <div class="panel mt-6 sticky-column">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h5 class="text-lg font-semibold dark:text-white-light">Shareholder Subscriptions Report</h5>
+                <a href="@Url.Action("ExportShareholderSubscriptions", "Reports")" class="btn btn-success btn-sm">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ltr:mr-2 rtl:ml-2">
+                        <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M7 11l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M12 4v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    Download Excel
+                </a>
+            </div>
+            <table id="myTable" class="table-hover whitespace-nowrap"></table>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/JS/simple-datatables.js"></script>
+<script src="~/Scripts/JS/perfect-scrollbar.min.js"></script>
+<script defer="" src="~/Scripts/JS/popper.min.js"></script>
+<script defer="" src="~/Scripts/JS/tippy-bundle.umd.min.js"></script>
+<script defer="" src="~/Scripts/JS/sweetalert.min.js"></script>
+<script src="assets/js/highlight.min.js"></script>
+<script src="assets/js/alpine-collaspe.min.js"></script>
+<script src="assets/js/alpine-persist.min.js"></script>
+<script defer="" src="assets/js/alpine-ui.min.js"></script>
+<script defer="" src="assets/js/alpine-focus.min.js"></script>
+<script defer="" src="assets/js/alpine.min.js"></script>
+<script src="assets/js/custom.js"></script>
+<script defer="" src="assets/js/apexcharts.js"></script>
+<script src="assets/js/simple-datatables.js"></script>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('basic', () => ({
+            datatable: null,
+            init() {
+                this.datatable = new simpleDatatables.DataTable('#myTable', {
+                    data: {
+                        headings: ['ShID', 'Share ID', 'Shareholder Name', 'Sub ID', 'Subscribed Share', 'Subscription Amount', 'Paid Subscription', 'Unpaid Subscription', 'Paid Amount', 'Blocked Amount'],
+                        data: [
+                        @foreach (var item in Model)
+                        {
+                            <text>
+                            [
+                                "@item.ShID",
+                                "@item.ShareID",
+                                "@item.ShareholderName",
+                                "@item.SubID",
+                                "@item.SubscribedShare.ToString("N0")",
+                                "@item.SubscriptionAmount.ToString("N2")",
+                                "@item.PaidSubscription.ToString("N2")",
+                                "@item.UnpaidSubscription.ToString("N2")",
+                                "@item.PaidAmount.ToString("N2")",
+                                "@item.BlockedAmount.ToString("N2")"
+                            ],
+                            </text>
+                        }
+                        ],
+                    },
+                    searchable: true,
+                    perPage: 10,
+                    perPageSelect: [10, 20, 50, 100],
+                    firstLast: true,
+                    firstText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    lastText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    prevText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    nextText: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>',
+                    labels: {
+                        perPage: '{select}',
+                    },
+                    layout: {
+                        top: '{search}',
+                        bottom: '{info}{select}{pager}',
+                    },
+                });
+            },
+        }));
+    });
+</script>

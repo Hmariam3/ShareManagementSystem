@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -317,6 +317,7 @@
     <Compile Include="Controllers\PaymentsController.cs" />
     <Compile Include="Controllers\PermissionsController.cs" />
     <Compile Include="Controllers\ProxiesController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\ShareholdersController.cs" />
     <Compile Include="Controllers\ShareTransfersController.cs" />
     <Compile Include="Controllers\SimulationDividenedsController.cs" />
@@ -413,6 +414,7 @@
     <Compile Include="Utilities\BreadcrumbHelper.cs" />
     <Compile Include="Utilities\EncryptionHelper.cs" />
     <Compile Include="ViewModel\PasswordResetViewModel.cs" />
+    <Compile Include="ViewModel\ShareholderSubscriptionReportViewModel.cs" />
     <Compile Include="ViewModel\UserAuditLogViewModel.cs" />
     <Compile Include="ViewModel\UserProfileViewModel.cs" />
   </ItemGroup>
@@ -681,6 +683,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Reports\ShareholderSubscriptions.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
