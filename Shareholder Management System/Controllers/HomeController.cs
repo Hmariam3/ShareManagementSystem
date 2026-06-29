@@ -90,18 +90,43 @@ namespace Shareholder_Management_System.Controllers
 
             ViewBag.percentageTrans = percentageCurrentYearTran;
 
-            //Total PaidUp capital
-            var PaidUpCapital = db.Subscribtions.Sum(s => s.PaidSubscription);
+            //Total Subscribed Number of Share
+            var SubscribedShare = db.Subscribtions
+                .Where(s => s.SubAuthorizationStatus == "Approved")
+                .Sum(s => s.SubNumShares);
+
+            ViewBag.SubscribedShare = SubscribedShare.HasValue ? SubscribedShare.Value.ToString("N0", System.Globalization.CultureInfo.CurrentCulture) : "0";
+
+            //Total Subscription Amount 
+            var TotalSubscriptionAmount = db.Subscribtions
+                .Where(s => s.SubAuthorizationStatus == "Approved")
+                .Sum(s => s.SubAmount);
+
+            ViewBag.SubscriptionAmount = TotalSubscriptionAmount.HasValue ? TotalSubscriptionAmount.Value.ToString("N0", System.Globalization.CultureInfo.CurrentCulture) : "0"; 
+
+            //Total Paid capital
+            var PaidUpCapital = db.Subscribtions
+                .Where(s => s.SubAuthorizationStatus == "Approved")
+                .Sum(s => s.PaidSubscription);
 
             ViewBag.PaidUpCapital = PaidUpCapital.HasValue ? PaidUpCapital.Value.ToString("N0", System.Globalization.CultureInfo.CurrentCulture) : "ETB0";
 
-            //Total Unpaid caputal
-            var UnpaidCapital = db.Subscribtions.Sum(s => s.UnpaidSubscription);
+            //Total Unpaid capital
+            var UnpaidCapital = db.Subscribtions
+                .Where(s => s.SubAuthorizationStatus == "Approved")
+                .Sum(s => s.UnpaidSubscription);
 
             ViewBag.UnpaidCapital = UnpaidCapital.HasValue ? UnpaidCapital.Value.ToString("N0", System.Globalization.CultureInfo.CurrentCulture) : "ETB0";
 
             //Total of Paid and Unpaid Capital
             ViewBag.TotalCapital = ((PaidUpCapital ?? 0) + (UnpaidCapital ?? 0)).ToString("N0", System.Globalization.CultureInfo.CurrentCulture);
+
+            //Total Paid Amount
+            var PaidAmount = db.Payments
+                .Where(p => p.PaymentAuthorizationStatus == "Approved")
+                .Sum(p => p.PaidAmount + (p.BlockedAmount ?? 0));
+
+            ViewBag.PaidAmount = PaidAmount.HasValue ? PaidAmount.Value.ToString("N0", System.Globalization.CultureInfo.CurrentCulture) : "ETB0"; 
 
             return View(users);
         }

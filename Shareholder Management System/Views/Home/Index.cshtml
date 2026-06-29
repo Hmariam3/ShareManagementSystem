@@ -339,19 +339,53 @@
                                         <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </div>
-                                <div class="grid grid-cols-2 gap-6 md:grid-cols-3">
+                                <div class="grid grid-cols-2 gap-6 md:grid-cols-2">
+
                                     <div>
-                                        <div class="text-primary">Paid Up Capital</div>
+                                        <div class="text-primary">Subscribed No. of Share</div>
+                                        <div class="mt-2 text-2xl font-semibold">@ViewBag.SubscribedShare</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-primary">Total Subscription Amount</div>
+                                        <div class="mt-2 text-2xl font-semibold">Birr @ViewBag.SubscriptionAmount</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative mt-10">
+                                <div class="absolute -bottom-12 h-24 w-24 ltr:-right-12 rtl:-left-12">
+                                    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-full w-full text-success opacity-20">
+                                        <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                        <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </div>
+                                <div class="grid grid-cols-2 gap-6 md:grid-cols-2">
+                                    <div>
+                                        <div class="text-primary">Paid Up Capital(Birr)</div>
                                         <div class="mt-2 text-2xl font-semibold">Birr @ViewBag.PaidUpCapital</div>
                                     </div>
                                     <div>
-                                        <div class="text-primary">Unpaid Capital</div>
+                                        <div class="text-primary">Unpaid Capital(Birr)</div>
                                         <div class="mt-2 text-2xl font-semibold">Birr @ViewBag.UnpaidCapital</div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="relative mt-10">
+                                <div class="absolute -bottom-12 h-24 w-24 ltr:-right-12 rtl:-left-12">
+                                    <svg width="24" height="24" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-full w-full text-success opacity-20">
+                                        <circle opacity="0.5" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"></circle>
+                                        <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </div>
+                                <div class="grid grid-cols-2 gap-6 md:grid-cols-2">
                                     <div>
-                                        <div class="text-primary">Total Capital</div>
+                                        <div class="text-primary">Total Capital(From Subscription Table)</div>
                                         <div class="mt-2 text-2xl font-semibold">Birr @ViewBag.TotalCapital</div>
                                     </div>
+                                    <div>
+                                        <div class="text-primary">Paid Amount(From Payment Table)</div>
+                                        <div class="mt-2 text-2xl font-semibold">Birr @ViewBag.PaidAmount</div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
