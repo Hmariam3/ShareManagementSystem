@@ -123,8 +123,8 @@ namespace Shareholder_Management_System.Controllers
                 {
                     var searchTerm = term.ToLower().Trim();
                     query = query.Where(s =>
-                        s.FullNameEng.ToLower().StartsWith(searchTerm) ||
-                        s.ShareID.ToLower().StartsWith(searchTerm));
+                        (s.FullNameEng != null && s.FullNameEng.ToLower().Contains(searchTerm)) ||
+                        (s.ShareID != null && s.ShareID.ToLower().Contains(searchTerm)));
                 }
 
                 if (transferrorId.HasValue)
@@ -299,7 +299,7 @@ namespace Shareholder_Management_System.Controllers
                         int BranchId = Convert.ToInt32(Session["Branch"]);
 
                         Trace.Write(shareTransfer);
-                      
+
                         var transferCategory = shareTransfer.TransferCategory;
                         // Ensure selectedPaymentIds or selectedSubscriptionIds is not null or empty
                         if ((!string.IsNullOrEmpty(selectedPaymentIds) || !string.IsNullOrEmpty(selectedSubscriptionIds)) && !string.IsNullOrEmpty(transferCategory) && !string.IsNullOrEmpty(TransferType))
@@ -1262,7 +1262,7 @@ namespace Shareholder_Management_System.Controllers
                 {
                     Value = s.Value,
                     Text = string.Format("{0} ({1})", s.FullNameEng, s.ShareID) // Format in memory
-        })
+                })
                 .ToList();
 
             return Json(shareholders, JsonRequestBehavior.AllowGet);
